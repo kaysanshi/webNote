@@ -1,0 +1,125 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<title>CSS与html结合</title>
+		<!---
+		结合方式1:使用html标签的一个属性style
+			一般放在<head></head>标签内;
+		结合方式2:使用style标签代码复用性
+		<style></style>之间放的都是要设置的样式;
+	/////一个页面多个样式:
+		要是设置样式多的话把div代码抽出来;
+		////多页面时:
+		还可以把所有的样式封装到一个数据包中,
+		然后让其他的调用@import url (cssf.css);
+		////在html中的<link>标签也可以调用,
+		
+		-->
+		<!--
+		1........
+		<style type="text/css">
+		div{
+		color:red;
+		font-size:24px;
+		background-color:yellow;
+		}
+	    </style >
+		2.........
+		<style type="text/css">
+			@import url (cssf.css);
+		</style>
+		3.......
+		<link rel="stylesheet"href="cssf.css"type="text/css"/>
+		-->
+<!--选择器:
+		1.html标签名选择器,指定加载样式的标签;
+		2.类class属性选择器,使用的是标签中class属性专门
+		用于css的选择; .类别名{}
+		3.id 选择器:使用id属性用.#表示
+		三种选择器的优先级:
+		class<id<style
+		组合选择器就是把所有的结合到一起用逗号隔开;
+		伪元素选择器:
+		{
+			比如超链接:四种状态:(选择器:link悬停状态:hover 点击状态(:active)  访问后(:visited))
+			a:link{}
+			a:visited{}
+			a:hover{}
+			a:active{}
+		}
+	  
+	  --->
+		<style type="text/css">
+			.commen{
+				color:red;
+			}
+			div.color1{
+				color:red;
+			}
+			div{
+				color:yellow;
+			}
+			span.commen1{ 
+				color:green;
+			}
+			#s{
+				color:blue;
+			}
+		<!-- 演示伪元素-->
+			a:link{
+				color:blue;
+				font:25;
+				<!--去掉下划线--->
+				text-decoration:none;
+			}	
+			a:visited{
+				color:blue;
+				font:30;
+				<!--去掉下划线--->
+				text-decoration:none;
+			}
+			<!--悬停-->
+			a:hover{
+				color:red;
+				font:30;
+				<!--去掉下划线--->
+				text-decoration:none;
+			}
+			a:active{
+				color:blue;
+				font:25;
+				<!--去掉下划线--->
+				text-decoration:none;
+			}
+			<!--块上应用-->
+			div:hover{
+				color:blue;
+				font:25;
+				<!--去掉下划线--->
+				text-decoration:none;
+			}
+			input:hover{
+				text-background-color:red;
+			}
+		</style>
+	</head>
+			
+	<body>
+	
+	<hr/>
+		<a href="http://www.sina.com"target="_blank">伪元素选择器</a>
+		<hr/>
+		<div >div演示区1</div>
+		<div class="commen">div演示区1</div>
+		<div class="color1">div演示区1</div>
+		<div id="s">div演示区1</div>
+		<div style="color:blue;">div演示区2</div>
+		<span class="commen1" >span演示区1</span>
+		<span>span演示区2</span>
+		<p>段落演示区1</p>
+		<p>段落演示区2</p>
+		<!---->
+		<div>DIV www</div>
+		<input type="text"name="wenben"/>
+	</body>
+</html>

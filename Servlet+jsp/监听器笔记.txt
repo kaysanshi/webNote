@@ -1,0 +1,260 @@
+监听器：监听器就是一个java程序，功能是监听另一个java对象变化（方法调用、属性变更）
+
+监听器监听过程：事件源、事件对象、监听器对象 、操作事件源
+1、存在被监听对象（事件源）
+2、存在监听器对象 
+3、在事件源中注册监听器 
+4、操作事件源，使事件源发生改变 ，产生事件对象 
+* 事件对象 就是 事件源的改变 
+5、事件对象会被传递给监听器，触发监听器相应行为
+
+监听器技术主要应用于图形界面编程 ---------- swing中监听器的使用
+
+自定义监听器  ---- 监听人的行为（监听器案例）
+1、创建事件源对象 Person
+2、创建监听器对象 （通常定义为接口） PersonListener 
+3、注册监听器
+4、触发事件源改变 --- 产生事件对象
+
+思考：事件对象能用来做什么 ？？
+事件对象传递事件源的数据给监听器 ，通过事件对象获得事件源对象 
+* 监听器可以监听到事件源的数据变化 
+
+============================================================================================
+今天的学习目标：Servlet提供8个监听器对象 
+Servlet提供8个监听器，监听事件源主要是三个对象 ：ServletRequest, HttpSession, ServletContext ------Servlet的三种数据范围对象 
+
+Servlet的8个监听器，分为三类：
+第一类：监听三个数据范围对象（request、session、ServletContext）的创建和销毁监听器 
+第二类：监听三个数据范围对象中属性变更(增加、替换、删除)的监听器
+第三类：监听HttpSession中对象状态改变（被绑定、解除绑定、钝化、活化）的监听器
+
+一、三个域对象创建和销毁监听器
+1、ServletContextListener 监听 ServletContext 对象的创建和销毁事件  
+void contextInitialized(ServletContextEvent sce) ---- 监听Context对象创建 
+void contextDestroyed(ServletContextEvent sce)  ----- 监听Context对象的销毁
+
+ServletContext 全局唯一对象，每个工程创建唯一Context对象（配置全局初始化参数、保存全局共享数据、读取web资源文件） 
+在服务器启动时创建ServletContext对象，在服务器关闭时销毁ServletContext对象 
+
+编写监听器步骤
+1) 编写类 ，实现特定监听器接口 
+2) Servlet监听器，不是注册在事件源上，而是注册在web.xml 中，由容器tomcat完成监听器注册 
+  <!-- 注册监听器 , tomcat将监听器注册给事件源， 事件源操作后，会自动监听器执行 -->
+  <!-- 和Servlet Filter不同，不需要配置url -->
+  <listener>
+  	<listener-class>cn.itcast.web.listener.MyServletContextListener</listener-class>
+  </listener>
+
+应用：
+1) 保存全局范围对象，因为监听ServletContext对象，监听器都可以通过事件对象获得事件源  
+// 获得被监听事件源对象
+ServletContext context = sce.getServletContext();
+2) 读取框架配置文件 例如: spring框架 org.springframework.web.context.ContextLoaderListener 
+3) 在ServletContextListener 定义一些定时器程序 （任务调度程序）
+
+最简单java中任务调度 ----- 定时器Timer 和 TimerTask的使用
+Timer启动定时器任务
+void schedule(TimerTask task, Date firstTime, long period)  ------- 指定启动任务第一次时间，通过period参数指定任务重复执行
+void schedule(TimerTask task, long delay, long period) ----- 指定任务距离当前时间delay 多久开始启动，通过period指定任务重复执行 
+
+终止定时器任务执行 timer.cancel(); 
+
+2、HttpSessionListener  监听HttpSession对象的创建和销毁
+void sessionCreated(HttpSessionEvent se)  ----- 监听Session对象创建
+void sessionDestroyed(HttpSessionEvent se)  ---- 监听Session对象销毁 
+
+Session对象何时创建 ： request.getSession(); 第一次执行时 创建Session对象 
+* 访问JSP时，因为其内置对象session，所以一定会创建Session对象的 
+
+Session对象何时销毁 ： 1) 不正常关闭服务器 2) Session对象过期 3) invalidate方法调用
+* 正常关闭服务器时，Session的数据保存tomcat/work目录下  --- 产生 SESSIONS.ser 
+* session的过期时间在web.xml 进行配置 
+  <session-config>
+  	<!-- 单位是分钟，连续30分钟没有使用该Session对象，就会销毁对象 -->
+  	<session-timeout>30</session-timeout>
+  </session-config>
+
+3、ServletRequestListener 监听Request对象的创建和销毁 
+void requestDestroyed(ServletRequestEvent sre)   ----- 监听request对象销毁的
+void requestInitialized(ServletRequestEvent sre)  ---- 监听request对象创建的
+
+每次客户端发起一次新的请求 产生request对象，当response响应结束后，request对象进行销毁 
+
+forward不会产生新的request对象，sendRedirect产生新的request对象 
+
+监听器案例：
+案例一： 统计当前在线人数 
+分析：统计Session 的个数 ，存在一个Session，意味着一个浏览器在访问 
+
+案例二： 自定义session定时扫描器（销毁session对象）
+编写定时器程序，定时去扫描系统中所有Session对象，发现如果一个Session 1分钟没有使用了，就销毁该Session对象 
+
+=============================================================================================================================
+二、ServletRequest、HttpSession、ServletContext 三个数据范围中 数据变更监听器 
+ServletContextAttributeListener, HttpSessionAttributeListener ServletRequestAttributeListener
+
+这三个接口中都定义了三个方法来处理被监听对象中的属性的增加，删除和替换的事件
+1、attributeAdded  属性添加方法 
+public void attributeAdded(ServletContextAttributeEvent scae) 
+public void attributeAdded (HttpSessionBindingEvent  hsbe) 
+public void attributeAdded(ServletRequestAttributeEvent srae)
+
+2、attributeRemoved  属性移除方法
+public void attributeRemoved(ServletContextAttributeEvent scae) 
+public void attributeRemoved (HttpSessionBindingEvent  hsbe) 
+public void attributeRemoved (ServletRequestAttributeEvent srae)
+
+3、attributeReplaced  属性替换方法
+public void attributeReplaced(ServletContextAttributeEvent scae) 
+public void attributeReplaced (HttpSessionBindingEvent  hsbe) 
+public void attributeReplaced (ServletRequestAttributeEvent srae)
+
+何时调用attributeAdded 、attributeRemoved  、attributeReplaced  ？ 
+以HttpSessionAttributeListener为例 
+        // 向session中添加了一个属性
+	session.setAttribute("name","张三"); // 因为name属性还不存在 --- attributeAdded
+
+	// 向Session保存属性name的值李四，因为name属性已经存在，替换效果
+	session.setAttribute("name","李四"); // 因为name属性以及存在 --- attributeReplaced
+	
+	// 移除session的属性name
+	session.removeAttribute("name"); // 移除name属性 ---- attributeRemoved
+
+****** 如果执行session.invalidate(); 销毁了Session 导致Session中所有属性被移除 
+
+===========================================================================================================================
+三、Session中对象状态改变 监听器
+Session中对象共有四种状态
+1、绑定 ----- 对象被添加到Session中
+2、解除绑定 ----- 对象从Session中移除 
+3、钝化 ----- Session中数据被序列化到硬盘上 
+4、活化 ----- Session序列化数据 从硬盘被加载回内存 
+
+使JavaBean 了解到自己在Session中状态的变化 
+HttpSessionBindingListener 感知到绑定以及解除绑定
+HttpSessionActivationListener 感知钝化和活化 状态改变 
+
+不需要 web.xml 文件中进行注册 （这两类监听器，不是由容器进行管理的，由HttpSession对象管理 ）
+
+HttpSessionBindingListener
+void valueBound(HttpSessionBindingEvent event)  绑定
+void valueUnbound(HttpSessionBindingEvent event)  解除绑定 
+
+编写javabean实现 HttpSessionBindingListener接口，该javabean对象感知到自己被绑定到Session或者从Session解除绑定 
+valueBound ， 当对象被加入session 就会执行
+valueUnbound， 当对象从Session 移除时 就会执行 
+
+HttpSessionActivationListener 监听对象被钝化和活化 
+void sessionDidActivate(HttpSessionEvent se)  活化 
+void sessionWillPassivate(HttpSessionEvent se)  钝化 （java对象被序列化到硬盘上 ）
+
+如果tomcat正常关闭，Session中对象会被序列化到硬盘上 ---- java对象如果能被序列化必须实现Serializable接口 
+异常 ：IOException while loading persisted sessions: java.io.WriteAbortedException: writing aborted; java.io.NotSerializableException: cn.itcast.bean.Bean2
+原因 ：恢复Session.ser文件时，因为需要对象无法从文件中加载，发生异常 （删除Session.ser就可以了 ）
+* 保存到Session中对象，应该被序列化 
+
+在Session中数据对象，保存了一段时间后没有使用，不想删除对象中数据，（在不关闭服务器情况下）可以让对象数据进行钝化 ---- 序列化到硬盘上 
+下次再访问数据时，从钝化的文件中读取序列化数据 ----- 对数据进行活化 
+* 由tomcat完成钝化和活化，配置<Context> 标签 
+配置Context标签有三个常用位置
+1) tomcat/conf/context.xml 所有虚拟主机、所有web应用都可以使用配置
+2) tomcat/conf/Catalina/localhost/context.xml 当前虚拟主机 所有web应用都可以使用配置
+3) 当前工程/META-INF/context.xml  只对当前工程有效 
+
+配置钝化目录在tomcat/work 下 ---- 和Session默认保存位置一样 
+
+=================================================================================================================================================
+综合练习：实现在线用户列表 和 踢人功能 
+
+在线用户列表： 显示有哪些人在线 
+踢人功能 ： 管理员将进行非法操作用户踢下线 
+
+创建day19kick web工程，创建day19数据库 
+create table users(
+   id int primary key auto_increment,
+   username varchar(20),
+   password varchar(40),
+   nickname varchar(20),
+   role varchar(10)
+);
+
+insert into users values(null,'aaa','111','小丽','user');
+insert into users values(null,'bbb','111','老张','user');
+insert into users values(null,'ccc','111','小王','user');
+insert into users values(null,'ddd','111','老李','user');
+insert into users values(null,'admin','111','超级管理员','admin');
+
+如果 Map的key是 自定义对象，对于HashMap 重写equals和hashcode方法 ---- 排重 
+
+踢人的必须是管理员，被踢的不能是管理员 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

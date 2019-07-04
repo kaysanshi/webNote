@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="gb2312"?>
+<!--内部引用-->
+<!DOCTYPE 书架[
+	<!ELEMENT 书架 (书+)>
+	<!ELEMENT 书 (书名,作者,售价)><!--逗号是必须按这几个顺序-->
+	<!ELEMENT 书名 (#PCDATA)>
+	<!ELEMENT 作者 (#PCDATA)>
+	<!ELEMENT 售价 (#PCDATA)>
+	<!ATTLIST 书
+			书号 ID #REQUIRED
+			出版社 CDATA #REQUIRED
+			种类 (科技类|文学类) #IMPLIED
+			网址 CDATA #FIXED "www.itheima.com"
+			版次 CDATA "1"
+	>
+	<!ENTITY pub "黑马出版社">
+]>
+<书架>
+	<书>
+		<书 出版社='&pub;'种类='科技类'版次='2'书号='a1000'>
+		<书名>Java就业培训教程</书名>
+		<作者>张孝祥</作者>
+		<售价>39.00元</售价>
+	</书>
+	<书>
+		<书 出版社='传智播客'书号='a1111'>
+		<书名>JavaScript网页开发</书名>
+		<作者>张孝祥</作者>
+		<售价>28.00元</售价>
+	</书>
+	<ww>
+	</ww>
+</书架>

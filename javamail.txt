@@ -1,0 +1,63 @@
+(1) javax.mail.Properties类   
+		　　JavaMail需要Properties来创建一个session对象。它将寻找字符串"mail.smtp.host"，属性值就是发送邮件的主机.   
+		用法:   
+		　   Properties props = new Properties ();  //Properties props = System.getProperties();  
+		　	props.put("mail.smtp.host", "smtp.163.com");//可以换上你的smtp主机名。   
+(2) javax.mail.Session类   
+		　　这个Session类代表JavaMail 中的一个邮件session. 每一个基于 JavaMail的应用程序至少有一个session但是可以有任意多的session。 在这个例子中, Session对象需要知道用来处理邮件的SMTP 服务器。   
+		用法:   
+		　　 Session sendMailSession = Session.getInstance(props, null);   //不须认证  
+(3) javax.mail.Transport类   
+		　　邮件是既可以被发送也可以被受到。JavaMail使用了两个不同的类来完成这两个功能：Transport 和Store. Transport 是用来发送信息的，而Store用来收邮件。在这发送邮件我们只需要用到Transport对象。   
+			用法：   
+			    Transport  transport = sendMailSession.getTransport("smtp");   
+			　　用JavaMail Session对象的getTransport 方法来初始化Transport。传过去的字符串申明了对象所要使用的协议，如"smtp"。这将为我们省了很多时间。因为JavaMail以经内置了很多协议的实现方法。   
+			　注意: JavaMail并不是绝对支持每一个协议，目前支持IMAP、 SMTP和 POP3.   
+(4) javax.mail.MimeMessage类   
+	　　Message对象将存储我们实际发送的电子邮件信息，Message对象被作为一个MimeMessage对象来创建并且需要知道应当选择哪一个JavaMail session。   
+	　　用法：   
+			 Message newMessage = new MimeMessage(sendMailSession);   
+(5) javax.mail.InternetAddress类   
+		一旦您创建了 Session 和 Message，并将内容填入消息后，就可以用Address确定信件地址了。和 Message 一样，Address 也是个抽象类。您用的是Javax.mail.internet.InternetAddress 类.   
+		用法:   
+		    InternetAddress from=new InternetAddress("xxf@cafe.com");   //收件人邮箱地址  
+(6) javax.mail.Store类   
+		Store类实现特定邮件协议上的读、写、监视、查找等操作。通过Javax.mail.Store类可以访问Javax.mail.Folder类。   
+		用法:   
+		    Store store=s.getSorte("pop3");  //s为一个邮件会话   
+		    store.connect(popserver,username,password);//通过你提供的popserver地址(邮箱服务器),用户名和密码登录你的邮箱    
+(7) javax.mail.Folder类   
+		Folder类用于分级组织邮件，并提供照Javax.mail.Message格式访问email的能力。   
+			用法:   
+			    Folder folder=store.getFolder("INBOX");   
+			    folder.open(Folder.READ_ONLY);   
+(8) javax.mail.Internet.MimeMultipart   
+		一般保存电子邮件内容的容器是Multipart抽象类,它定义了增加和删除及获得电子邮件不同部分内容的方法.由于Multipart是抽象类,我们必须为它使用一个具体的子类,JavaMail API提供javax.mail.Internet.MimeMultpart类来使用MimeMessage对象.   
+			用法:   
+			    MimeMultipart multipart=new MimeMultipart();   
+		注:我们使用MimeMultipart对象的一个方法是addBodyPart(),它在我们的电子邮件内容里添加BodyPart(BodyPart类在下面紧接着要介绍)对象.消息可以有很多部分,一个BodyPart可以代表一个部分.   
+(9) javax.mail.Internet.MimeBodyPart类   
+		MimeBodyPart是BodyPart具体用于mimeMessage的一个子类.   
+		MimeBodyPart对象代表一个MimeMessage对象内容的一部分.每个MimeBodyPart被认为有两部分:   
+		⊙一个MIME类型   
+		⊙匹配这个类型的内容   
+		用法:   
+		    MimeBodyPart mdp=new MimeBodyPart();   
+		    String text="Hello JavaMail!";   
+		//定义MIME类型为text/plain,并设置MimeBodyPart的内容.   
+		    mdp.setContent(text,"text/plain");    
+(10) javax.activation.DataHandler类(包含在JAF中)   
+		JavaMail API不限制信息只为文本,任何形式的信息都可能作茧自缚MimeMessage的一部分.除了文本信息,作为文件附件包含在电子邮件信息的一部分是很普遍的.JavaMail API通过使用DataHandler对象,提供一个允许我们包含非文本BodyPart对象的简便方法.   
+		用法:   
+		    DataHandler dh=new DataHandler(text,type);   
+		    mdp.setDatahandler(dh);  //mdp是一个MimeBodyPart对象   
+(11) javax.activation.FileDataSource类(包含在JAF中)   
+		一个FileDataSource对象可以表示本地文件和服务器可以直接访问的资源.一个本地文件可以通过创建一个新的MimeBodyPart对象附在一个mimeMessage对象上.   
+		用法:   
+		    MimeMultipart mm=new MimeMultipart();   
+		    MimeBodyPart mdp=new MimeBodyPart();   
+		    FileDataSource fds=new FileDataSource("c:/exam.txt");   
+		    mdp.setDataHandler(new DataHandler(fds));   //设置数据源   
+		    mm.addBodyPart(mdp);  //为当前消息MimeMultipart对象增加MimeBodyPart   
+(12) javax.activation.URLDataSource类(包含在JAF中)   
+远程资源,URL不会指向它们,由一个URLDataSource对象表示.一个远程资源可以通过创建一个新mimeBodyPart对象附在一个mimeMessage对象上(同FileDataSource差不多).   

@@ -1,0 +1,226 @@
+json:JavaScript 对象表示法（JavaScript Object Notation）。 JSON 是存储和交换文本信息的语法。类似 XML。 JSON 比 XML 更小、更快，更易解析。
+	json数据格式简单，易于读写，格式压缩过占用宽带少易于解析，客户端通过js可以快速的通过eval()读取数据，支持多种语言，简化服务端的代码的开发量
+	json是纯文本的，具有自我描述的功能，具有层级结构，可以通过js解析，可以使用ajax传送
+	与 XML 不同之处没有结束标签更短读写的速度更快能够使用内建的 JavaScript eval() 方法进行解析使用数组不使用保留字
+	对于 AJAX 应用程序来说，JSON 比 XML 更快更易使用：
+	使用 XML:读取 XML 文档使用 XML DOM 来循环遍历文档读取值并存储在变量中
+	使用 JSON:读取 JSON 字符串用 eval() 处理 JSON 字符串
+	Jsonp(JSON with Padding) 是 json 的一种"使用模式"，可以让网页从别的域名（网站）那获取资料，即跨域读取数据。
+	为什么我们从不同的域（网站）访问数据需要一个特殊的技术(JSONP )呢？这是因为同源策略。
+	同源策略，它是由Netscape提出的一个著名的安全策略，现在所有支持JavaScript 的浏览器都会使用这个策略。
+	Jsonp 的实现原理是利用 <script> 标签可以获取不同源资源的特点，来达到跨域访问某个资源的目的。
+	json的语法：数据在名称/值对中，数据由逗号分隔，花括号保存在对象中吧，方括号保存数组。
+	例如："firstname":"john"===>等价于js中的firstname="John";
+		JSON的值可以为数字，字符串，逻辑值，数组，对象，null;
+		json的对象：{“firstname”:"json","lastname":"done"}===>firstName = "John"   lastName = "Doe"
+					创建一个空的对象，var jsonobj={}
+					创建一个新对象： var jsonobj=new object();
+					创建一个bookname的属性值得对象：var JSONObj = { "bookname ":"VB BLACK BOOK", "price":500 };
+		json的数组：{       "employees": [        
+										{ "firstName":"John" , "lastName":"Doe" },
+										{ "firstName":"Anna" , "lastName":"Smith" },
+										{ "firstName":"Peter" , "lastName":"Jones" }  ]}
+		Json创建对象数组：var books = {
+										    "Pascal" : [ 
+											{ "Name"  : "Pascal Made Simple", "price" : 700 },
+											{ "Name"  : "Guide to Pascal", "price" : 400 }
+										    ],                       
+										    "Scala"  : [
+											{ "Name"  : "Scala for the Impatient", "price" : 1000 }, 
+											{ "Name"  : "Scala in Depth", "price" : 1300 }
+										    ]    
+										} 
+
+	json模式是一种基于json格式定义的json数据结构的规范，：
+						描述现有的数据格式，干净的人类机器可读文档，完整的结构验证，有利于自动化得测试，完整的结构的验证用于验证客户端的数据
+		
+				json模式的示例：
+								{
+								    "$schema": "http://json-schema.org/draft-04/schema#",//用于表示模式
+								    "title": "Product",//描述模式提供标题
+								    "description": "A product from Acme's catalog",//关于模式的描述
+								    "type": "object",//定义必须是一个json对象
+								    "properties": {//定义各种类型的键值对，以及json文件中的最大最小值
+									"id": {
+									    "description": "The unique identifier for a product",
+									    "type": "integer"
+									},
+									"name": {
+									    "description": "Name of the product",
+									    "type": "string"
+									},
+									"price": {
+									    "type": "number",
+									    "minimum": 0,
+									    "exclusiveMinimum": true    //他为true时如果严格意义上小于“maximum”的值则实例有效
+									}
+								    },
+								    "required": ["id", "name", "price"] //存放必要的属性列表
+								}
+				json的两种数据结构：
+							1.有序的数组结构，
+									{
+									    "button": {
+										"1": {
+										    "type": "click",
+										    "name": "今日歌曲",
+										    "key": "V1001_TODAY_MUSIC"
+										},
+										"2": {
+										    "type": "click",
+										    "name": "歌手简介",
+										    "key": "V1001_TODAY_SINGER"
+										},
+										"3": {
+										    "name": "菜单",
+										    "sub_button": [
+											{
+											    "type": "view",
+											    "name": "搜索",
+											    "url": "http://www.soso.com/"
+											},
+											{
+											    "type": "view",
+											    "name": "视频",
+											    "url": "http://v.qq.com/"
+											},
+											{
+											    "type": "click",
+											    "name": "赞一下我们",
+											    "key": "V1001_GOOD"
+											}
+										    ]
+										}
+									    }
+									}
+							2.无序的对象结构:
+
+				json数据格式：
+							json是一种轻量级的数据表示方法，json的格式采用key：value的形式记录数据，直观，比xml简洁，
+							JSON 可以将 JavaScript 对象中表示的一组数据转换为字符串，然后就可以在函数之间轻松地传递这个字符串，或者在异步应用程序中将字符串从 Web 客户机传递给服务器端程序。
+							这个字符串看起来有点儿古怪（稍后会看到几个示例），但是 JavaScript 很容易解释它，而且 JSON 可以表示比名称/值对更复杂的结构。例如，可以表示数组和复杂的对象，而不仅仅是键和值的简单列表
+							简单的json实例：{”firstName“:"Breet"}
+							值的数组：当使用json表示一组值得时候可以减少复杂性，
+									引号中的people就是一个变量。
+								var peoples= { "people": [
+								  { "firstName": "Brett", "lastName":"McLaughlin", "email": "brett@newInstance.com" },
+								  { "firstName": "Jason", "lastName":"Hunter", "email": "jason@servlets.com" },
+								  { "firstName": "Elliotte", "lastName":"Harold", "email": "elharo@macfaq.com" }
+								]}
+								访问数据的方式：peoples.people[0].firstName;数组的索引是从零开始的，
+								使用json修改数据：peoples.people[2].lastName="uoade";
+								转换回字符串：String newJsonText=people.toJSONString();
+								如果使用json只需要调用一个简单的函数，就可以获得经过格式化的数据，可以直接使用。
+				json数据是如何得到转换的呢:
+								1.使用eval()函数来解析：
+								eval()对于服务器返回的JSON字符串，如果jquery异步请求没做类型说明，或者以字符串方式接受，那么需要做一次对象化处理，方式不是太麻烦，就是将该字符串放于eval()中执行一次。
+									这种方式也适合以普通javascipt方式获取json对象，
+									形式：var dataObj=eval("("+data+")");
+									由于json是花括号开始和结束的所以在使用的时候js很可能把他当做块处理，所以要加上()，强制的将他转换为一种表达式
+								对于一般的js生成json对象，只需要将$.each()方法替换为for语句即可，其他不变。
+								对于服务器返回的JSON字符串，如果jquery异步请求将type（一般为这个配置属性）设为“json”，
+								或者利 用$.getJSON()方法获得服务器返回，那么就不需要eval（）方法了，因为这时候得到的结果已经是json对象了，只需直接调用该对象即可，
+								这里以$.getJSON方法为例说明数据处理方法：
+
+										$.getJSON("http://www.phpzixue.cn/",{param:"gaoyusi"},function(data){
+										    //此处返回的data已经是json对象
+										    //以下其他操作同第一种情况
+										    $.each(data.root,function(idx,item){
+											if(idx==0){
+											    //同countinue，返回false同break
+											    return true;
+											}
+											alert("name:"+item.name+",value:"+item.value);
+										    });
+										});	
+				json中的转义字符：
+				1.双引号（"），如果正确出现双引号应为\\\"
+				2.\n，如想想出现正确的换行需要json字符串中是\\n，其实是先对\n中的\转义，n变成了普通字符，在解析为js对象的时候n与之前的\（只有一个\了）被解释为换行。如下的两个与此类似。
+				3.\r，\\r
+				4.\t，\\t
+				var obj = {  
+						    a : "b",  
+						    b : "\\",  
+						    c : {  
+							b : "\\",   
+							a : {   
+							    b : "\\"   
+							}  
+						    }  
+						};  
+						var json_str = JSON.stringify(obj);  
+						console.log( JSON.stringify(obj) );  
+						console.dir(JSON.parse(json_str));  
+						console.dir(JSON.parse('{"a":"b","b":"\\\\","c":{"b":"\\\\","a":{"b":"\\\\"}}}'));  
+					JSON中想要输入"\"必须在这个"\"之前加一个"\"即"\\"-->”\“
+					js中：如果想在js对象中出现一个\，需要在json字符串中出现四个\ 。
+				java中如何使用json呢：
+							基本类型都是相同的，唯一的不同。json中的数据对应的java数据array------>List；object---->Map
+							如果想将对象转换成JOSN，或将JSON转换成对象，你需要考虑使用Jackson或Gson。
+				Json的转换插件
+
+								将java的对象或集合转成json形式字符串
+
+								json的转换插件是通过java的一些工具，直接将java对象或集合转换成json字符串。
+								常用的json转换工具有如下几种：
+								1）jsonlib
+								2）Gson：google
+								3）fastjson：阿里巴巴
+				json转换：
+				
+						 json对象转字符串形式 ：
+							function json2str(o) { 
+							var arr = []; 
+							var fmt = function(s) { 
+							if (typeof s == 'object' && s != null) return json2str(s); 
+							return /^(string|number)$/.test(typeof s) ? "'" + s + "'" : s; 
+							} 
+							for (var i in o) arr.push("'" + i + "':" + fmt(o[i])); 
+							return '{' + arr.join(',') + '}'; 
+							} 
+						string对象转化为json对象 代码如下:
+							function stringToJson(stringValue) { 
+								eval("var theJsonValue = "+stringValue); 
+								return theJsonValue; 
+							} 
+						Jquery的Ajax技术（重点）
+								jquery是一个优秀的js框架，自然对js原生的ajax进行了封装，封装后的ajax的操作方法更简洁，功能更强大，
+								与ajax操作相关的jquery方法有如下几种，但开发中经常使用的有三种
+								
+								1）$.get(url, [data], [callback], [type])
+								2）$.post(url, [data], [callback], [type])
+
+								其中：
+								url：代表请求的服务器端地址
+								data：代表请求服务器端的数据（可以是key=value形式也可以是json格式）
+								callback：表示服务器端成功响应所触发的函数（只有正常成功返回才执行）
+								type：表示服务器端返回的数据类型（jquery会根据指定的类型自动类型转换）
+								常用的返回类型：text、json、html等
+
+								3）$.ajax( { option1:value1,option2:value2... } ); ---- 以后在掌握
+								常用的option有如下：
+								async：是否异步，默认是true代表异步
+								data：发送到服务器的参数，建议使用json格式
+								dataType：服务器端返回的数据类型，常用text和json
+								success：成功响应执行的函数，对应的类型是function类型
+								type：请求方式，POST/GET
+								url：请求服务器端地址
+		spring 中常用的装入json给前台的方式：
+			要引入jar包：
+					<dependency>
+						<groupId>net.sf.json-lib</groupId>
+						<artifactId>json-lib</artifactId>
+						<version>2.4</version>
+					</dependency>
+				JsonConfig jsonConfig=new JsonConfig();
+				//指定哪些不需要转json
+				jsonConfig.setExcludes(new String[] {"bcDecidedzones"});
+				//jsonObjectd中的方法
+				String json=JSONObject.fromObject(list).toString();
+				System.out.println(json.toString());
+				//写回到前台
+				ServletActionContext.getResponse().setContentType("text/json;charset=UTF-8");
+				//print.write
+				ServletActionContext.getResponse().getWriter().print(json);
+
+

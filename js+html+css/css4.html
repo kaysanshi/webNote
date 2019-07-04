@@ -1,0 +1,42 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>css盒子模型的应用</title>
+	<style type="text/css">
+	<!--重置浏览器默认的方式-->
+		body,p,img{
+			padding:0;margin:0;border:0;
+		}
+		<!--类选择器的使用-->
+		.all{
+			width:150px;
+			height:278px;
+			margin:50px auto;
+			font-family:"微软雅黑";
+			font-size:16px;
+		}
+		<!--在类选择器中定义标签选择-->
+		.info p{
+			width:138px;
+			height:33px;
+			line-height:33px;
+			border:1px solid #2E3138;
+			margin-top:2px;
+			padding-left:10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="all">
+		<div class="img">
+			<img src="xiangrikui.jpg"height="100px" width="150px"alt="图片的描述"/>
+		</div>
+		<div class="info">
+			<p>用户名:</p>
+			<p>学习进度:</p>
+			<p>兴趣爱好:</p>
+			<p>参与的群:</p>
+		</div>
+	</div>
+</body>
+</html>

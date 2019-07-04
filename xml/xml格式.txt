@@ -1,0 +1,184 @@
+xml语法:
+  xml文档声明:
+	用来声明xml的属性,用来指挥解析引擎如何解析xml
+	通常是一个xml只能包含一个
+	xml文档必须在整个xml最前面,在文档的之前不应有更多的文字
+	<? xml version="1.0"?>version是版本类型
+	<? xml version="1.0" encoding="GB2312"?>指明编码类型;
+	gbk中2个字符表示一个汉字,utf-8中3个字符表示一个汉字;
+	encoding="ISO-8859-1"解析为国外常用的字符;
+	编码方式(encoding="")和解码方式(即当前的系统的编码方式)必须相同不然的话会出现乱码;
+	<? xml version="1.0" encoding="GB2312" standalone="yes"?>standalone="yes"属性来
+	说明是不是独立的xml默认yes即不需要依赖其他文档,
+  元素
+	一个xml标签就是一个元素
+	一个标签又开始有结束
+	有双标签,还有自闭标签
+	一个标签中可以有很多子标签
+
+  属性
+	标签可以有一个或多个属性值用单引号或双引用;
+	<name sex="女"/>
+	属性的值必须用引号引起来相同的属性不能同时出现多次;
+
+  注释
+	<!--注释内容-->
+	注释可以出现在任意位置,不能出现在文档之前
+	不能嵌套注释;
+  实体引用:<:&lt,>:&gt,&:&amp;单引号:&apos 双引号:&quot
+ PCDATA 的意思是被解析的字符数据（parsed character data）。
+	可把字符数据想象为 XML 元素的开始标签与结束标签之间的文本。
+	PCDATA 是会被解析器解析的文本。这些文本将被解析器检查实体以及标记。
+	文本中的标签会被当作标记来处理，而实体会被展开。
+	不过，被解析的字符数据不应当包含任何 &、< 或者 > 字符；需要使用 &amp;、&lt; 以及 &gt; 实体来分别替换它们。
+	<!ELEMENT 元素名称 (#PCDATA)>
+  CDATA区:
+	如:张<name>这样表述时出错
+	<![CDATA[内容]]>不能进行嵌套;<![CDATA[]]>
+	CDATA的作用:不想把一些字符当做标记让解析器解析的字符时用,在这个区间的都是普通字符;
+
+  处理指令:<了解>
+	<? xml-stylesheet type="text/css"href="1.css"?>
+  xml约束:
+	主要用于约束xml文档的写法
+	对xml进行校验;
+	1.xml DTD
+	2.xml Schema
+	引入DTD约束的方式:
+	.dtd文件用UTF-8或Unicode编码方式
+	1.定义Xml文件的内部声明时:standalone="yes"
+	2.定义一个外部的dtd后缀的文件中然后引入,:standalone="no"
+	引入本地时:<!DOCTYPE 文档根结点 SYSTEM "DTD文件的URL">	
+	引入公共文件:<!DOCTYPE 文档根结点 PUBLIC "DTD名称" "DTD文件的URL">
+
+  dtd约束语法:
+	元素:
+	<!ElEMENT 元素名 元素约束>
+          元素约束:
+	   存放类型:ANY/EMPTY
+	   元素约束:子元素的列表可以用小括号分割;
+		子元素之间用逗号分割表示按顺序出现;
+		子元素之间用竖线分割,表示的是出现其中之一;
+		#PCDATA 表示包含标签体;
+		+:表示一次或多次;
+		*:表示0次或多次;
+		?:表示0次活一次;
+		也可以用括号()批量 设置;
+	属性语法格式:
+	  <!ATTLIST 元素名 
+			属性名 属性类型 属性约束
+			属性名1 属性类型 属性约束
+			........>
+	如:<!ATTLIST 商品
+		类别 CDATA #REQUIRED
+		颜色 CDATA #IMPLIED>
+
+	属性类型:
+		CDATA:表示属性的值为普通的字符串
+		ENUMRATED:枚举类型;
+		ID:表明属性的值在整个文档中必须是唯一的不能为空白字符;
+
+	属性约束:
+		#REQUIRED:表明一个必须存在的属性,属性值不存在时校验时报错
+		#IMPLIED:表明是一个可选的属性
+		#FIXED:表明是一个固定值,不需要进行赋值
+		'默认值':表示当前属性有个默认值,赋值了就去赋值,没的话就为默认值
+	ENTITY(实体)
+		<!ENTITY>,就是一段内容的引用,为了代码的复用
+		引用实体:在xml中使用的实体叫做引用实体
+			<!ENTITY 实体名称 "实体内容">
+			用法:&实体名称;
+		参数实体:在dtd中引用的实体名称叫做参数实体;
+			<!ENTITY %实体名称 "实体内容">
+			%实体名称;
+		如:
+	<!ENTITY % TAG_NAMES "姓名 | EMAIL | 电话 | 地址">
+		<!ELEMENT 个人信息 (%TAG_NAMES; | 生日)>
+		 <!ELEMENT 客户信息 (%TAG_NAMES; | 公司名)>
+xml编程:利用Java去CRUD XML中的数据;
+	xml解析方式:通过把 XML 解析器的 validateOnParse 设置为 "false"，就可以关闭验证
+1.dom解析：
+	将整个XML使用类似树的结构保存在内存中，再对其进行操作。
+	是 W3C 组织推荐的处理 XML 的一种方式。
+	需要等到XML完全加载进内存才可以进行操作
+	耗费内存，当解析超大的XML时慎用。{大的解析不行}
+	可以方便的对xml进行增删该查操作{推荐使用删改}
+2.sax解析：
+	逐行扫描XML文档，当遇到标签时触发解析处理器，采用事件处理的方式解析xml
+	 (Simple API for XML) 不是官方标准，但它是 XML 社区事实上的标准，几乎所有的 XML 解析器都支持它。
+	在读取文档的同时即可对xml进行处理，不必等到文档加载结束，相对快捷
+	不需要加载进内存，因此不存在占用内存的问题，可以解析超大XML
+	只能用来读取XML中数据，无法进行增删改
+    解析方式:
+	1.获取解析器工厂
+	 SAXParserFactory factory=SAXParserFactory.newInstance();
+	 2.通过工厂获取sax解析器
+	 SAXParser parser=factory.newSAXParser();
+	 3.获取读取器
+	 XMLReader reder=parser.getXMLReader();
+	 4.注册事件处理器;向sax解析器创建实例
+	 reader.setContentHander(new MyContentHandel());
+	 5.解析
+	 reader.parse("xml文件");
+	 6.MyContentHandel实现ContentHanel接口中的方法;
+
+xml解析开发包:
+	1:Jaxp
+使用方式:
+       调用 DocumentBuilderFactory.newInstance() 方法得到创建 DOM 解析器的工厂。
+	   DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+       调用工厂对象的 newDocumentBuilder方法得到 DOM 解析器对象。
+	   DocumentBuilder builder = builderFactory.newDocumentBuilder();
+       调用 DOM 解析器对象的 parse() 方法解析 XML 文档，得到代表整个文档的 Document 对象，进行可以利用DOM特性对整个XML文档进行操作了。
+	   Document doc = builder.parse(new File("book.xml"));
+	这个不需要导入其他包到eclipes;
+JAXP中的文档对象：
+	Document：文档
+	Element：元素
+	Attribute：属性
+	CharacterData：标签体
+这些都是对内存中的对象进行操作
+如果要对xml文档的更新则需要用以下方法:
+   获取Transformer工厂	
+	TransformerFactory transformerFactory  =TransformerFactory.newInstance();
+							
+   获取Transfomer对象
+		Transformer transformer =  transformerFactory.newTransformer();
+   创建代表输入和输出的Source和Result对象
+		Source source = new DOMSource(doc);
+		Result result = new StreamResult(new FIle("book.xml"));
+   使用Transformer将 XMLSource 转换为 Result
+		transformer.transform(source , Result)；
+						
+
+	2:dom4j
+	Dom4j是一个非常优秀的Java XML API，具有性能优异、功能强大和极易使用的特点。
+	需要导入jar包
+   解析方式:
+	创建解析器：
+		SAXReader reader = new SAXReader();
+        利用解析器读入xml文档：
+                Document   document = reader.read(new File("input.xml"));
+        获取文档的根节点:
+		Element root = document.getRootElement();
+	dom4j字符串和xml的转换:
+	1.将字符串转化为XML
+        String text = "<members> 
+				<member>
+				sitinspring
+				</member>
+			 </members>";
+	Document document = DocumentHelper.parseText(text);
+       2.将文档或节点的XML转化为字符串.
+	String xmlStr = node.asXML();
+Schema约束:
+	  符合xml语法结构;
+	  对名称空间支持好
+	  支持用户定义数据类型;
+	  可以进行语义级别的限定,
+	文件的自身就是一个xml文件扩展名为:.xsd;
+名称空间:::本质是独一无二的名字,为了标识资源的名字
+	和资源的来源,只是一个名字而已,不是一个地址;
+	其实就是类似与嵌套一个对于另一个约束,另一个依赖这个约束
+	多个约束时就是这样的;
+Schema语法:

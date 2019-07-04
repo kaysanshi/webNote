@@ -1,0 +1,44 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>css盒子模型的使用,设置背景</title>
+	<!--要想设置背景色必须这样用-->
+	<style type="text/css">
+		body{
+		
+		background-image:url(xiaoboshi.jpg);<!--设置背景为图片-->
+		background-repeat:no-repeat;<!--设置背景平铺不--->
+		<!-->background-repeat:repeat-x;<!--设置背景平铺方向
+		background-color:gray;<!--设置背景色-->		
+		}
+		h2{
+			font-family:"微软雅黑";
+			color:#FFF;
+			background-color:#F00;
+		}
+		<!--span标签的使用主要用于行内标记-->
+		#header{
+			font-family:"黑体";
+			font-size:14px;
+			color:#515151;
+		}
+		#header .kaixue{
+		font-size:20px;
+		color:#0174c7;
+		padding-right:20px;
+		}
+		#header .chuanzhi{
+			color:#0174c7;
+		}
+	</style>
+</head>
+<body>
+	
+	<h2>史上最难就业年,怎么办?</h2>
+	<p>css html Javascript 是网页的一些基础语言</p>
+	<div id="header">
+		<span class="kaixue">我们开学了</span>今天终于到来了<span class="chuanzhi">
+		你们要面对一个新的起点</span>
+	</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<? xml version="1.0" encoding="gbk"?>
+<? xml-stylesheet type="text/css"href="1.css"?>
+<country>
+	<a>中国</a>
+	<b>美国</b>
+	<c>法国</c>
+	<d>日本</d>
+</country>

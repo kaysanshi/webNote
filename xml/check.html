@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE> 用于校验 </TITLE>
+  <META NAME="Generator" CONTENT="EditPlus">
+  <META NAME="Author" CONTENT="">
+  <META NAME="Keywords" CONTENT="">
+  <META NAME="Description" CONTENT="">
+	<script>
+	//创建解析器对象
+		var xmldoc=new ActiveXObject("Microsoft.XMLDOM");
+		//开启校验
+		xmldoc.validataOnParse="true";
+		//装载xml文档
+		valdoc.load("book.xml");
+		//获取错误信息
+		var reason=xmldoc.parseError.reason;
+		var line=xmldoc.parseError.line;
+		document.getbyId("l").innerHtml=line;
+		document.getbyId("r").innerHtml=reason;
+	</script>
+ </HEAD>
+
+ <BODY>
+	行号:<div id="l"></div>
+	<br/>
+	原因:<div id="2"></div>
+ </BODY>
+</HTML>

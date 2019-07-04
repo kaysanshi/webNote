@@ -1,0 +1,24 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<script language="javascript">
+	var string="javascript@qq.com";
+	var index=string.indexOf("@");//用于返回对象的位置;
+	var subStr=string.substr(1,5);//获得字串后面的一个参数是个加的长度;,如果为负数为从后到前截取;
+	var sub=string.substring(4);//获得字串;若是一个数的则是从此个到最后;截取的是一个区间;
+	alert(index);
+	alert(subStr);
+	alert(sub);
+	//split();方法
+	var str="www.java.1995.com";
+	var strb=str.split(".");
+	for(var i=0;i<strb.length;i++){
+		alert(strb[i]);
+	}
+	
+	</script>
+</head>
+<body>
+
+</body>
+</html>

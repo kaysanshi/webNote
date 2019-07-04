@@ -1,0 +1,205 @@
+
+<html>
+	<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<!--一般储存网页的基本信息，-->
+		<!--head里面可以有以下东西
+		<base>hreaf指定网页超链接的目录,可以是本地网络目录
+		target属性:指定打开的位置;
+		<meta>name属性:网页的描述信息,当取keywords是content的内容
+		就是搜索引擎的关键字;
+		http-equiv属性,模拟http协议的响应消息头;
+		<meta http-equiv="refresh"content="3"url="">待开页面几秒后直接跳到后页面
+		<link rel="styleshet"type="text/css"media="screen,print"href="a.css"/>
+		-->
+		
+		<!--确定注释的标签-->
+		<title>这是我的标题哦</title>
+	</head>
+	<body>
+<!--体,网页中的数据-->
+	<!--页面动起来标签,
+		direction="left,right,dow,up"
+		behavior属性:scroll,slide,alternate-->
+		<marquee direction="left"behavior="alternate">哈哈哈</marquee>
+		
+			<h1>这是我的<font color="blue">测试</font>页面</h1>
+			<h2><font color="red">这是我的测试页面分级</font></h2>
+			<!--
+				标签分两种:
+				1.有开始有结束用于封装数据<标签></标签>
+				2.有开始有内部结束.<label/>指的是换行<br/>
+				分割线<hr/>
+			标签的思想:
+			html操作的思想在于:提供标签的数据封装,给数据提供标记,方便
+			html,css,javasript的操作;
+			标签相当于容器;
+				颜色标签:<color="">
+			-->
+			<hr color="red"size="10"/>
+			<font color="#0000FF"size="8">大家好</font><br/>
+			你好;
+			<!--大于greater小于letter符号-->
+			a&lt;ce&gt;d
+			<br/>
+			1&lt;3&gt;2;
+			<br/>
+			1&lt;2&lt;3&lt;4&lt;5&lt;6&lt;7&lt;9;
+			<br/>
+			<!--空格的演示-->
+			<font color="#0000FF"size="8">大家好&nbsp&nbsp&nbsp&nbsp你好;</font>
+	<!--列表的标签的使用-->
+			<!--
+				1.确定列表的范围<dl>
+				2.在范围内,分上下层项目:上层:<dt> 下层<dd>
+				<dd>标签具有默认的缩进的效果
+			-->
+			<dl>
+				<dt>部门名称</dt>
+				<dd>技术部</dd>
+				<dd>财务部</dd>
+				<dd>其他</dd>
+			</dl>
+			<!--有序标识项目列表-->
+			<!--
+				1.有序范围为<ol>
+					无序范围为<ul>
+				2.每一项的用<li></li>默认为数字标记;
+			-->
+			<!--有序列表-->
+			<ol>
+				<li>有序列表</li>
+				<li>列表面</li>
+				<li>列表面</li>
+				<li>列表面</li>
+				<li>列表面</li> 
+			</ol>
+			<ol type="A"><!--设置序好格式-->
+				<li>有序列表</li>
+				<li>列表面</li>
+				<li>列表面</li>
+				<li>列表面</li>
+				<li>列表面</li> 
+			</ol>
+			<!--无序列表-->
+			<ul>
+				<li>无序列表</li>
+				<li>列表面</li>
+				<li>列表面</li>
+				<li>列表面</li>
+				<li>列表面</li> 
+			</ul>
+	<!--image标签-->
+			<!--
+				<img alt="图片说明"src="路径">
+			-->
+			<image alt="圆圆" height="400px" width="300px"src="yuanyuan.jpg"/><br/>
+	<!--表格标签-->
+		<!--
+		<table>标签表格</table>
+		有行主成:<tr>
+		行是有单元格组成.<td>
+		表头<th></th>是居中加粗;在<th colspan=""></th>可以设置占多少列
+		cellspacing="0"单元格间距;
+		cellpadding="5"数值内边距;
+		<caption></caption>标题标记
+		-->
+			<table border="1"bordercolor="#3333FF" width="300px"cellpadding="0"cellspacing="0">
+				<caption>个人信息</caption>
+				<tr>
+					<th>姓名</th>
+					<th>年龄</th>
+				</tr>
+				<tr>
+					<td>张三</td>
+					<td>20</td>
+				</tr>
+				<tr>
+					<td>李四</td>
+					<td>20</td>
+				</tr>
+			</table>
+			<br/>
+	<!--
+	在<th colspan=""></th>可以设置表头占多少列单元格;
+	-->
+			<table border="1"bordercolor="#3333FF" width="300px"cellpadding="0"cellspacing="0">
+				<tr>
+					<th colspan="2">个人信息</th>
+				</tr>
+				<tr>
+					<td>年龄</td>
+					<td>20</td>
+				</tr>
+				<tr>
+					<td>年级</td>
+					<td>一年级</td>
+				</tr>
+				
+			</table>
+			<br/>
+	<!--
+	在<th rowspan=""></th>可以设置占多少行;
+		-->
+			<table border="1"bordercolor="#3333FF" width="300px"cellpadding="0"cellspacing="0">
+				<tr>
+					<th rowspan="2">个人信息</th>
+					
+				</tr>
+				<tr>
+					<td>年龄</td>
+					<td>20</td>
+				</tr>
+				<tr>
+					<td>年级</td>
+					<td>一年级</td>
+				</tr>
+				
+			</table>
+			<br/>
+	<!--tbody标签的使用-->
+		<!--
+		表格体的使用:
+		<tbody></tbody>在表格中默认会有的就是分部显示;
+	-->
+			<table border="1"bordercolor="#3333FF" width="300px"cellpadding="0"cellspacing="0">
+			<tbody>
+				<tr>
+					<th rowspan="3">个人信息</th>
+					
+				</tr>
+				<tr>
+					<td>年龄</td>
+					<td>20</td>
+				</tr>
+				<tr>
+					<td>年级</td>
+					<td>一年级</td>
+				</tr>
+				
+				</tbody>
+			</table>
+			<!--<b>加粗</b>
+			<i>斜体</i>
+			<u>下滑线</u>
+			<sub>下角标</sub>
+			<sup>上标</sup>
+		-->
+					<b>html</b>
+					<i>的</i>
+					<u>演示X</u>
+					<sub>2</sub>X
+					<sup>3</sup>
+			<!--
+			html中仅有的两个标签:
+			<div></div>:标签结束后有换行;
+			<span></span>:标签结束无换行
+			用于封装数据不具备任何的特殊含义
+			-->
+					<div>div演示一</div>
+					<div>div演示二</div>
+					<span>span用于一部分</span>
+					<span>span用于一部分</span>
+			
+	<body>
+</html>

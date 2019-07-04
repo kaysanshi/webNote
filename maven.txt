@@ -1,0 +1,72 @@
+maven:
+Maven:
+		apache下的纯java开发的项目管理工具，适用于管理这些依赖的jar包的工具，项目的构建，依赖管理
+			构建是：从源代码到编译，测试，运行，打包，部署，运行的过程
+		maven的构建项目过程：
+							清理阶段：clean 清理输出的class文件
+							编译阶段：complie,将代码编译成class文件
+							打包阶段：package, java-->jar包，web包--->war包
+				运行maven工程：tomat:run
+		好处：一步构建，依赖管理，跨平台，提高团队效率
+		eclipse传统的构建项目过程：创建java代码，编译，单元测试，war包运行
+		maven包目录：
+					bin：mvn.bat以run方式运行，mvnDeBug.bat:以debug的方式运行
+					boot目录：maven运行的类加载器
+					conf:settings.xml整个maven工具的核心配置工具
+					lib:maven运行的jar包；
+		需要配置maven_Home,path，maven-v检查是否安装成功，
+		maven工程项目的中的目录：
+					src/main/java:存放项目的.java文件
+					src/main/resources:存放项目的资源文件，如：Spring配置文件
+					src/test/java:存放单元测试的.java 文件
+					src/test/resources“：测试资源文件
+					target:项目的输入位置，编译后的class文件输出到这里
+					pom.xml：maven项目的核心配置文件
+		maven坐标就是maven对项目的jar包的定义：
+				<groupId>com.leo.demo</groupId>
+					  <artifactId>Maven</artifactId><!--模块的名称-->
+					  <packaging>war</packaging><!--打包类型。war，jar，pom,-->
+					  <version>0.0.1-SNAPSHOT</version>
+					  <name>Maven Maven Webapp</name>
+					  <url>http://maven.apache.org</url>
+					  <dependencies>
+							<dependency>
+						    <groupId>org.hibernate</groupId>
+						    <artifactId>hibernate-core</artifactId>
+						    <version>5.3.3.Final</version>
+							</dependency>
+					  </dependencies>
+				在坐标中依赖范围“：<scope>test</scope>
+					scope中属性：
+							provideed:编译时需要，测试时也需要，运行时不需要，打包时不需要
+							Runtime:数据库的驱动包，编译时不需要，测试时需要，运行时不需要，打包需要
+							Test：编译时不需要，运行时不需要，测试时需要
+							complie:编译时需要，测试时需要，运行时需要，打包时需要
+				修改Tomcat的即插件：配置端口和访问路径
+							<build>
+							    <finalName>Maven</finalName>
+							    <plugins>
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>tomcat-maven-plugin</artifactId>
+									<version>1.1</version>
+									<configuration>
+										<port>8888</port>
+										<path>/maven</path>
+									</configuration>
+								</plugin>
+							    </plugins>
+							  </build>
+		创建，webapp；java web工程， quickstart：创建java工程
+		创建maven项目：
+					new--->maven project---->勾选默认的工作空间，--》next--->webapp---》点击项目右击：project facets:中修改jdk版本，以及dynamic web module改为高版本
+					第一次先更改jre版本--》apply,然后在勾选 web，--》apply，多点击下jar，和web的顺序就可以了，然后配置自动配置web.xml，最后把webcontext中的文件
+					全部复制到src/main/webapp下就可以了然后run---启动项目就可以访问了
+		整合ssh框架：
+					先导包
+					1.先存在web.xml中配置出struts2过滤器，
+					2.引入struts22.xml,heibernate.cfg.xml.applicationContext.xml同时加载hibernate的文件
+					把这些都要放到resource的文件夹下，同时把hibernate的映射文件（全路径即：所在的文件目录）放到这个文件夹下
+					3.接下来的和Spring项目的方法一致了。
+
+			

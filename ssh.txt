@@ -1,0 +1,122 @@
+ssh:stuts+spring+hibernate
+	web.xml:配置：
+				<?xml version="1.0" encoding="UTF-8"?>
+				<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+				  <display-name>bos-web</display-name>
+				  <welcome-file-list>
+				    <welcome-file>index.html</welcome-file>
+				    <welcome-file>index.htm</welcome-file>
+				    <welcome-file>index.jsp</welcome-file>
+				    <welcome-file>default.html</welcome-file>
+				    <welcome-file>default.htm</welcome-file>
+				    <welcome-file>default.jsp</welcome-file>
+				  </welcome-file-list>
+				  <!-- spring配置文件位置 -->
+				  <context-param>
+					<param-name>contextConfigLocation</param-name>
+					<param-value>classpath:applicationContext.xml</param-value>
+				  </context-param>	
+				  <!-- spring核心监听器 -->
+				  <listener>
+					<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+				  </listener>
+				  <!-- 扩大session域 -->
+				  <filter>
+				    <filter-name>openSessionInView</filter-name>
+				    <filter-class>
+					org.springframework.orm.hibernate5.support.OpenSessionInViewFilter
+				      </filter-class>
+				  </filter>
+				  <!-- struts核心控制器 -->
+				  <filter>
+					<filter-name>struts2</filter-name>
+					<filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
+				  </filter>
+				  <!-- struts2的配置过滤器映射文件 -->
+				  <filter-mapping>
+					<filter-name>struts2</filter-name>
+					<url-pattern>/*</url-pattern>
+					<!-- 配置转发的 ：服务器内部转发配置以下的的形式就会被过滤器给拦截到-->
+					<dispatcher>REQUEST</dispatcher>
+					<dispatcher>FORWARD</dispatcher>
+				  </filter-mapping>
+				</web-app>
+	applicationContext.xml:
+					<!-- 指定spring读取db.properties配置 -->
+				<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+				<!-- 1.将连接池交给Spring管理 -->
+				<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+					<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
+					<property name="driverClass" value="${jdbc.driverClass}" ></property>
+					<property name="user" value="${jdbc.user}" ></property>
+					<property name="password" value="${jdbc.password}" ></property>
+				</bean>
+				<!-- 2。核心事务管理让spring来管理事务 -->
+				<bean name="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+					<property name="sessionFactory" ref="sessionFactory"></property>
+				</bean>
+				<!-- 3。加载配置hibernate信息 -->
+				<bean name="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+					<!-- 将连接池注入到sessionFactory中，使其获得连接 -->
+					<property name="dataSource" ref="dataSource"></property>
+					<!-- 配置hibernate信息 -->
+					<property name="hibernateProperties">
+						<props>
+							<prop key="hibernate.hbm2ddl.auto" >update</prop>
+							<prop key="hibernate.dialect" >org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+							<prop key="hibernate.show_sql" >true</prop>
+							<prop key="hibernate.format_sql" >true</prop>
+						</props>
+					</property>
+					<!-- 引入orm元数据，读取hibernate映射配置文件 不加*号会找不到这个文件所以需要加星号匹配 -->
+					<property name="mappingDirectoryLocations" value="classpath*:com/leo/bos/domain"></property>
+				</bean>
+				<!--使用注解的方式配置事务管理-->
+				<tx:annotation-driven/>
+				<!-- 开启组件扫描-->
+				<context:component-scan base-package="com.leo.bos"></context:component-scan>
+				<!-- 支持spring注解   dao:@Repository;service:@Service;控制层：@Controller;通用的主键扫描：@Component-->
+				<context:annotation-config></context:annotation-config>
+				</beans>
+	struts.xml:
+			<?xml version="1.0" encoding="UTF-8"?>
+			<!DOCTYPE struts PUBLIC
+			    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+			    "http://struts.apache.org/dtds/struts-2.5.dtd">
+			<struts>
+				<constant name="struts.devMode" value="false" />
+				<!-- 配置常量意思是否把action对象交给Spring容器来管理和创建 --> 
+				<constant name="struts.objectFactory" value="spring"/>
+				<package name="basicstruts2" extends="struts-default">
+					<!-- 需要进行权限控制的页面访问 -->
+					<action name="page_*_*">
+						<result type="dispatcher">/WEB-INF/pages/{1}/{2}.jsp</result>
+					</action>
+				</package>
+			</struts>
+	db.properties:
+					jdbc.jdbcUrl=jdbc:mysql:///bos
+					jdbc.driverClass=com.mysql.jdbc.Driver
+					jdbc.user=root
+					jdbc.password=123w
+	hibernate映射配置文件：其中的属性与那个pojo类型是一一对应的
+					<?xml version="1.0" encoding="UTF-8"?>
+				<!DOCTYPE hibernate-mapping PUBLIC 
+				    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+				    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+				<hibernate-mapping package="com.leo.crm.domain">
+					<class name="BaseDict" table="crm_basedict">
+						<id name="dict_id" column="dict_id">
+							<!-- 由hibernate维护主键 -->
+							<generator class="assigned"></generator>
+						</id>
+						<property name="dict_type_code" column="dict_type_code"></property>
+						<property name="dict_type_name" column="dict_type_name"></property>
+						<property name="dict_item_code" column="dict_item_code"></property>
+						<property name="dict_item_name" column="dict_item_name"></property>
+						<property name="dict_sort" column="dict_sort"></property>
+						<property name="dict_enable" column="dict_enable"></property>
+						<property name="dict_memo" column="dict_memo"></property>
+					</class>
+
+</hibernate-mapping>

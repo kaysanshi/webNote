@@ -1,0 +1,44 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>js代码演示</title>
+	<script type="text/javascript">
+		function(body,date){
+			this.body=body;
+			this.date=date;
+		} 
+		var blog=[
+			new Blog("one",new Date("12/14/2009"));
+			new Blog("two",new Date("12/14/2009"));
+			new Blog("three",new Date("12/14/2010"));
+			new Blog("four",new Date("12/14/2012"));
+		]
+		function showBlog(numEntries){
+			if(!numEntries){
+				numEntries=blog.length;
+				}
+				var i=0,blogText="";
+				while(i<blog.length&&i<numEntries){
+					if(i%2==0){
+						blogText+="<p style="background-color:#EEEEEE">";
+					}else{
+						blogText+="<p>";
+						
+					}
+					blogText+="<strong>"+blog[i].date+"</strong><hr/>"+
+						blog[i].body+"</p>";
+					i++;
+				}
+				
+			document.getElementById("blog").innerHTML=blogText;
+		}
+	</script>
+</head>
+<body onload="showBlog(5)">
+	<h3>youcub</h3>
+	<imag src="" alt="图片信息"/>
+	<div id="blog"></div>
+	<input type="button" id="showall" value="show all blog enter"onclick="showBlog();"/>
+	
+</body>
+</html>
