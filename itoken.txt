@@ -913,7 +913,7 @@ nginx:使用
                                 HttpServletRequest request,
                                 HttpServletResponse response,
                                 RedirectAttributes redirectAttributes){
-                TbSysUser tbSysUser = loginServcie.login(loginCode, passWord);
+                TbSysUser tbSysUser = loginServcie.login(loginCod   e, passWord);
 
                 // 登录失败
                 if (tbSysUser == null) {
@@ -1025,8 +1025,345 @@ nginx:使用
                                     .excludePathPatterns("/static/**");
                         }
                     }
+        使用tkmybatis进行对实体类和mapper的生成：
+            1.pom.xml中引入插件：
+                 <build>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.mybatis.generator</groupId>
+                            <artifactId>mybatis-generator-maven-plugin</artifactId>
+                            <version>1.3.5</version>
+                            <configuration>
+                                <configurationFile>${basedir}/src/main/resources/generator/generatorConfig.xml</configurationFile>
+                                <overwrite>true</overwrite>
+                                <verbose>true</verbose>
+                            </configuration>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>mysql</groupId>
+                                    <artifactId>mysql-connector-java</artifactId>
+                                    <version>${mysql.version}</version>
+                                </dependency>
+                                <dependency>
+                                    <groupId>tk.mybatis</groupId>
+                                    <artifactId>mapper</artifactId>
+                                    <version>3.4.4</version>
+                                </dependency>
+                            </dependencies>
+                        </plugin>
+                    </plugins>
+                </build>
+            2.在resource中创建generator文件并创建 generatorConfig.xml:
+                <?xml version="1.0" encoding="UTF-8"?>
+                <!DOCTYPE generatorConfiguration
+                        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+                        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+                <generatorConfiguration>
+                    <!-- 引入数据库连接配置 -->
+                    <properties resource="jdbc.properties"/>
+
+                    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+                        <property name="beginningDelimiter" value="`"/>
+                        <property name="endingDelimiter" value="`"/>
+
+
+                        <!-- 配置 tk.mybatis 插件 -->
+                        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+                            <property name="mappers" value="tk.mybatis.mapper.MyMapper"/>
+                        </plugin>
+
+                        <!-- 配置数据库连接 -->
+                        <jdbcConnection
+                                driverClass="${jdbc.driverClass}"
+                                connectionURL="${jdbc.connectionURL}"
+                                userId="${jdbc.username}"
+                                password="${jdbc.password}">
+                        </jdbcConnection>
+
+                        <!-- 配置实体类存放路径 -->
+                        <javaModelGenerator targetPackage="com.kayleoi.itoken.common.domain" targetProject="src/main/java"/>
+
+                        <!-- 配置 XML 存放路径 -->
+                        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
+
+                        <!-- 配置 DAO 存放路径 -->
+                        <javaClientGenerator
+                                targetPackage="com.kayleoi.itoken.common.mapper"
+                                targetProject="src/main/java"
+                                type="XMLMAPPER"/>
+
+                        <!-- 配置需要生成的表，% 代表所有 -->
+                        <!--itoken-service-admin-->
+                        <table catalog="itoken-service-admin" tableName="tb_sys_user">
+                            <!-- mysql 配置 -->
+                            <generatedKey column="user_code" sqlStatement="Mysql" identity="false"/>
+                        </table>
+                        <!--itoken-service-posts-->
+                        <table catalog="itoken-service-posts" tableName="tb_sys_user">
+                            <!-- mysql 配置 -->
+                            <generatedKey column="post_guid" sqlStatement="Mysql" identity="false"/>
+                        </table>
+                    </context>
+                </generatorConfiguration>
+            3.引入jdbc:
+                # MySQL 8.x: com.mysql.cj.jdbc.Driver
+                # 因为在generatorConfiguration配置指定的数据库，所以这里不再进行数据库的操作
+                jdbc.driverClass=com.mysql.jdbc.Driver
+                jdbc.connectionURL=jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf-8&useSSL=false
+                jdbc.username=root
+                jdbc.password=123
+            4.右侧maven插件中找到mybatis-generator:generate运行即可
+        Swagger2使用接口文档引擎：
+            1.简介：
+                Swagger是一个规范和完整的框架，用于生成、描述、调用和可视化 RESTful 风格的 Web 服务。
+                总体目标是使客户端和文件系统作为服务器以同样的速度来更新。
+                在Spring Boot项目中，可以将文件的方法、参数和模型紧密集成到服务器端的代码，允许API来始终保持同步。
+                Swagger作用主要包括两点：接口文档在线自动生成和功能测试。
+            2.使用形式：
+                pom.xml中引入：
+                <!-- Swagger2 Begin -->
+                <dependency>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-swagger2</artifactId>
+                    <version>2.8.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>io.springfox</groupId>
+                    <artifactId>springfox-swagger-ui</artifactId>
+                    <version>2.8.0</version>
+                </dependency>
+                <!-- Swagger2 End -->
+                启用：
+                    在启动类上加入注解即可使用：@EnableSwagger2
+            3.常用的类库：
+                Swagger 注解说明
+                Swagger 通过注解表明该接口会生成文档，包括接口名、请求方法、参数、返回信息的等等。
+
+                @Api：修饰整个类，描述 Controller 的作用
+                @ApiOperation：描述一个类的一个方法，或者说一个接口
+                @ApiParam：单个参数描述
+                @ApiModel：用对象来接收参数
+                @ApiProperty：用对象接收参数时，描述对象的一个字段
+                @ApiResponse：HTTP 响应其中 1 个描述
+                @ApiResponses：HTTP 响应整体描述
+                @ApiIgnore：使用该注解忽略这个API
+                @ApiError：发生错误返回的信息
+                @ApiImplicitParam：一个请求参数
+                @ApiImplicitParams：多个请求参数
+            /**
+                * @Author kay三石
+                * @date:2019/8/25
+                * RequestHandlerSelectors.basePackage("com.funtl.itoken.service.admin.controller")
+                * 为 Controller 包路径，不然生成的文档扫描不到接口
+                */
+                @Configuration
+                public class Swagger2Config {
+
+                    @Bean
+                    public Docket createRestApi(){
+                        return new Docket(DocumentationType.SWAGGER_2)
+                                .apiInfo(apiInfo())
+                                .select()
+                                .apis(RequestHandlerSelectors.basePackage("com.kayleoi.itoken.service.admin"))
+                                .paths(PathSelectors.any())
+                                .build();
+                    }
+                    private ApiInfo apiInfo(){
+                        return new ApiInfoBuilder()
+                                .title("itoken API 文档")
+                                .description("itoken API 网关接口，http://www.kaynethy.com")
+                                .version("1.0.0")
+                                .build();
+                    }
+
+                }
+        FastDFS:
+		FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，功能包括：文件存储、文件同步、文件访问（文件上传、文件下载）等，解决了大容量存储和负载均衡的问题。
+		特别适合以文件为载体的在线服务，如相册网站、视频网站等等。
+		FastDFS为互联网量身定制，充分考虑了冗余备份、负载均衡、线性扩容等机制，并注重高可用、高性能等指标，使用FastDFS很容易搭建一套高性能的文件服务器集群提供文件上传、下载等服务。
+		FastDFS服务端主要有：跟踪器(tracker)群和存储节点(storage)，跟踪器做调度工作，在访问上起负载均衡的作用，
+		跟踪器和存储节点都可以由一台或多台服务器构成。跟踪器和存储节点中的服务器均可以随时增加或下线而不会影响线上服务。
+		其中跟踪器中的所有服务器都是对等的，可以根据服务器的压力情况随时增加或减少。
+		上传交互过程编辑
+				1. client询问tracker上传到的storage，不需要附加参数；
+				2. tracker返回一台可用的storage；
+				3. client直接和storage通讯完成文件上传。
+		下载交互过程编辑
+				1. client询问tracker下载文件的storage，参数为文件标识（卷名和文件名）；
+				2. tracker返回一台可用的storage；
+				3. client直接和storage通讯完成文件下载。
+		需要说明的是，client为使用FastDFS服务的调用方，client也应该是一台服务器，它对tracker和storage的调用均为服务器间的调用。
+		安装方式：
+            需要以下的资源：
+				ibfastcommon.tar.gz
+                fastdfs-5.11.tar.gz
+                nginx-1.13.6.tar.gz
+                fastdfs-nginx-module_v1.16.tar.gz
+            在 Linux 服务器上创建 /usr/local/docker/fastdfs/environment 目录
+            说明：
+                /usr/local/docker/fastdfs：用于存放 docker-compose.yml 配置文件及 FastDFS 的数据卷
+                /usr/local/docker/fastdfs/environment：用于存放 Dockerfile 镜像配置文件及 FastDFS 所需环境
+
+		docker-compose.yml
+            version: '3.1'
+            services:
+            fastdfs:
+                build: environment
+                restart: always
+                container_name: fastdfs
+                volumes:
+                - ./storage:/fastdfs/storage
+                network_mode: host
+        # Dockerfile
+            FROM ubuntu:xenial
+            MAINTAINER topsale@vip.qq.com
+
+            # 更新数据源
+            WORKDIR /etc/apt
+            RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse' > sources.list
+            RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse' >> sources.list
+            RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse' >> sources.list
+            RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse' >> sources.list
+            RUN apt-get update
+
+            # 安装依赖
+            RUN apt-get install make gcc libpcre3-dev zlib1g-dev --assume-yes
+
+            # 复制工具包
+            ADD fastdfs-5.11.tar.gz /usr/local/src
+            ADD fastdfs-nginx-module_v1.16.tar.gz /usr/local/src
+            ADD libfastcommon.tar.gz /usr/local/src
+            ADD nginx-1.13.6.tar.gz /usr/local/src
+
+            # 安装 libfastcommon
+            WORKDIR /usr/local/src/libfastcommon
+            RUN ./make.sh && ./make.sh install
+
+            # 安装 FastDFS
+            WORKDIR /usr/local/src/fastdfs-5.11
+            RUN ./make.sh && ./make.sh install
+
+            # 配置 FastDFS 跟踪器
+            ADD tracker.conf /etc/fdfs
+            RUN mkdir -p /fastdfs/tracker
+
+            # 配置 FastDFS 存储
+            ADD storage.conf /etc/fdfs
+            RUN mkdir -p /fastdfs/storage
+
+            # 配置 FastDFS 客户端
+            ADD client.conf /etc/fdfs
+
+            # 配置 fastdfs-nginx-module
+            ADD config /usr/local/src/fastdfs-nginx-module/src
+
+            # FastDFS 与 Nginx 集成
+            WORKDIR /usr/local/src/nginx-1.13.6
+            RUN ./configure --add-module=/usr/local/src/fastdfs-nginx-module/src
+            RUN make && make install
+            ADD mod_fastdfs.conf /etc/fdfs
+
+            WORKDIR /usr/local/src/fastdfs-5.11/conf
+            RUN cp http.conf mime.types /etc/fdfs/
+
+            # 配置 Nginx
+            ADD nginx.conf /usr/local/nginx/conf
+
+            COPY entrypoint.sh /usr/local/bin/
+            ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+            WORKDIR /
+            EXPOSE 8888
+            CMD ["/bin/bash"]
+        # entrypoint.sh
+            #!/bin/sh
+            /etc/init.d/fdfs_trackerd start
+            /etc/init.d/fdfs_storaged start
+            /usr/local/nginx/sbin/nginx -g 'daemon off;'
+            注：Shell 创建后是无法直接使用的，需要赋予执行的权限，使用 chmod +x entrypoint.sh 命令
+
+        # 各种配置文件说明
+            # tracker.conf
+                FastDFS 跟踪器配置，容器中路径为：/etc/fdfs，修改为：
+
+            base_path=/fastdfs/tracker
+            # storage.conf
+                FastDFS 存储配置，容器中路径为：/etc/fdfs，修改为：
+
+                base_path=/fastdfs/storage
+                store_path0=/fastdfs/storage
+                tracker_server=192.168.75.128:22122
+                http.server_port=8888
+            # client.conf
+                FastDFS 客户端配置，容器中路径为：/etc/fdfs，修改为：
+
+                base_path=/fastdfs/tracker
+                tracker_server=192.168.75.128:22122
+            # config
+                fastdfs-nginx-module 配置文件，容器中路径为：/usr/local/src/fastdfs-nginx-module/src，修改为：
+
+                # 修改前
+                CORE_INCS="$CORE_INCS /usr/local/include/fastdfs /usr/local/include/fastcommon/"
+                CORE_LIBS="$CORE_LIBS -L/usr/local/lib -lfastcommon -lfdfsclient"
+
+                # 修改后
+                CORE_INCS="$CORE_INCS /usr/include/fastdfs /usr/include/fastcommon/"
+                CORE_LIBS="$CORE_LIBS -L/usr/lib -lfastcommon -lfdfsclient"
+            # mod_fastdfs.conf
+                fastdfs-nginx-module 配置文件，容器中路径为：/usr/local/src/fastdfs-nginx-module/src，修改为：
+
+                connect_timeout=10
+                tracker_server=192.168.75.128:22122
+                url_have_group_name = true
+                store_path0=/fastdfs/storage
+            # nginx.conf
+            Nginx 配置文件，容器中路径为：/usr/local/src/nginx-1.13.6/conf，修改为：
+
+                user  root;
+                worker_processes  1;
+
+                events {
+                    worker_connections  1024;
+                }
+
+                http {
+                    include       mime.types;
+                    default_type  application/octet-stream;
+
+                    sendfile        on;
+
+                    keepalive_timeout  65;
+
+                    server {
+                        listen       8888;
+                        server_name  localhost;
+
+                        location ~/group([0-9])/M00 {
+                            ngx_fastdfs_module;
+                        }
+
+                        error_page   500 502 503 504  /50x.html;
+                        location = /50x.html {
+                            root   html;
+                        }
+                    }
+                }
+            # 启动容器
+                docker-compose up -d
+            # 测试上传
+            # 交互式进入容器
+                docker exec -it fastdfs /bin/bash
+            # 测试文件上传
+                /usr/bin/fdfs_upload_file /etc/fdfs/client.conf /usr/local/src/fastdfs-5.11/INSTALL
+            # 服务器反馈上传地址
+                group1/M00/00/00/wKhLi1oHVMCAT2vrAAAeSwu9TgM3976771
+            # 测试 Nginx 访问
+                http://192.168.75.128:8888/group1/M00/00/00/wKhLi1oHVMCAT2vrAAAeSwu9TgM3976771
+        MQ:
         
-            
+
+
 
                 
 
@@ -1078,6 +1415,9 @@ spring.mybatis.mapper-localtions: classpath*:mapper/*.xml
             <!--<groupId>com.github.pagehelper</groupId>-->
             <!--<artifactId>pagehelper-spring-boot-starter</artifactId>-->
         <!--</dependency>-->
+6. com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-service-admin..tb_sys_user' at line 1
 
+7. 使用@AutoWire不可以自动注入dao:
+    需要使用@resources
         
        
