@@ -6,8 +6,6 @@
 
 文章由：
 
-[kay三石]: https://me.csdn.net/qq_37256896	"blog"
-
 ## **python：**
 
 
@@ -872,6 +870,10 @@ driver.find_element_by_id("id名称").click() #点击
 执行即可
 ```
 
+学过unittest的都知道里面用前置和后置setup和teardown非常好用，在每次用例开始前和结束后都去执行一次
+
+当然还有更高级一点的setupClass和teardownClass，需配合@classmethod装饰器一起使用
+
 #### Appium元素定位
 
 ##### id
@@ -1263,47 +1265,77 @@ Interface to global information about an application environment. This is an abs
    from  appium import webdriver
 
    from selenium.webdriver.support.ui import WebDriverWait
+   ```
 
-    
 
-   desired_caps={}
+   
+
+```python
+desired_caps={}
 
    desired_caps[‘platformName‘]=‘Android‘
 
    desired_caps[‘platformVersion‘]=‘5.1.1‘
 
    desired_caps[‘deviceName‘]=‘127.0.0.1:21503‘
+
    desired_caps[‘app‘]=r‘C:\Users\Shuqing\Desktop\dr.fone3.2.0.apk‘
+
    desired_caps[‘appPackage‘]=‘com.wondershare.drfone‘
+
    desired_caps[‘appActivity‘]=‘com.wondershare.drfone.ui.activity.WelcomeActivity‘
+
    driver = webdriver.Remote(‘http://localhost:4723/wd/hub‘, desired_caps)
+
    driver.implicitly_wait(5)
+
    print(‘click BackupBtn‘)
+
    driver.find_element_by_id(‘com.wondershare.drfone:id/btnBackup‘).click()
-   #显示等待
+
+显示等待
+
    WebDriverWait(driver,8).until(lambda x:x.find_element_by_id(‘com.wondershare.drfone:id/btnRecoverData‘))
+
    print(‘click NextBtn‘)
+
    driver.find_element_by_id(‘com.wondershare.drfone:id/btnRecoverData‘).click()
+
    WebDriverWait(driver,8).until(lambda x:x.find_element_by_class_name(‘android.webkit.WebView‘))
+
    contexts=driver.contexts
+
    print(contexts)
 
-   #需android4.4及以上版本的系统中才会输出更多的webview
+需android4.4及以上版本的系统中才会输出更多的webview
+
    print(‘switch conetext‘)
+
    driver.switch_to.context(‘WEBVIEW_com.wondershare.drfone‘)
+
    print(‘edit email‘)
+
    driver.find_element_by_id(‘email‘).send_keys(‘shuqing@wondershare.cn‘)
+
    print(‘click sendBtn‘)
+
    driver.find_element_by_class_name(‘btn_send‘).click()
 
-   #切换context 点击返回
+切换context 点击返回
+
    driver.switch_to.context(‘NATIVE_APP‘)
+
    driver.find_element_by_class_name(‘android.widget.ImageButton‘).click()
+
+```
+
+
+
    ```
 
 ### Appuim滑动操作
 
-```python
+​```python
 swip.py
 #滑动的演示
 from time import sleep
@@ -1361,7 +1393,7 @@ for i in rang(2):
     swipleft()
     sleep(5)
 #然后操作其他的即可
-```
+   ```
 
 ### Appium连续滑动-TouchAction
 
@@ -1429,6 +1461,268 @@ TouchAction(driver).press(x=0,y=308).release().perform()
 ### Appium多点操作-MulitAction
 
 
+
+### 断言（assert)
+
+Python assert（断言）用于判断一个表达式，在表达式条件为 false 的时候触发异常。
+
+`pytest`允许您使用标准python `assert`来验证Python测试中的期望值和值
+
+语法格式如下：
+
+```
+assert expression
+```
+
+等价于：
+
+```
+if not expression:
+    raise AssertionError
+```
+
+assert 后面也可以紧跟参数:
+
+```
+assert expression [, arguments]
+```
+
+等价于：
+
+```
+if not expression:
+    raise AssertionError(arguments)
+```
+
+```python
+def test_updatet_other(begin):
+    engagement_page.click_update_items_first()  # 选择第一条
+    engagement_page.click_btn1_all()
+    edit_other_page.click_other_input('other update')  # 更新
+    edit_other_page.click_submit_btn()
+    engagement_page.should_no_red_icon()
+    other_name = engagement_page.get_first_item_content_text()
+    assert other_name == "Other update"
+    engagement_page.click_delete_first_note()
+
+```
+
+
+
+### pytest
+
+`ytest`是一个框架，使构建简单和可伸缩的测试变得容易。测试具有表现力和可读性 - 无需样板代码。通过针对您的应用程序或库的小型单元测试或复杂功能测试，在几分钟内开始使用。
+
+#### 安装`pytest`
+
+1. 在命令行中运行以下命令：
+
+```
+pip install -U pytest
+
+```
+
+1. 检查您是否安装了正确的版本：
+
+```
+$ pytest --version
+This is pytest version 5.x.y, imported from $PYTHON_PREFIX/lib/python3.6/site-packages/pytest.py
+
+```
+
+#### 创建你的第一个测试
+
+使用四行代码创建一个简单的测试函数：
+
+```
+# content of test_sample.py
+def func(x):
+    return x + 1
+
+def test_answer():
+    assert func(3) == 5
+```
+
+一旦开发了多个测试，您可能希望将它们分组到一个类中。pytest可以很容易地创建一个包含多个测试的类：
+
+```
+# content of test_class.py
+class TestClass(object):
+    def test_one(self):
+        x = "this"
+        assert 'h' in x
+
+    def test_two(self):
+        x = "hello"
+        assert hasattr(x, 'check')
+```
+
+```python
+# coding=utf-8
+import pytest
+from page.LoginPage import LoginPage
+from util.ConfigUtil import ConfigUtil
+from util.ApiUtil import ApiUtil
+
+
+@pytest.fixture(scope="session", autouse=True)
+def begin():
+    api_util = ApiUtil()
+
+    account = api_util.create_account()
+    username = account["agencyOwner"]["userName"]
+    password = account["agencyOwner"]["password"]
+    print username
+    login_page = LoginPage()
+    login_page.login(username, password)
+
+
+"""执行当前目录下面的可以进行全部测试"""
+if __name__ == '__main__':
+    pytest.main()
+#调用pytest.main()将导致导入测试及其导入的任何模块。由于python导入系统的缓存机制，pytest.main()从同一进程进行后续调用不会反映调用之间对这些文件的更改。因此，pytest.main()不建议从同一进程进行多次调用（例如，为了重新运行测试）
+```
+
+####对于@pytest.fixture（）的用法有：
+
+对于scope可能的值`scope`有：`function`，`class`，`module`，`package`或`session`。
+
+直接说一下吧：
+
+| session  | 在一次Run或Debug中执行的所有case共享一个session,第一个case开始执行的时候session开始，最后一个case执行结束的时候session结束，这些case可能分布在不同的class或module中。 |
+| -------- | ---------------------------------------- |
+| module   | 一个.py文件可以看作一个module，其表示的范围指该文件中第一个case到最后一个case之间的范围 |
+| class    | 表示的范围即class的范围	一个类中执行一次                  |
+| function | 表示的范围即function的范围 每次都会执行一次               |
+
+下一个示例将fixture函数放入单独的`conftest.py`文件中，以便来自目录中多个测试模块的测试可以访问fixture函数：
+
+```
+# content of conftest.py
+import pytest
+import smtplib
+
+@pytest.fixture(scope="module")
+def smtp_connection():
+    return smtplib.SMTP("smtp.gmail.com", 587, timeout=5)
+```
+
+源码：
+
+```python
+def fixture(scope="function", params=None, autouse=False, ids=None, name=None):
+
+    :arg scope: the scope for which this fixture is shared, one of
+                ``"function"`` (default), ``"class"``, ``"module"``,
+                ``"package"`` or ``"session"``.
+
+                ``"package"`` is considered **experimental** at this time.
+
+    :arg params: an optional list of parameters which will cause multiple
+                invocations of the fixture function and all of the tests
+                using it.
+                The current parameter is available in ``request.param``.
+
+    :arg autouse: if True, the fixture func is activated for all tests that
+                can see it.  If False (the default) then an explicit
+                reference is needed to activate the fixture.
+
+    :arg ids: list of string ids each corresponding to the params
+                so that they are part of the test id. If no ids are provided
+                they will be generated automatically from the params.
+
+    :arg name: the name of the fixture. This defaults to the name of the
+                decorated function. If a fixture is used in the same module in
+                which it is defined, the function name of the fixture will be
+                shadowed by the function arg that requests the fixture; one way
+                to resolve this is to name the decorated function
+                ``fixture_<fixturename>`` and then use
+                ``@pytest.fixture(name='<fixturename>')``.
+    """
+    if callable(scope) and params is None and autouse is False:
+        # direct decoration
+        return FixtureFunctionMarker("function", params, autouse, name=name)(scope)
+    if params is not None and not isinstance(params, (list, tuple)):
+        params = list(params)
+    return FixtureFunctionMarker(scope, params, autouse, ids=ids, name=name)
+
+```
+
+具体其他的用法请看官网吧<https://docs.pytest.org/en/latest/usage.html#cmdline>
+
+#### 前置条件，后置条件
+
+##### 模块级别设置 /拆卸
+
+如果在单个模块中有多个测试函数和测试类，则可以选择实现以下fixture方法，这些方法通常会针对所有函数调用一次：
+
+```
+def setup_module(module):
+    """ setup any state specific to the execution of the given module."""
+
+def teardown_module(module):
+    """ teardown any state that was previously setup with a setup_module
+    method.
+    """
+
+```
+
+从pytest-3.0开始，`module`参数是可选的。
+
+##### 类级别设置 /拆解
+
+类似地，在调用类的所有测试方法之前和之后，在类级别调用以下方法：
+
+```
+@classmethod
+def setup_class(cls):
+    """ setup any state specific to the execution of the given class (which
+    usually contains tests).
+    """
+
+@classmethod
+def teardown_class(cls):
+    """ teardown any state that was previously setup with a call to
+    setup_class.
+    """
+
+```
+
+##### 方法和功能级别
+
+同样，围绕每个方法调用调用以下方法：
+
+```
+def setup_method(self, method):
+    """ setup any state tied to the execution of the given method in a
+    class.  setup_method is invoked for every test method of a class.
+    """
+
+def teardown_method(self, method):
+    """ teardown any state that was previously setup with a setup_method
+    call.
+    """
+
+```
+
+从pytest-3.0开始，`method`参数是可选的。
+
+如果您希望直接在模块级别定义测试函数，还可以使用以下函数来实现fixture：
+
+```
+def setup_function(function):
+    """ setup any state tied to the execution of the given function.
+    Invoked for every test function in the module.
+    """
+
+def teardown_function(function):
+    """ teardown any state that was previously setup with a setup_function
+    call.
+    """
+
+```
+
+从pytest-3.0开始，`function`参数是可选的。
 
 ### YML语言
 
@@ -1499,13 +1793,13 @@ driver=webdriver.Romote('http://127.0.0.1:4723',descried_caps)
 
 logging模块默认定义了以下几个日志等级，它允许开发人员自定义其他日志级别，但是这是不被推荐的，尤其是在开发供别人使用的库时，因为这会导致日志级别的混乱。
 
-| 日志等级（level） | 描述                                                         |
-| ----------------- | ------------------------------------------------------------ |
-| DEBUG             | 最详细的日志信息，典型应用场景是 问题诊断                    |
-| INFO              | 信息详细程度仅次于DEBUG，通常只记录关键节点信息，用于确认一切都是按照我们预期的那样进行工作 |
-| WARNING           | 当某些不期望的事情发生时记录的信息（如，磁盘可用空间较低），但是此时应用程序还是正常运行的 |
-| ERROR             | 由于一个更严重的问题导致某些功能不能正常运行时记录的信息     |
-| CRITICAL          | 当发生严重错误，导致应用程序不能继续运行时记录的信息         |
+| 日志等级（level） | 描述                                       |
+| ----------- | ---------------------------------------- |
+| DEBUG       | 最详细的日志信息，典型应用场景是 问题诊断                    |
+| INFO        | 信息详细程度仅次于DEBUG，通常只记录关键节点信息，用于确认一切都是按照我们预期的那样进行工作 |
+| WARNING     | 当某些不期望的事情发生时记录的信息（如，磁盘可用空间较低），但是此时应用程序还是正常运行的 |
+| ERROR       | 由于一个更严重的问题导致某些功能不能正常运行时记录的信息             |
+| CRITICAL    | 当发生严重错误，导致应用程序不能继续运行时记录的信息               |
 
 开发应用程序或部署开发环境时，可以使用DEBUG或INFO级别的日志获取尽可能详细的日志信息来进行开发或部署调试；应用上线或部署生产环境时，应该使用WARNING或ERROR或CRITICAL级别的日志来降低机器的I/O压力和提高获取错误日志信息的效率。日志级别的指定通常都是在应用程序的配置文件中进行指定的。
 
@@ -1525,26 +1819,26 @@ logging模块提供了两种记录日志的方式：
 
 ##### logging模块定义的模块级别的常用函数
 
-| 函数                                   | 说明                                 |
-| -------------------------------------- | ------------------------------------ |
+| 函数                                     | 说明                     |
+| -------------------------------------- | ---------------------- |
 | logging.debug(msg, *args, **kwargs)    | 创建一条严重级别为DEBUG的日志记录    |
 | logging.info(msg, *args, **kwargs)     | 创建一条严重级别为INFO的日志记录     |
 | logging.warning(msg, *args, **kwargs)  | 创建一条严重级别为WARNING的日志记录  |
 | logging.error(msg, *args, **kwargs)    | 创建一条严重级别为ERROR的日志记录    |
 | logging.critical(msg, *args, **kwargs) | 创建一条严重级别为CRITICAL的日志记录 |
 | logging.log(level, *args, **kwargs)    | 创建一条严重级别为level的日志记录    |
-| logging.basicConfig(**kwargs)          | 对root logger进行一次性配置          |
+| logging.basicConfig(**kwargs)          | 对root logger进行一次性配置    |
 
 其中`logging.basicConfig(**kwargs)`函数用于指定“要记录的日志级别”、“日志格式”、“日志输出位置”、“日志文件的打开模式”等信息，其他几个都是用于记录各个级别日志的函数。
 
 ##### logging模块的四大组件
 
-| 组件       | 说明                                                         |
-| ---------- | ------------------------------------------------------------ |
-| loggers    | 提供应用程序代码直接使用的接口                               |
-| handlers   | 用于将日志记录发送到指定的目的位置                           |
+| 组件         | 说明                                       |
+| ---------- | ---------------------------------------- |
+| loggers    | 提供应用程序代码直接使用的接口                          |
+| handlers   | 用于将日志记录发送到指定的目的位置                        |
 | filters    | 提供更细粒度的日志过滤功能，用于决定哪些日志记录将会被输出（其它的日志记录将会被忽略） |
-| formatters | 用于控制日志信息的最终输出格式                               |
+| formatters | 用于控制日志信息的最终输出格式                          |
 
 > **说明：** logging模块提供的模块级别的那些函数实际上也是通过这几个组件的相关实现类来记录日志的，只是在创建这些类的实例时设置了一些默认值。
 
@@ -1578,11 +1872,11 @@ Logger对象最常用的方法分为两类：配置方法 和 消息发送方法
 
 最常用的配置方法如下：
 
-| 方法                                          | 描述                                       |
-| --------------------------------------------- | ------------------------------------------ |
-| Logger.setLevel()                             | 设置日志器将会处理的日志消息的最低严重级别 |
-| Logger.addHandler() 和 Logger.removeHandler() | 为该logger对象添加 和 移除一个handler对象  |
-| Logger.addFilter() 和 Logger.removeFilter()   | 为该logger对象添加 和 移除一个filter对象   |
+| 方法                                       | 描述                           |
+| ---------------------------------------- | ---------------------------- |
+| Logger.setLevel()                        | 设置日志器将会处理的日志消息的最低严重级别        |
+| Logger.addHandler() 和 Logger.removeHandler() | 为该logger对象添加 和 移除一个handler对象 |
+| Logger.addFilter() 和 Logger.removeFilter() | 为该logger对象添加 和 移除一个filter对象  |
 
 > **关于Logger.setLevel()方法的说明：**
 >
@@ -1590,11 +1884,11 @@ Logger对象最常用的方法分为两类：配置方法 和 消息发送方法
 
 logger对象配置完成后，可以使用下面的方法来创建日志记录：
 
-| 方法                                                         | 描述                                              |
-| ------------------------------------------------------------ | ------------------------------------------------- |
-| Logger.debug(), Logger.info(), Logger.warning(), Logger.error(), Logger.critical() | 创建一个与它们的方法名对应等级的日志记录          |
-| Logger.exception()                                           | 创建一个类似于Logger.error()的日志消息            |
-| Logger.log()                                                 | 需要获取一个明确的日志level参数来创建一个日志记录 |
+| 方法                                       | 描述                          |
+| ---------------------------------------- | --------------------------- |
+| Logger.debug(), Logger.info(), Logger.warning(), Logger.error(), Logger.critical() | 创建一个与它们的方法名对应等级的日志记录        |
+| Logger.exception()                       | 创建一个类似于Logger.error()的日志消息  |
+| Logger.log()                             | 需要获取一个明确的日志level参数来创建一个日志记录 |
 
 > **说明：**
 >
@@ -1622,23 +1916,23 @@ Handler对象的作用是（基于日志消息的level）将消息分发到handl
 
 一个handler中只有非常少数的方法是需要应用开发人员去关心的。对于使用内建handler对象的应用开发人员来说，似乎唯一相关的handler方法就是下面这几个配置方法：
 
-| 方法                                          | 描述                                        |
-| --------------------------------------------- | ------------------------------------------- |
-| Handler.setLevel()                            | 设置handler将会处理的日志消息的最低严重级别 |
-| Handler.setFormatter()                        | 为handler设置一个格式器对象                 |
-| Handler.addFilter() 和 Handler.removeFilter() | 为handler添加 和 删除一个过滤器对象         |
+| 方法                                       | 描述                        |
+| ---------------------------------------- | ------------------------- |
+| Handler.setLevel()                       | 设置handler将会处理的日志消息的最低严重级别 |
+| Handler.setFormatter()                   | 为handler设置一个格式器对象         |
+| Handler.addFilter() 和 Handler.removeFilter() | 为handler添加 和 删除一个过滤器对象    |
 
 需要说明的是，应用程序代码不应该直接实例化和使用Handler实例。因为Handler是一个基类，它只定义了素有handlers都应该有的接口，同时提供了一些子类可以直接使用或覆盖的默认行为。下面是一些常用的Handler：
 
-| Handler                                   | 描述                                                         |
-| ----------------------------------------- | ------------------------------------------------------------ |
-| logging.StreamHandler                     | 将日志消息发送到输出到Stream，如std.out, std.err或任何file-like对象。 |
-| logging.FileHandler                       | 将日志消息发送到磁盘文件，默认情况下文件大小会无限增长       |
-| logging.handlers.RotatingFileHandler      | 将日志消息发送到磁盘文件，并支持日志文件按大小切割           |
-| logging.hanlders.TimedRotatingFileHandler | 将日志消息发送到磁盘文件，并支持日志文件按时间切割           |
-| logging.handlers.HTTPHandler              | 将日志消息以GET或POST的方式发送给一个HTTP服务器              |
-| logging.handlers.SMTPHandler              | 将日志消息发送给一个指定的email地址                          |
-| logging.NullHandler                       | 该Handler实例会忽略error messages，通常被想使用logging的library开发者使用来避免'No handlers could be found for logger XXX'信息的出现。 |
+| Handler                                  | 描述                                       |
+| ---------------------------------------- | ---------------------------------------- |
+| logging.StreamHandler                    | 将日志消息发送到输出到Stream，如std.out, std.err或任何file-like对象。 |
+| logging.FileHandler                      | 将日志消息发送到磁盘文件，默认情况下文件大小会无限增长              |
+| logging.handlers.RotatingFileHandler     | 将日志消息发送到磁盘文件，并支持日志文件按大小切割                |
+| logging.hanlders.TimedRotatingFileHandler | 将日志消息发送到磁盘文件，并支持日志文件按时间切割                |
+| logging.handlers.HTTPHandler             | 将日志消息以GET或POST的方式发送给一个HTTP服务器            |
+| logging.handlers.SMTPHandler             | 将日志消息发送给一个指定的email地址                     |
+| logging.NullHandler                      | 该Handler实例会忽略error messages，通常被想使用logging的library开发者使用来避免'No handlers could be found for logger XXX'信息的出现。 |
 
 ##### Formater类
 
@@ -2387,3 +2681,438 @@ with open(report_name,'wb') as f:
 
 #### data数据封装
 
+### appium+pytest最佳实践
+
+#### 目录结构
+
+- ​	----apk  放置Apk的文件
+  - ​----client 获的会话
+  - -----common  公共模块
+  - ​-----config
+    - ​---android
+    - ​---ios
+    - ​env.ini
+  - ​-----data
+  - ​-----page
+    - ​----pag1
+  - ​-----report
+  - ​-----test
+  - ​-----util
+
+#### driver封装
+
+```python
+# coding=UTF-8
+import os
+
+from appium import webdriver
+from util.ConfigUtil import ConfigUtil
+from util.AppUtil import AppUtil
+
+
+class DriverClient(object):
+    driver = None
+
+    def __init__(self):
+        self.app_util = AppUtil()
+        self.config_util = ConfigUtil()
+
+    def init_driver(self):
+        app_package = self.config_util.get_value('app_package')
+        app_activity = self.config_util.get_value('app_activity')
+        platform_name = self.config_util.get_value('platform_name')
+        platform_version = self.app_util.get_device_version()
+        device_name = self.config_util.get_value('device_name')
+
+        desired_caps = {
+            'appPackage': app_package,
+            'appActivity': app_activity,
+            'platformName': platform_name,
+            'platformVersion': platform_version,
+            'deviceName': device_name
+        }
+
+        if self.config_util.get_env("debug") == "true":
+            apk_name = self.config_util.get_value('apk_name')
+            app_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "apk", apk_name))
+            desired_caps['app'] = app_path
+
+        if int(platform_version[0]) > 5:
+            desired_caps['automationName'] = "UiAutomator2"
+
+        DriverClient.driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', desired_caps)
+        DriverClient.driver.implicitly_wait(60)
+
+    def get_driver(self):
+        if DriverClient.driver is None:
+            self.init_driver()
+        return DriverClient.driver
+
+```
+
+#### common封装
+
+```python
+# coding=UTF-8
+from selenium.webdriver.common.by import By
+
+from page.BasePage import BasePage
+
+
+#
+class NoteCommon(BasePage):
+    def __init__(self):
+        super(NoteCommon, self).__init__()
+
+    # 删除第一条数据
+    def delete_first_note(self):
+        lists = self.driver.find_elements_by_id("com.lg.newbackend:id/report_item_content")  # 点第一个
+        lists[0].click()
+        self.driver.find_element_by_id("android:id/button3").click()  # 点删除
+        els = self.driver.find_elements_by_class_name(
+            "android.widget.Button")  # 按钮数组,单小孩 note 只有取消、删除当前，多小孩 note 有取消、删除所有、删除当前
+        els[1].click()  # 点击第二个按钮
+        self.should_no_red_icon()
+
+    def delete_first_report(self):
+        self.driver.find_elements_by_id("com.lg.newbackend:id/notes_item_content")[0].click()
+        self.wait_element_is_enabled("id", "android:id/button3", 5)  # 等待删除按钮
+        self.driver.find_element_by_id("android:id/button3").click()
+        if self.is_element_exist_id("android:id/button1"):
+            self.driver.find_element_by_id(By.ID,"android:id/button1").click()
+        else:
+            pass
+        if self.is_element_exist_id("android:id/button3"):
+            self.driver.find_element_by_id("android:id/button3").click()
+        else:
+            pass
+```
+
+#### Page中的Basepage封装
+
+```python
+# coding:utf-8
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.by import By
+from appium.webdriver.common.touch_action import TouchAction
+from client.DriverClient import DriverClient
+from util.ConfigUtil import ConfigUtil
+
+
+class BasePage(object):
+    def __init__(self):
+        self.driver = DriverClient().get_driver()
+        self.config_util = ConfigUtil()
+
+        ''' 系统控件 '''
+        self.sys_button1 = (By.ID, "android:id/button1")
+        self.sys_button2 = (By.ID, "android:id/button2")
+        self.sys_button3 = (By.ID, "android:id/button3")
+        self.sys_message_modal = (By.ID, "android:id/message")
+
+        ''' 界面控件 '''
+        self.roster_tab = (By.ID, "homescreen_radiogroup_students")
+        self.engagement_tab = (By.ID, "homescreen_radiogroup_report")
+        self.portfolio_tab = (By.ID, "homescreen_radiogroup_notes")
+
+    ''' 系统操作 '''
+
+    # 点击 button1
+    def click_sys_button1(self):
+        self.find_element(self.sys_button1).click()
+
+    # 点击 button1
+    def click_sys_button2(self):
+        self.find_element(self.sys_button2).click()
+
+    # 点击 button3
+    def click_sys_button3(self):
+        self.find_element(self.sys_button3).click()
+
+    # 隐藏键盘
+    def hide_keyboard(self):
+        self.driver.hide_keyboard()
+
+    # 系统返回
+    def back(self):
+        self.driver.press_keycode(4)
+
+    # 长按控件
+    def touch(self, element):
+        TouchAction(self.driver).long_press(element).perform()
+
+    # 等待元素消失
+    def wait_element_disappear(self, *loc):
+        app_package = self.config_util.get_value('app_package')
+        by = loc[0][0]
+        locator = loc[0][1]
+
+        # try:
+        if by == By.ID and not locator.startswith("android:id/"):
+            locator = app_package + ":id/" + locator
+        loc = (by, locator)
+
+        WebDriverWait(self.driver, 20).until(ec.invisibility_of_element_located(loc))
+
+    # 等待消息框消失
+    def wait_modal_disappear(self):
+        self.wait_element_disappear(self.sys_message_modal)
+
+    # 获取屏幕大小
+    def get_window_size(self):
+        size = self.driver.get_window_size()
+        x = size['width']
+        y = size['height']
+        return x, y
+
+    # 屏幕向上滑动
+    def swipe_up(self, t=1000):
+        s = self.get_window_size()
+        print s
+        x1 = int(s[0] * 0.35)
+        y1 = int(s[1] * 0.85)
+        y2 = int(s[1] * 0.25)
+        self.driver.implicitly_wait(10)
+        self.driver.swipe(x1, y1, x1, y2, t)
+
+    # 屏幕向下滚动
+    def swipe_down(self, t=1000):
+        s = self.get_window_size()
+        x1 = int(s[0] * 0.1)
+        y1 = int(s[1] * 0.75)
+        y2 = int(s[1] * 0.25)
+        self.driver.swipe(x1, y2, x1, y1, t)
+
+    ''' 界面操作 '''
+
+    def click_roster_tab(self):
+        self.find_element(self.roster_tab).click()
+
+    def click_engagement_tab(self):
+        self.find_element(self.engagement_tab).click()
+
+    def click_portfolio_tab(self):
+        self.find_element(self.portfolio_tab).click()
+
+    def find_element(self, *loc):
+        app_package = self.config_util.get_value('app_package')
+        by = loc[0][0]
+        locator = loc[0][1]
+
+        # try:
+        if by == By.ID and not locator.startswith("android:id/"):
+            locator = app_package + ":id/" + locator
+        loc = (by, locator)
+        # for a in loc:
+        #     print a
+        # WebDriverWait(self.driver, 20).until(ec.visibility_of_element_located(loc))
+        return self.driver.find_element(*loc)
+        # except:
+        #     print('Element not found: ' % locator)
+
+    def find_elements(self, *loc):
+        app_package = self.config_util.get_value('app_package')
+        by = loc[0][0]
+        locator = loc[0][1]
+
+        # try:
+        if by == By.ID and not by.startswith("android:id/"):
+            locator = app_package + ":id/" + locator
+        loc = (by, locator)
+
+        WebDriverWait(self.driver, 20).until(ec.visibility_of_element_located(loc))
+        return self.driver.find_elements(*loc)
+        # except:
+        #     print('Elements not found: ' % locator)
+
+    def allow_permission(self, times=2):
+        exist = self.exist_element((By.XPATH, "//android.widget.Button[2]"))
+        if exist:
+            i = 1
+            while i <= times:
+                allow_el = self.driver.find_element_by_xpath("//android.widget.Button[2]")  # app 权限允许按钮
+                allow_el.click()
+                i += 1
+
+    # 判断元素是否存在
+    def is_element_exist(self, xpath):
+        flag = False
+        try:
+            self.driver.find_element_by_xpath(xpath)
+            flag = True
+        except:
+            flag = False
+        finally:
+            return flag
+
+    def is_element_exist_id(self, id_value):
+        flag = False
+        try:
+            self.driver.find_element_by_id(id_value)
+            flag = True
+        except:
+            flag = False
+        finally:
+            return flag
+
+    # 用于判断元素是否存在
+    def exist_element(self, *loc):
+        try:
+            self.find_element(*loc)
+            return True
+        except:
+            return False
+
+    # 用于等待元素可用（元素肯定会出现，只是时间问题）
+    def wait_element_is_enabled(self, by, value, timeout):
+        self.driver.implicitly_wait(timeout)
+        if by == "id":
+            try:
+                self.driver.find_element_by_id(value).is_enabled()
+            except:
+                pass
+        elif by == "xpath":
+            try:
+                self.driver.find_element_by_xpath(value).is_enabled()
+            except:
+                pass
+        self.driver.implicitly_wait(8)
+
+    def should_no_red_icon(self):
+        # 判断是否显示红色叹号
+        self.driver.implicitly_wait(40)
+        self.driver.find_element_by_id("com.lg.newbackend:id/menu_refresh").is_enabled()
+        self.driver.implicitly_wait(1)
+        # time.sleep(3)   # 这里需要动态等待，因为手机、网络等会导致超过4s
+        red_icon = "//android.widget.ImageView[@resource-id='com.lg.newbackend:id/unsend_sign']"
+        flag = self.is_element_exist(red_icon)  # 判断红色叹号是否存在
+        assert flag is False
+        self.driver.implicitly_wait(8)
+
+```
+
+#### util中的ConfigUtil封装
+
+```python
+# coding=UTF-8
+import os
+import configparser
+
+
+class ConfigUtil(object):
+    def __init__(self):
+        self.config = configparser.ConfigParser()
+
+    def get_env(self, name):
+        env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config", "env.ini"))
+        self.config.read(env_path, "UTF-8")
+        return self.config.get('env', name)
+
+    def get_value(self, name):
+        env = self.get_env('env')
+        platform = self.get_env('platform')
+
+        config_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "config", platform + "/" + env + "/config.ini"))
+        self.config.read(config_path, "UTF-8")
+        return self.config.get('all', name)
+
+```
+
+#### Page中的的其他子类
+
+```python
+# coding=utf-8
+from selenium.webdriver.common.by import By
+
+from page.BasePage import BasePage
+
+
+class EditGroupPage(BasePage):
+    def __init__(self):
+        super(EditGroupPage, self).__init__()
+
+        ''' 界面控件 '''
+        self.group_name_input = (By.ID, "editclass_className")  # 班级名称输入框
+        self.stage_select = (By.ID, "tv_spinner_item")  # 年龄段下拉列表
+        self.submit_btn = (By.ID, "menu_submit")  # 提交按钮
+
+    ''' 界面操作 '''
+
+    # 输入班级名称
+    def input_group_name(self, group_name):
+        self.find_element(self.group_name_input).send_keys(group_name)
+
+    # 清空班级名称
+    def clear_group_name(self):
+        self.find_element(self.group_name_input).clear()
+
+    # 选择班级年龄段
+    def select_stage(self, index):
+        self.find_elements(self.stage_select)[index].click()
+
+    # 点击提交按钮
+    def click_submit_btn(self):
+        self.find_element(self.submit_btn).click()
+
+```
+
+#### test目录下的测试
+
+```python
+# coding=utf-8
+import random
+
+from page.group.AddGroupPage import AddGroupPage
+from page.group.EditGroupPage import EditGroupPage
+from page.group.GroupListPage import GroupListPage
+from page.roster.RosterPage import RosterPage
+from util.ConfigUtil import ConfigUtil
+
+config_util = ConfigUtil()
+group_list_page = GroupListPage()
+add_group_page = AddGroupPage()
+edit_group_page = EditGroupPage()
+roster_page = RosterPage()
+
+
+# 测试添加班级
+def test_create_group():
+    group_name = "Group" + str(random.randint(1, 999))  # 班级名称
+    group_list_page.click_add_group_btn()  # 点击添加班级按钮
+    edit_group_page.wait_modal_disappear()
+    print ("activity:" + edit_group_page.driver.current_activity)
+    add_group_page.input_group_name(group_name)  # 输入班级名称
+    add_group_page.click_submit_btn()  # 点击保存按钮
+    add_group_page.click_sys_button1()  # 点击确认使用默认框架
+    assert group_list_page.exist_group(group_name)  # 验证班级是否添加成功，应出现在班级列表中
+
+
+# 测试更新班级
+def test_update_group():
+    group_name = config_util.get_value("group_for_update")  # 要更新的班级
+    new_group_name = group_name + "1"
+    group_list_page.enter_group(group_name)
+    roster_page.click_edit_group_btn()  # 点击编辑班级按钮
+    roster_page.wait_modal_disappear()  # 等待消息框消失
+    edit_group_page.clear_group_name()  # 清除输入框
+    edit_group_page.input_group_name(new_group_name)  # 输入新的班级名称
+    # edit_group_page.select_stage(2)  # 修改年龄段
+    edit_group_page.click_submit_btn()  # 点击提交按钮
+    roster_page.wait_modal_disappear()  # 等待消息框消失
+    assert roster_page.get_selected_group_name() == new_group_name  # Roster 界面应该选中修改的班级
+    roster_page.back()  # 返回到班级列表界面
+    assert group_list_page.exist_group(new_group_name)  # 班级列表界面应该有修改后的班级
+
+```
+
+#### 总结
+
+appium版本对应的使用
+
+不使用desired_caps['automationName'] = "UiAutomator2" 会自动使用AndroidBootstrap但是不能够使用By
+
+2.0基于 Instrumentation， 可以获取应用Context，可以使用Android服务及接口。
+
+2.0新增UiObject2、Until、By、BySelector等接口。
