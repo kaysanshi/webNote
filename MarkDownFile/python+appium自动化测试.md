@@ -6,6 +6,8 @@
 
 文章由：
 
+[kay三石]: https://me.csdn.net/qq_37256896	"blog"
+
 ## **python：**
 
 
@@ -1268,7 +1270,7 @@ Interface to global information about an application environment. This is an abs
    ```
 
 
-   
+
 
 ```python
 desired_caps={}
@@ -2686,18 +2688,18 @@ with open(report_name,'wb') as f:
 #### 目录结构
 
 - ​	----apk  放置Apk的文件
-  - ​----client 获的会话
+  - ----client 获的会话
   - -----common  公共模块
-  - ​-----config
-    - ​---android
-    - ​---ios
-    - ​env.ini
-  - ​-----data
-  - ​-----page
-    - ​----pag1
-  - ​-----report
-  - ​-----test
-  - ​-----util
+  - -----config
+    - ---android
+    - ---ios
+    - env.ini
+  - -----data
+  - -----page
+    - ----pag1
+  - -----report
+  - -----test
+  - -----util
 
 #### driver封装
 
@@ -3020,99 +3022,3 @@ class ConfigUtil(object):
 
 ```
 
-#### Page中的的其他子类
-
-```python
-# coding=utf-8
-from selenium.webdriver.common.by import By
-
-from page.BasePage import BasePage
-
-
-class EditGroupPage(BasePage):
-    def __init__(self):
-        super(EditGroupPage, self).__init__()
-
-        ''' 界面控件 '''
-        self.group_name_input = (By.ID, "editclass_className")  # 班级名称输入框
-        self.stage_select = (By.ID, "tv_spinner_item")  # 年龄段下拉列表
-        self.submit_btn = (By.ID, "menu_submit")  # 提交按钮
-
-    ''' 界面操作 '''
-
-    # 输入班级名称
-    def input_group_name(self, group_name):
-        self.find_element(self.group_name_input).send_keys(group_name)
-
-    # 清空班级名称
-    def clear_group_name(self):
-        self.find_element(self.group_name_input).clear()
-
-    # 选择班级年龄段
-    def select_stage(self, index):
-        self.find_elements(self.stage_select)[index].click()
-
-    # 点击提交按钮
-    def click_submit_btn(self):
-        self.find_element(self.submit_btn).click()
-
-```
-
-#### test目录下的测试
-
-```python
-# coding=utf-8
-import random
-
-from page.group.AddGroupPage import AddGroupPage
-from page.group.EditGroupPage import EditGroupPage
-from page.group.GroupListPage import GroupListPage
-from page.roster.RosterPage import RosterPage
-from util.ConfigUtil import ConfigUtil
-
-config_util = ConfigUtil()
-group_list_page = GroupListPage()
-add_group_page = AddGroupPage()
-edit_group_page = EditGroupPage()
-roster_page = RosterPage()
-
-
-# 测试添加班级
-def test_create_group():
-    group_name = "Group" + str(random.randint(1, 999))  # 班级名称
-    group_list_page.click_add_group_btn()  # 点击添加班级按钮
-    edit_group_page.wait_modal_disappear()
-    print ("activity:" + edit_group_page.driver.current_activity)
-    add_group_page.input_group_name(group_name)  # 输入班级名称
-    add_group_page.click_submit_btn()  # 点击保存按钮
-    add_group_page.click_sys_button1()  # 点击确认使用默认框架
-    assert group_list_page.exist_group(group_name)  # 验证班级是否添加成功，应出现在班级列表中
-
-
-# 测试更新班级
-def test_update_group():
-    group_name = config_util.get_value("group_for_update")  # 要更新的班级
-    new_group_name = group_name + "1"
-    group_list_page.enter_group(group_name)
-    roster_page.click_edit_group_btn()  # 点击编辑班级按钮
-    roster_page.wait_modal_disappear()  # 等待消息框消失
-    edit_group_page.clear_group_name()  # 清除输入框
-    edit_group_page.input_group_name(new_group_name)  # 输入新的班级名称
-    # edit_group_page.select_stage(2)  # 修改年龄段
-    edit_group_page.click_submit_btn()  # 点击提交按钮
-    roster_page.wait_modal_disappear()  # 等待消息框消失
-    assert roster_page.get_selected_group_name() == new_group_name  # Roster 界面应该选中修改的班级
-    roster_page.back()  # 返回到班级列表界面
-    assert group_list_page.exist_group(new_group_name)  # 班级列表界面应该有修改后的班级
-
-```
-
-#### 总结
-
-appium版本对应的使用
-
-不使用desired_caps['automationName'] = "UiAutomator2" 会自动使用AndroidBootstrap但是不能够使用By
-
-2.0基于 Instrumentation， 可以获取应用Context，可以使用Android服务及接口。
-
-2.0新增UiObject2、Until、By、BySelector等接口。
