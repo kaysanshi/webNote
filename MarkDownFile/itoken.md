@@ -721,18 +721,18 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 
 
 ​    
-                version: '3.1'
-                services:
-                sentinel1:
-                    image: redis
-                    container_name: redis-sentinel-1
-                    ports:
-                    - 26379:26379
-                    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-                    volumes:
-                    #数据卷
-                    - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
-    
+​                version: '3.1'
+​                services:
+​                sentinel1:
+​                    image: redis
+​                    container_name: redis-sentinel-1
+​                    ports:
+​                    - 26379:26379
+​                    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+​                    volumes:
+​                    #数据卷
+​                    - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
+​    
                 sentinel2:
                     image: redis
                     container_name: redis-sentinel-2
@@ -1622,7 +1622,9 @@ AMQP 中有四种 exchange
 
 这种结构的架构给通讯带来了很大的灵活性，我们能想到的通讯方式都可以用这四种 exchange 表达出来。如果你需要一个企业数据总线（在乎灵活性）那么 RabbitMQ 绝对的值得一用
 
-## [#](https://www.funtl.com/zh/spring-cloud-itoken-codeing/消息队列的流派.html#无-broker-的-mq)无 Broker 的 MQ
+(https://www.funtl.com/zh/spring-cloud-itoken-codeing/消息队列的流派.html
+
+### 无 Broker 的 MQ
 
 无 Broker 的 MQ 的代表是 ZeroMQ。该作者非常睿智，他非常敏锐的意识到——MQ 是更高级的 Socket，它是解决通讯问题的。所以 ZeroMQ 被设计成了一个“库”而不是一个中间件，这种实现也可以达到——没有 Broker 的目的
 
@@ -1907,11 +1909,11 @@ public class HelloRabbitConsumer {
 
 ### Quartz
 
-Quartz是OpenSymphony开源组织在Job scheduling领域又一个开源项目，它可以与J2EE与J2SE应用程序相结合也可以单独使用。Quartz可以用来创建简单或为运行十个，百个，甚至是好几万个Jobs这样复杂的程序。
+​         Quartz是OpenSymphony开源组织在Job scheduling领域又一个开源项目，它可以与J2EE与J2SE应用程序相结合也可以单独使用。Quartz可以用来创建简单或为运行十个，百个，甚至是好几万个Jobs这样复杂的程序。
 Jobs可以做成标准的Java组件或 EJBs。Quartz的最新版本为Quartz 2.3.0。
 Quartz是一个完全由java编写的开源作业调度框架。不要让作业调度这个术语吓着你。尽管Quartz框架整合了许多额外功能， 但就其简易形式看，你会发现它易用得简直让人受不了！。
 简单地创建一个实现org.quartz.Job接口的java类。Job接口包含唯一的方法：
-		public void execute(JobExecutionContext context)throws JobExecutionException;
+​		public void execute(JobExecutionContext context)throws JobExecutionException;
 在你的Job接口实现类里面，添加一些逻辑到execute()方法。一旦你配置好Job实现类并设定好调度时间表，Quartz将密切注意剩余时间。
 当调度程序确定该是通知你的作业的时候，Quartz框架将调用你Job实现类（作业类）上的execute()方法并允许做它该做的事情。无需报告任何东西给调度器或调用任何特定的东西。仅仅执行任务和结束任务即可。如果配置你的作业在随后再次被调用，Quartz框架将在恰当的时间再次调用它
 
@@ -1921,6 +1923,8 @@ Quartz是一个完全由java编写的开源作业调度框架。不要让作业�
 ​				Quartz 可以在应用程序服务器(或 servlet 容器)内被实例化，并且参与 XA 事务。
 ​				Quartz 可以作为一个独立的程序运行(其自己的 Java 虚拟机内)，可以通过 RMI 使用。
 ​				Quartz 可以被实例化，作为独立的项目集群(负载平衡和故障转移功能)，用于作业的执行。
+
+
 
 #### 调度器：
 
@@ -1936,6 +1940,55 @@ Quartz依赖一套松耦合的线程池管理部件来管理线程环境。
 ​	Trigger（即触发器） - 定义执行给定作业的计划的组件。
 ​	JobBuilder - 用于定义/构建JobDetail实例，用于定义作业的实例。
 ​	TriggerBuilder - 用于定义/构建触发器实例。
+
+Quartz对任务调度的领域问题进行了高度抽象，提出了调度器、任务和触发器等核心概念，并在org.quartz包中通过接口和类对核心概念进行描述。
+        █ Job：该接口只有一个void excute(JobExecutionContext context)方法，开发者通过实现该接口来定义运行任务，JobExecutionContext类提供了调度上下文的各种信息。
+        █ JobDetail：Quartz在每次执行Job时，都重新创建一个Job实例，所以它并不直接接受一个Job的实例，相反它接受一个Job实现类以便通过newInstance()反射机制实例化Job。JobDetail类负责描述Job的实现类及其他相关信息，如Job名称、描述和关联监听器等信息，JobDetail类的构造方法为JobDetail(java.lang.String name,java.lang.String group,java.lang.Class jobClass)，该构造方法指定了Job的实现类以及任务在Scheduler中的组名和Job名称。
+        █ Trigger：该类描述触发Job执行时的时间触发规则，主要有SimpleTrigger和CronTrigger两个子类。如果需要触发一次或者以固定时间间隔周期执行，则使用SimpleTrigger；如果执行较复杂时间规则的调度方案，则采用CronTrigger。
+        █ Scheduler：表示一个Quartz的独立运行容器，Trigger和JobDetail可以注册到Scheduler中，但两者的组及名称必须唯一。Scheduler定义了多个接口方法，程序可以通过组及名称访问和控制容器中的Trigger和JobDetail。Scheduler可以将Trigger绑定到某一JobDetail中，这样当Trigger触发时，对应的Job就被执行。一个Job可以对应多个Trigger，但一个Trigger指定对应一个Job。
+        █ ThreadPool：Scheduler使用一个线程池作为任务调度的容器，任务通过共享线程池中的线程提高运行效率。
+
+##### 例子：
+
+```java
+public class MyJob implements Job {
+    // 重写execute方法
+    public void execute(JobExecutionContext context)
+            throws JobExecutionException {
+        // Job名称
+        String jobName = context.getJobDetail().getFullName();
+        // Job组名称
+        String jobGroupName = context.getJobDetail().getGroup();
+        // 调用Trigger的名称及调用时间
+        String triggerName = context.getTrigger().getName();
+        //格式化输出时间
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = format.format(new Date());
+        //打印信息
+        System.out.println("Job名称：" + jobName);
+        System.out.println("触发器的名称：" + triggerName + " ;任务调用时间：" + date);
+    }
+}
+public class CronTriggerTest {
+    public static void main(String[] args)throws Exception {
+        // 根据job名称、组名和Job类型创建JobDetail对象
+        JobDetail jobDetail = new JobDetail("job_1", "jGroup1", MyJob.class);
+        // 创建Cron表达式
+        String cron = "0/5 * * * * ?";
+        // 根据trigger名称和组名创建Trigger对象
+        CronTrigger cronTrigger = new CronTrigger("trigger_1", "tGroup1", cron);
+        //获取调度工厂对象
+        SchedulerFactory factory = new StdSchedulerFactory();
+        //获取调度实例
+        Scheduler scheduler = factory.getScheduler();
+        //绑定Job和触发器
+        scheduler.scheduleJob(jobDetail, cronTrigger);
+        scheduler.start();
+        //必须有下面代码，否则，主线程运行完毕，任务不会被调用
+        Thread.currentThread().sleep(100000);//休眠100秒
+    }
+}
+```
 
  #### 什么是 cron 表达式？
 

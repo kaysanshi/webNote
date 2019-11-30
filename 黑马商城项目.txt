@@ -77,6 +77,11 @@ SOA:面向服务的架构，可以把工程拆分成服务层，表现层两个�
 					第四步：进入zookeeper-3.4.6目录，创建data文件夹。
 					第五步：把zoo_sample.cfg改名为zoo.cfg
 					[root@localhost conf]# mv zoo_sample.cfg zoo.cfg
+											tickTime = 2000
+											dataDir = /path/to/zookeeper/data
+											clientPort = 2181
+											initLimit = 5
+											syncLimit = 2
 					第六步：修改data属性：dataDir=/root/zookeeper-3.4.6/data
 					第七步：启动zookeeper
 					[root@localhost bin]# ./zkServer.sh start
