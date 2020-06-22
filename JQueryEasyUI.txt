@@ -1,3 +1,0 @@
-jqueryEasyUI:jQuery EasyUI 是一个基于 jQuery 的框架，集成了各种用户界面插件。jQuery EasyUI 框架提供了创建网页所需的一切，帮助您轻松建立站点。本教程将告诉您如何使用 jQuery EasyUI 框架创建应用。
-			正如前面所说，你在使用EasyUI之前必须先声明UI控件，有两个方法声明它。
-		CRUD DataGrid:
