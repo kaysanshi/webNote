@@ -15,284 +15,326 @@
 ​				上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，
 ​				而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。	
 
-				创建SpringMVC项目：
-					1.导包
-					2.在web.xml配置spring前端的控制器，指定读取的springMVC的配置文件，创建servlet的映射的
-								<!-- 配置SpringMVC前端控制器 -->
-								  <servlet>
-										<servlet-name>spring-mvc</servlet-name>
-										<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
-								  <!-- 指定springmvc的配置文件
-									默认路径：/WEB-INF/${servlet-name}-servlet.xml
-								   -->
-										<init-param>
-											<param-name>contextConfigLocation</param-name>
-											<param-value>classpath:spring-mvc-servlet.xml</param-value>
-										</init-param>
-								  </servlet>
-								  <!-- 配置映射的及请求设置 -->
-								  <servlet-mapping>
-										<servlet-name>spring-mvc</servlet-name>
-										<!-- 设置请求拦截规则 
-											1./*:不能进行对其访问：No mapping found for HTTP request with URI [/spring-mvc/WEB-INF/jsp/hello.jsp] in DispatcherServlet with name 'spring-mvc'
-												拦截所有，jsp,js，css都会拦截，不建议
-											2./:拦截所有不包括jsp，肯定可以用
-											3.*.action,*.do,拦截do,action的结尾请求，一般用于前台，面向消费者的--->
-										<url-pattern>/</url-pattern>
-								  </servlet-mapping>
-					3.配置spring的配置文件：	在applicationContent.xml中配置
-									<!-- 配置controller扫描包 ，多个包调用用","隔开-->
-									<context:component-scan base-package="com.leo.controller"></context:component-scan>
-									<!--配置视图解析器  -->
-									<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-										<!-- 逻辑视图的前缀，后缀 ，逻辑视图名在controller中返回ModelView指定-->
-										<property name="prefix" value="/WEB-INF/jsp/"></property>
-										<property name="suffix" value=".jsp"></property>
-										<!-- 最终的jsp物理地址：前缀+逻辑视图+后缀 -->
-									</bean>
-					4.创建controller类：控制器
-								配置@Controller//把controller交给spring管理
-									@RequestMapping("/hello")//映射url：即指定请求的url地址
-									public class HelloSpringMVC {
-										//设置请求的方法
-										@RequestMapping(method=RequestMethod.GET)
-										public String printHello(ModelMap model) {
-											model.addAttribute("message", "SpringMVC");
-											return "hello";
-										}
-									}
-					5.创建视图
-		spring mvc架构：
-					主要就是DispatcherServlet进行对各个组件的调用以及各个组件对DispatcherSevlet的响应
-						包括组件有：DispatcherServlet:相当于mvc中的contol,是整个流程控制的中心，由他调用其他组件，降低了组件之间的耦合，
-										HandlerMapping:处理映射器根据url找到Handler处理器
-										Handler:是后端控制器在前端控制器下对用户处理请求，需要自己开发里面的业务逻辑
-										HandlAdaptcher:这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行
-										ViewResolver:视图解析器将结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户
-										View:其中视图包括jstlView,fremarkerView,padfView,最常用的为jsp一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面
-						在springmvc的各个组件中，处理器映射器、处理器适配器、视图解析器称为springmvc的三大组件。
-					架构流程：
-						1.请求--->前端控制器DispatcherServlet
-						2.DispatcherServlet调用HandlerMapping处理器映射器
-						3、	处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。
-						4、	DispatcherServlet通过HandlerAdapter处理器适配器调用处理器
-						5、	执行处理器(Controller，也叫后端控制器)。
-						6、	Controller执行完成返回ModelAndView
-						7、	HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet
-						8、	DispatcherServlet将ModelAndView传给ViewReslover视图解析器
-						9、	ViewReslover解析后返回具体View
-						10、DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）。
-						11、DispatcherServlet响应用户
-		springmvc参数绑定：
-					形参的绑定：
-								/**
-								 * 修改，要传入形参绑定形参、
-								 * 或者在不通过request获得直接使用指定前台请求过来的参数类型和参数名要相同
-								 public ModelAndView toEdit(Integer id,HttpServletRequest request,HttpServletResponse response,
-											HttpSession session,Model model){
-								用标签绑定,这是你前台传过来的参数与你这里的方法的参数名不相同时用标签的方法绑定
-								public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue="1") Integer ids,HttpServletRequest request,HttpServletResponse response,
-											HttpSession session,Model model){
-								*/
-								@RequestMapping(value="/item/toEdit")
-								public ModelAndView toEdit(HttpServletRequest request,HttpServletResponse response,
-										HttpSession session,Model model){
-									//获得参数
-									String idInteger=request.getParameter("id");
-									Items items=itemService.getItemById(idInteger);
-									ModelAndView mav=new ModelAndView();
-									//添加数据
-									mav.addObject("item", items);
-									//要显示的视图
-									mav.setViewName("editItem");
-									return mav;
-									
-								} 
-					对象类型的参数：
-								/**
-								 * 提交修改，参数绑定为对象类型的，前台name属性与你的pojo类的字段必须相同updateitem.action
-								 * 与形参没用任何关系
-								 */
-								@RequestMapping(value="/item/updateitem.action")
-								public ModelAndView updateItems(Items items){
-									//修改
-									itemService.updateItemById(items);
-									ModelAndView mav=new ModelAndView();
-									//要显示的视图
-									mav.setViewName("success");
-									return mav;
-									
-								} 
-					包装类型的参数：
-								/**
-								 * 修改使用包装类pojo
-								 * @param vo
-								 * @return
-								 */
-								public ModelAndView updateitembyQ(QueryVo vo){
-	
-									//修改
-									itemService.updateItemsByIdByQ(vo.getItems());
-									
-									ModelAndView mav = new ModelAndView();
-									mav.setViewName("success");
-									return mav;
-									
-								}
-						使用list，array的使用必须要放到包装类型中
-								/**
-								 * 在使用list，array时必须使用包装类如果不适用包装不能解析
-								 * spring 未提供这些的方法
-								 * @param vo
-								 * @return
-								 */
-								//删除多个数组的
-									@RequestMapping(value = "/deletes.action")
-									public ModelAndView deletes(QueryVo vo){
-										
-										itemService.deleteItemsByIdByQbyArray(vo.getIds());
-										ModelAndView mav = new ModelAndView();
-										mav.setViewName("success");
-										return mav;
-									}
-		controller的方法：
-					放入model参数的方法的使用：
-						/**
-					 * 1.ModelAndView  无敌的    带着数据  返回视图路径           不建议使用
-					 * 2.String    返回视图路径     model带数据      官方推荐此种方式   解耦   数据  视图  分离  MVC  建议使用  
-					 * 3.void       ajax  请求   合适   json格式数据 （response   异步请求使用
-					 * @return
-					 */
-			访问路径的使用：
-					/**
-						 * 配置映射的访问路径
-						 * @return
-						 */
-						@RequestMapping(value="/item/itemlist")
-		springmvc整合mybatis:
-					出现这个错误：BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the Application
-					原因：未能扫描到@controller ，配置controller扫描包 的路径，或者是出现相同的controller的控制器(控制器类的名字相同了)
-					1.导包。
-					2.配置配置文件
-						2.1：web.xml
-						2.2:applicationContext.xml
-						2.3springmvc-servlert.xml
-						2.4sqlMapConfig.xml
-						2.5db.properties
-						2.6mapper映射xml
-						2.1web.xml需要做以下配置：加载spring的配置文件，spring上下的监听器，配置前端控制器并读取springmvc配置文件，配置映射及拦截规则；
-													  <!-- 加载spring的配置文件 -->
-														<context-param>
-																<param-name>contextConfigLocationn</param-name>
-																<param-value>classpath*:/applicationContext.xml</param-value>
-														</context-param>
-														 <!-- spring 的上下文的监听器 -->
-														<listener>
-															<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-														</listener>
-													  <!-- 配置前端控制器 -->
-													  <servlet>
-															<servlet-name>springmvc-mybatis</servlet-name>
-															<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-															<!-- 配置读取springmvc配置文件 -->
-															<init-param>
-																<param-name>contextConfigLocation</param-name>
-																<param-value>classpath:springmvc-servlet.xml</param-value>
-															</init-param>
-															<load-on-startup>1</load-on-startup>  
-														<async-supported>true</async-supported>  
-													 </servlet>
-													 <!-- 配置映射的及请求设置拦截规则 -->
-													  <servlet-mapping>
-															<servlet-name>springmvc-mybatis</servlet-name>
-															<!-- 设置请求拦截规则 
-															1./*:不能进行对其访问：No mapping found for HTTP request with URI [/spring-mvc/WEB-INF/jsp/hello.jsp] in DispatcherServlet with name 'spring-mvc'
-																拦截所有，jsp,js，css都会拦截，不建议
-															2./:拦截所有不包括jsp，肯定可以用
-															3.*.action,*.do,拦截do,action的结尾请求，一般用于前台，面向消费者的
-															-->
-															<url-pattern>/</url-pattern>
-													  </servlet-mapping>
-													</web-app>
-						
-						2.2：applicationContext.xml	：
-									读取指定的数据源，配置连接池，注册mybatis工厂读取mybatis核心配置文件,mapper代理扫描包,注解事务开启aop事务，注入各个bean；
-													<!-- 指定spring读取db.properties配置 -->
-													<context:property-placeholder location="classpath:db.properties"  />
-	
-													<!-- 1.将连接池 -->
-													<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
-														<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
-														<property name="driverClass" value="${jdbc.driverClass}" ></property>
-														<property name="user" value="${jdbc.user}" ></property>
-														<property name="password" value="${jdbc.password}" ></property>
-													</bean>
-													<!-- mybatis工厂 -->
-													<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
-														<property name="dataSource" ref="dataSource"></property>
-														<!-- 核心的配置的文件 -->
-														<property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
-													</bean>
-													<!--使用mapper动态代理  扫描的方式：-->
-														<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
-															<!-- 指定基本包  在这里dao层的接口相当于动态代理mapper-->
-															<property name="basePackage" value="com.leo.springmvc.dao"></property>
-														</bean>
-													<!--注解事务,封装了所有事务操作. 依赖于连接池 -->
-													<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
-														<property name="dataSource" ref="dataSource" ></property>
-													</bean>
-													<!-- 开启使用注解管理aop事务 -->
-													<tx:annotation-driven transaction-manager="transactionManager"/>
-													<!-- 注入bean -->
-													<bean id="itemService" class="com.leo.springmvc.service.impl.ItemServiceImpl">
-														<property name="itemdao" ref="itemdao"></property>
-													</bean>
-	
-													<bean id="itemdao" class="com.leo.springmvc.dao.impl.ItemDaoImpl">
-														<property name="sqlSessionFactory" ref="sqlSessionFactoryBean"></property>
-													</bean>
-													</beans>
-						2.3springmvc-servlert.xml
-									主要用于扫描控制器，注解驱动，配置视图解析器。
-												<!-- 配置controller扫描包 ，多个包调用用","隔开
-													扫描@Controller，@Service
-													在不配置处理器映射器，和处理器适配器，会使用默认的，可以不配置
-												-->
-												<context:component-scan base-package="com.leo.springmvc"></context:component-scan>
-												<!-- 废除了：配置处理器映射器 
-												<bean class="org.springframework.web.servlet.mvc.annotation.RequestMappingHandlerMapping"></bean> 
-												 配置处理器配置器 
-												<bean class="org.springframework.web.servlet.mvc.annotation.RequestMappingHandlerAdapter"></bean> -->
-												<!-- 注解驱动 ,配置这个就相当于配置了上面的两个-->
-												<mvc:annotation-driven></mvc:annotation-driven>
-												<!--配置视图解析器
-												<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-													 逻辑视图的前缀，后缀 ，逻辑视图名在controller中返回ModelView指定
-													<property name="prefix" value="/WEB-INF/jsp/"></property>
-													<property name="suffix" value=".jsp"></property>
-													最终的jsp物理地址：前缀+逻辑视图+后缀 
-												</bean>  -->
-												</beans>
-						2.4sqlMapConfig.xml：
-								mybatis的配置文件，其实不用配置只需要相应的头文件就可以
-											<?xml version="1.0" encoding="UTF-8"?>
-												<!DOCTYPE configuration
-												  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-												  "http://mybatis.org/dtd/mybatis-3-config.dtd">
-												<configuration>
-												<!-- 设置别名 -->
-													<typeAliases>
-														<!--指定的包内的所有的类都设置别名，别名的名称就是类名大小写不敏感 -->
-														<package name="com.leo.springmvc"/>
-													</typeAliases>
-													<!-- 已经扫秒的包了，所以不用配置mapper的路径了 -->
-												</configuration>
+​			创建SpringMVC项目：
+​				1.导包
+​				2.在web.xml配置spring前端的控制器，指定读取的springMVC的配置文件，创建servlet的映射的
+​							<!-- 配置SpringMVC前端控制器 -->
+​							  <servlet>
+​									<servlet-name>spring-mvc</servlet-name>
+​									<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
+​							  <!-- 指定springmvc的配置文件
+​								默认路径：/WEB-INF/${servlet-name}-servlet.xml
+​							   -->
+​									<init-param>
+​										<param-name>contextConfigLocation</param-name>
+​										<param-value>classpath:spring-mvc-servlet.xml</param-value>
+​									</init-param>
+​							  </servlet>
+​							  <!-- 配置映射的及请求设置 -->
+​							  <servlet-mapping>
+​									<servlet-name>spring-mvc</servlet-name>
+​									<!-- 设置请求拦截规则 
+​										1./*:不能进行对其访问：No mapping found for HTTP request with URI [/spring-mvc/WEB-INF/jsp/hello.jsp] in DispatcherServlet with name 'spring-mvc'
+​											拦截所有，jsp,js，css都会拦截，不建议
+​										2./:拦截所有不包括jsp，肯定可以用
+​										3.*.action,*.do,拦截do,action的结尾请求，一般用于前台，面向消费者的--->
+​									<url-pattern>/</url-pattern>
+​							  </servlet-mapping>
+​				3.配置spring的配置文件：	在applicationContent.xml中配置
+​								<!-- 配置controller扫描包 ，多个包调用用","隔开-->
+​								<context:component-scan base-package="com.leo.controller"></context:component-scan>
+​								<!--配置视图解析器  -->
+​								<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+​									<!-- 逻辑视图的前缀，后缀 ，逻辑视图名在controller中返回ModelView指定-->
+​									<property name="prefix" value="/WEB-INF/jsp/"></property>
+​									<property name="suffix" value=".jsp"></property>
+​									<!-- 最终的jsp物理地址：前缀+逻辑视图+后缀 -->
+​								</bean>
+​				4.创建controller类：控制器
+​							配置@Controller//把controller交给spring管理
+​								@RequestMapping("/hello")//映射url：即指定请求的url地址
+​								public class HelloSpringMVC {
+​									//设置请求的方法
+​									@RequestMapping(method=RequestMethod.GET)
+​									public String printHello(ModelMap model) {
+​										model.addAttribute("message", "SpringMVC");
+​										return "hello";
+​									}
+​								}
+​				5.创建视图
 
+### spring mvc架构：
+
+​				主要就是DispatcherServlet进行对各个组件的调用以及各个组件对DispatcherSevlet的响应
+​					包括组件有：DispatcherServlet:相当于mvc中的contol,是整个流程控制的中心，由他调用其他组件，降低了组件之间的耦合，
+​									HandlerMapping:处理映射器根据url找到Handler处理器
+​									Handler:是后端控制器在前端控制器下对用户处理请求，需要自己开发里面的业务逻辑
+​									HandlAdaptcher:这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行
+​									ViewResolver:视图解析器将结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户
+​									View:其中视图包括jstlView,fremarkerView,padfView,最常用的为jsp一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面
+​					在springmvc的各个组件中，处理器映射器、处理器适配器、视图解析器称为springmvc的三大组件。
+​				架构流程：
+​					1.请求--->前端控制器DispatcherServlet
+​					2.DispatcherServlet调用HandlerMapping处理器映射器
+​					3、	处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。
+​					4、	DispatcherServlet通过HandlerAdapter处理器适配器调用处理器
+​					5、	执行处理器(Controller，也叫后端控制器)。
+​					6、	Controller执行完成返回ModelAndView
+​					7、	HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet
+​					8、	DispatcherServlet将ModelAndView传给ViewReslover视图解析器
+​					9、	ViewReslover解析后返回具体View
+​					10、DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）。
+​					11、DispatcherServlet响应用户
+
+![](https://img-blog.csdn.net/20180825212704206?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+
+
+### springmvc参数绑定：
+
+#### 形参的绑定：
+
+​		修改，要传入形参绑定形参、或者在不通过request获得直接使用指定前台请求过来的参数类型和参数名要相同
+​			 public ModelAndView toEdit(Integer id,HttpServletRequest request,HttpServletResponse response,
+​								HttpSession session,Model model){
+​					用标签绑定,这是你前台传过来的参数与你这里的方法的参数名不相同时用标签的方法绑定
+​					public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue="1") Integer ids,HttpServletRequest request,HttpServletResponse response,
+​								HttpSession session,Model model){
+​					*/
+​					@RequestMapping(value="/item/toEdit")
+​					public ModelAndView toEdit(HttpServletRequest request,HttpServletResponse response,
+​							HttpSession session,Model model){
+​						//获得参数
+​						String idInteger=request.getParameter("id");
+​						Items items=itemService.getItemById(idInteger);
+​						ModelAndView mav=new ModelAndView();
+​						//添加数据
+​						mav.addObject("item", items);
+​						//要显示的视图
+​						mav.setViewName("editItem");
+​						return mav;
+​						
+​					} 
+
+#### 对象类型的参数：
+
+```
+	/**
+提交修改，参数绑定为对象类型的，前台name属性与你的pojo类的字段必须相同updateitem.action
+ 与形参没用任何关系
+    			 */
+    			@RequestMapping(value="/item/updateitem.action")
+    			public ModelAndView updateItems(Items items){
+    				//修改
+    				itemService.updateItemById(items);
+    				ModelAndView mav=new ModelAndView();
+    				//要显示的视图
+    				mav.setViewName("success");
+    				return mav;
+    				
+    			} 
+```
+
+#### 包装类型的参数：
+
+​		
+
+```
+/**
+
+- - - 修改使用包装类pojo
+
+      - @param vo
+
+        - @return
+          */
+          public ModelAndView updateitembyQ(QueryVo vo){
+
+          ​	//修改
+          ​	itemService.updateItemsByIdByQ(vo.getItems());
+          ​	
+          ​	ModelAndView mav = new ModelAndView();
+          ​	mav.setViewName("success");
+          ​	return mav;
+          ​	
+          }
+          使用list，array的使用必须要放到包装类型中
+          /**
+
+          - 在使用list，array时必须使用包装类如果不适用包装不能解析
+          - spring 未提供这些的方法
+          - @param vo
+          - @return
+            */
+            //删除多个数组的
+            @RequestMapping(value = "/deletes.action")
+            public ModelAndView deletes(QueryVo vo){
+            	
+            	itemService.deleteItemsByIdByQbyArray(vo.getIds());
+            	ModelAndView mav = new ModelAndView();
+            	mav.setViewName("success");
+            	return mav;
+            }
+            controller的方法：
+            放入model参数的方法的使用：
+            /**
+
+    - 1.ModelAndView  无敌的    带着数据  返回视图路径           不建议使用
+
+    - 2.String    返回视图路径     model带数据      官方推荐此种方式   解耦   数据  视图  分离  MVC  建议使用  
+
+    - 3.void       ajax  请求   合适   json格式数据 （response   异步请求使用
+
+    - @return
+      */
+      访问路径的使用：
+      /**
+
+      - 配置映射的访问路径
+      - @return
+        */
+        @RequestMapping(value="/item/itemlist")
+        springmvc整合mybatis:
+        出现这个错误：BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the Application
+        原因：未能扫描到@controller ，配置controller扫描包 的路径，或者是出现相同的controller的控制器(控制器类的名字相同了)
+        1.导包。
+        2.配置配置文件
+        2.1：web.xml
+        2.2:applicationContext.xml
+        2.3springmvc-servlert.xml
+        2.4sqlMapConfig.xml
+        2.5db.properties
+        2.6mapper映射xml
+        2.1web.xml需要做以下配置：加载spring的配置文件，spring上下的监听器，配置前端控制器并读取springmvc配置文件，配置映射及拦截规则；
+        						  <!-- 加载spring的配置文件 -->
+        							<context-param>
+        									<param-name>contextConfigLocationn</param-name>
+        									<param-value>classpath*:/applicationContext.xml</param-value>
+        							</context-param>
+        							 <!-- spring 的上下文的监听器 -->
+        							<listener>
+        								<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+        							</listener>
+        						  <!-- 配置前端控制器 -->
+        						  <servlet>
+        								<servlet-name>springmvc-mybatis</servlet-name>
+        								<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        								<!-- 配置读取springmvc配置文件 -->
+        								<init-param>
+        									<param-name>contextConfigLocation</param-name>
+        									<param-value>classpath:springmvc-servlet.xml</param-value>
+        								</init-param>
+        								<load-on-startup>1</load-on-startup>  
+        							<async-supported>true</async-supported>  
+        						 </servlet>
+        						 <!-- 配置映射的及请求设置拦截规则 -->
+        						  <servlet-mapping>
+        								<servlet-name>springmvc-mybatis</servlet-name>
+        								<!-- 设置请求拦截规则 
+        								1./*:不能进行对其访问：No mapping found for HTTP request with URI [/spring-mvc/WEB-INF/jsp/hello.jsp] in DispatcherServlet with name 'spring-mvc'
+        									拦截所有，jsp,js，css都会拦截，不建议
+        								2./:拦截所有不包括jsp，肯定可以用
+        								3.*.action,*.do,拦截do,action的结尾请求，一般用于前台，面向消费者的
+        								-->
+        								<url-pattern>/</url-pattern>
+        						  </servlet-mapping>
+        						</web-app>
+
+      2.2：applicationContext.xml	：
+      			读取指定的数据源，配置连接池，注册mybatis工厂读取mybatis核心配置文件,mapper代理扫描包,注解事务开启aop事务，注入各个bean；
+      							<!-- 指定spring读取db.properties配置 -->
+      							<context:property-placeholder location="classpath:db.properties"  />
+
+      ​							<!-- 1.将连接池 -->
+      ​							<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+      ​								<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
+      ​								<property name="driverClass" value="${jdbc.driverClass}" ></property>
+      ​								<property name="user" value="${jdbc.user}" ></property>
+      ​								<property name="password" value="${jdbc.password}" ></property>
+      ​							</bean>
+      ​							<!-- mybatis工厂 -->
+      ​							<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+      ​								<property name="dataSource" ref="dataSource"></property>
+      ​								<!-- 核心的配置的文件 -->
+      ​								<property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+      ​							</bean>
+      ​							<!--使用mapper动态代理  扫描的方式：-->
+      ​								<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+      ​									<!-- 指定基本包  在这里dao层的接口相当于动态代理mapper-->
+      ​									<property name="basePackage" value="com.leo.springmvc.dao"></property>
+      ​								</bean>
+      ​							<!--注解事务,封装了所有事务操作. 依赖于连接池 -->
+      ​							<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+      ​								<property name="dataSource" ref="dataSource" ></property>
+      ​							</bean>
+      ​							<!-- 开启使用注解管理aop事务 -->
+      ​							<tx:annotation-driven transaction-manager="transactionManager"/>
+      ​							<!-- 注入bean -->
+      ​							<bean id="itemService" class="com.leo.springmvc.service.impl.ItemServiceImpl">
+      ​								<property name="itemdao" ref="itemdao"></property>
+      ​							</bean>
+
+      ​							<bean id="itemdao" class="com.leo.springmvc.dao.impl.ItemDaoImpl">
+      ​								<property name="sqlSessionFactory" ref="sqlSessionFactoryBean"></property>
+      ​							</bean>
+      ​							</beans>
+      2.3springmvc-servlert.xml
+      ​			主要用于扫描控制器，注解驱动，配置视图解析器。
+      ​						<!-- 配置controller扫描包 ，多个包调用用","隔开
+      ​							扫描@Controller，@Service
+      ​							在不配置处理器映射器，和处理器适配器，会使用默认的，可以不配置
+      ​						-->
+      ​						<context:component-scan base-package="com.leo.springmvc"></context:component-scan>
+      ​						<!-- 废除了：配置处理器映射器 
+      ​						<bean class="org.springframework.web.servlet.mvc.annotation.RequestMappingHandlerMapping"></bean> 
+      ​						 配置处理器配置器 
+      ​						<bean class="org.springframework.web.servlet.mvc.annotation.RequestMappingHandlerAdapter"></bean> -->
+      ​						<!-- 注解驱动 ,配置这个就相当于配置了上面的两个-->
+      ​						<mvc:annotation-driven></mvc:annotation-driven>
+      ​						<!--配置视图解析器
+      ​						<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+      ​							 逻辑视图的前缀，后缀 ，逻辑视图名在controller中返回ModelView指定
+      ​							<property name="prefix" value="/WEB-INF/jsp/"></property>
+      ​							<property name="suffix" value=".jsp"></property>
+      ​							最终的jsp物理地址：前缀+逻辑视图+后缀 
+      ​						</bean>  -->
+      ​						</beans>
+      2.4sqlMapConfig.xml：
+      ​		mybatis的配置文件，其实不用配置只需要相应的头文件就可以
+      ​					<?xml version="1.0" encoding="UTF-8"?>
+
+      						<!DOCTYPE configuration
+      						  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+      						  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+      						<configuration>
+      						<!-- 设置别名 -->
+      							<typeAliases>
+      								<!--指定的包内的所有的类都设置别名，别名的名称就是类名大小写不敏感 -->
+      								<package name="com.leo.springmvc"/>
+      							</typeAliases>
+      							<!-- 已经扫秒的包了，所以不用配置mapper的路径了 -->
+      						</configuration>
 
 ​						
 ​						2.5db.properties：配置数据库的属性
 ​						2.6mapper映射xml：书写sql的配置文件，
+​					3. 在controller中调用其他各层，由于在这里用了接口的方式所以自动装配注解@Autowired就不可以使用，在controller中需要使用service层时就
+​					指定这个属性去读取相应bean的id;用下面的方式实现属性的注入。
+​													@Resource(name="itemService")
+​													private ItemService itemService;
+​						在这里说下 @Resource(name="itemService")和 @Autowired的区别：
+​						@Resource默认按照名称方式进行bean匹配， j2EE的。可以指定读取按哪个名称的装配方法。
+​						@Autowired默认按照类型方式进行bean匹配，spring的。默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。
+​						@Resource可以减少代码和Spring之间的耦合
+​						@Resource默认按照ByName自动注入，由J2EE提供，需要导入包javax.annotation.Resource。
+​						@Resource有两个重要的属性：name和type，而Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
+​						所以，如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
+​						 @Resource装配顺序：
+​	
+```
+
+
+
 					3. 在controller中调用其他各层，由于在这里用了接口的方式所以自动装配注解@Autowired就不可以使用，在controller中需要使用service层时就
 					指定这个属性去读取相应bean的id;用下面的方式实现属性的注入。
 													@Resource(name="itemService")
@@ -305,7 +347,7 @@
 						@Resource有两个重要的属性：name和type，而Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
 						所以，如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
 						 @Resource装配顺序：
-	
+
 
 							①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
 	
@@ -318,27 +360,25 @@
 							@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
 					4.运行项目并访问就可以拿到你想要的结果及页面。
 
-### SpringMVC中的REST:
+### SpringMVC中的REST:	
 
-​				
+即 Representational State Transfer。（资源）表现层状态转化。是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用.
+			@RequestHeader 绑定请求报头的属性值
+			@CookieValue 绑定请求中的 Cookie 值
+			Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为该对象填充属性值。支持级联属性。
+				如：dept.deptId、dept.address.tel 等
+			若希望在多个请求之间共用某个模型属性数据，则可以在控制器类上标注一个 @SessionAttributes, Spring MVC将在模型中对应的属性暂存到 HttpSession 中。
+				• @SessionAttributes 除了可以通过属性名指定需要放到会
+				话中的属性外，还可以通过模型属性的对象类型指定哪些
+				模型属性需要放到会话中
+				– @SessionAttributes(types=User.class) 会将隐含模型中所有类型
+				为 User.class 的属性添加到会话中。
+				– @SessionAttributes(value={“user1”, “user2”})
+				– @SessionAttributes(types={User.class, Dept.class})
+				– @SessionAttributes(value={“user1”, “user2”},
+				types={Dept.class})			
 
-						即 Representational State Transfer。（资源）表现层状态转化。是目前
-						最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，
-						所以正得到越来越多网站的采用.
-				@RequestHeader 绑定请求报头的属性值
-				@CookieValue 绑定请求中的 Cookie 值
-				Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为该对象填充属性值。支持级联属性。
-					如：dept.deptId、dept.address.tel 等
-				若希望在多个请求之间共用某个模型属性数据，则可以在控制器类上标注一个 @SessionAttributes, Spring MVC将在模型中对应的属性暂存到 HttpSession 中。
-					• @SessionAttributes 除了可以通过属性名指定需要放到会
-					话中的属性外，还可以通过模型属性的对象类型指定哪些
-					模型属性需要放到会话中
-					– @SessionAttributes(types=User.class) 会将隐含模型中所有类型
-					为 User.class 的属性添加到会话中。
-					– @SessionAttributes(value={“user1”, “user2”})
-					– @SessionAttributes(types={User.class, Dept.class})
-					– @SessionAttributes(value={“user1”, “user2”},
-					types={Dept.class})
+
 					1. 使用注解@RequestMapping("item/{id}")声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
 	
 					2. 使用(@PathVariable() Integer id)获取url上的数据	
@@ -411,7 +451,9 @@ springmvc文件上传：
 ​				<property name="maxUploadSize" value="5242880"/>
 ​				</bean>
 ​			代码如下：
-​			public Map<String, Object> add(User user, @RequestParam(name="file") MultipartFile file,HttpServletRequest request
+
+```
+			public Map<String, Object> add(User user, @RequestParam(name="file") MultipartFile file,HttpServletRequest request
 ​						,HttpServletResponse response){
 ​					System.out.println(file);
 ​					Map<String, Object> map=new HashMap<>();
@@ -456,9 +498,9 @@ springmvc文件上传：
 ​						map.put("data", null);
 ​						return map;
 ​					}
-​					
+​					}
+```
 
-					}
 ### SpringMVC的自定义拦截器：
 
 ​					Spring MVC也可以使用拦截器对请求进行拦截处理，用户可以自定义拦截器来实现特定的功能，自定义的拦截器必须实现HandlerInterceptor接口
@@ -528,3 +570,4 @@ SpringMVC对比Struts2：
 		比 struts2 高: 支持 JSR303, 处理 ajax 的请求更方便
 		• ④. Struts2 的 OGNL 表达式使页面的开发效率相比
 		Spring MVC 更高些. 
+

@@ -308,7 +308,7 @@ spring整合JPA三种方式：
 - 2.从JNDI中获取：用于从 Java EE 服务器获取指定的EntityManagerFactory，这种方式在进行 Spring 事务管理时一般要使用 JTA 事务管理
 - 3.LocalContainerEntityManagerFactoryBean：适用于所有环境的 FactoryBean，能全面控制 EntityManagerFactory 配置,如指定 Spring 定义的 DataSource 等等。
 
-		
+	
 		一：
 		<!-- 配置 JPA 提供者的适配器 -->
 		<bean id="jpaVendorAdapter"  	class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">

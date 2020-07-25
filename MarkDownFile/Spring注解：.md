@@ -1,6 +1,6 @@
 ## Spring注解：
 
-	### AnnotationConfigApplicationContext:
+### AnnotationConfigApplicationContext:
 
 ​	组件的添加：
 ​		@Configuration:告诉spring这是个配置类（等同于配置文件）
@@ -46,7 +46,7 @@
 	public Person person02(){
 	return new Person("linus", 48);
 	}
-		
+
  	   @Primary:让Spring进行自动装配的时候，默认使用首选的bean；也可以继续使用 @Qualifier指定需要装配的bean的名字
 		@Lazy：懒加载：
 	 		单实例bean：默认在容器启动的时候创建对象；
@@ -88,7 +88,7 @@
 						 * 		2）、要获取工厂Bean本身，我们需要给id前面加一个&
 						 * 			&colorFactoryBean
 						 */
-	
+
 ### 组件赋值：
 
 ​	@Value: @Value赋值；
@@ -135,7 +135,7 @@
 		@Pointcut：切点
 
 		### AOP：【动态代理】
-
+	
 					 * 		指在程序运行期间动态的将某段代码切入到指定方法指定位置进行运行的编程方式；
 					 * 
 					 * 1、导入aop模块；Spring AOP：(spring-aspects)
@@ -153,7 +153,7 @@
 					 * [7]、给配置类中加 @EnableAspectJAutoProxy 【开启基于注解的aop模式】
 					 * 		在Spring中很多的 @EnableXXX;
 			关于Aop模块的注解下次再详细介绍
-
+	
 	声明式事务：
 		@EnableTransctionManagement：
 				开启基于注解的事务管理功能；

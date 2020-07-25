@@ -1,6 +1,6 @@
 ## Spring 
 
-	### 为什么需要Spring FrameWork
+###为什么需要Spring FrameWork
 
 当已经存在许多开放源代码（和专有）J2EEframework时，我们为什么还需要Spring Framework？
 	因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。
@@ -11,14 +11,14 @@
 		可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，
 		方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
 
-		### 体系结构
+###体系结构
 
 ​				Spring 有可能成为所有企业应用程序的一站式服务点，然而，Spring 是模块化的，允许你挑选和选择适用于你的模块，不必要把剩余部分也引入。
 ​				Spring 框架提供约 20 个模块，可以根据应用程序的要求来使用。
 
 ![img](https://img-blog.csdn.net/20180825212519786?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)![Click and drag to move](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
-		### 核心容器
+###核心容器
 
 ​					核心容器由spring-core，spring-beans，spring-context，spring-context-support和spring-expression（SpEL，Spring表达式语言，Spring Expression Language）等模块组成，它们的细节如下：
 ​					spring-core模块提供了框架的基本组成部分，包括 IoC 和依赖注入功能。
@@ -36,7 +36,7 @@
 ​					JMS 模块包含生产（produce）和消费（consume）消息的功能。从Spring 4.1开始，集成了spring-messaging模块。
 ​					事务模块为实现特殊接口类及所有的 POJO 支持编程式和声明式事务管理。（注：编程式事务需要自己写beginTransaction()、commit()、rollback()等事务管理方法，声明式事务是通过注解或配置由spring自动处理，编程式事务粒度更细）
 
-		### Web
+###Web
 
 ​					Web 层由 Web，Web-MVC，Web-Socket 和 Web-Portlet 组成，它们的细节如下：
 ​					Web 模块提供面向web的基本功能和面向web的应用上下文，比如多部分（multipart）文件上传功能、使用Servlet监听器初始化IoC容器等。它还包括HTTP客户端以及Spring远程调用中与web相关的部分。
@@ -44,7 +44,7 @@
 ​					Web-Socket 模块为 WebSocket-based 提供了支持，而且在 web 应用程序中提供了客户端和服务器端之间通信的两种方式。
 ​					Web-Portlet 模块提供了用于Portlet环境的MVC实现，并反映了spring-webmvc模块的功能。
 
-		### 其他
+### 其他
 
 ​					还有其他一些重要的模块，像 AOP，Aspects，Instrumentation，Web 和测试模块，它们的细节如下：
 ​					AOP 模块提供了面向方面的编程实现，允许你定义方法拦截器和切入点对代码进行干净地解耦，从而使实现功能的代码彻底的解耦出来。使用源码级的元数据，可以用类似于.Net属性的方式合并行为信息到代码中。
@@ -53,7 +53,7 @@
 ​					Messaging 模块为 STOMP 提供了支持作为在应用程序中 WebSocket 子协议的使用。它也支持一个注解编程模型，它是为了选路和处理来自 WebSocket 客户端的 STOMP 信息。
 ​					测试模块支持对具有 JUnit 或 TestNG 框架的 Spring 组件的测试。
 
-		### 主要有七大模块
+### 主要有七大模块
 
 每个模块可以单独使用也可以多模块组合使用，
 			核心模块：spring core是核心容器实现了IoC模式，提供了框架的基础功能，在模块中包含BeanFactory类，负责对JavaBean配置与管理采用Factory模式实现loC容器即依赖注入
@@ -85,7 +85,7 @@
 			Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.xml}
 ```
 
-	### IOC 容器
+### IOC 容器
 
 IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，
 			Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。
@@ -120,7 +120,7 @@ IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦�
 是Spring中较高级的容器和beanFactory类似，他可以加载配置文件定义的bean，将所有的bean集中在一起，当请求时分配bean，扩展了BeanFactory容器并添加了国际化，生命周期，事件，监听，提供了BeanFactory的所有特性而且允许用户使用更多的声明方式
 	有三个实现的类：	ClassPathXmlApplicationContext,FileSystemXmlApplicationContext,WebApplicationContext
 
-	##### ClassPathXmlApplicationContext:
+##### ClassPathXmlApplicationContext:
 
 ​	从当前类路径中检索配置文件并装载他来创建容器的实例
 ​	ApplicationContext context=new  ClassPathXmlApplicationContext(String configLocation);
@@ -131,7 +131,7 @@ IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦�
 ​	该容器从 XML 文件中加载已被定义的 bean。在这里，你需要提供给构造器 XML 文件的完整路径
 ​	ApplicationContext context=new  FileSystemXmlApplicationContext(String configLocation);
 
-					##### WebApplicationContext:
+##### WebApplicationContext:
 
 ​	有两种方法在servlet中使用
 
@@ -278,7 +278,7 @@ Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念�
 							</beans>
 ### 依赖注入
 
-	#### 接口注入
+#### 接口注入
 
 ​		基于接口将调用与实现分离，必须实现容器所规定的接口使程序代码和容器的API绑定在一起，不是理想的依赖注入
 
@@ -651,11 +651,11 @@ Aop事务：
 ​			常用TransactionProxyFactoryBean完成声明式事务管理，设置代理的目标对象，代理对象生成的方法和事务的生成方式和事务属性，代理对象是在
 ​			目标对象上生成的包含事务和AOP切面的新的对象，可以付给目标的引用代替目标对象，
 
-	
-				
-										<?xml version="1.0" encoding="UTF-8"?>
-					<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
-	
+
+​				
+​										<?xml version="1.0" encoding="UTF-8"?>
+​					<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
+​	
 					<!-- 指定spring读取db.properties配置 -->
 					<context:property-placeholder location="classpath:db.properties"  />
 	
@@ -715,6 +715,97 @@ Aop事务：
 						</bean>  
 	
 						</beans>
+### Spring最核心的两个类：
+
+#### DefaultListableBeanFactory
+
+XmlBeanFactory继承自DefaultListableBeanFactory，而DefaultListableBeanFactory是整个bean加载的核心部分，是Spring注册及加载bean的默认实现，而对于XmlBeanFactory与DefaultListableBeanFactory不同的地方其实是在XmlBeanFactory中使用了自定义的XML读取器XmlBeanDefinitionReader，实现了个性化的BeanDefinitionReader读取，DefaultListableBeanFactory继承了AbstractAutowireCapableBeanFactory并实现了ConfigurableListableBeanFactory以及BeanDefinitionRegistry接口。以下ConfigurableListableBeanFactory的层次结构图：
+
+![https://note.youdao.com/web/#/file/12fc37e835ef1f10c1a898069ce83c85/note/4d66dbf676d025f8148f4085f4b11519/](https://static.dingtalk.com/media/lALPDgfLOmTZhSvNAsDNBqo_1706_704.png_720x720q90g.jpg?bizType=im)
+
+● AliasRegistry：定义对alias的简单增删改等操作。
+
+● SimpleAliasRegistry：主要使用map作为alias的缓存，并对接口AliasRegistry进行实现。
+
+● SingletonBeanRegistry：定义对单例的注册及获取。
+
+● BeanFactory：定义获取bean及bean的各种属性。
+
+● DefaultSingletonBeanRegistry：对接口SingletonBeanRegistry各函数的实现。
+
+● HierarchicalBeanFactory：继承BeanFactory，也就是在BeanFactory定义的功能的基础上增加了对parentFactory的支持。
+
+● BeanDefinitionRegistry：定义对BeanDefinition的各种增删改操作。
+
+● FactoryBeanRegistrySupport：在DefaultSingletonBeanRegistry基础上增加了对FactoryBean的特殊处理功能。
+
+● ConfigurableBeanFactory：提供配置Factory的各种方法。
+
+● ListableBeanFactory：根据各种条件获取bean的配置清单。
+
+● AbstractBeanFactory：综合FactoryBeanRegistrySupport和ConfigurableBeanFactory的功能。
+
+● AutowireCapableBeanFactory：提供创建bean、自动注入、初始化以及应用bean的后处理器。
+
+● AbstractAutowireCapableBeanFactory：综合AbstractBeanFactory并对接口Autowire Capable BeanFactory进行实现。
+
+● ConfigurableListableBeanFactory：BeanFactory配置清单，指定忽略类型及接口等。
+
+● DefaultListableBeanFactory：综合上面所有功能，主要是对Bean注册后的处理。
+
+XmlBeanFactory对DefaultListableBeanFactory类进行了扩展，主要用于从XML文档中读取BeanDefinition，对于注册及获取Bean都是使用从父类DefaultListableBeanFactory继承的方法去实现，而唯独与父类不同的个性化实现就是增加了XmlBeanDefinitionReader类型的reader属性。在XmlBeanFactory中主要使用reader属性对资源文件进行读取和注册。
+
+```java
+
+/** @deprecated */
+@Deprecated
+public class XmlBeanFactory extends DefaultListableBeanFactory {
+    private final XmlBeanDefinitionReader reader;
+
+    public XmlBeanFactory(Resource resource) throws BeansException {
+        this(resource, (BeanFactory)null);
+    }
+
+    public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
+        super(parentBeanFactory);
+        this.reader = new XmlBeanDefinitionReader(this);
+        this.reader.loadBeanDefinitions(resource);
+    }
+}
+```
+
+#### XmlBeanDefinitionReaderXML
+
+配置文件的读取是Spring中重要的功能，因为Spring的大部分功能都是以配置作为切入点的，那么我们可以从XmlBeanDefinitionReader中梳理一下资源文件读取、解析及注册的大致脉络，首先我们看看各个类的功能。
+
+● ResourceLoader：定义资源加载器，主要应用于根据给定的资源文件地址返回对应的Resource。
+
+● BeanDefinitionReader：主要定义资源文件读取并转换为BeanDefinition的各个功能
+
+● EnvironmentCapable：定义获取Environment方法。
+
+● DocumentLoader：定义从资源文件加载到转换为Document的功能。
+
+● AbstractBeanDefinitionReader：对EnvironmentCapable、BeanDefinitionReader类定义的功能进行实现。
+
+● BeanDefinitionDocumentReader：定义读取Docuemnt并注册BeanDefinition功能。
+
+● BeanDefinitionParserDelegate：定义解析Element的各种方法。经过以上分析，我们可以梳理出整个XML配置文件读取的大致流程如下所示：
+
+![](https://static.dingtalk.com/media/lALPDg7mN66My63NARTNA8s_971_276.png_720x720q90g.jpg?bizType=im)
+
+在XmlBeanDifinitionReader中主要包含以下几步的处理。
+
+（1）通过继承自AbstractBeanDefinitionReader中的方法，来使用ResourLoader将资源文件路径转换为对应的Resource文件。
+
+（2）通过DocumentLoader对Resource文件进行转换，将Resource文件转换为Document文件。
+
+（3）通过实现接口BeanDefinitionDocumentReader的DefaultBeanDefinitionDocumentReader类对Document进行解析，并使用BeanDefinitionParserDelegate对Element进行解析。
+
+### Spring启动流程
+
+
+
 ### Spring 整合JDBC
 
 
@@ -908,7 +999,7 @@ Aop事务：
 										</hibernate-configuration>
 #### 完全整合Struts2,hibernate			
 
-		
+
 	    Spring与struts2整合：
 	    导包：struts2-spring-plugin.jar是struts中的Action交于Spring容器
 	    在struts.xml配置：

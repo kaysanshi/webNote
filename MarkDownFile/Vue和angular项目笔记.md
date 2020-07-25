@@ -219,9 +219,9 @@
 ​		          }
 ​		5.看文档直接使用。
 ​		
-		## elementUI单独使用：
-		import { Button, Select } from 'element-ui';
-	
+​		## elementUI单独使用：
+​		import { Button, Select } from 'element-ui';
+​	
 		Vue.use(Button)
 		Vue.use(Select)
 
@@ -229,8 +229,8 @@
 ​	
 ​		引入对应的css
 ​	
-			import 'element-ui/lib/theme-chalk/index.css';
-	
+​			import 'element-ui/lib/theme-chalk/index.css';
+​	
 		如果报错： webpack.config.js  配置file_loader
 	
 			  {

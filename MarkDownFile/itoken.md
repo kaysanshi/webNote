@@ -5,7 +5,7 @@
 ​        同样是敏捷开发，XP 极限编程 更侧重于实践，并力求把实践做到极限。这一实践可以是测试先行，也可以是结对编程等，关键要看具体的应用场景。
 ​        SCRUM 则是一种开发流程框架，也可以说是一种套路。SCRUM 框架中包含三个角色，三个工件，四个会议，听起来很复杂，其目的是为了有效地完成每一次迭代周期的工作。在这里我们重点讨论的是 SCRUM
 
-    ### 极限编程：
+### 极限编程：
 
 ​        项目组针对客户端代表提出用户故事进行讨论，提出隐喻，项目中的在隐喻和用户故事基础上根据设定的优先级来交付计划，接下来迭代过程。迭代过程中不受开发过程干扰。
 ​        指定迭代计划----》站立会议---》代码共享编程---》最新版本。
@@ -34,12 +34,12 @@
 ​		从 GitLab 8.0 开始，GitLab CI 就已经集成在 GitLab 中，我们只要在项目中添加一个 .gitlab-ci.yml 文件，然后添加一个 Runner，即可进行持续集成。 而且随着 GitLab 的升级，GitLab CI 变得越来越强大
 ​        一次 Pipeline 其实相当于一次构建任务，里面可以包含多个流程，如安装依赖、运行测试、编译、部署测试服务器、部署生产服务器等流程。
 
-        #### Stages: 
+#### Stages: 
 
 表示构建阶段，说白了就是上面提到的流程。我们可以在一次 Pipeline 中定义多个 Stages：
         一个stages接一个stages运行，只有所有的stages完成pipline的任务才会成功。如果任何一个 Stage 失败，那么后面的 Stages 不会执行，则任务失败。
 
-       #### jobs:
+#### jobs:
 
 表示构建工作。表示某个stage里面执行的工作，可以在stage中定义多个jobs.相同的stage中的jobs会并行执行，并且jobs都执行成功后才会成功，
 
@@ -49,7 +49,7 @@
 ​        GitLab CI 最大的作用是管理各个项目的构建状态，因此，运行构建任务这种浪费资源的事情就交给 GitLab Runner 来做拉！
 ​        因为 GitLab Runner 可以安装到不同的机器上，所以在构建任务运行期间并不会影响到 GitLab 的性能   
 
-    ##### 安装Flitlab Runner：
+##### 安装gitlab Runner：
 
 ​          curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.deb.sh | sudo bash
 ​            sudo apt-get update
@@ -78,7 +78,6 @@
 ​            cat id_rsa.pub
 ​            复制 id_rsa.pub 中的秘钥到 GitLab：
 ​            通过 ssh 的方式将代码拉取到本地
-​            
 
             删除注册信息：
     
@@ -87,20 +86,20 @@
     
             gitlab-ci-multi-runner list
 
-
 #### 测试集成效果   
-    .gitlab-ci.yml:
-    这里面将配置依次分为五个阶段：
-        安装依赖(install_deps)， 运行测试(test)，编译(build)，部署测试服务器(deploy_test)，部署生产服务器(deploy_production)
-        设置 Job.only 后，只有当 develop 分支和 master 分支有提交的时候才会触发相关的 Jobs。
+
+.gitlab-ci.yml:
+这里面将配置依次分为五个阶段：
+    安装依赖(install_deps)， 运行测试(test)，编译(build)，部署测试服务器(deploy_test)，部署生产服务器(deploy_production)
+    设置 Job.only 后，只有当 develop 分支和 master 分支有提交的时候才会触发相关的 Jobs。
+
+    节点说明：
+    stages：定义构建阶段，这里只有一个阶段 deploy
+    deploy：构建阶段 deploy 的详细配置也就是任务配置
+    script：需要执行的 shell 脚本
+    only：这里的 master 指在提交到 master 时执行
+    tags：与注册 runner 时的 tag 匹配
     
-        节点说明：
-    
-        stages：定义构建阶段，这里只有一个阶段 deploy
-        deploy：构建阶段 deploy 的详细配置也就是任务配置
-        script：需要执行的 shell 脚本
-        only：这里的 master 指在提交到 master 时执行
-        tags：与注册 runner 时的 tag 匹配
         配置详情：
         stages:
             - install_deps
@@ -166,7 +165,6 @@
 ​      Druid是一个关系型数据库连接池，它是阿里巴巴的一个开源项目。Druid支持所有JDBC兼容的数据库，包括Oracle、MySQL、Derby、PostgreSQL、SQL Server、H2等。Druid在监控、可扩展性、稳定性和性能方面具有明显的优势。通过Druid提供的监控功能，可以实时观察数据库连接池和SQL查询的工作情况。使用Druid连接池，在一定程度上可以提高数据库的访问性能。
 ​        Spring Boot的数据源配置的默认类型是org.apache.tomcat.jdbc.pool.DataSource，为了使用Druid连接池，可以将数据源类型更改为com.alibaba.druid.pool.DruidData-Source，
 ​        如代码清单4-2所示。其中，url、username、password是连接MySQL服务器的配置参数，其他一些参数设定Druid的工作方式。
-​       
 
 ```xml
          spring:
@@ -287,7 +285,7 @@
 
 ## nginx:
 
-        ### 代理： 
+ ### 代理： 
 
  代理服务器，客户机在发送请求时，不会直接发送给目的主机，而是先发送给代理服务器，代理服务接受客户机请求之后，再向主机发出，并接收目的主机返回的数据，存放在代理服务器的硬盘中，再发送给客户机。
 
@@ -632,10 +630,8 @@ volumes:
 - '80:80'
 - '/usr/local/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf'
 - '/usr/local/docker/nginx/wwwroot:/usr/share/nginx/wwwroot'
-
+                             
 ```
-
-​                                              
 
  4.实战：
 
@@ -671,11 +667,8 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 
 - zookeeper： 通过 zookeeper 来监控主从实例， 维护最新有效的 IP， 应用通过 zookeeper 取得 IP，对 Redis 进行访问，该方案需要编写大量的监控代码
 
-- sentinel： 通过 Sentinel 监控主从实例，自动进行故障恢复，该方案有个缺陷：因为主从实例地址( IP & PORT )是不同的，  当故障发生进行主从切换后，应用程序无法知道新地址，故在 Jedis2.2.2 中新增了对 Sentinel 的支持， 应用通过 redis.clients.jedis.JedisSentinelPool.getResource() 取得的 Jedis 实例会及时更新到新的主实例地址做位缓存，session分离，应用排行榜。
+- sentinel： 通过 Sentinel 监控主从实例，自动进行故障恢复，该方案有个缺陷：因为主从实例地址( IP & PORT )是不同的，  当故障发生进行主从切换后，应用程序无法知道新地址，故在 Jedis2.2.2 中新增了对 Sentinel 的支持， 应用通过 redis.clients.jedis.JedisSentinelPool.getResource() 取得的 Jedis 实例会及时更新到新的主实例地址做位缓存，session分离，应用排行榜。   
 
-  
-
-     
 
 ### 搭建redis集群：
 
@@ -719,37 +712,33 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 ​    创建sentinel文件在docker目录下：
 ​        创建docker-compose.yml文件：
 
-
-​    
-​                version: '3.1'
-​                services:
-​                sentinel1:
-​                    image: redis
-​                    container_name: redis-sentinel-1
-​                    ports:
-​                    - 26379:26379
-​                    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-​                    volumes:
-​                    #数据卷
-​                    - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
-​    
-                sentinel2:
-                    image: redis
-                    container_name: redis-sentinel-2
-                    ports:
-                    - 26380:26379
-                    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-                    volumes:
-                    - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
-    
-                sentinel3:
-                    image: redis
-                    container_name: redis-sentinel-3
-                    ports:
-                    - 26381:26379
-                    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-                    volumes:
-                    - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf     
+    version: '3.1'
+        services:
+               sentinel1:
+                        image: redis
+                        container_name: redis-sentinel-1
+                        ports:
+                        - 26379:26379
+                        command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+                        volumes:
+                        #数据卷
+                        - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
+               sentinel2:
+                       image: redis
+                       container_name: redis-sentinel-2
+                       ports:
+                       - 26380:26379
+                       command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+                       volumes:
+                       - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
+               sentinel3:
+                       image: redis
+                       container_name: redis-sentinel-3
+                       ports:
+                       - 26381:26379
+                       command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+                       volumes:
+                       - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf     
             修改Sentinel文件：分别为 sentinel1.conf，sentinel2.conf，sentinel3.conf，配置文件内容相同
             配置内容如下：
                 port 26379
@@ -769,9 +758,6 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
                 sentinel master mymaster
                 sentinel slaves mymaster
             生效后即可：
-
-
-​        
 
 ### 创建redis服务：
 
@@ -1049,14 +1035,18 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 
 ​        单点登录自然也要单点注销，在一个子系统中注销，所有子系统的会话都将被销毁 
 ​    实战部署：
-​        ###SSO Client
+
+### SSO Client
+
 ​            拦截子系统未登录用户请求，跳转至 sso 认证中心
 ​            接收并存储 sso 认证中心发送的令牌
 ​            与 SSO Server 通信，校验令牌的有效性
 ​            建立局部会话
 ​            拦截用户注销请求，向 sso 认证中心发送注销请求
 ​            接收 sso 认证中心发出的注销请求，销毁局部会话
-​        ### SSO Server
+
+ ### SSO Server
+
 ​            验证用户的登录信息
 ​            创建全局会话
 ​            创建授权令牌
@@ -1067,8 +1057,8 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 
 ### 实战SSO:
 
-​          把sso登录的东西存到redis中，然后各个系统在redis服务中取的通过得到的token来获取是否进行登录，
-​          其实就是把信息写入redis中，当下次使用的时候去redis中取结果即可以。
+ 把sso登录的东西存到redis中，然后各个系统在redis服务中取的通过得到的token来获取是否进行登录，
+其实就是把信息写入redis中，当下次使用的时候去redis中取结果即可以。
 ​        
 
 ```
@@ -1110,9 +1100,9 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 
 ```
 
-    ## springboot拦截器的使用：
-    
-        ### 定义拦截器：            
+## springboot拦截器的使用：
+
+    ### 定义拦截器：            
 
 
 ```
@@ -1196,9 +1186,9 @@ public void addInterceptors(InterceptorRegistry registry) {
 
 ```
 
-        ## 使用tkmybatis进行对实体类和mapper的生成：
-    
-        ###  1.pom.xml中引入插件：
+    ## 使用tkmybatis进行对实体类和mapper的生成：
+
+    ###  1.pom.xml中引入插件：
 
 
 ```
@@ -1230,8 +1220,7 @@ public void addInterceptors(InterceptorRegistry registry) {
  </build>
 ```
 
-
-       ### 2.在resource中创建generator文件并创建 generatorConfig.xml:
+  ### 2.在resource中创建generator文件并创建 generatorConfig.xml:
 
 ```
      <?xml version="1.0" encoding="UTF-8"?>
@@ -1311,14 +1300,14 @@ jdbc.password=123
 
 ## Swagger2使用接口文档引擎：
 
-        ### 1.简介：
+### 1.简介：
 
 ​            Swagger是一个规范和完整的框架，用于生成、描述、调用和可视化 RESTful 风格的 Web 服务。
 ​            总体目标是使客户端和文件系统作为服务器以同样的速度来更新。
 ​            在Spring Boot项目中，可以将文件的方法、参数和模型紧密集成到服务器端的代码，允许API来始终保持同步。
 ​            Swagger作用主要包括两点：接口文档在线自动生成和功能测试。
 
-       ### 2.使用形式：           
+### 2.使用形式：           
 
 ```
  pom.xml中引入：
@@ -1428,11 +1417,13 @@ etwork_mode: host
 
 ```
 
-    #### Dockerfile
+#### Dockerfile
+
 ​        FROM ubuntu:xenial
 ​        MAINTAINER topsale@vip.qq.com
 
-        #### 更新数据源
+ ###  更新数据源
+
 ​        WORKDIR /etc/apt
 ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse' > sources.list
 ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse' >> sources.list
@@ -1440,38 +1431,47 @@ etwork_mode: host
 ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse' >> sources.list
 ​        RUN apt-get update
 
-        #### 安装依赖
+####  安装依赖
+
 ​        RUN apt-get install make gcc libpcre3-dev zlib1g-dev --assume-yes
 
-        #### 复制工具包
+ #### 复制工具包
+
 ​        ADD fastdfs-5.11.tar.gz /usr/local/src
 ​        ADD fastdfs-nginx-module_v1.16.tar.gz /usr/local/src
 ​        ADD libfastcommon.tar.gz /usr/local/src
 ​        ADD nginx-1.13.6.tar.gz /usr/local/src
 
-        #### 安装 libfastcommon
+#### 安装 libfastcommon
+
 ​        WORKDIR /usr/local/src/libfastcommon
 ​        RUN ./make.sh && ./make.sh install
 
-        #### 安装 FastDFS
+#### 安装 FastDFS
+
 ​        WORKDIR /usr/local/src/fastdfs-5.11
 ​        RUN ./make.sh && ./make.sh install
 
-        #### 配置 FastDFS 跟踪器
+#### 配置 FastDFS 跟踪器
+
 ​        ADD tracker.conf /etc/fdfs
 ​        RUN mkdir -p /fastdfs/tracker
 
-        #### 配置 FastDFS 存储
+#### 配置 FastDFS 存储
+
 ​        ADD storage.conf /etc/fdfs
 ​        RUN mkdir -p /fastdfs/storage
 
-        #### 配置 FastDFS 客户端
+#### 配置 FastDFS 客户端
+
 ​        ADD client.conf /etc/fdfs
 
-        #### 配置 fastdfs-nginx-module
+#### 配置 fastdfs-nginx-module
+
 ​        ADD config /usr/local/src/fastdfs-nginx-module/src
 
-        ### FastDFS 与 Nginx 集成 
+### FastDFS 与 Nginx 集成 
+
 ```
   WORKDIR /usr/local/src/nginx-1.13.6
         RUN ./configure --add-module=/usr/local/src/fastdfs-nginx-module/src
@@ -1483,7 +1483,8 @@ etwork_mode: host
 
 ```
 
-        #### 配置 Nginx
+#### 配置 Nginx
+
 ```
 ADD nginx.conf /usr/local/nginx/conf
 COPY entrypoint.sh /usr/local/bin/
@@ -1501,24 +1502,25 @@ entrypoint.sh
 
 
 
-    #### 各种配置文件说明
-        ##### tracker.conf
+#### 各种配置文件说明
+    ##### tracker.conf
+
 ​            FastDFS 跟踪器配置，容器中路径为：/etc/fdfs，修改为：
 
 ​        base_path=/fastdfs/tracker
-​        ##### storage.conf
+##### storage.conf
 ​            FastDFS 存储配置，容器中路径为：/etc/fdfs，修改为：
 
 ​            base_path=/fastdfs/storage
 ​            store_path0=/fastdfs/storage
 ​            tracker_server=192.168.75.128:22122
 ​            http.server_port=8888
-​        ##### client.conf
+##### client.conf
 ​            FastDFS 客户端配置，容器中路径为：/etc/fdfs，修改为：
 
 ​            base_path=/fastdfs/tracker
 ​            tracker_server=192.168.75.128:22122
-​        ##### config
+ ##### config
 ​            fastdfs-nginx-module 配置文件，容器中路径为：/usr/local/src/fastdfs-nginx-module/src，修改为：
 
 ```
@@ -1534,14 +1536,15 @@ entrypoint.sh
 
 ```
 
-        ##### mod_fastdfs.conf
+##### mod_fastdfs.conf
+
 ​            fastdfs-nginx-module 配置文件，容器中路径为：/usr/local/src/fastdfs-nginx-module/src，修改为：
 
 ​            connect_timeout=10
 ​            tracker_server=192.168.75.128:22122
 ​            url_have_group_name = true
 ​            store_path0=/fastdfs/storage
-​        ##### nginx.conf
+ ##### nginx.conf
 ​        Nginx 配置文件，容器中路径为：/usr/local/src/nginx-1.13.6/conf，修改为：
 
 ​            user  root;
@@ -1573,16 +1576,24 @@ entrypoint.sh
 ​                    }
 ​                }
 ​            }
-​        #### 启动容器
+
+#### 启动容器
 ​            docker-compose up -d
-​        #### 测试上传
-​        ##### 交互式进入容器
+
+#### 测试上传
+
+##### 交互式进入容器
+
 ​            docker exec -it fastdfs /bin/bash
-​        ##### 测试文件上传
+
+##### 测试文件上传
+
 ​            /usr/bin/fdfs_upload_file /etc/fdfs/client.conf /usr/local/src/fastdfs-5.11/INSTALL
-​        ##### 服务器反馈上传地址
+
+##### 服务器反馈上传地址
+
 ​            group1/M00/00/00/wKhLi1oHVMCAT2vrAAAeSwu9TgM3976771
-​        ##### 测试 Nginx 访问
+##### 测试 Nginx 访问
 ​            http://192.168.75.128:8888/group1/M00/00/00/wKhLi1oHVMCAT2vrAAAeSwu9TgM3976771 
 
 ## MQ
