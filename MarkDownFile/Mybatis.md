@@ -4,7 +4,7 @@
 ​		MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。MyBatis 可以使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs(Plain Old Java Objects,普通的 Java对象)映射成数据库中的记录。
 ​		Mybatis通过xml或注解的方式将要执行的各种statement（statement、preparedStatemnt、CallableStatement）配置起来，并通过java对象和statement中的sql进行映射生成最终执行的sql语句，最后由mybatis框架执行sql并将结果映射成java对象并返回.
 
-	### myBatis功能架构:
+### myBatis功能架构:
 
 ​			API接口层：提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用数据处理层来完成具体的数据处理。 
 ​			数据处理层：负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。 
@@ -33,7 +33,7 @@
 ​			2.mybatis可以控制sql的执行性能可以用于对关系模型要求不高的软件的开发吗，mybatis无法做到与数据库的无关性，如果需要实现多种的数据库的软件的类型需要定义多套sql的映射文件工作量大
 ​			3.hibernate 对象/关系映射能力极强，与数据库无关性好
 
-	### sqlSession的获取：
+### sqlSession的获取：
 
 ​			SqlSession中封装了对数据库的操作，如：查询、插入、更新、删除等。
 ​			SqlSession通过SqlSessionFactory创建。
@@ -61,8 +61,7 @@
 				}
 ```
 
-
-	### SqlMapConfig.xml配置文件
+### SqlMapConfig.xml配置文件
 
 properties（属性）
 settings（全局配置参数）
@@ -250,7 +249,7 @@ Mapper接口开发需要遵循以下规范：
 
 ### 输入参数类型parameterType：
 
-				#### 1.基本类型：
+#### 1.基本类型：
 
 ​				parameterType="Integer" .int，double,float,char,long,boolean,byte,short八大基本数据类型
 
@@ -260,7 +259,8 @@ Mapper接口开发需要遵循以下规范：
 </select>
 ```
 
-				#### 2.pojo类型：
+#### 2.pojo类型：
+
 ```xml
 	<!-- 添加 
         <selectKey>是获得当前的id
@@ -286,8 +286,7 @@ Mapper接口开发需要遵循以下规范：
 </delete>
 ```
 
-
-	#### 3.带有包装类型的即一个类中引入了另一个类：
+#### 3.带有包装类型的即一个类中引入了另一个类：
 
 通过mapper代理模式：
 			创建的usermapper接口：有四个原则：
@@ -296,23 +295,23 @@ Mapper接口开发需要遵循以下规范：
 - 1.id与接口中的方法名一致；
 - 2.输入参数类型一致，
 - 3.返回类型一致
-- 4.在namaspace中指定mapp类路径
-  						在接口中声明：
-  									public  List<User> findUserByQueryVo(QueryVo vo);
-  						包装类：
-  								public class QueryVo implements Serializable{
-  									private User user;
-  									public User getUser() {
-  										return user;
-  									}
-  									public void setUser(User user) {
-  										this.user = user;
-  									}
-  								}
-  						配置映射文件：
-  							
+- 4.在namaspace中指定mapp类路径		
+
 
 ```xml
+	在接口中声明：
+public  List<User> findUserByQueryVo(QueryVo vo);
+    包装类：
+    public class QueryVo implements Serializable{
+    private User user;
+    public User getUser() {
+    return user;
+    }
+    public void setUser(User user) {
+    this.user = user;
+    }
+    }
+    配置映射文件：
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -354,9 +353,9 @@ System.out.println(u);
 
 ### 输出参数类型ResultMap/Type
 
-						#### 1.resultType：
+#### 1.resultType：
 
-​							resultType可以指定将查询结果映射为pojo，但需要pojo的属性名和sql查询的列名一致方可映射成功。如果sql查询字段名和pojo的属性名不一致，可以通过resultMap将字段名和属性名作一个对应关系 ，resultMap实质上还需要将查询结果映射到pojo对象中。
+​	resultType可以指定将查询结果映射为pojo，但需要pojo的属性名和sql查询的列名一致方可映射成功。如果sql查询字段名和pojo的属性名不一致，可以通过resultMap将字段名和属性名作一个对应关系 ，resultMap实质上还需要将查询结果映射到pojo对象中。
 
 ```XML
 用别名：
@@ -384,7 +383,7 @@ select * from user where username like '%${value}%'
 </select>
 ```
 
-						#### 2.resultMap:
+#### 2.resultMap:
 
 ​		sql查询的字段名和你pojo类型字段不一致的情况下用。resultMap可以实现将查询结果映射为复杂类型的pojo，比如在查询结果映射对象中包括pojo和list实现一对一查询和一对多查询
 
