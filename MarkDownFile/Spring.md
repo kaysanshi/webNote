@@ -1,6 +1,6 @@
 ## Spring 
 
-###为什么需要Spring FrameWork
+### 为什么需要Spring FrameWork
 
 当已经存在许多开放源代码（和专有）J2EEframework时，我们为什么还需要Spring Framework？
 	因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。
@@ -11,14 +11,14 @@
 		可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，
 		方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
 
-###体系结构
+### 体系结构
 
 ​				Spring 有可能成为所有企业应用程序的一站式服务点，然而，Spring 是模块化的，允许你挑选和选择适用于你的模块，不必要把剩余部分也引入。
 ​				Spring 框架提供约 20 个模块，可以根据应用程序的要求来使用。
 
 ![img](https://img-blog.csdn.net/20180825212519786?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)![Click and drag to move](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
-###核心容器
+### 核心容器
 
 ​					核心容器由spring-core，spring-beans，spring-context，spring-context-support和spring-expression（SpEL，Spring表达式语言，Spring Expression Language）等模块组成，它们的细节如下：
 ​					spring-core模块提供了框架的基本组成部分，包括 IoC 和依赖注入功能。
@@ -36,7 +36,7 @@
 ​					JMS 模块包含生产（produce）和消费（consume）消息的功能。从Spring 4.1开始，集成了spring-messaging模块。
 ​					事务模块为实现特殊接口类及所有的 POJO 支持编程式和声明式事务管理。（注：编程式事务需要自己写beginTransaction()、commit()、rollback()等事务管理方法，声明式事务是通过注解或配置由spring自动处理，编程式事务粒度更细）
 
-###Web
+### Web
 
 ​					Web 层由 Web，Web-MVC，Web-Socket 和 Web-Portlet 组成，它们的细节如下：
 ​					Web 模块提供面向web的基本功能和面向web的应用上下文，比如多部分（multipart）文件上传功能、使用Servlet监听器初始化IoC容器等。它还包括HTTP客户端以及Spring远程调用中与web相关的部分。
@@ -158,10 +158,10 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 #### Bean元素
 
 使用Spring注册的对象 
-								name属性：给被管理对象起名字，根据改名字获取对象。名字可以重复，可以使用特殊字符
-								class属性：被管理对象完整的类名
-								id属性：与name属性一样，名字不可重复，不能使用特殊字符
-								尽量使用name属性
+			name属性：给被管理对象起名字，根据改名字获取对象。名字可以重复，可以使用特殊字符
+			class属性：被管理对象完整的类名
+			id属性：与name属性一样，名字不可重复，不能使用特殊字符
+			尽量使用name属性
 
 #### Bean作用域
 
@@ -196,19 +196,19 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 #### Bean的生命周期
 
 声明带有 init-method 和/或 destroy-method 参数的 。init-method 属性指定一个方法，在实例化 bean 时，立即调用该方法。同样，destroy-method 指定一个方法，只有从容器中移除 bean 之后，才能调用该方法
-							<?xml version="1.0" encoding="UTF-8"?>
-							<beans xmlns="http://www.springframework.org/schema/beans"
-							    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-							    xsi:schemaLocation="http://www.springframework.org/schema/beans
-							    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-							   <bean id="helloWorld" 
-							       class="com.tutorialspoint.HelloWorld"
-							       init-method="init" destroy-method="destroy">
-							       <property name="message" value="Hello World!"/>
-							   </bean>
-							</beans>
-							如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明初始化方法和销毁方法。
-							框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
+				<?xml version="1.0" encoding="UTF-8"?>
+				<beans xmlns="http://www.springframework.org/schema/beans"
+				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xsi:schemaLocation="http://www.springframework.org/schema/beans
+				    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+				   <bean id="helloWorld" 
+				       class="com.tutorialspoint.HelloWorld"
+				       init-method="init" destroy-method="destroy">
+				       <property name="message" value="Hello World!"/>
+				   </bean>
+				</beans>
+				如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明初始化方法和销毁方法。
+				框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
 
 ##### Bean的初始化步骤
 
@@ -246,36 +246,36 @@ bean 定义可以包含很多的配置信息，包括构造函数的参数，属
 Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念是一样的。你可以定义一个父 bean 的定义作为模板和其他子 bean 就可以从父 bean 中继承所需的配置。当你使用基于 XML 的配置元数据时，通过使用父属性，指定父 bean 作为该属性的值来表明子 bean 的定义。
 
 	xml配置信息：
-						<?xml version="1.0" encoding="UTF-8"?>
-						<beans xmlns="http://www.springframework.org/schema/beans"
-						    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-						    xsi:schemaLocation="http://www.springframework.org/schema/beans
-						    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-						   <bean id="helloWorld" class="xxxparent">
-						      <property name="message1" value="Hello World!"/>
-						      <property name="message2" value="Hello Second World!"/>
-						   </bean>
-						   <bean id="helloIndia" class="xxx" parent="helloWorld">
-						      <property name="message1" value="Hello India!"/>
-						      <property name="message3" value="Namaste India!"/>
-						   </bean>
-						</beans>
-						使用的时候可以直接定义模板，这样就可以方便让其他子bean定义使用：需要指定抽象属性为true;
-							<?xml version="1.0" encoding="UTF-8"?>
-							<beans xmlns="http://www.springframework.org/schema/beans"
-							    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-							    xsi:schemaLocation="http://www.springframework.org/schema/beans
-							    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-							   <bean id="beanTeamplate" abstract="true">
-							      <property name="message1" value="Hello World!"/>
-							      <property name="message2" value="Hello Second World!"/>
-							      <property name="message3" value="Namaste India!"/>
-							   </bean>
-							   <bean id="helloIndia" class="com.tutorialspoint.HelloIndia" parent="beanTeamplate">
-							      <property name="message1" value="Hello India!"/>
-							      <property name="message3" value="Namaste India!"/>
-							   </bean>
-							</beans>
+			<?xml version="1.0" encoding="UTF-8"?>
+			<beans xmlns="http://www.springframework.org/schema/beans"
+			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			    xsi:schemaLocation="http://www.springframework.org/schema/beans
+			    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+			   <bean id="helloWorld" class="xxxparent">
+			      <property name="message1" value="Hello World!"/>
+			      <property name="message2" value="Hello Second World!"/>
+			   </bean>
+			   <bean id="helloIndia" class="xxx" parent="helloWorld">
+			      <property name="message1" value="Hello India!"/>
+			      <property name="message3" value="Namaste India!"/>
+			   </bean>
+			</beans>
+			使用的时候可以直接定义模板，这样就可以方便让其他子bean定义使用：需要指定抽象属性为true;
+				<?xml version="1.0" encoding="UTF-8"?>
+				<beans xmlns="http://www.springframework.org/schema/beans"
+				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xsi:schemaLocation="http://www.springframework.org/schema/beans
+				    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+				   <bean id="beanTeamplate" abstract="true">
+				      <property name="message1" value="Hello World!"/>
+				      <property name="message2" value="Hello Second World!"/>
+				      <property name="message3" value="Namaste India!"/>
+				   </bean>
+				   <bean id="helloIndia" class="com.tutorialspoint.HelloIndia" parent="beanTeamplate">
+				      <property name="message1" value="Hello India!"/>
+				      <property name="message3" value="Namaste India!"/>
+				   </bean>
+				</beans>
 ### 依赖注入
 
 #### 接口注入
@@ -291,25 +291,25 @@ Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念�
 ​				一个简单的Javabean就是有一个私有的属性对应getter() setter()方法，来实现对属性的封装；
 
 ```java
-							class User {
-								private  String name;
-								private  String  sex;
-								private  int age;
-								//setter();
-							}
-							applicationContext.xml配置：
-							<bean name="user" class="xxx.User">
-								<property name="name">
-									<value>sssd</value>
-								</property>
-								<property name="age">
-									<value>12</value>
-								</property>
-								<property name="sex">
-									<value>男</value>
-								</property>
-							</bean>
-							直接获取到bean用User对象接收，然后即可以调用对象的属性
+					class User {
+						private  String name;
+						private  String  sex;
+						private  int age;
+						//setter();
+					}
+					applicationContext.xml配置：
+					<bean name="user" class="xxx.User">
+						<property name="name">
+							<value>sssd</value>
+						</property>
+						<property name="age">
+							<value>12</value>
+						</property>
+						<property name="sex">
+							<value>男</value>
+						</property>
+					</bean>
+					直接获取到bean用User对象接收，然后即可以调用对象的属性
 ```
 #### 构造函数注入
 
@@ -320,217 +320,217 @@ Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念�
 
 ```
 public class TextEditor {
-							   private SpellChecker spellChecker;
-							   public TextEditor(SpellChecker spellChecker) {
-							      System.out.println("Inside TextEditor constructor." );
-							      this.spellChecker = spellChecker;
-							   }
-							   public void spellCheck() {
-							      spellChecker.checkSpelling();
-							   }
-							}
-							public class SpellChecker {
-								   public SpellChecker(){
-								      System.out.println("Inside SpellChecker constructor." );
-								   }
-								   public void checkSpelling() {
-								      System.out.println("Inside checkSpelling." );
-								   } 
-								}
-							public static void main(String[] args) {
-							      ApplicationContext context = 
-								     new ClassPathXmlApplicationContext("Beans.xml");
-							      TextEditor te = (TextEditor) context.getBean("textEditor");
-							      te.spellCheck();
-							   }
-							   beans.xml文件：
-							   <!-- Definition for textEditor bean -->
-							   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
-							      <constructor-arg ref="spellChecker"/>
-							   </bean>
+		   private SpellChecker spellChecker;
+		   public TextEditor(SpellChecker spellChecker) {
+		      System.out.println("Inside TextEditor constructor." );
+		      this.spellChecker = spellChecker;
+		   }
+		   public void spellCheck() {
+		      spellChecker.checkSpelling();
+		   }
+		}
+		public class SpellChecker {
+			   public SpellChecker(){
+			      System.out.println("Inside SpellChecker constructor." );
+			   }
+			   public void checkSpelling() {
+			      System.out.println("Inside checkSpelling." );
+			   } 
+			}
+		public static void main(String[] args) {
+		      ApplicationContext context = 
+			     new ClassPathXmlApplicationContext("Beans.xml");
+		      TextEditor te = (TextEditor) context.getBean("textEditor");
+		      te.spellCheck();
+		   }
+		   beans.xml文件：
+		   <!-- Definition for textEditor bean -->
+		   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
+		      <constructor-arg ref="spellChecker"/>
+		   </bean>
 
-							   <!-- Definition for spellChecker bean -->
-							   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
-							   </bean>
-							   这样的好处是实例化对象的同时完成属性的初始化。
-							   例如：
-								class User {
-									private  String name;
-									private  String  sex;
-									private  int age;
-									//setter();
-									User(String name,int age,string sex){
-										this.name=name;
-										this.age=age;
-										this.sex=sex;
-									}
-								}
-								在applicationContext.xml为其赋值
-									<bean name="user" class="com.xxx.User">
-									<constructor-arg>
-										<value>小强</value>
-									</contructor-arg>
-									<constructor-arg>
-										<value>12</value>
-									</contructor-arg>
-									<constructor-arg>
-										<value>男</value>
-									</contructor-arg>
-								构造函数注入设置执行哪一个构造函数，主要用 index属性进行测试：
-									<!-- 构造函数注入
-										constructor-age 用于设置属性的 
-										name 用于设置构造函数的参数名
-										index 用于设置参数的索引
-										type 用于设置参数类型
-										ref 用于引入其他对象，也需要先把其他对象给实例出来
-									 -->
-										<bean name="user4" class="com.leo.demo.User">
-										<constructor-arg name="name" index="0" type="String" value="黑市"></constructor-arg>
-										<constructor-arg name="car" index="1" ref="car"></constructor-arg>
-										</bean>
-										<bean name="user5" class="com.leo.demo.User">
-										<constructor-arg name="name" index="1" type="String" value="黑市"></constructor-arg>
-										<constructor-arg name="car" index="0" ref="car"></constructor-arg>
-										</bean>
-									构造函数如下：
-										/**
-										 * 指定到这个构造：
-										 * @param car
-										 * @param name
-										 */
-										public User(Car car,String name) {
-											this.car=car;
-											this.name=name;
-											System.out.println("car,name,");
-										}
-										/**
-										 * 
-										 * @param name
-										 * @param car
-										 */
-										public User(String name,Car car) {
-											this.car=car;
-											this.name=name;
-											System.out.println("name,car");
-										}
-									使用的时候：
-										@Test
-										public void test5() {
-											ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
-											User bean=(User)context.getBean("user4");
-											System.out.println(bean.getCar().getName());
-											context.close();
-										}
-										/**
-										 * 构造函数注入指定走哪一个构造函数配置走car name
-										 */
-										@Test
-										public void test6() {
-											ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
-											User bean=(User)context.getBean("user5");
-											System.out.println(bean.getCar().getName());
-											context.close();
-										}
+		   <!-- Definition for spellChecker bean -->
+		   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
+		   </bean>
+		   这样的好处是实例化对象的同时完成属性的初始化。
+		   例如：
+			class User {
+				private  String name;
+				private  String  sex;
+				private  int age;
+				//setter();
+				User(String name,int age,string sex){
+					this.name=name;
+					this.age=age;
+					this.sex=sex;
+				}
+			}
+			在applicationContext.xml为其赋值
+				<bean name="user" class="com.xxx.User">
+				<constructor-arg>
+					<value>小强</value>
+				</contructor-arg>
+				<constructor-arg>
+					<value>12</value>
+				</contructor-arg>
+				<constructor-arg>
+					<value>男</value>
+				</contructor-arg>
+			构造函数注入设置执行哪一个构造函数，主要用 index属性进行测试：
+				<!-- 构造函数注入
+					constructor-age 用于设置属性的 
+					name 用于设置构造函数的参数名
+					index 用于设置参数的索引
+					type 用于设置参数类型
+					ref 用于引入其他对象，也需要先把其他对象给实例出来
+				 -->
+					<bean name="user4" class="com.leo.demo.User">
+					<constructor-arg name="name" index="0" type="String" value="黑市"></constructor-arg>
+					<constructor-arg name="car" index="1" ref="car"></constructor-arg>
+					</bean>
+					<bean name="user5" class="com.leo.demo.User">
+					<constructor-arg name="name" index="1" type="String" value="黑市"></constructor-arg>
+					<constructor-arg name="car" index="0" ref="car"></constructor-arg>
+					</bean>
+				构造函数如下：
+					/**
+					 * 指定到这个构造：
+					 * @param car
+					 * @param name
+					 */
+					public User(Car car,String name) {
+						this.car=car;
+						this.name=name;
+						System.out.println("car,name,");
+					}
+					/**
+					 * 
+					 * @param name
+					 * @param car
+					 */
+					public User(String name,Car car) {
+						this.car=car;
+						this.name=name;
+						System.out.println("name,car");
+					}
+				使用的时候：
+					@Test
+					public void test5() {
+						ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
+						User bean=(User)context.getBean("user4");
+						System.out.println(bean.getCar().getName());
+						context.close();
+					}
+					/**
+					 * 构造函数注入指定走哪一个构造函数配置走car name
+					 */
+					@Test
+					public void test6() {
+						ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
+						User bean=(User)context.getBean("user5");
+						System.out.println(bean.getCar().getName());
+						context.close();
+					}
 ```
 
 #### 设值函数注入：
 
 ​			当容器调用一个无参的构造函数或一个无参的静态 factory 方法来初始化你的 bean 后，通过容器在你的 bean 上调用设值函数，基于设值函数的 DI 就完成了。
 
-							<?xml version="1.0" encoding="UTF-8"?>
-							<beans xmlns="http://www.springframework.org/schema/beans"
-							    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-							    xsi:schemaLocation="http://www.springframework.org/schema/beans
-							    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	
-							   <!-- Definition for textEditor bean -->
-							   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
-							      <property name="spellChecker" ref="spellChecker"/>
-							   </bean>
-	
-							   <!-- Definition for spellChecker bean -->
-							   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
-							   </bean>
-	
-							</beans>
-							应该注意定义在基于构造函数注入和基于设值函数注入中的 Beans.xml 文件的区别。
-							唯一的区别就是在基于构造函数注入中，我们使用的是〈bean〉标签中的〈constructor-arg〉元素，而在基于设值函数的注入中，我们使用的是〈bean〉标签中的〈property〉元素。
-							如果你要把一个引用传递给一个对象，那么你需要使用 标签的 ref 属性，而如果你要直接传递一个值，那么你应该使用 value 属性。
+			<?xml version="1.0" encoding="UTF-8"?>
+			<beans xmlns="http://www.springframework.org/schema/beans"
+			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			    xsi:schemaLocation="http://www.springframework.org/schema/beans
+			    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+			   <!-- Definition for textEditor bean -->
+			   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
+			      <property name="spellChecker" ref="spellChecker"/>
+			   </bean>
+
+			   <!-- Definition for spellChecker bean -->
+			   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
+			   </bean>
+
+			</beans>
+			应该注意定义在基于构造函数注入和基于设值函数注入中的 Beans.xml 文件的区别。
+			唯一的区别就是在基于构造函数注入中，我们使用的是〈bean〉标签中的〈constructor-arg〉元素，而在基于设值函数的注入中，我们使用的是〈bean〉标签中的〈property〉元素。
+			如果你要把一个引用传递给一个对象，那么你需要使用 标签的 ref 属性，而如果你要直接传递一个值，那么你应该使用 value 属性。
 #### 注入其他
 
 
-					注入内部beans:
-							匿名内部类的与xml
-							<bean id="outerBean" class="...">
-							      <property name="target">
-								 <bean id="innerBean" class="..."/>
-							      </property>
-							   </bean>
-					注入集合：
-							 Java Collection 类型 List、Set、Map 和 Properties，为了处理这种情况，Spring提供了四种类型的集合：
-							 <list><set><map><props>
-							例如：
-									public class JavaCollection {
-									   List addressList;
-									   Set  addressSet;
-									   Map  addressMap;
-									   Properties addressProp;
-										....
-									   }
-							配置形式：
-							<?xml version="1.0" encoding="UTF-8"?>
-	
-							<beans xmlns="http://www.springframework.org/schema/beans"
-							    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-							    xsi:schemaLocation="http://www.springframework.org/schema/beans
-							    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	
-							   <!-- Definition for javaCollection -->
-							   <bean id="javaCollection" class="com.tutorialspoint.JavaCollection">
-	
-							      <!-- results in a setAddressList(java.util.List) call -->
-							      <property name="addressList">
-								 <list>
-								    <value>INDIA</value>
-								    <value>Pakistan</value>
-								    <value>USA</value>
-								    <value>USA</value>
-								 </list>
-							      </property>
-	
-							      <!-- results in a setAddressSet(java.util.Set) call -->
-							      <property name="addressSet">
-								 <set>
-								    <value>INDIA</value>
-								    <value>Pakistan</value>
-								    <value>USA</value>
-								    <value>USA</value>
-								</set>
-							      </property>
-	
-							      <!-- results in a setAddressMap(java.util.Map) call -->
-							      <property name="addressMap">
-								 <map>
-								    <entry key="1" value="INDIA"/>
-								    <entry key="2" value="Pakistan"/>
-								    <entry key="3" value="USA"/>
-								    <entry key="4" value="USA"/>
-								 </map>
-							      </property>
-	
-							      <!-- results in a setAddressProp(java.util.Properties) call -->
-							      <property name="addressProp">
-								 <props>
-								    <prop key="one">INDIA</prop>
-								    <prop key="two">Pakistan</prop>
-								    <prop key="three">USA</prop>
-								    <prop key="four">USA</prop>
-								 </props>
-							      </property>
-	
-							   </bean>
-	
-							</beans>
+		注入内部beans:
+				匿名内部类的与xml
+				<bean id="outerBean" class="...">
+				      <property name="target">
+					 <bean id="innerBean" class="..."/>
+				      </property>
+				   </bean>
+		注入集合：
+				 Java Collection 类型 List、Set、Map 和 Properties，为了处理这种情况，Spring提供了四种类型的集合：
+				 <list><set><map><props>
+				例如：
+						public class JavaCollection {
+						   List addressList;
+						   Set  addressSet;
+						   Map  addressMap;
+						   Properties addressProp;
+							....
+						   }
+				配置形式：
+				<?xml version="1.0" encoding="UTF-8"?>
+
+				<beans xmlns="http://www.springframework.org/schema/beans"
+				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				    xsi:schemaLocation="http://www.springframework.org/schema/beans
+				    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+				   <!-- Definition for javaCollection -->
+				   <bean id="javaCollection" class="com.tutorialspoint.JavaCollection">
+
+				      <!-- results in a setAddressList(java.util.List) call -->
+				      <property name="addressList">
+					 <list>
+					    <value>INDIA</value>
+					    <value>Pakistan</value>
+					    <value>USA</value>
+					    <value>USA</value>
+					 </list>
+				      </property>
+
+				      <!-- results in a setAddressSet(java.util.Set) call -->
+				      <property name="addressSet">
+					 <set>
+					    <value>INDIA</value>
+					    <value>Pakistan</value>
+					    <value>USA</value>
+					    <value>USA</value>
+					</set>
+				      </property>
+
+				      <!-- results in a setAddressMap(java.util.Map) call -->
+				      <property name="addressMap">
+					 <map>
+					    <entry key="1" value="INDIA"/>
+					    <entry key="2" value="Pakistan"/>
+					    <entry key="3" value="USA"/>
+					    <entry key="4" value="USA"/>
+					 </map>
+				      </property>
+
+				      <!-- results in a setAddressProp(java.util.Properties) call -->
+				      <property name="addressProp">
+					 <props>
+					    <prop key="one">INDIA</prop>
+					    <prop key="two">Pakistan</prop>
+					    <prop key="three">USA</prop>
+					    <prop key="four">USA</prop>
+					 </props>
+				      </property>
+
+				   </bean>
+
+				</beans>
 ### 自动装配
 
 自动装配：
@@ -656,65 +656,65 @@ Aop事务：
 ​										<?xml version="1.0" encoding="UTF-8"?>
 ​					<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
 ​	
-					<!-- 指定spring读取db.properties配置 -->
-					<context:property-placeholder location="classpath:db.properties"  />
-	
-					<!-- 事务核心管理器,封装了所有事务操作. 依赖于连接池 -->
-					<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
-						<property name="dataSource" ref="dataSource" ></property>
-					</bean>
-					<!-- 事务模板对象 -->
-					<bean name="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" >
-						<property name="transactionManager" ref="transactionManager" ></property>
-					</bean>
-	
-					<!-- 配置事务通知 -->
-					<tx:advice id="txAdvice" transaction-manager="transactionManager" >
-						<tx:attributes>
-							<!-- 以方法为单位,指定方法应用什么事务属性
-								isolation:隔离级别
-								propagation:传播行为
-								read-only:是否只读
-							 -->
-							<tx:method name="save*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-							<tx:method name="persist*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-							<tx:method name="update*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-							<tx:method name="modify*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-							<tx:method name="delete*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-							<tx:method name="remove*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-							<tx:method name="get*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="true" />
-							<tx:method name="find*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="true" />
-							<tx:method name="transfer" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
-						</tx:attributes>
-					</tx:advice>
-					<!-- 配置织入 -->
-						<aop:config  >
-							<!-- 配置切点表达式      *号代表的任意的参数， -->
-							<aop:pointcut expression="execution(* service.*ServiceImpl.*(..))" id="txPc"/>
-							<!-- 配置切面 : 通知+切点
-									advice-ref:通知的名称
-									pointcut-ref:切点的名称
-							 -->
-							<aop:advisor advice-ref="txAdvice" pointcut-ref="txPc" />
-						</aop:config>
-					<!-- 1.将连接池 -->
-						<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
-							<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
-							<property name="driverClass" value="${jdbc.driverClass}" ></property>
-							<property name="user" value="${jdbc.user}" ></property>
-							<property name="password" value="${jdbc.password}" ></property>
-						</bean>
-					<!-- 2.Dao-->
-						<bean name="accountDao" class="dao.AccountDaoImpl" >
-							<property name="dataSource" ref="dataSource" ></property>
-						</bean>
-						<!-- 3.Service-->
-						<bean name="accountService" class="service.AccountServiceImpl" >
-							<property name="ad" ref="accountDao" ></property>
-							<property name="tt" ref="transactionTemplate" ></property>
-						</bean>  
-	
-						</beans>
+			<!-- 指定spring读取db.properties配置 -->
+			<context:property-placeholder location="classpath:db.properties"  />
+
+			<!-- 事务核心管理器,封装了所有事务操作. 依赖于连接池 -->
+			<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+				<property name="dataSource" ref="dataSource" ></property>
+			</bean>
+			<!-- 事务模板对象 -->
+			<bean name="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" >
+				<property name="transactionManager" ref="transactionManager" ></property>
+			</bean>
+
+			<!-- 配置事务通知 -->
+			<tx:advice id="txAdvice" transaction-manager="transactionManager" >
+				<tx:attributes>
+					<!-- 以方法为单位,指定方法应用什么事务属性
+						isolation:隔离级别
+						propagation:传播行为
+						read-only:是否只读
+					 -->
+					<tx:method name="save*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+					<tx:method name="persist*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+					<tx:method name="update*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+					<tx:method name="modify*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+					<tx:method name="delete*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+					<tx:method name="remove*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+					<tx:method name="get*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="true" />
+					<tx:method name="find*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="true" />
+					<tx:method name="transfer" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+				</tx:attributes>
+			</tx:advice>
+			<!-- 配置织入 -->
+				<aop:config  >
+					<!-- 配置切点表达式      *号代表的任意的参数， -->
+					<aop:pointcut expression="execution(* service.*ServiceImpl.*(..))" id="txPc"/>
+					<!-- 配置切面 : 通知+切点
+							advice-ref:通知的名称
+							pointcut-ref:切点的名称
+					 -->
+					<aop:advisor advice-ref="txAdvice" pointcut-ref="txPc" />
+				</aop:config>
+			<!-- 1.将连接池 -->
+				<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+					<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
+					<property name="driverClass" value="${jdbc.driverClass}" ></property>
+					<property name="user" value="${jdbc.user}" ></property>
+					<property name="password" value="${jdbc.password}" ></property>
+				</bean>
+			<!-- 2.Dao-->
+				<bean name="accountDao" class="dao.AccountDaoImpl" >
+					<property name="dataSource" ref="dataSource" ></property>
+				</bean>
+				<!-- 3.Service-->
+				<bean name="accountService" class="service.AccountServiceImpl" >
+					<property name="ad" ref="accountDao" ></property>
+					<property name="tt" ref="transactionTemplate" ></property>
+				</bean>  
+
+				</beans>
 ### Spring最核心的两个类：
 
 #### DefaultListableBeanFactory
@@ -809,194 +809,194 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 ### Spring 整合JDBC
 
 
-	Spring 整合JDBC:
-			JdbcTemplate操作数据库：
-					在这个类中的内部已经处理完了数据库资源的建立和释放并且可以避免一些常见的错误，可以直接实例化，也可以通过依赖注入
-					的方式在ApplicationContext中参生作为Javabean的引用。运行核心的jdbc的工作流程提供很多重载方法提高程序的灵活性。
-			//public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
-			//super.getJdbcTemplate().
-			//可以直接将DataSource直接在这个类中注入时直接作为参数把数据源给注入就可以了
-			public class UserDaoImpl implements UserDao {
-				private JdbcTemplate Jt;
-				public JdbcTemplate getJt() {
-					return Jt;
-				}
-	
-				public void setJt(JdbcTemplate jt) {
-					Jt = jt;
-				}
-	
-				@Override
-				public void addUser(User user) {
-					// TODO Auto-generated method stub
-					String sql="insert into user values(null,'kkk','123','kkka222.COM')";
-					Jt.update(sql);
-				}
-	
-				@Override
-				public void deleteUser(int id) {
-					// TODO Auto-generated method stub
-					String sql="delete from user where id=?";
-					Jt.update(sql,id);
-					System.out.println("删除成功");
-				}
-	
-				@Override
-				public void updateUser(User user) {
-					// TODO Auto-generated method stub
-					String sql="update user set name='?',password='?',email='?' where id=?";
-					Jt.update(sql, user.getName(),user.getPassword(),user.getEmail(),user.getId());
-				}
-	
-				@Override
-				public int getTotalCount() {
-					// TODO Auto-generated method stub
-					String sql="select count(*) from user";
-					return Jt.queryForObject(sql, Integer.class);
-					
-				}
-	
-				@Override
-				public List<User> getAllUser() {
-					// TODO Auto-generated method stub
-					String sql="select * from user ";
-					
-					 List<User> list=Jt.query(sql, new RowMapper<User>(){
-	
-						@Override
-						public User mapRow(ResultSet rs, int arg1) throws SQLException {
-							// TODO Auto-generated method stub
-							User user=new User();
-							user.setId(rs.getInt("id"));
-							user.setName(rs.getString("name"));
-							user.setPassword(rs.getString("password"));
-							user.setEmail(rs.getString("email"));
-							return user;
-						}
-						
-					});
-					return list;
-				}
-	
-				@Override
-				public User getUserbyId(Integer id) {
-					// TODO Auto-generated method stub
-					String sql="select * from user where id=?";
-					return Jt.queryForObject(sql, new RowMapper<User>(){
-	
-						@Override
-						public User mapRow(ResultSet rs, int arg1) throws SQLException {
-							// TODO Auto-generated method stub
-							User user=new User();
-							user.setId(rs.getInt("id"));
-							user.setName(rs.getString("name"));
-							user.setPassword(rs.getString("password"));
-							user.setEmail(rs.getString("email"));
-							return user;
-						}
-						
-					},id);
-				}
-			配置：
-		<!--Spring 读取指定的db.property配置  -->
-		<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
-		<!-- 将连接池放到spring 容器 -->
-		<bean name ="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<!-- 直接在这设置：<property name="jdbcUrl" value="jdbc:mysql:///hibernate"></property>
-			<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
-			<property name="user" value="root"></property>
-			<property name="password" value="123"></property> -->
-			<!-- 这是通过Spring进行读取配置文件然后进行读取各个属性 -->
-			<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
-			<property name="driverClass" value="${jdbc.driverClass}"></property>
-			<property name="user" value="${jdbc.user}"></property>
-			<property name="password" value="${jdbc.password}"></property>
-		</bean>
-		<!-- 将JdbcTemplate放入Spring容器 -->
-		<bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-			<property name="dataSource" ref="dataSource"></property>
-		</bean>
-		<!-- 将UserDao放入到Spring容器中 -->
-		<bean name="userDao" class="com.leo.jdbc.UserDaoImpl">
-			<property name="Jt" ref="jdbcTemplate"></property>
-		</bean>
-	
-		</beans>
+Spring 整合JDBC:
+		JdbcTemplate操作数据库：
+				在这个类中的内部已经处理完了数据库资源的建立和释放并且可以避免一些常见的错误，可以直接实例化，也可以通过依赖注入
+				的方式在ApplicationContext中参生作为Javabean的引用。运行核心的jdbc的工作流程提供很多重载方法提高程序的灵活性。
+		//public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
+		//super.getJdbcTemplate().
+		//可以直接将DataSource直接在这个类中注入时直接作为参数把数据源给注入就可以了
+		public class UserDaoImpl implements UserDao {
+			private JdbcTemplate Jt;
+			public JdbcTemplate getJt() {
+				return Jt;
+			}
+
+			public void setJt(JdbcTemplate jt) {
+				Jt = jt;
+			}
+
+			@Override
+			public void addUser(User user) {
+				// TODO Auto-generated method stub
+				String sql="insert into user values(null,'kkk','123','kkka222.COM')";
+				Jt.update(sql);
+			}
+
+			@Override
+			public void deleteUser(int id) {
+				// TODO Auto-generated method stub
+				String sql="delete from user where id=?";
+				Jt.update(sql,id);
+				System.out.println("删除成功");
+			}
+
+			@Override
+			public void updateUser(User user) {
+				// TODO Auto-generated method stub
+				String sql="update user set name='?',password='?',email='?' where id=?";
+				Jt.update(sql, user.getName(),user.getPassword(),user.getEmail(),user.getId());
+			}
+
+			@Override
+			public int getTotalCount() {
+				// TODO Auto-generated method stub
+				String sql="select count(*) from user";
+				return Jt.queryForObject(sql, Integer.class);
+
+			}
+
+			@Override
+			public List<User> getAllUser() {
+				// TODO Auto-generated method stub
+				String sql="select * from user ";
+
+				 List<User> list=Jt.query(sql, new RowMapper<User>(){
+
+					@Override
+					public User mapRow(ResultSet rs, int arg1) throws SQLException {
+						// TODO Auto-generated method stub
+						User user=new User();
+						user.setId(rs.getInt("id"));
+						user.setName(rs.getString("name"));
+						user.setPassword(rs.getString("password"));
+						user.setEmail(rs.getString("email"));
+						return user;
+					}
+
+				});
+				return list;
+			}
+
+			@Override
+			public User getUserbyId(Integer id) {
+				// TODO Auto-generated method stub
+				String sql="select * from user where id=?";
+				return Jt.queryForObject(sql, new RowMapper<User>(){
+
+					@Override
+					public User mapRow(ResultSet rs, int arg1) throws SQLException {
+						// TODO Auto-generated method stub
+						User user=new User();
+						user.setId(rs.getInt("id"));
+						user.setName(rs.getString("name"));
+						user.setPassword(rs.getString("password"));
+						user.setEmail(rs.getString("email"));
+						return user;
+					}
+
+				},id);
+			}
+		配置：
+	<!--Spring 读取指定的db.property配置  -->
+	<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+	<!-- 将连接池放到spring 容器 -->
+	<bean name ="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<!-- 直接在这设置：<property name="jdbcUrl" value="jdbc:mysql:///hibernate"></property>
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="123"></property> -->
+		<!-- 这是通过Spring进行读取配置文件然后进行读取各个属性 -->
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	<!-- 将JdbcTemplate放入Spring容器 -->
+	<bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 将UserDao放入到Spring容器中 -->
+	<bean name="userDao" class="com.leo.jdbc.UserDaoImpl">
+		<property name="Jt" ref="jdbcTemplate"></property>
+	</bean>
+
+	</beans>
 ### Spring整合其他两大框架
 
 #### web层单独整合
 
-				Spring整合其他两大框架原理：
-							web层:用struts2+jsp然后Action对象交给Spring管理
-							service层：JavaBean直接交给Spring 管理
-							dao :hibernate中的sessionfactory和Session获得，aop事务都交给Spring管理都由Spring容器来创建和维护
-				导包：
-					struts2:基本包+    struts2-spring-plugin-2.5.16是struts把Action对象交给Spring的插件如果没有Spring容器则会报错
-					Spring：基础包：core|bean.context,expression,logging,log4j.   web:-web,    aop:aop,aspect,aopweaving,aop联盟，事务：jdbc,tx,c3p0,orm,
-							测试：-test,
-					hibernate：操作数据库的规范-entitymanager;
-			导入约束：
-				web应用单独配置Spring容器：
-					在web 的xml配置如下：
-					<!--将 web 引入Spring容器中 -->
-									<context-param>
-											<param-name>contextConfigLocation</param-name>
-											<param-value>classpath*:/applicationContext3.xml</param-value>
-									 </context-param>
-				web应用单独整合struts2:
-						在web 的xml配置如下：
-									 <!-- 配置struts -->
-									 <filter>
-									      <filter-name>struts2</filter-name>
-									      <filter-class>
-										 org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
-									      </filter-class>
-									   </filter>
-									   <filter-mapping>
-									      <filter-name>struts2</filter-name>
-									      <url-pattern>/*</url-pattern>
-									   </filter-mapping>
-				web单独整合hibernate :
-								1.配置实体映射文件：
-										<?xml version='1.0' encoding='UTF-8'?>  
-										<!DOCTYPE hibernate-mapping PUBLIC  
-										 "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
-										 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
-										 <!-- 映射文件 -->
-										 <hibernate-mapping>
-										 <!-- <hibernate-mapping> 为根元素的 XML 文件，里面包含所有<class>标签。
-										<class> 标签是用来定义从一个 Java 类到数据库表的特定映射。
-										Java 的类名使用 name 属性来表示，数据库表明用 table 属性来表示。 -->
-												<class name="com.leo.domain.User" table="user">
-												<!-- <meta> 标签是一个可选元素，可以被用来修饰类。 -->
-													<meta attribute="class-description">
-												 This class contains the employee detail. 
-												</meta>
-												<!--主键标签   -->
-													<id name="id" type="int" column="id">
-															<!--generator用来自动生成主键 ,class有以下属性native，使用算法创建主键 -->
-															<generator class="assigned"></generator>  
-													</id>
-													<!-- property用来使属性与数据库表的列匹配 标签中 name 属性引用的是类的性质，column 属性引用的是数据库表的列。
-													type 属性保存 Hibernate 映射的类型，这个类型会将从 Java 转换成 SQL 数据类型。-->
-															<property name="name" column="name" type="string"/>
-														<property name="password" column="password" type="string"/>
-														<property name="email" column="email" type="string"/>
-												</class>
-										 </hibernate-mapping>
-								2.配置hibernate 配置文件：
-										<hibernate-configuration>
-										    <session-factory>
-										    <!--数据库的驱动，URL，用户名，密码，hibernate方言，打印sql,映射文件  -->
-											<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-											<property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
-											<property name="connection.username">root</property>
-											<property name="connection.password">123</property>
-											<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
-											<property name="show_sql">true</property>
-											<mapping resource="com/leo/domain/user.hbm.xml"/> 
-										    </session-factory>
-										</hibernate-configuration>
+Spring整合其他两大框架原理：
+		web层:用struts2+jsp然后Action对象交给Spring管理
+		service层：JavaBean直接交给Spring 管理
+		dao :hibernate中的sessionfactory和Session获得，aop事务都交给Spring管理都由Spring容器来创建和维护
+导包：
+struts2:基本包+    struts2-spring-plugin-2.5.16是struts把Action对象交给Spring的插件如果没有Spring容器则会报错
+Spring：基础包：core|bean.context,expression,logging,log4j.   web:-web,    aop:aop,aspect,aopweaving,aop联盟，事务：jdbc,tx,c3p0,orm,
+		测试：-test,
+hibernate：操作数据库的规范-entitymanager;
+导入约束：
+web应用单独配置Spring容器：
+在web 的xml配置如下：
+<!--将 web 引入Spring容器中 -->
+				<context-param>
+						<param-name>contextConfigLocation</param-name>
+						<param-value>classpath*:/applicationContext3.xml</param-value>
+				 </context-param>
+web应用单独整合struts2:
+	在web 的xml配置如下：
+				 <!-- 配置struts -->
+				 <filter>
+				      <filter-name>struts2</filter-name>
+				      <filter-class>
+					 org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
+				      </filter-class>
+				   </filter>
+				   <filter-mapping>
+				      <filter-name>struts2</filter-name>
+				      <url-pattern>/*</url-pattern>
+				   </filter-mapping>
+web单独整合hibernate :
+			1.配置实体映射文件：
+					<?xml version='1.0' encoding='UTF-8'?>  
+					<!DOCTYPE hibernate-mapping PUBLIC  
+					 "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
+					 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
+					 <!-- 映射文件 -->
+					 <hibernate-mapping>
+					 <!-- <hibernate-mapping> 为根元素的 XML 文件，里面包含所有<class>标签。
+					<class> 标签是用来定义从一个 Java 类到数据库表的特定映射。
+					Java 的类名使用 name 属性来表示，数据库表明用 table 属性来表示。 -->
+							<class name="com.leo.domain.User" table="user">
+							<!-- <meta> 标签是一个可选元素，可以被用来修饰类。 -->
+								<meta attribute="class-description">
+							 This class contains the employee detail. 
+							</meta>
+							<!--主键标签   -->
+								<id name="id" type="int" column="id">
+										<!--generator用来自动生成主键 ,class有以下属性native，使用算法创建主键 -->
+										<generator class="assigned"></generator>  
+								</id>
+								<!-- property用来使属性与数据库表的列匹配 标签中 name 属性引用的是类的性质，column 属性引用的是数据库表的列。
+								type 属性保存 Hibernate 映射的类型，这个类型会将从 Java 转换成 SQL 数据类型。-->
+										<property name="name" column="name" type="string"/>
+									<property name="password" column="password" type="string"/>
+									<property name="email" column="email" type="string"/>
+							</class>
+					 </hibernate-mapping>
+			2.配置hibernate 配置文件：
+					<hibernate-configuration>
+					    <session-factory>
+					    <!--数据库的驱动，URL，用户名，密码，hibernate方言，打印sql,映射文件  -->
+						<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+						<property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
+						<property name="connection.username">root</property>
+						<property name="connection.password">123</property>
+						<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+						<property name="show_sql">true</property>
+						<mapping resource="com/leo/domain/user.hbm.xml"/> 
+					    </session-factory>
+					</hibernate-configuration>
 #### 完全整合Struts2,hibernate			
 
 
