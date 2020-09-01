@@ -109,6 +109,10 @@
 ​            负载均衡：
 ​            降级（本地缓存）
 
+#### 服务注册与发现原理：
+
+[![dO4A81.png](https://s1.ax1x.com/2020/08/31/dO4A81.png)](https://imgchr.com/i/dO4A81)
+
 ### 单点故障：
 
 ​         在分不式锁服务中，有一种典型的应用场景，通过集群对Master进行选举，
@@ -412,7 +416,7 @@
 
 - 用的是Eureak是一个服务注册和发现模块（与zookeeper的作用是一样的）
 - 引入配置文件pom.xml
-- 启动一个服务注册中心：需要注解@@EnableEureakaServcer
+- 启动一个服务注册中心：需要注解@EnableEureakaServcer
 -  配置application.yml文件：每一个实例注册之后需要向注册中心发送心跳（因此可以在内存中完成），在默认情况下 Erureka Server 也是一个 Eureka Client ,必须要指定一个 Server。
 - 通过服务可以打开浏览器进行访问http://localhost:8761
 
@@ -519,7 +523,7 @@ spring:
 
 ```
 
-    ##### 在application.yml中书写配置文件：
+##### 在application.yml中书写配置文件：
 
 ```
  spring:
@@ -544,7 +548,7 @@ spring:
 ​    在微服务架构中，根据业务来拆分成一个个的服务，服务与服务之间可以通过 RPC 相互调用，在 Spring Cloud 中可以用 RestTemplate + Ribbon 和 Feign 来调用。为了保证其高可用，单个服务通常会集群部署。
 ​    由于网络原因或者自身的原因，服务并不能保证 100% 可用，如果单个服务出现问题，调用这个服务就会出现线程阻塞，此时若有大量的请求涌入，Servlet 容器的线程资源会被消耗完毕，导致服务瘫痪。服务与服务之间的依赖性，故障会传播，会对整个微服务系统造成灾难性的严重后果，这就是服务故障的 “雪崩” 效应。
 
-     ##### 1.在feign中使用：        
+##### 1.在feign中使用：        
 
 ```java
   Feign中自带熔断器：feign:
@@ -570,7 +574,7 @@ spring:
 
 ```
 
-     ##### 2.在ribbon中使用：
+##### 2.在ribbon中使用：
 
 ​        pom.xml中加入：
 ​            <dependency>
@@ -691,9 +695,8 @@ spring:
 
 ##### 分布式配置中心服务端：
 
-            ###### pom.xml中加入：
+###### pom.xml中加入：
 
-  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -780,7 +783,7 @@ public class ConfigApplication {
 ###### 在application.yml中书写配置文件：
 
 ```
-spring:
+              spring:
                     application:
                         name: hello-spring-cloud-config
                     cloud:
@@ -897,7 +900,7 @@ spring:
 ###### application.yml中书写配置文件： 
 
 ```xml
-  spring:
+              spring:
                     application:
                         name: hello-spring-cloud-config-client
                     cloud:
