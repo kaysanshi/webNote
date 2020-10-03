@@ -306,7 +306,7 @@ final作用于数据，方法，类。
 
 一个既是static又是final的域只占据一段不能改变的存储空间。
 
-**空白的final:**java允许生成一个空白的final;所谓的空白的final是指的被声明为final但又未给定初始值的域。比如： private final int j;
+**空白的final:** java允许生成一个空白的final;所谓的空白的final是指的被声明为final但又未给定初始值的域。比如： private final int j;
 
 **final参数**：java允许声明一个参数为final的对象。 
 
@@ -316,11 +316,11 @@ g=new Gizmo() // Illegal ---g is final
 
 }
 
-**final方法:**定义为final方法的原因有两个；1.把方法锁定，以防止任何继承类修改它的含义（保持不变，防止覆盖）。2.是效率
+**final方法:** 定义为final方法的原因有两个；1.把方法锁定，以防止任何继承类修改它的含义（保持不变，防止覆盖）。2.是效率
 
-**private和final关键字：**类中所有的private方法都隐式的指定为final,由于无法取用private方法，所以也就无法进行覆盖他，对于private方法添加final关键字并不能给方法增加任何意义。
+**private和final关键字：** 类中所有的private方法都隐式的指定为final,由于无法取用private方法，所以也就无法进行覆盖他，对于private方法添加final关键字并不能给方法增加任何意义。
 
-**final类：**将类设置为final即使永远不需要做任何变动，或者出于安全不希望有子类。由于final类禁止继承，所以final类的方法都隐式的指定为final的，因为无法覆盖他们，同样也可以给final类的方法添加final修饰词，但是这没有任何意义。
+**final类：** 将类设置为final即使永远不需要做任何变动，或者出于安全不希望有子类。由于final类禁止继承，所以final类的方法都隐式的指定为final的，因为无法覆盖他们，同样也可以给final类的方法添加final修饰词，但是这没有任何意义。
 
 final修饰引用类型的时候，引用的指向不能修改，但是引用的值可以改
 
@@ -401,7 +401,7 @@ Strings are constant; their values cannot be changed after theyare created. Stri
  * <p>
 ```
 
-#####Q&A **为何String设计为不可变？**
+##### Q&A **为何String设计为不可变？**
 
 1、运行时常量池的需要,节省内存空间。
 
@@ -455,7 +455,7 @@ new将对象存储在堆中，所以用new创建一个对象---特别小的，�
 
 对象产生的时机 类加载，然后进行对象的实例化：
 
-#####Q&A **什么时候会进行类加载？**
+##### Q&A **什么时候会进行类加载？**
 
 1.创建类的实例，也就是new一个对象
 
@@ -676,13 +676,13 @@ public class LocaleList {
 
 #### 垃圾清理的方式：
 
-**标记清除法：**这是垃圾收集算法中最基础的，它的思想是标记哪些要被回收的对象，然后统一回收。这种方法很简单，但是效率不高，标记和清除的效率都很低；此外会产生大量不连续的内存碎片，从而导致以后程序在分配较大对象时由于没有充足的连续内存而提前触发一次 GC 操作。
+**标记清除法：** 这是垃圾收集算法中最基础的，它的思想是标记哪些要被回收的对象，然后统一回收。这种方法很简单，但是效率不高，标记和清除的效率都很低；此外会产生大量不连续的内存碎片，从而导致以后程序在分配较大对象时由于没有充足的连续内存而提前触发一次 GC 操作。
 
-**复制算法：**为了解决效率问题，复制算法将可用内存按容量划分为相等的两部分，然后每次只使用其中的一块，当一块内存用完后就将还存活的对象复制到第二块内存上，然后一次性清楚完第一块内存，再将第二块上的对象复制到第一块。**但是这种方式内存的代价太高，每次基本上都要浪费一半的内存；于是将该算法进行了改进，内存区域不再是按照 1：1 去划分，而是将内存划分为 8：1：1 三部分，较大那份内存是 Eden 区，其余是两块较小的内存区叫 Survior 区，每次都会优先使用 Eden 区，若 Eden 区满则将对象复制到第二块内存区上，然后清除 Eden 区，如果此时存活的对象太多，以至于 Survivor 不够时，会将这些对象通过分配担保机制复制到老年代中。**
+**复制算法：** 为了解决效率问题，复制算法将可用内存按容量划分为相等的两部分，然后每次只使用其中的一块，当一块内存用完后就将还存活的对象复制到第二块内存上，然后一次性清楚完第一块内存，再将第二块上的对象复制到第一块。**但是这种方式内存的代价太高，每次基本上都要浪费一半的内存；于是将该算法进行了改进，内存区域不再是按照 1：1 去划分，而是将内存划分为 8：1：1 三部分，较大那份内存是 Eden 区，其余是两块较小的内存区叫 Survior 区，每次都会优先使用 Eden 区，若 Eden 区满则将对象复制到第二块内存区上，然后清除 Eden 区，如果此时存活的对象太多，以至于 Survivor 不够时，会将这些对象通过分配担保机制复制到老年代中。**
 
-**标记整理法：**这种方法主要是为了解决标记清除法产生大量内存碎片的问题；当对象存活率较高时，也解决了复制算法的效率问题。它的不同之处就是在清除对象的时候现将可回收对象移动到一端，然后清除掉端边界以外的对象，这样就不会产生内存碎片了。
+**标记整理法：** 这种方法主要是为了解决标记清除法产生大量内存碎片的问题；当对象存活率较高时，也解决了复制算法的效率问题。它的不同之处就是在清除对象的时候现将可回收对象移动到一端，然后清除掉端边界以外的对象，这样就不会产生内存碎片了。
 
-**分代收集法：**现在的虚拟机垃圾收集大多采用这种方式，它根据对象的生存周期，将堆分为新生代和老年代。**在新生代中，由于对象生存期短，每次回收都会有大量对象死去，那么这时就采用复制算法。老年代里的对象存活率较高，没有额外的空间进行分配担保，所以可以使用标记整理法或标记清除法。**
+**分代收集法：** 现在的虚拟机垃圾收集大多采用这种方式，它根据对象的生存周期，将堆分为新生代和老年代。**在新生代中，由于对象生存期短，每次回收都会有大量对象死去，那么这时就采用复制算法。老年代里的对象存活率较高，没有额外的空间进行分配担保，所以可以使用标记整理法或标记清除法。**
 
 #### 构造器初始化：
 
@@ -1863,7 +1863,7 @@ B r o n t o s a u r u s
 
 当使用PriorityQueue上调用offer()方法来插入一个对象时，这个对象会在对列中被排序。默认的排揎将使用对象在对列中的自然排序、PriorityQueue可以确保当你调用peek(),poll()和remove()方法时，获取的元素将是对列中优先级最高的元素。
 
-#### [集合工具类]()
+#### [集合工具类]
 
 集合有许多独立的实用工具程序，在 **java.util.Collections** 中表示为静态方法。之前已经见过其中一些，例如 `addAll()` ， `reverseOrder()` 和 `binarySearch()` 。以下是其他内容（同步和不可修改的实用工具程序将在后面的章节中介绍）。在此表中，在需要的时候使用了泛型：
 
@@ -1985,7 +1985,7 @@ arrayList: [snap, snap, snap]
 
 输出解释了每种实用方法的行为。请注意由于大小写的缘故，普通版本的 `min()` 和 `max()` 与带有 **String.CASE_INSENSITIVE_ORDER** 比较器参数的版本的区别。
 
-##### [排序和搜索列表]()
+##### [排序和搜索列表]
 
 用于执行排序和搜索 **List** 的实用工具程序与用于排序对象数组的程序具有相同的名字和方法签名，只不过是 **Collections** 的静态方法而不是 **Arrays** 。 这是一个使用 **Utilities.java** 中的 **list** 数据的示例：
 
@@ -2148,7 +2148,7 @@ HashSet的add()方法添加集合元素时实际上转变为调用HashMap的put(
 （2）但是，ArrayList 比 Vector 要快，它因为有同步，不会过载。
 （3）在使用上，ArrayList 更加通用，因为 Collections 工具类容易获取同步列表和只读列 表。ArrayList在并发add()可能出现下标越界异常。
 
-######Q&A ArrayList 与 LinkedList 区别 ?
+###### Q&A ArrayList 与 LinkedList 区别 ?
 
 ArrayList 和 LinkedList 都实现了 List 接口，他们有以下的不同点： ArrayList 是基于索引的数据接口，它的底层是数组。它可以以 O(1)时间复杂度对元素进行 随机访问。与此对应，LinkedList 是以元素列表的形式存储它的数据，每一个元素都和它的 前一个和后一个元素链接在一起，在这种情况下，查找某个元素的时间复杂度是 O(n)。 相对于 ArrayList，LinkedList 的插入，添加，删除操作速度更快，因为当元素被添加到集合 任意位置的时候，不需要像数组那样重新计算大小或者是更新索引。 LinkedList 比 ArrayList 更占内存，因为 LinkedList 为每一个节点存储了两个引用，一个指 向前一个元素，一个指向下一个元素。 
 
@@ -2903,9 +2903,6 @@ public class FileTest {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
-
 运行上面程序，可以看到程序列出当前路径的所有文件和路径时，列出了程序创建的临时文件，但程序运行结束后，aaa.txt临时文件并不存在，因为程序指定虚拟机退出时自动删除该文件。
 
 上面程序还有一点需要注意，当使用相对路径的File对象来获取父路径时可能引起错误，因为该方法返回将File对象所对应的目录名、文件名里最后一个子目录名、子文件名删除后的结果
@@ -3025,9 +3022,6 @@ public class InsertContent {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
-
 上面程序中使用File的createTempFile(String prefix, String suffix)方法创建了一个临时文件（该临时文件将在JVM退出时被删除），用以保存被插入文件的插入点后面的内容。程序先将文件中插入点后的内容读入临时文件中，然后重新定位到插入点，将需要插入的内容添加到文件后面，最后将临时文件的内容添加到文件后面，通过这个过程就可以向指定文件、指定位置插入内容。
 
 每次运行上面程序，都会看到向InsertContent.java中插入了一行字符串。
@@ -3141,8 +3135,6 @@ public class CharsetTransform {
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
-
 上面程序中的两行粗体字代码分别实现了将CharBuffer转换成ByteBuffer，将ByteBuffer转换成CharBuffer的功能。实际上，Charset类也提供了如下3个方法。
 
 - CharBuffer decode(ByteBuffer bb)：将ByteBuffer中的字节序列转换成字符序列的便捷方法。
@@ -3207,7 +3199,6 @@ public class PathTest {
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 从上面程序可以看出，Paths提供了get(String first, String... more)方法来获取Path对象，Paths会将给定的多个字符串连缀成路径，比如Paths.get("g:" , "publish" , "codes")就返回g:\publish\codes路径。上面程序中的粗体字代码示范了Path接口的常用方法，读者可能对getNameCount()方法感到有点困惑，此处简要说明一下：它会返回Path路径所包含的路径名的数量，例如g:\publish\codes调用该方法就会返回3。
 
@@ -3260,8 +3251,6 @@ public class FilesTest {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 上面程序中的粗体字代码简单示范了Files工具类的用法。从上面程序不难看出，Files类是一个高度封装的工具类，它提供了大量的工具方法来完成文件复制、读取文件内容、写入文件内容等功能——这些原本需要程序员通过IO操作才能完成的功能。
 
@@ -3387,8 +3376,6 @@ public class PriorityTest extends Thread {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 上面程序中的第一行粗体字代码改变了主线程的优先级为6，这样由main线程所创建的子线程的优先级默认都是6，所以程序直接输出low、high两个线程的优先级时应该看到6。接着程序将low线程的优先级设为Priority.MIN_PRIORITY，将high线程的优先级设置为Priority.MAX_PRIORITY。
 
@@ -3564,7 +3551,7 @@ private Lock lock = new ReentrantLock(); // ReentrantLock是Lock的子类
 3. 不剥夺条件:线程已获得的资源在末使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。（占用部分资源线程去申请其他资源，如果不能申请到就主动释放它占有的资源）
 4. 循环等待条件:若干进程之间形成一种头尾相接的循环等待资源关系。（按顺序申请资源。）
 
-##### Q&A**9.sleep（）和wait()方法的区别？**
+##### Q&A **9.sleep（）和wait()方法的区别？**
 
 - sleep方法会让出cpu没有释放锁，wait方法释放了锁。
 
@@ -3654,8 +3641,6 @@ public class InetAddressTest {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 ### URLDecoder和URLEncoder类：
 
@@ -4087,8 +4072,6 @@ public class URLClassLoaderTest {
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
-
 ### 动态代理：
 
 动态代理（以下称代理），利用Java的反射技术(Java Reflection)，在运行时**创建一个实现某些给定接口的新类**（也称“动态代理类”）及其实例（对象）
@@ -4145,7 +4128,4 @@ public class ProxyTest {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
-
 本文有个人阅读疯狂java和java编程思想所生成的文档，其中一部分面试题是有面试积累的，是对javaSE的总结与回顾，后序会不定期的进行对其补充和复习。
