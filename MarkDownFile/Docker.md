@@ -247,9 +247,9 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 ​	运行 docker run --name container-name -d image-name eg:docker run –name myredis –d redis
 ​		--name：自定义容器名 -d：后台运行 image-name:指定镜像模板 列表 docker ps（查看运行中的容器）；加上-a；可以查看所有容器 
 ​		//docker image ls :查看镜像列表列出的是顶级的镜像
-​		// docker ps :查看容器列表
+​		//docker ps :查看容器列表
 
-	### 虚悬镜像：
+### 虚悬镜像：
 
 镜像列表中，还可以看到一个特殊的镜像，这个镜像既没有仓库名，也没有标签，均为 <none>。：
 原因：

@@ -31,6 +31,8 @@ Java一切皆对象，在Java编程思想中这样写道：
 
 #### 创建对象：
 
+
+
 new将对象存储在堆中，所以用new创建一个对象---特别小的，简单的变量，往往不是很有效。因此对于（基本类型）java不用new来创建这样的变量，而是创建一个并非是引用的“自动”变量。这个变量的值直接存储"值"到堆栈中。
 
 ![](https://upload-images.jianshu.io/upload_images/4748730-7942afd5d21fe639.jpg?imageMogr2/auto-orient/strip|imageView2/2/format/webp)
@@ -109,9 +111,17 @@ public class Equivalence{
         // 这是因为equals默认比较的是引用。所以我们在自己的类中覆盖equals()方法、对于大多数的java类库比较的是对象的内容，而非比较对象的引用。
     }
 }
+String s3="as",s4="as"
+String s5="asas"
+String s6=s3+s4;
+s5==s6 是false 因为s6的时候就是会new出一个新的String对象
+final String s10=s3+s4;
+s5==s10 是false 这里还会进行new出的，final只是影响的s10;
+
+
 ```
 
-equals具有的特性：
+##### Q&A equals具有的特性：
 
 - 自反性：x.equals(x)为true
 
@@ -152,7 +162,7 @@ public class ShortCircut{
 
 ### 类图：
 
-类在类图上使用包含三个部分的矩形来描述，最上面的部分显示类的名称，中间部分包含类的属性，最下面的部分包含类的方法。类图除了可以表示实体的静态内部结构之外，还可以表示实体之间的相互关系。类之间有三种基本关系： 关联（包括聚合、组合）泛化（与继承同一个概念） 依赖
+类在类图上使用包含三个部分的矩形来描述，最上面的部分显示类的名称，中间部分包含类的属性，最下面的部分包含类的方法。类图除了可以表示实体的静态内部结构之外，还可以表示实体之间的相互关系。类之间有三种基本关系： 关联（包括聚合、组合）泛化（与继承同一个概念） 依赖.
 
 ### java八大基本数据类型：
 
@@ -174,28 +184,77 @@ public class ShortCircut{
 | float   | Float     | 32位                |
 | double  | Double    | 64位                |
 
+#### 基本类型常见的面试题：
+
+##### Q&A:什么是自动装箱与拆箱？
+
+自动装箱就是java编译器在基本数据类型和对应的对象包装类型之间做一个转化，比如int转为Integer,double转为Double.反之为自动拆箱。
+
+##### Q&A:String是基本的数据类型吗？
+
+String不是节本的数据类型，是final不可修改的类，为了提高效率可以使用StringBuffer类。
+
+##### Q&A:int 和integer有什么区别？
+
+int是基本类型，integer是包装类型。
+
+integer必须实例化后才能使用，而int变量不需要。
+
+integer默认为null,而int默认为0；
+
+integer实际是对象的引用，当new出一个integer时实际上是生成一个指针指向此对象，而int则是直接存储数据值。
+
+##### Q&A:以下结果是什么？
+
+```java
+Integer a= new Integer(3);
+Integer b= 3; // 将3 自动装箱为Integer类型
+int c=3;
+a==b  // false 两个引用没有引用统一对象。
+a==c // true a 自动 拆箱为int 再和c 比较。
+两个非new生成的integer对象，进行比较时如果两个变量值的区间在-128~127之间则比较为 true,如果不在此区间则为false;
+Integer a=100;  => Integer a = Integer.valueOf(100);
+Integer b=100;
+a==b // true;
+Integer a=128;
+Integer b=128;
+a== b // false;
+对于valueOf方法在Integer类中会有一个cache判断：
+
+```
+
+##### Q&A  short s1 = 1; s1 = s1 + 1;有什么错? short s1 = 1; s1 +=1;有什么错?
+1) 对于 shorts1=1;s1=s1+1 来说，在s1+1 运算时会自动提升表达式的类型为 int， 那么将int赋予给 short类型的变量 s1会出现类型转换错误。
+2) 对于 short s1=1;s1+=1 来说 +=是java 语言规定的运算符，java 编译器会对它 进行特殊处理，因此可以正确编译。
+
 ### 类：
 
 类是封装对象的行为和属性的载体，具有相同属行和行为的一类实体。类中包含方法和属性。
 
 #### 类中的构造方法：
 
-1.构造方法没有返回值2.名称与类名相同，在构造方法中可以为成员变量赋值，也就是初始化成员变量，若在类中的构造方法都不是无惨的构造方法，编译器不会为类设置一个无参的构造方法，在类中没有设置构造方法时编译器才会在类中自定义一个无参的构造方法；
+1.构造方法没有返回值2.名称与类名相同，在构造方法中可以为成员变量赋值，也就是初始化成员变量，<font color="red">若在类中的构造方法都不是无惨的构造方法，编译器不会为类设置一个无参的构造方法</font>，在类中没有设置构造方法时编译器才会在类中自定义一个无参的构造方法；
 
 #### 类中的成员方法：
 
-  成员方法对应于类对象的行为，成员方法可以是有参也可以是无参，可以有返回值也可以没有返回值，成员方法中可以调用其他成员方法也可以调用类成员变量，成员方法中也可以定义成员变量这是的成原变量为局部变量，
-静态成员变量，静态成员方法：都用 类名.成员方法名。类名.成员变量掉用。静态方法中不可以用this关键字，静态方法不能直接调用非静态方法静态类中不能用this传值，可以用 return进行返回值，和直接输出；用来测试静态方法1.静态方法不可以访问非静态变量2.非静态方法可以访问静态方法；静态方法或属性在类加载时产生的。非静态方法是在new中产生的调用静态方法的格式：类名.静态方法名(参数)；
+成员方法对应于类对象的行为，成员方法可以是有参也可以是无参，可以有返回值也可以没有返回值，成员方法中可以调用其他成员方法也可以调用类成员变量，成员方法中也可以定义成员变量这是的成原变量为局部变量，
+静态成员变量，静态成员方法：都用 类名.成员方法名。类名.成员变量掉用。静态方法中不可以用this关键字，静态方法不能直接调用非静态方法静态类中不能用this传值，可以用 return进行返回值，和直接输出；用来测试静态方法
+
+1.静态方法不可以访问非静态变量
+
+2.非静态方法可以访问静态方法；
+
+静态方法或属性在类加载时产生的。非静态方法是在new中产生的调用静态方法的格式：类名.静态方法名(参数)；
 
 #### This关键字：
 
- this也可以调用成员方法和成员变量只是不太规范。主要用于当前对象的调用；This也可以做为方法的返回值
+this也可以调用成员方法和成员变量只是不太规范。主要用于当前对象的调用；This也可以做为方法的返回值
 
 this可以在当前方法中获取当前对象的引用。
 
 #### Static关键字：
 
-new创建对象，数据存储空间才会分配，其方法才会对外界调用。但是，（1）如果没有创建对象，也可以进行调用这个方法。（2）只想为某特定的区域分配单一存储空间，而不考虑究竟创建出多少对象。
+new创建对象，数据存储空间才会分配，其方法才会对外界调用。而static修饰的：（1）如果没有创建对象，也可以进行调用这个方法。（2）只想为某特定的区域分配单一存储空间，而不考虑究竟创建出多少对象。
 
 当一个事物声明static那就意味着这个域或方法不会与包含他那个类所关联在一起，所以即使从未创建某个类的任何对象，也可以调用其static方法，或访问static域。
 
@@ -205,6 +264,8 @@ class StaticTest{
 
 ​	static int i= 47;
 
+​	String a =1;
+
 }
 
 StaticTest  st1=new  StaticTest();
@@ -213,9 +274,15 @@ StaticTest  st22=new  StaticTest();
 
 st1.i和st22.i指向的是同一个存储空间，他们具有相同的值。
 
+![0QL4kd.png](https://s1.ax1x.com/2020/10/02/0QL4kd.png)
+
 尽管当static作用于某个字段时，肯定会改变数据创建的方式（因为一个static字段对每个类来说都只有一份存储空间，而非static字段则是对每个对象有一存储空间）
 
 static方法的内部能调用非静态方法。
+
+static加载顺序：
+
+父类静态代码块->子类静态代码块-->父类非静态代码块-->父类构造方法-->子类非静态代码块-->子类构造方法。
 
 #### Super关键字： 
 
@@ -223,7 +290,7 @@ static方法的内部能调用非静态方法。
 
 若子类想访问父类中被子类隐藏的成员方法或变量时可以用super关键字 此时必须由子类来使用super关键字；用途：
 
-1.super（参数列表）；掉用父类有参的构造器
+1.super（参数列表）；调用父类有参的构造器
 
 2.操作被隐藏在父类中的成员变量或被重写的方法格式：super.成员变量名 必须放在方法的第一个语句中；
 
@@ -255,6 +322,107 @@ g=new Gizmo() // Illegal ---g is final
 
 **final类：**将类设置为final即使永远不需要做任何变动，或者出于安全不希望有子类。由于final类禁止继承，所以final类的方法都隐式的指定为final的，因为无法覆盖他们，同样也可以给final类的方法添加final修饰词，但是这没有任何意义。
 
+final修饰引用类型的时候，引用的指向不能修改，但是引用的值可以改
+
+final Student stu = new Student(1,"assd");
+
+stu.setAge(12); // 这里是可以的，因为改变的是堆内存中的数据，引用还是指的这一个堆内存地址。
+
+stu=new Student(); // 这里是不允许的因为，final类型是不可以变的。
+
+##### final好处：
+
+1.final关键字提高了性能。JVM和Java应用都会缓存final变量。
+
+2.final变量可以安全的在多线程的环境下共享，而不需要额外的同步开销。
+
+3.使用final关键字，JVM会对方法，变量进行优化。
+
+##### final修饰的String类
+
+String 类代表字符串。Java 程序中的所有字符串字面值（如 "abc" ）都作为此类的实例实现。<font color="red">字符串是常量；它们的值在创建之后不能更改。字符串缓冲区支持可变的字符串。因为 String 对象是不可变的，所以可以共享。</font>
+
+```java
+public final class String
+    implements java.io.Serializable, Comparable<String>, CharSequence {
+    /**该值用于字符存储。  */
+    private final char value[];
+
+    /**  缓存字符串的哈希代码*/
+    private int hash; // Default to 0
+
+    /** 使用jdk1.0.2中的serialVersionUID实现互操作性*/
+    private static final long serialVersionUID = -6849794470754667710L;
+
+    /**
+     * 类字符串在序列化流协议中是特殊大小写的。
+     */
+    private static final ObjectStreamField[] serialPersistentFields =
+        new ObjectStreamField[0];
+    /**
+     *初始化新创建的{@code String}对象，使其表示空字符序列。请注意，此构造函数的用法是没有必要，因为字符串是不可变的。
+     */
+    public String() {
+        this.value = "".value;
+    }
+```
+
+```
+直接赋值方式创建对象是在方法区的常量池
+String str="hello";//直接赋值的方式
+
+通过构造方法创建字符串对象是在堆内存
+String str=new String("hello");//实例化的方式
+
+1）直接赋值（String str = "hello"）：只开辟一块堆内存空间，并且会自动入池，不会产生垃圾。
+
+2）构造方法（String str=  new String("hello");）:会开辟两块堆内存空间，其中一块堆内存会变成垃圾被系统回收，而且不能够自动入池，需要通过public  String intern();方法进行手工入池。
+
+在开发的过程中不会采用构造方法进行字符串的实例化。
+```
+
+##### Q&A String的不可变性
+
+```java
+Strings are constant; their values cannot be changed after theyare created. String buffers support mutable strings.Because String objects are immutable they can be shared. 
+    For example:
+ String str = "abc";
+ 与下面的相等;
+ *     char data[] = {'a', 'b', 'c'};
+ *     String str = new String(data);
+ * Here are some more examples of how strings can be used:
+ * <blockquote><pre>
+ *     System.out.println("abc");
+ *     String cde = "cde";
+ *     System.out.println("abc" + cde);
+ *     String c = "abc".substring(2,3);
+ *     String d = cde.substring(1, 2);
+ * </pre></blockquote>
+ * <p>
+```
+
+#####Q&A **为何String设计为不可变？**
+
+1、运行时常量池的需要,节省内存空间。
+
+　　比如执行 String s = "abc";执行上述代码时，JVM首先在运行时常量池中查看是否存在String对象“abc”，如果已存在该对象，则不用创建新的String对象“abc”，而是将引用s直接指向运行时常量池中已存在的String对象“abc”；如果不存在该对象，则先在运行时常量池中创建一个新的String对象“abc”，然后将引用s指向运行时常量池中创建的新String对象。这样在运行时常量池中只会创建一个String对象"abc"，这样就节省了内存空间。
+
+2、同步
+
+　　因为String对象是不可变的，所以是多线程安全的，同一个String实例可以被多个线程共享。这样就不用因为线程安全问题而使用同步。
+
+3、允许String对象缓存hashcode
+
+　　查看上文JDK1.8中String类源码，可以发现其中有一个字段hash，String类的不可变性保证了hashcode的唯一性，所以可以用hash字段对String对象的hashcode进行缓存，就不需要每次重新计算hashcode。所以Java中String对象经常被用来作为HashMap等容器的键。
+
+4、安全性
+
+　　如果String对象是可变的，那么会引起很严重的安全问题。比如，数据库的用户名、密码都是以字符串的形式传入来获得数据库的连接，或者在socket编程中，主机名和端口都是以字符串的形式传入。因为String对象是不可变的，所以它的值是不可改变的，否则黑客们可以钻到空子，改变String引用指向的对象的值，造成安全漏洞。
+
+##### Q&A  **String s = new String("xyz");创建了几个String Object?二者之间有什么区别？**
+
+两个或一个，”xyz”对应一个对象，这个对象放在字符串常量缓冲区，常量”xyz”不管出现多少遍，都是缓冲区中的那一个。New String每写一遍，就创建一个新的对象，它一句那个常量”xyz”对象的内容来创建出一个新String对象。如果以前就用过’xyz’，这句代表就不会创建”xyz”自己了，直接从缓冲区拿。
+
 #### 对象：
 
    对象是通过new关键字来创建的，通过引用来接收对象，当对象创建出来后引用就会为对象分配内存，new字是创建对象的操作符，对象的比较有两种形式：
@@ -262,6 +430,124 @@ g=new Gizmo() // Illegal ---g is final
 1.“==”运算符是用来比较两个对象引用的地址是否相等，
 
 2.“equal()”方法是来比较两对象引用的内容是否相等。对象的销毁是引用结束后就会被垃圾处理器进行回收；
+
+##### Q&A 创建对象的方法：
+
+1.使用new关键字。
+
+2.使用Class类中的newInstance方法，newInstance方法调用无参构造方器创建对象。Class.forName.newInstance;
+
+3.使用clone方法、
+
+4.反序列化。
+
+##### Q&A 对象的产生过程以及存储：
+
+对象的产生：
+
+new将对象存储在堆中，所以用new创建一个对象---特别小的，简单的变量，往往不是很有效。因此对于（基本类型）java不用new来创建这样的变量，而是创建一个并非是引用的“自动”变量。这个变量的值直接存储"值"到堆栈中。
+
+![](https://upload-images.jianshu.io/upload_images/4748730-7942afd5d21fe639.jpg?imageMogr2/auto-orient/strip|imageView2/2/format/webp)
+
+程序创建，运行时对象是如何分配呢？内存是怎样分配呢？
+
+![dnZRHO.jpg](https://s1.ax1x.com/2020/08/17/dnZRHO.jpg)
+
+对象产生的时机 类加载，然后进行对象的实例化：
+
+#####Q&A **什么时候会进行类加载？**
+
+1.创建类的实例，也就是new一个对象
+
+2.访问某个类或接口的静态变量，或者对该静态变量赋值
+
+3.调用类的静态方法
+
+4.反射（Class.forName("A")）
+
+5.初始化一个类的子类（会首先初始化子类的父类）
+
+6.JVM启动时标明的启动类，即文件名和类名相同的那个类
+
+new ObjectInitTest（）
+对象的产生过程
+1.JVM会在ObjectInitTest.class文件
+2.先加载类级别的成员（静态成员变量 静态块初始化）
+3.再加载对象级别的成员（实例成员变量 实例块初始化）
+
+##### Q&A**什么时候进行对象的实例化？**
+
+类加载成功（或已加载过）后，就开始进行对象的实例化了。对象的实例化依次进行了如下几个步骤：
+
+1.对象在堆中的内存空间分配
+
+2.初始化零值，这时会将实例变量都赋予零值
+
+3.设置对象头，对象头保存了一些对象在运行期的状态信息，包括类信息地址（知道对象是属于哪个类的）、hashcode（用于hashmap和hashset等hash结构中）、GC分代年龄（可以依此确定对象何时该放入老年代）等
+
+4.init方法执行，这时对变量的实例变量进行初始化
+
+对象初始化的过程也是线程安全的动作。
+
+#####  StringBuffer StringBulider String 的区别：
+
+StringBuffer线程安全，StringBulider线程不安全，底层实现StringBuffer比StringBulider多一个Synchronized.从源码中可以看得到：
+
+```java
+StringBuffer源码分析：
+@Override
+    public synchronized int length() {
+        return count;
+    }
+
+    @Override
+    public synchronized int capacity() {
+        return value.length;
+    }
+
+
+    @Override
+    public synchronized void ensureCapacity(int minimumCapacity) {
+        if (minimumCapacity > value.length) {
+            expandCapacity(minimumCapacity);
+        }
+    }
+
+    /**
+     * @since      1.5
+     */
+    @Override
+    public synchronized void trimToSize() {
+        super.trimToSize();
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @see        #length()
+     */
+    @Override
+    public synchronized void setLength(int newLength) {
+        toStringCache = null;
+        super.setLength(newLength);
+    }
+
+    /**
+     * @throws IndexOutOfBoundsException {@inheritDoc}
+     * @see        #length()
+     */
+    @Override
+    public synchronized char charAt(int index) {
+        if ((index < 0) || (index >= count))
+            throw new StringIndexOutOfBoundsException(index);
+        return value[index];
+    }
+```
+
+##### String 是否可以继承，“+”如何实现的，与StringBuffer区别？
+
+java中通过使用“+”符号串联时实际是使用的StringBuilder实例的appdenf()方法来实现的。
+
+
 
 ### 构造器
 
@@ -322,7 +608,7 @@ abstract不能用于修饰Field，不能用于修饰局部变量，即没有抽�
 
 对于接口里定义的方法而言，它们只能抽象方法，因此系统会自动为其增加abstract修饰符；由于接口里的方法全部是抽象方法，因此接口里不允许定义静态方法，即不可使用static修饰接口里定义的方法。不管定义接口里方法时是否使用public abstract修饰符，接口里的方法总是使用public abstract来修饰。
 
-接口的实现*：[修饰符]class 类名[extends 父类名][implements 接口列表]。接口中的变量是静态终结变量public abstract final 变量名，方法：是抽象的方法；不能有静态代码与方法；接口是对行为的抽象（局部类）辐射式设计接口中添加方法子类中都要变动；使用implements时接口列表必须选参数接口列表中存在多个接口名时各个接口名之间使用逗号在接口中：系统默认接口中的方法为抽象方法，不能在接口中有方法体同时要想实现接口的方法也要用继承然后在子类中重写接口中的抽象方法接口可以继承父接口但不能继承类，可以用子类继承接口，调用时与调用抽象类的方法是一样的，
+接口的实现：[修饰符]class 类名[extends 父类名][implements 接口列表]。接口中的变量是静态终结变量public abstract final 变量名，方法：是抽象的方法；不能有静态代码与方法；接口是对行为的抽象（局部类）辐射式设计接口中添加方法子类中都要变动；使用implements时接口列表必须选参数接口列表中存在多个接口名时各个接口名之间使用逗号在接口中：系统默认接口中的方法为抽象方法，不能在接口中有方法体同时要想实现接口的方法也要用继承然后在子类中重写接口中的抽象方法接口可以继承父接口但不能继承类，可以用子类继承接口，调用时与调用抽象类的方法是一样的，
 
 #### 接口与抽象类比较：
 
@@ -638,6 +924,84 @@ System.arrayCopy();复制数组比用for循环速度快了许多。
 
 可以参看：https://www.cnblogs.com/alter888/p/9163612.html
 
+#### Q&A对于初始化与清理常见的面试题：
+
+**Q1**:java 对象加载初始化的顺序？
+
+静态代码块--》非静态代码块-（静态代码块（只有一次），构造函数）-》构造函数，而{}包含的非静态代码块就是和构造方法一样会默认初始化
+
+**Q2**:如何判断一个对象是否要回收？
+
+这就是所谓的对象存活性判断，常用的方法有两种：1.引用计数法;　2.对象可达性分析。由于引用计数法存在互相引用导致无法进行GC的问题，所以目前JVM虚拟机多使用对象可达性分析算法。从GC Roots对象计算引用链，能链上的就是存活的。
+
+1、引用计数法
+
+引用计数法的逻辑非常简单，但是存在问题，java并不采用这种方式进行对象存活判断。
+
+引用计数法的逻辑是：在堆中存储对象时，在对象头处维护一个counter计数器，如果一个对象增加了一个引用与之相连，则将counter++。如果一个引用关系失效则counter–。如果一个对象的counter变为0，则说明该对象已经被废弃，不处于存活状态。
+
+2、可达性分析算法
+
+在主流的商用程序语言中(Java和C#)，都是使用可达性分析算法判断对象是否存活的。这个算法的基本思路就是通过一系列名为GC Roots的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有任何引用链相连时，则证明此对象是不可用的，下图对象object5, object6, object7虽然有互相判断，但它们到GC Roots是不可达的，所以它们将会判定为是可回收对象。
+
+![](https://img-blog.csdnimg.cn/20190529111953162.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyOTk2NzYx,size_16,color_FFFFFF,t_70)
+
+参看：https://blog.csdn.net/qq_42996761/article/details/90667725
+
+**Q3**:如何理解java中的垃圾回收机制？为什么需要垃圾回收机制？
+
+java采用分代回收，分为年轻代、老年代、永久代。年轻代又分为E区、S1区、S2区。
+
+到jdk1.8，永久代被元空间取代了。
+
+年轻代都使用复制算法，老年代的收集算法看具体用什么收集器。默认是PS收集器，采用标记-整理算法。
+
+System.gc()即垃圾收集机制是指jvm用于释放那些不再使用的对象所占用的内存。垃圾收集的目的在于清除不再使用的对象。gc通过确定对象是否被活动对象引用来确定是否收集该对象。
+如果你向系统申请分配内存进行使用(new)，可是使用完了以后却不归还(delete)，结果你申请到的那块内存你自己也不能再访问,该块已分配出来的内存也无法再使用，随着服务器内存的不断消耗，而无法使用的内存越来越多，系统也不能再次将它分配给需要的程序，产生泄露。一直下去，程序也逐渐无内存使用，就会溢出。
+
+**Q4**:java垃圾收集的方式有哪些？
+
+上文已经讲述。
+
+**Q5**:java垃圾回收机制的优缺点？
+
+优点：
+
+开发人员无须过多地关心内存管理，而是关注解决具体的业务。虽然内存泄漏在技术上仍然是可能出现的，但不常见。
+
+GC 在管理内存上有很多智能的算法，它们自动在后台运行。与流行的想法相反，这些通常比手动回收更能确定什么时候是执行垃圾回收的最好时机。
+
+缺点：
+
+当垃圾回收发生时将影响程序的性能，显著地降低运行速度甚至将程序停止。所谓 “Stop the world” 就是当垃圾回收发生的时候应用程序的其他任务都将被冻结。对于应用程序的要求来说，这将是不可接收的，虽然 GC 调优可以最小化甚至消除这个影响。
+
+虽然GC有很多方面可以调优，但你不能指定应用程序在何时怎样执行GC
+
+**Q6**:java垃圾回收的时间有哪些？
+
+CPU空闲时进行回收、堆内存满了后进行回收、调用System.gc()回收。
+
+**Q7**:如果对象置为null，垃圾收集器是否会立即释放占用的内存？
+
+不会。对象回收需要一个过程，这个过程中对象还能复活。而且垃圾回收具有不确定性，指不定什么时候开始回收。
+
+**Q8**:什么是GC？为何有GC?
+
+GC就是垃圾收集的意思（Gabage Collection）。我们在开发中会创建很多对象，这些对象一股脑的都扔进了堆里，如果这些对象只增加不减少，那么堆空间很快就会被耗尽。所以我们需要把一些没用的对象清理掉。jvm使用 jstat -gc 12538 5000   即会每5秒一次显示进程号为12538的java进成的GC情况.
+
+**Q9:**方法区如何判断是否需要回收？
+
+方法区主要回收的内容有：废弃常量和无用的类。对于废弃常量也可通过引用的可达性来判断，但是对于无用的类则需要同时满足下面3个条件：
+① 该类所有的实例都已经被回收，也就是Java堆中不存在该类的任何实例；
+② 加载该类的ClassLoader已经被回收；
+③ 该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
+
+**Q10:**如果频繁老年代回收怎么分析解决？
+
+
+
+
+
 ### 集合：
 
 简单的集合大家庭先看一下：
@@ -716,6 +1080,12 @@ public class ListIterator {
 	}
 }
 ```
+
+##### 集合遍历常见的问题及错误：
+
+参看个人博客总结：https://blog.csdn.net/qq_37256896/article/details/108089003
+
+这个说的是比较全面的了https://www.cnblogs.com/chenpi/p/5552901.html
 
 #### ArrayList和Vector类:
 
@@ -1175,7 +1545,11 @@ map.isEmpty(): true
 
 ##### HashMap:
 
+jdk 1.7时是数组+链表组成，
 
+jdk1.8时是 数组+ 链表 + 红黑树组成。 链表元素大于等于8时会把链表转为树结构，若桶中链的元素个数小于等于6时，树结构还原成链表。当链表的个数为8左右徘徊时就会生成树转链表，链表转树，效率低下。hasMap的负载因子默认为0.75，2^n是为了散列更加均匀。
+
+更多参看：https://mp.csdn.net/console/editor/html/103325204
 
 ##### SortedMap
 
@@ -1388,7 +1762,7 @@ java.util.ConcurrentModificationException
 
 **ConcurrentHashMap** ， **CopyOnWriteArrayList** 和 **CopyOnWriteArraySet** 使用了特定的技术来避免产生 **ConcurrentModificationException** 异常。
 
-#### Set与Map之间的关系非常密切:
+##### Set与Map之间的关系非常密切:
 
 Set集合和Map集合的对应关系如下。
 
@@ -1445,37 +1819,6 @@ public class LinkedHashMapTest {
   ​	
 
 [Set与Map更多参看对hashset和Map有一个比较好的认知：](https://blog.csdn.net/qq_37256896/article/details/103325204)
-
-#### Properties类:
-
-```java
-
-    public static void main(String[] args) throws Exception {
-
-        Properties props = new Properties();
-
-		//向Properties中添加属性
-        props.setProperty("username", "yeeku");
-        props.setProperty("password", "123456");
-		//将Properties中的key-value对保存到a.ini文件中
-        props.store(new FileOutputStream("a.ini"), "comment line");
-		//①//新建一个Properties对象
-        Properties props2 = new Properties();
-		//向Properties中添加属性
-        props2.setProperty("gender", "male");
-		//将a.ini文件中的key-value对追加到props2中
-        props2.load(new FileInputStream("a.ini"));
-		//②
-        System.out.println(props2);
-
-    }
-
-}
-```
-
-可以把Map对象和属性文件关联起来，从而可以把Map对象中的key-value对写入属性文件中，也可以把属性文件中的“属性名=属性值”加载到Map对象中。由于属性文件里的属性名、属性值只能是字符串类型，所以Properties里的key、value都是字符串类型。该类提供了如下三个方法来修改Properties里的key、value值。
-
-
 
 #### Queue
 
@@ -1707,7 +2050,164 @@ Location of three is 7, list.get(7) = three
 
 该程序还演示了 **Collections** 中的 `shuffle()` 方法，该方法随机打乱了 **List** 的顺序。 **ListIterator** 是在打乱后的列表中的特定位置创建的，用于从该位置删除元素，直到列表末尾。
 
+#### 集合常见的面试题：
 
+###### Q&A HashMap的组成？
+
+jdk 1.7时是数组+链表组成，
+
+jdk1.8时是 数组+ 链表 + 红黑树组成。 链表元素大于等于8时会把链表转为树结构，若桶中链的元素个数小于等于6时，树结构还原成链表。当链表的个数为8左右徘徊时就会生成树转链表，链表转树，效率低下。hasMap的负载因子默认为0.75，2^n是为了散列更加均匀。
+
+###### Q&A HashMap的key为自定义的类应该怎么办？
+
+如果key为自定义的类应该重写hashcode()和equals()方法。
+
+###### Q&A HashMap为何线程不安全？
+
+1.在JDK1.7中，当并发执行扩容操作时会造成环形链和数据丢失的情况。
+2.在JDK1.8中，在并发执行put操作时会发生数据覆盖的情况。
+
+###### Q&A HashMap如何保证线程安全？
+
+使用Collections.synchronizedMap()包装一下就可以了，原理就是对所有的修改操作都加上synchronized，保证了线程的安全。
+
+```java
+Map  map = Collections.synchronizedMap(new HashMap());
+```
+
+###### Q&A HashMap中的key可以为任意类型吗？
+
+不能使用基本类型，HashMap中key是可以为null, 只能存储一个null, 因为计算key的hash值的时候，如果key为null， 则其hash值为0
+
+之所以key不能为基本数据类型，则是因为基本数据类型不能调用其hashcode()方法和equals()方法，进行比较，所以HashMap集合的key只能为引用数据类型，不能为基本数据类型，可以使用基本数据类型的包装类，例如Integer Double等。
+
+###### Q&A HashMap 和 HashTable 区别?
+
+HashMap和HashTable都实现了Map接口，HashMap允许键和值是null而HashTable不允许键和值是null,HashTable是同步的，而HashMap不是，因此hashMap适用于单线程环境，而HashTable适用于多线程环境。HashMap提供了可供应用迭代的键的集合。
+
+###### Q&A HashMap和ConCurrentHashMap区别？
+
+hashMap线程不安全，put时在多线程的情况下会形成环而导致循环。
+
+ConCurrentHashMap是线程安全的，采用分段机制，减少锁粒度。
+
+ConCurrentHashMap是线程安全，在jdk1.7时采用Segment+HashEntry的方式进行实现 lock加上Segment上面。1.7 size计算是线采用不加锁的方式。连续计算元素的个数，最多计算3次。
+
+1.8中取而代之是采用Node+CAS +Synchronized来保证并发安全，1.8实现使用一个volatile类型的变量baseCount记录元素的各少数。当插入新数据或删除新数据时，会通过addCount()方法更新baseCount，通过累计baseCount和CounterCell数组中的数量，即可得到元素的总个数。
+
+###### Q&A ConcurrentHashMap 和 HashTable 区别?
+
+**ConcurrentHashMap**
+
+- 底层采用分段的数组+链表实现，线程**安全**
+- 通过把整个Map分为N个Segment，可以提供相同的线程安全，但是效率提升N倍，默认提升16倍。(读操作不加锁，由于HashEntry的value变量是 volatile的，也能保证读取到最新的值。)
+- Hashtable的synchronized是针对整张Hash表的，即每次锁住整张表让线程独占，ConcurrentHashMap允许多个修改操作并发进行，其关键在于使用了锁分离技术
+- 有些方法需要跨段，比如size()和containsValue()，它们可能需要锁定整个表而而不仅仅是某个段，这需要按顺序锁定所有段，操作完毕后，又按顺序释放所有段的锁
+- 扩容：段内扩容（段内元素超过该段对应Entry数组长度的75%触发扩容，不会对整个Map进行扩容），插入前检测需不需要扩容，有效避免无效扩容
+
+**HashTable**
+
+- 底层数组+链表实现，无论key还是value都**不能为null**，线程**安全**，实现线程安全的方式是在修改数据时锁住整个HashTable，效率低，ConcurrentHashMap做了相关优化
+- 初始size为**11**，扩容：newsize = olesize*2+1
+- 计算index的方法：index = (hash & 0x7FFFFFFF) % tab.length
+
+两则的区别：
+
+hashtable线程安全，采用的是线程同步得方法。
+
+- ConcurrentHashMap提供了与Hashtable和SynchronizedMap不同的锁机制。Hashtable中采用的锁机制是一次锁住整个hash表，从而在同一时刻只能由一个线程对其进行操作；而ConcurrentHashMap中则是一次锁住一个桶。
+
+- Java5提供了ConcurrentHashMap，它是HashTable的替代，比HashTable的扩展性更好。
+
+###### Q&A Linkedhashmap 与 hashmap 的区别?
+
+- **HashMap**
+- HashMap 是一个最常用的Map，它根据键的HashCode 值存储数据，根据键可以直接获取它的值，具有很快的访问速度。遍历时，取得数据的顺序是完全随机的。
+- HashMap最多只允许一条记录的键为Null；允许多条记录的值为 Null。
+- HashMap不支持线程的同步（即任一时刻可以有多个线程同时写HashMap），可能会导致数据的不一致。如果需要同步，可以用 Collections的synchronizedMap方法使HashMap具有同步的能力，或者使用ConcurrentHashMap。
+- Hashtable与 HashMap类似，它继承自Dictionary类。不同的是：Hashtable不允许记录的键或者值为空；它支持线程的同步（即任一时刻只有一个线程能写Hashtable），因此也导致了 Hashtable在写入时会比较慢。
+- **LinkedHashMap**
+- **保存插入顺序**：LinkedHashMap保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的。也可以在构造时带参数，按照应用次数排序。
+- **速度慢**：在遍历的时候会比HashMap慢，不过有种情况例外：当HashMap容量很大，实际数据较少时，遍历起来可能会比LinkedHashMap慢。因为LinkedHashMap的遍历速度只和实际数据有关，和容量无关，而HashMap的遍历速度和他的容量有关。
+
+###### Q&A  hashmap 与 hashset 区别?
+
+HashSet和HashMap之间有很多相似之处。对于HashSet而言，系统采用Hash算法决定集合元素的存储位置，这样可以保证快速存、取集合元素；对于HashMap而言，系统将value当成key的附属，系统根据Hash算法来决定key的存储位置，这样可以保证快速存、取集合key，而value总是紧随key存储。
+
+HashSet的add()方法添加集合元素时实际上转变为调用HashMap的put()方法来添加 key-value对，当新放入 HashMap的Entry 中key 与集合中原有Entry的key 相同（hashCode()返回值相等，通过equals比较也返回true）时，新添加的Entry的value将覆盖原来Entry的value，但key不会有任何改变。因此，如果向HashSet中添加一个已经存在的元素，新添加的集合元素（底层由HashMap的key保存）不会覆盖已有的集合元素
+
+###### Q&A ArrayList和Vector有何异同点？
+
+相同点：
+（1）两者都是基于索引的，都是基于数组的。
+（2）两者都维护插入顺序，我们可以根据插入顺序来获取元素。
+（3）ArrayList 和 Vector 的迭代器实现都是 fail-fast 的。
+（4）ArrayList 和 Vector 两者允许 null 值，也可以使用索引值对元素进行随机访问。
+不同点：
+（1）Vector 是同步，线程安全，而 ArrayList 非同步，线程不安全。对于 ArrayList，如果 迭代时改变列表，应该使用 CopyOnWriteArrayList。
+（2）但是，ArrayList 比 Vector 要快，它因为有同步，不会过载。
+（3）在使用上，ArrayList 更加通用，因为 Collections 工具类容易获取同步列表和只读列 表。ArrayList在并发add()可能出现下标越界异常。
+
+######Q&A ArrayList 与 LinkedList 区别 ?
+
+ArrayList 和 LinkedList 都实现了 List 接口，他们有以下的不同点： ArrayList 是基于索引的数据接口，它的底层是数组。它可以以 O(1)时间复杂度对元素进行 随机访问。与此对应，LinkedList 是以元素列表的形式存储它的数据，每一个元素都和它的 前一个和后一个元素链接在一起，在这种情况下，查找某个元素的时间复杂度是 O(n)。 相对于 ArrayList，LinkedList 的插入，添加，删除操作速度更快，因为当元素被添加到集合 任意位置的时候，不需要像数组那样重新计算大小或者是更新索引。 LinkedList 比 ArrayList 更占内存，因为 LinkedList 为每一个节点存储了两个引用，一个指 向前一个元素，一个指向下一个元素。 
+
+###### Q&A  数组(Array)和列表(ArrayList)有什么区别？什么时候应该使用 Array 而不是 ArrayList？
+
+array包含基本类型和对象类型。Arraylist只能包含对象类型。
+
+Arraylist是采用数组实现的，arraylist是可以自动扩容的。比array提供了更多的特性，比如 addAll(),removeAll() 等。
+
+###### Q&A 使用ArrayList的迭代器会出现什么问题？单线程和多线程环境下； 
+
+常用的迭代器设计模式，iterator 方法返回一个父类实现的迭代器。 1、迭代器的 hasNext 方法的作用是判断当前位置是否是数组最后一个位置，相等为 false， 否则为 true。 2、迭代器 next 方法用于返回当前的元素，并把指针指向下一个元素，值得注意的是，每次 使用 next 方法的时候，都会判断创建迭代器获取的这个容器的计数器 modCount 是否与此 时 的 不 相 等 ， 不 相 等 说 明 集 合 的 大 小 被 修 改 过 ， 如 果 是 会 抛 出 ConcurrentModificationException 异常，如果相等调用 get 方法返回元素即可
+
+#### Properties类:
+
+Properties 继承于 Hashtable。表示一个持久的属性集，属性列表以key-value的形式存在，key和value都是字符串。
+
+[![03KBlR.png](https://s1.ax1x.com/2020/10/03/03KBlR.png)](https://imgchr.com/i/03KBlR)Properties 类被许多Java类使用。例如，在获取环境变量时它就作为System.getProperties()方法的返回值。
+我们在很多**需要避免硬编码的应用场景**下需要使用properties文件来加载程序需要的配置信息，比如JDBC、MyBatis框架等。Properties类则是properties文件和程序的中间桥梁，不论是从properties文件读取信息还是写入信息到properties文件都要经由Properties类。
+
+```java
+
+    public static void main(String[] args) throws Exception {
+
+        Properties props = new Properties();
+
+		//向Properties中添加属性
+        props.setProperty("username", "yeeku");
+        props.setProperty("password", "123456");
+		//将Properties中的key-value对保存到a.ini文件中
+        props.store(new FileOutputStream("a.ini"), "comment line");
+		//①//新建一个Properties对象
+        Properties props2 = new Properties();
+		//向Properties中添加属性
+        props2.setProperty("gender", "male");
+		//将a.ini文件中的key-value对追加到props2中
+        props2.load(new FileInputStream("a.ini"));
+		//②
+        System.out.println(props2);
+
+    }
+// 加载获取Connection 
+public Connection getConnection() throws Exception{
+      Properties info=new Properties();
+      info.load(this.getClass().getClassLoader().getResourceAsStream("jdbc.properties"));
+             String  driver=info.getProperty("driver");
+             String jdbcUrl=info.getProperty("jdbcUrl");
+             String user=info.getProperty("user");
+             String password=info .getProperty("password");
+             Class.forName(driver);
+             Connection connection=DriverManager.getConnection(jdbcUrl,user,password);
+             return connection;
+       }
+
+```
+
+可以把Map对象和属性文件关联起来，从而可以把Map对象中的key-value对写入属性文件中，也可以把属性文件中的“属性名=属性值”加载到Map对象中。由于属性文件里的属性名、属性值只能是字符串类型，所以Properties里的key、value都是字符串类型。该类提供了如下三个方法来修改Properties里的key、value值。
+
+更多参看Properties类的使用：https://www.cnblogs.com/leeego-123/p/11535967.html
 
 ### 泛型：
 
@@ -1725,19 +2225,12 @@ Location of three is 7, list.get(7) = three
 
 ```java
 public class TwoTuple<A,B>{
-
 	public final A first;
-
 	public final B second;
-
 	public TwoTuple(A a, B b){ first = a; second = b;} 
-
 	public String toStirng() {
-
 		return "("+first+","+second+")";
-
 	}
-
 }
 
 ```
@@ -1889,8 +2382,6 @@ public class Sets {
 
 在泛型代码内部，无法获取任何有关泛型参数类型的信息。java使用泛型擦除，比如List<String> 和List<Integer> 在运行时都是相同的类型，均被擦除为"原生"类型即List. 泛型擦除就是被擦除为父类。
 
-
-
 ### 异常：
 
 Java的异常机制主要依赖于try、catch、finally、throw和throws五个关键字，其中try关键字后紧跟一个花括号扩起来的代码块（花括号不可省略），简称try块，它里面放置可能引发异常的代码。catch后对应异常类型和一个代码块，用于表明该catch块用于处理这种类型的代码块。多个catch块后还可以跟一个finally块，finally块用于回收在try块里打开的物理资源，异常机制会保证finally块总被执行。throws关键字主要在方法签名中使用，用于声明该方法可能抛出的异常；而throw用于抛出一个实际的异常，throw可以单独作为语句使用，抛出一个具体的异常对象。
@@ -1904,35 +2395,24 @@ Checked异常和Runtime异常， Java认为Checked异常都是可以在编译阶
 ```java
 public class FinallyFlowTest {
 
-    public static void main(String[] args)
-
-            throws Exception {
-
+    public static void main(String[] args) throws Exception {
         boolean a = test();
-
         System.out.println(a);
-
     }
-
     public static boolean test() {
-
         try {
-
             // 因为finally块中包含了return语句
-
             // 所以下面的return语句失去作用return true;
         } finally {
             return false;
         }
-
     }
-
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
-如果有finally块，系统立即开始执行finally块——只有当finally块执行完成后，系统才会再次跳回来执行try块、catch块里的return或throw语句；如果finally块里也使用了return或throw等导致方法终止的语句，finally块已经终止了方法，系统将不会跳回去执行try块、catch块里的任何代码
+
+<font color="red">如果有finally块，系统立即开始执行finally块——只有当finally块执行完成后，系统才会再次跳回来执行try块、catch块里的return或throw语句；如果finally块里也使用了return或throw等导致方法终止的语句，finally块已经终止了方法，系统将不会跳回去执行try块、catch块里的任何代码</font>
 
 #### throws语句
 
@@ -1942,27 +2422,75 @@ public class FinallyFlowTest {
 
 #### 异常使用指南：
 
-1. 1.在恰当的级别处理问题。
-
+1. 在恰当的级别处理问题。
 2. 解决问题并且重新调用产生异常的方法
-
 3. 进行少许修补，然后绕过异常发生的地方继续执行
-
 4. 用别的数据进行计算，以代替方法预计返回的值
-
 5. 把当前运行环境下能做的事情尽量做完，然后把相同的异常重新抛到更高层
-
 6. 把当前运行环境下能做的事情尽量做完，然后把不同的异常重新抛到更高层
-
 7. 终止程序
-
 8. 进行简化
-
 9. 让类库和程序更安全
 
-   
+#### 异常常见的面试题：
 
+1．java中用来抛出异常的关键字是什么？
 
+throw
+
+2．异常和Error（错误）的区别？
+
+error：是不可捕捉到的，无法采取任何恢复的操作，顶多只能显示错误信息。
+Exception ：表示可恢复的例外，这是可捕捉到的
+
+3．什么是异常？
+
+所谓异常是指程序在运行过程中发生的一些不正常事件。（如：除0溢出，数组下标越界，所读取的文件不存在）
+
+4．什么类是所有异常类的父类
+
+Throwable类
+
+5．java虚拟机能自动处理的异常是什么？
+
+运行异常
+
+6．Try-catch-finally的执行过程
+
+（1）try{}语句块中放的是要检测的java代码，可能有会抛出异常，也可能会正常执行
+（2）catch（异常类型）{}块是当java运行时系统接收到try块中所抛出异常对象时，会寻找处理这一异常catch块来进行处理（可以有多个catch块）
+（3）finally{}不管系统有没有抛出异常都会去执行，一般用来释放资源。除了在之前执行了System.exit（0）
+
+7．常见的异常？你的理解。
+
+常见异常：RuntimeException,IOException,SQLException,ClassNotFoundException
+
+8．final, finally, finalize的区别。
+
+final用于声明属性，方法和类，分别表示属性不可交变，方法不可覆盖，类不可继承。
+**finally是异常处理语句结构的一部分，表示总是执行。**
+**finalize是Object类的一个方法，在垃圾收集器执行的时候会调用被回收对象的此方法，供垃圾收集时的其他资源回收，例如关闭文件等。（**在垃圾回收的时候会调用被回收对象的此方法。**）**
+
+9．Java中的异常处理机制的简单原理和应用。
+
+​     当JAVA程序违反了JAVA的语义规则时，JAVA虚拟机就会将发生的错误表示为一个异常。违反语义规则包括2种情况。一种是JAVA类库内置的语义检查。例如数组下标越界,会引发IndexOutOfBoundsException;访问null的对象时会引发NullPointerException。另一种情况就是JAVA允许程序员扩展这种语义检查，程序员可以创建自己的异常，并自由选择在何时用throw关键字引发异常。所有的异常都是java.lang.Thowable的子类。
+
+10．运行时异常与一般异常有何异同？
+
+Java提供了两类主要的异常:运行时异常runtime exception和一般异常checked exception。checked 异常。对于后者这种异常，JAVA要求程序员对其进行catch。所以，面对这种异常不管我们是否愿意，只能自己去写一大堆catch块去处理可能的异常。
+运行时异常我们可以不处理。这样的异常由虚拟机接管。出现运行时异常后，系统会把异常一直往上层抛，一直遇到处理代码。如果不对运行时异常进行处理，那么出现运行时异常之后，要么是线程中止，要么是主程序终止。
+
+11、你平时在项目中是怎样对异常进行处理的。
+
+（1）尽量避免出现runtimeException 。例如对于可能出现空指针的代码，带使用对象之前一定要判断一下该对象是否为空，必要的时候对runtimeException
+
+也进行try catch处理。
+
+（2）进行try catch处理的时候要在catch代码块中对异常信息进行记录，通过调用异常类的相关方法获取到异常的相关信息，返回到web端，不仅要给用户良好
+
+的用户体验，也要能帮助程序员良好的定位异常出现的位置及原因。例如，以前做的一个项目，程序遇到异常页面会显示一个图片告诉用户哪些操作导致程序出现
+
+了什么异常，同时图片上有一个按钮用来点击展示异常的详细信息给程序员看的。
 
 ### Jdbc:
 
@@ -2232,24 +2760,15 @@ commons-dbcp.jar：连接池的实现。 commons-pool.jar：连接池实现的�
 
 C3P0数据源性能更胜一筹，Hibernate就推荐使用该连接池。C3P0连接池不仅可以自动清理不再使用的Connection，还可以自动清理Statement和ResultSet
 
-- // 创建连接池实例
-- ComboPooledDataSource ds=new ComboPooledDataSource();
-- // 设置连接池连接数据库所需的驱动
-- ds.setDriverClass("com.mysql.jdbc.Driver");
-- // 设置连接数据库的URL
-- ds.setJdbcUrl("jdbc:mysql://localhost:3306/javaee");
-- // 设置连接数据库的用户名
-- ds.setUser("root");
-- // 设置连接数据库的密码
-- ds.setPassword("32147");
-- // 设置连接池的最大连接数
-- ds.setMaxPoolSize(40);
-- // 设置连接池的最小连接数
-- ds.setMinPoolSize(2);
-- // 设置连接池的初始连接数
-- ds. setInitialPoolSize(10);
-- // 设置连接池的缓存Statement的最大数
-- ds.setMaxStatements(180);
+- // 创建连接池实例     ComboPooledDataSource ds=new ComboPooledDataSource();
+- // 设置连接池连接数据库所需的驱动   ds.setDriverClass("com.mysql.jdbc.Driver");
+- // 设置连接数据库的URL    ds.setJdbcUrl("jdbc:mysql://localhost:3306/javaee");
+- // 设置连接数据库的用户名     ds.setUser("root");
+- // 设置连接数据库的密码     ds.setPassword("32147");
+- // 设置连接池的最大连接数   ds.setMaxPoolSize(40);
+- // 设置连接池的最小连接数    ds.setMinPoolSize(2);
+- // 设置连接池的初始连接数    ds. setInitialPoolSize(10);
+- // 设置连接池的缓存Statement的最大数    ds.setMaxStatements(180);
 
 在程序中创建C3P0连接池的方法与前面介绍的创建DBCP连接池的方法基本类似，此处不再解释。
 
@@ -2873,6 +3392,216 @@ public class PriorityTest extends Thread {
 
 上面程序中的第一行粗体字代码改变了主线程的优先级为6，这样由main线程所创建的子线程的优先级默认都是6，所以程序直接输出low、high两个线程的优先级时应该看到6。接着程序将low线程的优先级设为Priority.MIN_PRIORITY，将high线程的优先级设置为Priority.MAX_PRIORITY。
 
+#### ThreadLocal类：
+
+ThreadLocal不是解决对象的共享访问问题，ThreadLocal提供了线程内存储变量的能力，这些变量不同之处在于每一个线程读取的变量是对应的互相独立的。通过get和set方法就可以得到当前线程对应的值。
+
+```java
+public void set(T value) {
+    	// 获取当前线程
+        Thread t = Thread.currentThread();
+    	// 实际存储的数据结构类型
+        ThreadLocalMap map = getMap(t);
+    	// 如果存在map就直接set没有则直接创建并set
+        if (map != null)
+            map.set(this, value);
+        else
+            createMap(t, value);
+    }
+ThreadLocalMap getMap(Thread t) {
+    // thread中维护了一个ThreadLocalMap
+        return t.threadLocals;
+    }
+void createMap(Thread t, T firstValue) {
+    //实例化一个新的ThreadLocalMap，并赋值给线程的成员变量threadLocals
+        t.threadLocals = new ThreadLocalMap(this, firstValue);
+    }
+从上面代码可以看出每个线程持有一个ThreadLocalMap对象。每一个新的线程Thread都会实例化一个ThreadLocalMap并赋值给成员变量threadLocals，使用时若已经存在threadLocals则直接使用已经存在的对象。
+static class ThreadLocalMap {
+
+        /**
+         * The entries in this hash map extend WeakReference, using
+         * its main ref field as the key (which is always a
+         * ThreadLocal object).  Note that null keys (i.e. entry.get()
+         * == null) mean that the key is no longer referenced, so the
+         * entry can be expunged from table.  Such entries are referred to
+         * as "stale entries" in the code that follows.
+         */
+        static class Entry extends WeakReference<ThreadLocal<?>> {
+            /** The value associated with this ThreadLocal. */
+            Object value;
+
+            Entry(ThreadLocal<?> k, Object v) {
+                super(k);
+                value = v;
+            }
+        }
+
+// ThreadLocalMap的构造方法
+ThreadLocalMap(ThreadLocal<?> firstKey, Object firstValue) {
+			// 
+            table = new Entry[INITIAL_CAPACITY];
+            int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
+            table[i] = new Entry(firstKey, firstValue);
+            size = 1;
+            setThreshold(INITIAL_CAPACITY);
+        }
+通过上面的代码不难看出在实例化ThreadLocalMap时创建了一个长度为16的Entry数组。通过hashCode与length位运算确定出一个索引值i，这个i就是被存储在table数组中的位置。        
+```
+
+<font color="red">对于某一ThreadLocal来讲，他的索引值i是确定的，在不同线程之间访问时访问的是不同的table数组的同一位置即都为table[i]，只不过这个不同线程之间的table是独立的。</font>
+
+<font color="red">对于同一线程的不同ThreadLocal来讲，这些ThreadLocal实例共享一个table数组，然后每个ThreadLocal实例在table中的索引i是不同的。</font>
+
+当使用 ThreadLocal 维护变量时， ThreadLocal 为每个使用该变量的线程提供独立的变 量副本，所以每一个线程都可以独立地改变自己的副本，而不会影响其它线程所对应的副本。
+
+ThreadLocal和Synchronized都是为了解决多线程中相同变量的访问冲突问题，不同的点是
+
+- Synchronized是通过线程等待，牺牲时间来解决访问冲突
+- ThreadLocal是通过每个线程单独一份存储空间，牺牲空间来解决冲突，并且相比于Synchronized，ThreadLocal具有线程隔离的效果，只有在线程内才能获取到对应的值，线程外则不能访问到想要的值。
+
+正因为ThreadLocal的线程隔离特性，使他的应用场景相对来说更为特殊一些。在android中Looper、ActivityThread以及AMS中都用到了ThreadLocal。当某些数据是以线程为作用域并且不同线程具有不同的数据副本的时候，就可以考虑采用ThreadLocal。
+
+#### 什么是线程安全？
+
+- 多线程环境下，
+- 对对象的访问不需加入额外的同步控制，
+- 操作的数据结果依然是正确的。
+
+##### 保证线程安全：
+
+**1、synchronized**
+
+synchronized关键字，就是用来控制线程同步的，保证我们的线程在多线程环境下，不被多个线程同时执行，确保我们数据的完整性，使用方法一般是加在方法上。
+
+对于非静态代码块synchronized方法，锁的对象就是本身的this方法。
+
+虽然加synchronized关键字，可以让我们的线程变得安全，但是我们在用的时候，也要注意缩小synchronized的使用范围，如果随意使用时很影响程序的性能，别的对象想拿到锁，结果你没用锁还一直把锁占用，这样就有点浪费资源。
+
+**2、Lock**
+
+先来说说它跟synchronized有什么区别吧，Lock是在Java1.6被引入进来的，Lock的引入让锁有了可操作性，什么意思？就是我们在需要的时候去手动的获取锁和释放锁，甚至我们还可以中断获取以及超时获取的同步特性，但是从使用上说Lock明显没有synchronized使用起来方便快捷。我们先来看下一般是如何使用的：
+
+```java
+private Lock lock = new ReentrantLock(); // ReentrantLock是Lock的子类
+
+   private void method(Thread thread){
+       lock.lock(); // 获取锁对象
+       try {
+           System.out.println("线程名："+thread.getName() + "获得了锁");
+           // Thread.sleep(2000);
+       }catch(Exception e){
+           e.printStackTrace();
+       } finally {
+           System.out.println("线程名："+thread.getName() + "释放了锁");
+           lock.unlock(); // 释放锁对象
+       }
+   }
+```
+
+这里跟synchronized不同的是，Lock获取的所对象需要我们亲自去进行释放，为了防止我们代码出现异常，所以我们的释放锁操作放在finally中，因为finally中的代码无论如何都是会执行的。
+
+#### 线程的面试题：
+
+##### **Q&A 1.什么是线程？**
+
+ 线程是程序执行运算的最小的基本单位
+
+##### **Q&A2.线程与进程的区别？**
+
+- 进程是系统中正在运行的一个应用程序，表示资源分配的基本单位。又是调度运行的基本单位。
+- 一个线程只能属于一个进程，而一个进程可以拥有多个线程。
+- 同一进程的所有线程共享该进程的所有资源。同一进程的多个线程共享代码段。
+
+##### Q&A**3.如何保证线程安全？**
+
+加锁是最简单的直接的方式。synchronized关键字
+
+##### Q&A**4.如何使用线程？线程是如何启动的？**
+
+- 实现runnable接口，
+
+- 实现Callable接口，
+
+- 继承Thread类，
+- 线程启动，重写run方法然后调用start()即可开启一个线程。
+
+##### Q&A**5.线程的几种状态？**
+
+5种状态：创建，就绪，运行状态，阻塞，死亡
+
+线程创建时new状态，调用start()进入runnable就绪状态，争夺cpu资源后进入running状态，由于某种原因进入（1）等待阻塞：运行的线程会释放占用的所有资源，jvm会把该线程放入“等待池”进入这个状态后，是不能自动唤醒的，必须依靠其他线程调用notify()或notifyAll()方法才能被唤醒，
+（2）同步阻塞：运行的线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入“锁池”中。
+（3）其他阻塞：运行的线程执行sleep()或join()方法，或者发出了I/O请求时，JVM会把该线程置为阻塞状态。
+当sleep()状态超时、join()等待线程终止或者超时、或者I/O处理完毕时，线程重新转入就绪状态。
+当线程正常执行结束会进入dead状态（一个未捕获的异常也会使线程终止）
+
+- yield()只是使当前线程重新回到runnable状态
+- sleep()会让出cpu，不会释放锁
+- join()会让出cpu，释放锁
+- wait() 和 notify() 方法与suspend()和 resume()的区别在于wait会释放锁，suspend不会释放锁
+- wait() 和 notify()只能运行在Synchronized代码块中，因为wait()需要释放锁，如果不在同步代码块中，就无锁可以释放
+- 当线程调用wait()方法后会进入等待队列（进入这个状态会释放所占有的所有资源，与阻塞状态不同），进入这个状态后，是不能自动唤醒的，必须依靠其他线程调用notify()或notifyAll()方法才能被唤醒
+
+##### **Q&A6.并发和并行的区别？**
+
+并发：同一时段，多个任务都在执行，
+
+并行：单位时间内多个任务同时执行。
+
+##### Q&A**7.使用多线程带来什么问题可能？**
+
+并发是为了能提高程序的执行效率提高程序运行速度，但是并发编程并不总是能提高程序运行速度的，而且并发编程可能会遇到很多问题，比如：内存泄漏、上下文切换、死锁
+
+##### Q&A**8.什么是死锁？如何避免死锁？**
+
+死锁:死锁是指两个或两个以上的进程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去。此时称系统处于死锁状态或系统产生了死锁，这些永远在互相等待的进程称为死锁进程
+
+破坏死锁的四个条件：
+
+1. 互斥条件：该资源任意一个时刻只由一个线程占用。 （无法破坏）
+2. 请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。（可以使用一次性申请所有资源）
+3. 不剥夺条件:线程已获得的资源在末使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。（占用部分资源线程去申请其他资源，如果不能申请到就主动释放它占有的资源）
+4. 循环等待条件:若干进程之间形成一种头尾相接的循环等待资源关系。（按顺序申请资源。）
+
+##### Q&A**9.sleep（）和wait()方法的区别？**
+
+- sleep方法会让出cpu没有释放锁，wait方法释放了锁。
+
+- 两者都可以暂停线程的执行。
+- Wait 通常被用于线程间交互/通信，sleep 通常被用于暂停执行。
+- wait() 方法被调用后，线程不会自动苏醒，需要别的线程调用同一个对象上的 notify() 或者 notifyAll() 方法。sleep() 方法执行完成后，线程会自动苏醒。或者可以使用wait(long timeout)超时后线程会自动苏醒。
+
+##### Q&A  介绍一下Syncronized锁，
+
+synchronized修饰静态方法以及同步代码块的Synchronized用法锁的是类，线程想要执行对应的同步代码就需要或的类锁。
+
+synchronized修饰成员方法，线程获取的是调用当前对象实例的对象锁。
+
+##### Q&A  介绍一下Synchronized和lock，
+
+synchronized是java的关键字，当用来修饰一个方法或者代码块的时候，能够保证在同一时刻最多只有一个线程执行该代码。jdk1.5后引入自旋锁，锁粗化，轻量级锁，偏向锁来优化关键字的性能。
+
+Lock是一个接口，Synchronized发生异常时自动释放线程占有的锁，因此不会导致死锁的现象。Lock发生异常时需要通过unLock()去释放锁，则需要在使用finally块中释放锁，Lock可以让等待锁的线程响应中断，而synchronized却不行，synchronized时等待的线程会一直等待。Lock可以知道是否成功获取锁，而synchronized却无法办到。
+
+##### Q&A  介绍一下volatile
+
+volatile修饰的是保障有序性和可见性，比如我们写的代码不一定会按照我们书写的顺序来执行。
+
+volatile是Java提供的轻量级的同步机制，比sync的开销要小
+
+被volatile定义的变量,系统每次用到它时都是直接从主存中读取,而不是各个线程的工作内存
+
+volatile可以像sync一样保持变量在多线程环境中是实时可见的
+
+可见性：
+
+每个线程都有自己的工作内存，每次线程执行时，会从主存获得变量的拷贝，对变量的操作是在线程的工作内存中进行，不同的线程之间不共享工作内存；对于volatile（sync，final）来说，打破了上述的规则，当线程修改了变量的值，其他线程可以立即知道该变量的改变。而对于普通变量，当一个线程修改了变量，需要将变量写回主存，其他线程从主存中读取变量后才对该线程可见
+
+volatile具有sync的可见性，但是不具备原子性（解决java多线程的执行有序性）。volatile适用于多个变量之间或者某个变量当前值和修改之后值之间没有约束。因此，单独使用volatile还不足以实现计数器，互斥锁等。
+
+在并发编程中谈及到的无非是可见性、有序性及原子性。而这里的Volatile只能够保证前两个性质，对于原子性还是不能保证的，只能通过锁的形式帮助他去解决原子性操作
+
 ### 网络编程：
 
 InetAddress类没有提供构造器，而是提供了如下两个静态方法来获取InetAddress实例。
@@ -2939,29 +3668,17 @@ URLEncoder类包含一个encode(String s,String enc)静态方法，它可以将�
 ```java
 public class URLDecoderTest {
 
-    public static void main(String[] args)
-
-            throws Exception {
-
+    public static void main(String[] args) throws Exception {
 // 将application/x-www-form-urlenco
-
         疯狂java:
-
         public class URLDecoderTest {
+            public static void main(String[] args) throws Exception {
 
-            public static void main(String[] args)
-
-                    throws Exception {
-
-// 将application/x-www-form-urlencoded字符串
-
-// 转换成普通字符串
-
-// 其中的字符串直接从图17.3所示的窗口中复制过来String keyWord=URLDecoder.decode("%B7%E8%BF%F1java", "GBK");System.out.println(keyWord);
-
-// 将普通字符串转换成
-
-// application/x-www-form-urlencoded字符串String urlStr=URLEncoder.encode("疯狂Android讲义" , "GBK"); System.out.println(urlStr);
+            // 将application/x-www-form-urlencoded字符串
+            // 转换成普通字符串
+            // 其中的字符串直接从图17.3所示的窗口中复制过来String keyWord=URLDecoder.decode("%B7%E8%BF%F1java", "GBK");System.out.println(keyWord);
+            // 将普通字符串转换成
+            // application/x-www-form-urlencoded字符串String urlStr=URLEncoder.encode("疯狂Android讲义" , "GBK"); System.out.println(urlStr);
 
             }
 
@@ -2969,38 +3686,34 @@ public class URLDecoderTest {
 
 例子：
 
+package com.kayleoi.springbootdatajdbc;
+
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+/**
+ * @Author kay三石
+ * @date:2020/10/3
+ */
 public class DownUtil {
-
-// 定义下载资源的路径
-
+    // 定义下载资源的路径
     private String path;
-
-// 指定所下载的文件的保存位置
-
+    // 指定所下载的文件的保存位置
     private String targetFile;
-
-// 定义需要使用多少个线程下载资源
-
+    // 定义需要使用多少个线程下载资源
     private int threadNum;
-
-// 定义下载的线程对象
-
+    // 定义下载的线程对象
     private DownThread[] threads;
-
-// 定义下载的文件的总大小
-
+    // 定义下载的文件的总大小
     private int fileSize;
 
     public DownUtil(String path, String targetFile, int threadNum) {
-
         this.path = path;
-
         this.threadNum = threadNum;
-
-// 初始化threads数组
-
+        // 初始化threads数组
         threads = new DownThread[threadNum];
-
         this.targetFile = targetFile;
 
     }
@@ -3008,15 +3721,10 @@ public class DownUtil {
     public void download() throws Exception {
 
         URL url = new URL(path);
-
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setConnectTimeout(5 ＊ 1000);
-
+        conn.setConnectTimeout(5 * 1000);
         conn.setRequestMethod("GET");
-
         conn.setRequestProperty(
-
                 "Accept",
 
                 "image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
@@ -3030,12 +3738,9 @@ public class DownUtil {
                         + "application/vnd.ms-powerpoint, application/msword, ＊/＊");
 
         conn.setRequestProperty("Accept-Language", "zh-CN");
-
         conn.setRequestProperty("Charset", "UTF-8");
-
         conn.setRequestProperty("Connection", "Keep-Alive");
-
-// 得到文件大小
+        // 得到文件大小
 
         fileSize = conn.getContentLength();
 
@@ -3053,71 +3758,46 @@ public class DownUtil {
 
         for (int i = 0; i < threadNum; i++) {
 
-// 计算每个线程下载的开始位置
-
-            int startPos = i ＊currentPartSize;
-
-// 每个线程使用一个RandomAccessFile进行下载
-
-            RandomAccessFile currentPart = new RandomAccessFile(targetFile,
-
-                    "rw");
-
-// 定位该线程的下载位置
-
+            // 计算每个线程下载的开始位置
+            int startPos = i * currentPartSize;
+            // 每个线程使用一个RandomAccessFile进行下载
+            RandomAccessFile currentPart = new RandomAccessFile(targetFile, "rw");
+            // 定位该线程的下载位置
             currentPart.seek(startPos);
-
-// 创建下载线程
-
-            threads[i] = new DownThread(startPos, currentPartSize,
-
-                    currentPart);
-
-// 启动下载线程
-
+            // 创建下载线程
+            threads[i] = new DownThread(startPos, currentPartSize, currentPart);
+            // 启动下载线程
             threads[i].start();
 
         }
 
     }
 
-// 获取下载的完成百分比
-
+    // 获取下载的完成百分比
     public double getCompleteRate() {
-
-// 统计多个线程已经下载的总大小
-
+        // 统计多个线程已经下载的总大小
         int sumSize = 0;
-
         for (int i = 0; i < threadNum; i++) {
-
             sumSize += threads[i].length;
-
         }
-
-// 返回已经完成的百分比
-
-        return sumSize ＊1.0 / fileSize;
+        // 返回已经完成的百分比
+        return sumSize * 1.0 / fileSize;
 
     }
 
     private class DownThread extends Thread {
 
-// 当前线程的下载位置
+        // 当前线程的下载位置
+        public int length;
 
+        // 定义当前线程负责下载的文件大小
         private int startPos;
 
-// 定义当前线程负责下载的文件大小
-
+        // 当前线程需要下载的文件块
         private int currentPartSize;
 
-// 当前线程需要下载的文件块
-
+        // 定义该线程已下载的字节数
         private RandomAccessFile currentPart;
-
-// 定义该线程已下载的字节数
-
-        public int length;
 
         public DownThread(int startPos, int currentPartSize,
 
@@ -3141,7 +3821,7 @@ public class DownUtil {
 
                         .openConnection();
 
-                conn.setConnectTimeout(5 ＊ 1000);
+                conn.setConnectTimeout(5 * 1000);
 
                 conn.setRequestMethod("GET");
 
@@ -3165,7 +3845,7 @@ public class DownUtil {
 
                 InputStream inStream = conn.getInputStream();
 
-// 跳过startPos个字节，表明该线程只下载自己负责的那部分文件
+                // 跳过startPos个字节，表明该线程只下载自己负责的那部分文件
 
                 inStream.skip(this.startPos);
 
@@ -3173,26 +3853,17 @@ public class DownUtil {
 
                 int hasRead = 0;
 
-// 读取网络数据，并写入本地文件
+                // 读取网络数据，并写入本地文件
 
-                while (length < currentPartSize
-
-                        && (hasRead = inStream.read(buffer)) != -1) {
-
+                while (length < currentPartSize && (hasRead = inStream.read(buffer)) != -1) {
                     currentPart.write(buffer, 0, hasRead);
-
-// 累计该线程下载的总大小
-
+                    // 累计该线程下载的总大小
                     length += hasRead;
 
                 }
-
                 currentPart.close();
-
                 inStream.close();
-
             } catch (Exception e) {
-
                 e.printStackTrace();
 
             }
@@ -3202,9 +3873,8 @@ public class DownUtil {
     }
 
 }
-```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
+```
 
 上面程序中定义了DownThread线程类，该线程负责读取从start开始，到end结束的所有字节数据，并写入RandomAccessFile对象。这个DownThread线程类的run()方法就是一个简单的输入、输出实现。
 
@@ -3273,8 +3943,6 @@ public class MultiThreadDown {
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 运行上面程序，即可看到程序从www.crazyit.org下载得到一份名为oracelsql.rar的压缩文件。
 
@@ -3437,51 +4105,29 @@ public class URLClassLoaderTest {
 
 ```java
 interface Person {
-
     void walk();
-
     void sayHello(String name);
-
 }
 
 class MyInvokationHandler implements InvocationHandler {
-
 /*
-
 执行动态代理对象的所有方法时，都会被替换成执行如下的invoke方法
-
 其中：
-
 proxy：代表动态代理对象
-
 method：代表正在执行的方法
-
 args：代表调用目标方法时传入的实参
-
 */
-
     public Object invoke(Object proxy, Method method, Object[] args) {
-
         System.out.println("----正在执行的方法:" + method);
-
         if (args != null) {
-
             System.out.println("下面是执行该方法时传入的实参为：");
-
             for (Object val : args) {
-
                 System.out.println(val);
-
             }
-
         } else {
-
             System.out.println("调用该方法没有实参！");
-
         }
-
         return null;
-
     }
 
 }
@@ -3493,11 +4139,8 @@ public class ProxyTest {
             throws Exception {
 
 // 创建一个InvocationHandler对象InvocationHandler handler=new MyInvokationHandler();// 使用指定的InvocationHandler来生成一个动态代理对象Person p=(Person)Proxy.newProxyInstance(Person.class.getClassLoader(), new Class[]{Person.class}, handler); // 调用动态代理对象的walk()和sayHello()方法
-
         p.walk();
-
         p.sayHello("孙悟空");
-
     }
 
 }
@@ -3505,4 +4148,4 @@ public class ProxyTest {
 
 ![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
-在疯狂java中的第二版中个人感觉到好像jdk1.8中Api中舍弃了原来的很多的类这使得java的发展更加的方便，同时感觉到以问答的形式进行讲解但是有很多一部分都是很粗糙，只有自己通过API的查询和代码的书写才可以达到融会贯通。阅读的时建议有一部分的java基础，如果不然不建议阅读。
+本文有个人阅读疯狂java和java编程思想所生成的文档，其中一部分面试题是有面试积累的，是对javaSE的总结与回顾，后序会不定期的进行对其补充和复习。
