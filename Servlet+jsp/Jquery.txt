@@ -1,3 +1,0 @@
-jQuery
-	用于处理HTML的事件，提供异步的操作
-	将javascript和Java代码分离出来
