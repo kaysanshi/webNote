@@ -1,594 +1,933 @@
-## SpringBoot整合其他组件
+# SpringBoot与数据访问
 
-### springboot:
+## 1、JDBC
 
-​			Spring Boot是他们最新的创新，能够跟上不断变化的技术需求。 开发Spring Boot的主要动机是简化配置和部署spring应用程序的过程。
-​			Spring Boot为开发提供一个具有最小功能的Spring应用程序，并提供了一个新的范例。
-​			使用Spring Boot将能够以更灵活的方式开发Spring应用程序，并且能够通过最小(或可能没有)配置Spring来专注于解决应用程序的功能需求。它使用全新的开发模型，通过避免一些繁琐的开发步骤和样板代码和配置，使Java开发非常容易。
-
-		#### Spring Boot的主要特点：
-
-​				创建独立的Spring应用程序
-​				直接嵌入Tomcat，Jetty或Undertow（无需部署WAR文件）
-​				提供“初始”的POM文件内容，以简化Maven配置
-​				尽可能时自动配置Spring
-​				提供生产就绪的功能，如指标，健康检查和外部化配置
-​				绝对无代码生成，也不需要XML配置
-
-		设置springBoot的banner：
-		我们在 src/main/resources 目录下新建一个 banner.txt
-					${AnsiColor.BRIGHT_RED}：设置控制台中输出内容的颜色
-					${application.version}：用来获取 MANIFEST.MF 文件中的版本号
-					${application.formatted-version}：格式化后的 ${application.version} 版本信息
-					${spring-boot.version}：Spring Boot 的版本号
-					${spring-boot.formatted-version}：格式化后的 ${spring-boot.version} 版本信息
-		springboot的核心还是spring，他不是编写应用程序的框架，他是提供应用程序服务器功能的嵌入式servlert容器。
-
-springboot的使用：
-	 在maven中引入以下的配置：
-		<parent>
+```xml
+<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-parent<artifacId>
-			<version>1.5.7.relesas</version>
-		</parent>
-		引入依赖：
-			<dependency>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-web</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>org.mybatis.spring.boot</groupId>
-					<artifactId>mybatis-spring-boot-starter</artifactId>
-					<version>1.3.2</version>
-				</dependency>
-在springboot项目中的启动类有以下配置：
-		主程序类的标志：
-		@SpringBootApplication= @Configuration+@EnableAutoconfiguration+@ComponentScan
-  		
-		@Configuration：经常与＠Bean 组合使用，使用这两个注解就可以创建一个简单的Spring 配置类， 可以用来替代相应的XML 配置文件。
-   		@EnableAutoConfiguration ：能够自动配置Spring 的上下文，猜测和配置用户想要的Bean类。
-   		@ComponentScan ： 会自动扫描指定包下的全部标有＠Component 的类， 并注册成Bean，包括子注解＠Service 、＠Repository 、＠Controller。这些Bean 一般是结合＠Autowired 构造函数来注入。）
-		
-		@AutoConfigurationPackage:自动配置包：
-	
-	控制器中的类：
-		@RestController = @Controller + @ResponseBody
-	
-	#配置文件：
-	
-				配置yml文件：
-							logging:
-							level:
-								cn:
-									qfengx:
-							portal:
-								mapper: debug
-							file: D:/log/portal_log.log
-						server:
-							port: 80
-						spring:
-							datasource:
-								username: root
-								password: 123
-								url: jdbc:mysql://localhost:3306/portal?useSSL=true
-								driver-class-name: com.mysql.jdbc.Driver
-							servlet:
-								multipart:
-									max-file-size: 128MB
-									max-request-size: 128MB
-						mybatis:
-							config-location: classpath:mybatis/mybatis-config.xml
-							mapper-locations:
-							- classpath:mybatis/mapper/*.xml
-						upload:
-							path:
-								product: 
-									img: D:/portal/upload/product/img/
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+```
 
-### springboot的基本的概念及其术语：
 
-​		任何一个标注了@Configuration的Java类定义都是一个JavaConfig配置类。
-​		 <beans>
-​		<! -- bean定义 -->
-​		</beans>
-​		而基于JavaConfig的配置方式是这样的：
-​		@Configuration
-​		public class MockConfiguration{
-​		    // bean定义
-​		}
-​		任何一个标注了 @ Bean的方法，其返回值将作为一个bean定义注册到Spring的IoC容器，方法名将默认成为该bean定义的id。
-			1. @Component Scan
-			@Component Scan对应XML配置形式中的<context:component-scan>元素，用于配合一些元信息Java Annotation，比如@Component和@Repository等，将标注了这些元信息Annotation的bean定义类批量采集到Spring的IoC容器中。
-			2. @PropertySource 与 @PropertySources
-					@PropertySource用于从某些地方加载*.properties文件内容，并将其中的属性加载到IoC容器中，便于填充一些bean定义属性的占位符（placeholder），当然，这需要PropertySourcesPlaceholderConfigurer的配合。
-					@Configuration
-					@PropertySource("classpath:1.properties")
-					@PropertySource("classpath:2.properties")
-					@PropertySource("...")
-					public class XConfiguration{
-					    ...
-					}
-					@PropertySources(   
-					@PropertySource("classpath:1.properties"),     @PropertySource("classpath:2.properties"),
-						...
-					})
-					public class XConfiguration{
-					    ...
-					}
-			@Import 只负责引入JavaConfig形式定义的IoC容器配置，如果有一些遗留的配置或者遗留系统需要以XML形式来配置（比如dubbo框架），
-			通 过 @ImportResource将它们一起合并到当前JavaConfig配置的容器中：
-				@Configuration
-				@Import(MockConfiguration.class)
-				@ImportResource("...")
-				public class XConfiguration {
-				    ...
-				}
-			@SpringBootApplication是一个“三体”结构，实际上它是一个复合Annotation：
-				@Target(ElementType.TYPE)
-				@Retention(RetentionPolicy.RUNTIME)
-				@Documented
-				@Inherited
-				@Configuration
-				@EnableAutoConfiguration
-				@Component Scan
-				public @interface SpringBootApplication{
-				    ...
-				}
-			SpringBoot启动类拆分为两个独立的Java类，整个形势就明朗了：
-				@Configuration
-				@EnableAutoConfiguration
-				@Component Scan
-				public class DemoConfiguration {
-				    @Bean
-				    public Controller controller() {
-					return new Controller();
-				    }
-				}
-				public class DemoApplication {
-				    public static void main(String[] args) {
-					SpringApplication.run(DemoConfiguration.class, args);
-				    }
-				}
-				所以，启动类DemoApplication其实就是一个标准的Standalone类型Java程序的main函数启动类，没有什么特殊的。
 
-			@EnableAutoConfiguration可以帮助SpringBoot应用将所有符合条件的@Configuration配置都加载到当前SpringBoot创建并使用的IoC容器，
-				@EnableAutoConfiguration作为一个复合Annotation，其自身定义关键信息如下：
-				@Target(ElementType.TYPE)
-				@Retention(RetentionPolicy.RUNTIME)
-				@Documented
-				@Inherited
-				@AutoConfigurationPackage
-				@Import(EnableAutoConfigurationImportSelector.class)
-				public @interface EnableAutoConfiguration {
-				    ...
-				}
-			借助于SpringFactoriesLoader的支持，@EnableAutoConfiguration可以“智能”地自动配置功效才得以大功告成！
-			那么什么是springFactoriesLoader?
-				其主要功能就是从指定的配置文件META-INF/spring.factories加载配置，
-				spring.factories是一个典型的java properties文件，配置的格式为Key = Value形式，
-				只不过Key和Value都是Java类型的完整类名（Fully qualified name）
-				example.MyService=example.MyServiceImpl1, example.MyServiceImpl2
-			在@EnableAutoConfiguration的场景中，它更多是提供了一种配置查找的功能支持，即根据@EnableAutoConfiguration的完整类名org.springframework.boot.autoconfigure.EnableAutoConfiguration作为查找的Key，获取对应的一组@Configuration类：
-			@EnableAutoConfiguration自动配置的魔法其实就变成了：从classpath中搜寻所有META-INF/spring.factories配置文件，
-			并将其中org.spring-framework.boot.autoconfigure.EnableAutoConfiguration对应的配置项通过反射（Java Reflection）实例化为对应的标注了@Configuration的JavaConfig形式的IoC容器配置类，
-			然后汇总为一个并加载到IoC容器。
-		@Component Scan 的功能其实就是自动扫描并加载符合条件的组件或bean定义，最终将这些bean定义加载到容器中。
-		加载bean定义到Spring的IoC容器，我们可以手工单个注册，不一定非要通过批量的自动扫描完成，所以说@Component Scan是可有可无的。
-				  @ConﬁgurationProperties  @Value
-			功能 批量注入配置文件中的属性   一个个指定
-			松散绑定（松散语法） 支持     不支持
-			SpEL    不支持                支持
-			JSR303数据校验 支持           不支持
-			复杂类型封装 支持              不支持
-			 
-			1、properties配置文件在idea中默认utf-8可能会乱码 
-			调整
-			2、
-		@PropertySource&@ImportResource&@Bean 
-		@PropertySource：加载指定的配置文件；
-			 @PropertySource(value="classpath:person.properties")
-		@ImportResource：导入spring的配置文件，让配置文件加载到让其生效
-		不推荐使用：
-		@ImportResource(locations = {"classpath:beans.xml"}) 导入Spring的配置文件让其生效
-			<?xml version="1.0" encoding="UTF‐8"?>
-				 <beans xmlns="http://www.springframework.org/schema/beans"       
-				  xmlns:xsi="http://www.w3.org/2001/XMLSchema‐instance"        
-				 xsi:schemaLocation="http://www.springframework.org/schema/beans  
-				 http://www.springframework.org/schema/beans/spring‐beans.xsd">         
-				 <bean id="helloService" class="com.atguigu.springboot.service.HelloService">
-			</bean> 
-			</beans>
-		推荐使用：给容器中添加组件：
-		 @Configuration：指明当前类是一个配置类；就是来替代之前的Spring配置文件
- 		* 在配置文件中用<bean><bean/>标签添加组件  *  */ 
-			@Configuration 
-			public class MyAppConfig {     
-				  //将方法的返回值添加到容器中；容器中这个组件默认的id就是方法名   
-				  @Bean     
-				public HelloService helloService02(){       
-					  System.out.println("配置类@Bean给容器中添加组件了...");        
-					 return new HelloService();    
-					
-				 } }
-		配置文件加载顺序：（互不配置）
-			springboot启动会扫描以下的位置的application.properties或者application.yml文件
-			-file:./config/
-			-file:./
-			-classpath:/config/
-			-classpath:/
-			以上是按照优先级从高到低顺序被加载，所有的位置的都会被加载，高优先级覆盖低优先级
-			可以通过spring.config.location来改变默认的文件的配置
-			项目打包后可以通过命令行参数的形式，启动项目时指定配置文件的新的位置指定的配置文件和默认的共同生效
-	
-### SpringBoot应用的启动的步骤：
-	
-	SpringApplication的run方法的实现是我们本次旅程的主要线路，该方法的主要流程大体可以归纳如下：
-			1）如果我们使用的是SpringApplication的静态run方法，那么，这个方法里面首先需要创建一个SpringApplication对象实例，然后调用这个创建好的SpringApplication的实例run方法。在SpringApplication实例初始化的时候，它会提前做几件事情：
-				根据classpath里面是否存在某个特征类（org.springframework.web. context.ConfigurableWebApplicationContext）来决定是否应该创建一个为Web应用使用的ApplicationContext类型，还是应该创建一个标准Standalone应用使用的ApplicationContext类型。
-				使用Spring Factories Loader在应用的classpath中查找并加载所有可用的Application Context Initializer。
-				使用Spring Factories Loader在应用的classpath中查找并加载所有可用的Application Listener。
-				推断并设置main方法的定义类。
-			2）SpringApplication实例初始化完成并且完成设置后，就开始执行run方法的逻辑了，方法执行伊始，首先遍历执行所有通过SpringFactoriesLoader可以查找到并加载的SpringApplicationRunListener，调用它们的started()方法，告诉这些SpringApplicationRunListener, “嘿，SpringBoot应用要开始执行咯！”。
-			3）创建并配置当前SpringBoot应用将要使用的Environment（包括配置要使用的PropertySource以及Profile）。
-			4）遍历调用所有SpringApplicationRunListener的environmentPrepared()的方法，告诉它们：“当前SpringBoot应用使用的Environment准备好咯！”。
-			5）如果SpringApplication的showBanner属性被设置为true，则打印banner（SpringBoot 1.3.x版本，这里应该是基于Banner.Mode决定banner的打印行为）。
-				这一步的逻辑其实可以不关心，我认为唯一的用途就是“好玩”（Just For Fun）。
-			6）根据用户是否明确设置了applicationContextClass类型以及初始化阶段的推断结果，决定该为当前SpringBoot应用创建什么类型的ApplicationContext并创建完成，
-				然后根据条件决定是否添加ShutdownHook，决定是否使用自定义的BeanNameGenerator，决定是否使用自定义的ResourceLoader，当然，最重要的，将之前准备好的Environment设置给创建好的ApplicationContext使用。
-			7）ApplicationContext创建好之后，SpringApplication会再次借助Spring-FactoriesLoader，查找并加载classpath中所有可用的ApplicationContext-Initializer，
-				然后遍历调用这些ApplicationContextInitializer的initialize (applicationContext)方法来对已经创建好的ApplicationContext进行进一步的处理。
-			8）遍历调用所有SpringApplicationRunListener的contextPrepared()方法，通知它们：“SpringBoot应用使用的ApplicationContext准备好啦！”
-			9 ）最核心的一步，将之前通过@EnableAutoConfiguration获取的所有配置以及其他形式的IoC容器配置加载到已经准备完毕的ApplicationContext。
-			10）遍历调用所有SpringApplicationRunListener的contextLoaded()方法，告知所有SpringApplicationRunListener, ApplicationContext"装填完毕"！
-			11）调用ApplicationContext的refresh()方法，完成IoC容器可用的最后一道工序。
-			12）查找当前ApplicationContext中是否注入CommandlineRunner,如果有，则遍历执行他们，
-			13）正常情况下遍历执行SpringApplicationRunListener的finished()方法然，只不过这种情况会将异常信息一并处理，至此一个springboot应用启动完毕。
-			开始---》收集各种条件和回调接口（Application Context Initializer，ApplicatioListener）----->通知 started()；创建并准备Environment---->通告environmentPrepared()
-					-----》创建并初始化ApplicationContext----->通告contextPrepared(),通告contextLoaded(),----->refresh,applicationContent完成启动程序，执行CommanadLineRunner,通告finished();
-		springboot自动配置：
-			 Spring Boot启动扫描所有jar包的META-INF/spring.factories中配置的 EnableAutoConfiguration组件 
-			 • spring-boot-autoconfigure.jar\META-INF\spring.factories有启动时需要加载的 EnableAutoConfiguration组件配置
-			 • 配置文件中使用debug=true可以观看到当前启用的自动配置的信息 
-			 • 自动配置会为容器中添加大量组件 
-			 • Spring Boot在做任何功能都需要从容器中获取这个功能的组件
-			 • Spring Boot 总是遵循一个标准；容器中有我们自己配置的组件就用我们配置的，没有就用自动配 置默认注册进来的组件；
-	
-	### 	springboot整合JDBC与数据源：
-	
-	​		1、引入starter – spring-boot-starter-jdbc
-	​		2、配置application.yml 
-	​		3、测试
-	​		4、高级配置：使用druid数据源 – 引入druid – 配置属性 5、配置druid数据源监控
-	​		Druid是一个关系型数据库连接池，它是阿里巴巴的一个开源项目。Druid支持所有JDBC兼容的数据库，包括Oracle、MySQL、Derby、PostgreSQL、SQL Server、H2等。Druid在监控、可扩展性、稳定性和性能方面具有明显的优势。通过Druid提供的监控功能，可以实时观察数据库连接池和SQL查询的工作情况。使用Druid连接池，在一定程度上可以提高数据库的访问性能。
-	​		Spring Boot的数据源配置的默认类型是org.apache.tomcat.jdbc.pool.DataSource，为了使用Druid连接池，
-	​		可以将数据源类型更改为com.alibaba.druid.pool.DruidData-Source，如代码清单4-2所示。
-	​		其中，url、username、password是连接MySQL服务器的配置参数，其他一些参数设定Druid的工作方式。
-	
-	```
-	spring:
-					datasource:
-						type: com.alibaba.druid.pool.DruidDataSource
-						driver-class-name: com.mysql.jdbc.Driver
-						url: jdbc:mysql:// localhost:3306/test?characterEncoding=utf8
-						username: root
-						password: 12345678
-						# 初始化大小，最小，最大
-						initialSize: 5
-						minIdle: 5
-						maxActive: 20
-						# 配置获取连接等待超时的时间
-						maxWait: 60000
-						# 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
-						timeBetweenEvictionRunsMillis: 60000
-						# 配置一个连接在池中的最小生存时间，单位是毫秒
-						minEvictableIdleTimeMillis: 300000
-						validationQuery: SELECT 1 FROM DUAL
-						testWhileIdle: true
-						testOnBorrow: false
-						testOnReturn: false
-						# 打开PSCache，并且指定每个连接上PSCache的大小
-						poolPreparedStatements: true
-						maxPoolPreparedStatementPerConnectionSize: 20
-						# 配置监控统计拦截的filters，去掉后监控界面sql将无法统计，'wall'用于防火墙
-						filters: stat,wall,log4j
-						# 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-						connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-					# 合并多个DruidDataSource的监控数据
-						#useGlobalDataSourceStat=true
-	
-				上面配置中的filters：stat表示已经可以使用监控过滤器，这时结合定义一个过滤器，就可以用来监控数据库的使用情况。
-				[插图]注意　在Spring Boot低版本的数据源配置中，是没有提供设定数据源类型这一功能的，这时如果要使用上面这种配置方式，
-				就需要使用自定义的配置参数来实现。
-				@Configuration
-				public class DruidConfiguration {
-					@Bean
-					public ServletRegistrationBean statViewServle(){
-						ServletRegistrationBean servletRegistrationBean = new ServletRegist
-				rationBean(new StatViewServlet(),"/druid/*");
-						// IP白名单
-						servletRegistrationBean.addInitParameter("allow","192.168.1.218,127.
-				0.0.1");
-						// IP黑名单 (共同存在时，deny优先于allow)
-						servletRegistrationBean.addInitParameter("deny","192.168.1.100");
-						// 控制台管理用户
-						servletRegistrationBean.addInitParameter("loginUsername","druid");
-						servletRegistrationBean.addInitParameter("loginPassword","12345678");
-						// 是否能够重置数据
-						servletRegistrationBean.addInitParameter("resetEnable","false");
-						return servletRegistrationBean;
-					}
-					@Bean
-					public FilterRegistrationBean statFilter(){
-						FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean
-				(new WebStatFilter());
-						// 添加过滤规则
-						filterRegistrationBean.addUrlPatterns("/*");
-						// 忽略过滤的格式
-						filterRegistrationBean.addInitParameter("exclusions","*.js,*.gif,*.jpg,*.
-				png,*.css,*.ico,/druid/*");
-						return filterRegistrationBean;
-					}
-				}
-	
-				开启监控功能后，运行应用时，可以通过网址http://localhost/durid/index.html打开控制台，
-				输入上面程序设定的用户名和密码，登录进去，可以打开如图4-2所示的监控后台。
-				在监控后台中，可以实时查看数据库连接池的情况，每一个被执行的SQL语句使用的次数和花费的时间、并发数等，
-			以及一个URI请求的次数、时间和并发数等情况。这就为分析一个应用系统访问数据库的情况和性能提供了可靠、详细的原始数据，
-				让我们能在一些基础的细节上修改和优化一个应用访问数据库的设计。
-	```
-	
-	#### springboot整合Mybatis:
-	
-	​		1、引入mybatis-starter – mybatis-spring-boot-starter 
-	​		2、注解模式
-	​		3、配置文件模式
-	​		4、测试
-	
-#### SpringBoot整合Durid
-	
-	Durid是阿里的一个开源的项目，
-						 Druid 是目前最好的数据库连接池，在功能、性能、扩展性方面，都超过其他数据库连接池，包括 DBCP、C3P0、BoneCP、Proxool、JBoss DataSource。Druid 已经在阿里巴巴部署了超过 600 个应用，经过多年生产环境大规模部署的严苛考验。Druid 是阿里巴巴开发的号称为监控而生的数据库连接池！
-							# 引入依赖
-	​						在 pom.xml 文件中引入 druid-spring-boot-starter 依赖
-	
-						<dependency>
-									<groupId>com.alibaba</groupId>
-									<artifactId>druid-spring-boot-starter</artifactId>
-									<version>1.1.10</version>
-							</dependency>
-							引入数据库连接依赖
-	
-							<dependency>
-									<groupId>mysql</groupId>
-									<artifactId>mysql-connector-java</artifactId>
-									<scope>runtime</scope>
-							</dependency>提供了很多工具。让开发更加的简洁。
-		
-							tk.mybatis是在mybatis基础上
-							引入mabatis的相关依赖
-							<dependency>
-									<groupId>tk.mybatis</groupId>
-									<artifactId>mapper-spring-boot-starter</artifactId>
-									<version>2.0.2</version>
-							</dependency>
-							引入PageHelper:这是一个Mybatis的分页的插件，支持多数据源，简化数据库的分页的查询
-							<dependency>
-								<groupId>com.github.pagehelper</groupId>
-									<artifactId>pagehelper-spring-boot-starter</artifactId>
-									<version>1.2.5</version>
-							</dependency>
-							# 配置 application.yml
-							在 application.yml 中配置数据库连接
-		
-							spring:
-								datasource:
-									druid:
-										url: jdbc:mysql://ip:port/dbname?useUnicode=true&characterEncoding=utf-8&useSSL=false
-										username: root
-										password: 123456
-										initial-size: 1
-										min-idle: 1
-										max-active: 20
-										test-on-borrow: true
-										# MySQL 8.x: com.mysql.cj.jdbc.Driver
-										driver-class-name: com.mysql.jdbc.Driver
-							mybatis:
-								type-aliases-package: 实体类的存放路径，如：com.funtl.hello.spring.boot.entity
-								mapper-locations: classpath:mapper/*.xml	
-						使用mybatis中的maven插件生成代码：
-							在pom.xml中增加mybatis-generator-maven-plugin插件：
-								<build>
-									<plugins>
-										<plugin>
-											<groupId>org.mybatis.generator</groupId>
-											<artifactId>mybatis-generator-maven-plugin</artifactId>
-											<version>1.3.5</version>
-											<configuration>
-												<configurationFile>${basedir}/src/main/resources/generator/generatorConfig.xml</configurationFile>
-												<overwrite>true</overwrite>
-												<verbose>true</verbose>
-											</configuration>
-											<dependencies>
-												<dependency>
-													<groupId>mysql</groupId>
-													<artifactId>mysql-connector-java</artifactId>
-													<version>${mysql.version}</version>
-												</dependency>
-												<dependency>
-													<groupId>tk.mybatis</groupId>
-													<artifactId>mapper</artifactId>
-													<version>3.4.4</version>
-												</dependency>
-											</dependencies>
-										</plugin>
-									</plugins>
-							</build>	
-								在resources目录中创建generatorConfig.xml配置问价：
-								<?xml version="1.0" encoding="UTF-8"?>
-									<!DOCTYPE generatorConfiguration
-										PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-											"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-		
-									<generatorConfiguration>
-										<!-- 引入数据库连接配置 -->
-										<properties resource="jdbc.properties"/>
-		
-										<context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
-											<property name="beginningDelimiter" value="`"/>
-										<property name="endingDelimiter" value="`"/>
-											
-											<!-- 配置 tk.mybatis 插件 -->
-											<plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-												<property name="mappers" value="com.funtl.utils.MyMapper"/>
-											</plugin>
-		
-											<!-- 配置数据库连接 -->
-										<jdbcConnection
-													driverClass="${jdbc.driverClass}"
-													connectionURL="${jdbc.connectionURL}"
-												userId="${jdbc.username}"
-													password="${jdbc.password}">
-											</jdbcConnection>
-	
-											<!-- 配置实体类存放路径 -->
-											<javaModelGenerator targetPackage="com.funtl.hello.spring.boot.entity" targetProject="src/main/java"/>
-		
-											<!-- 配置 XML 存放路径 -->
-											<sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
-	
-											<!-- 配置 DAO 存放路径 -->
-											<javaClientGenerator
-													targetPackage="com.funtl.hello.spring.boot.mapper"
-													targetProject="src/main/java"
-													type="XMLMAPPER"/>
-		
-											<!-- 配置需要指定生成的数据库和表，% 代表所有表 -->
-											<table catalog="myshop" tableName="%">
-												<!-- mysql 配置 -->
-												<generatedKey column="id" sqlStatement="Mysql" identity="true"/>
-											</table>
-										</context>
-									</generatorConfiguration>	
-							配置数据源：
-								在src/main/resources目录创建 jdbc.properties
-								# MySQL 8.x: com.mysql.cj.jdbc.Driver
-									jdbc.driverClass=com.mysql.jdbc.Driver
-									jdbc.connectionURL=jdbc:mysql://ip:port/dbname?useUnicode=true&characterEncoding=utf-8&useSSL=false
-									jdbc.username=root
-									jdbc.password=123456	
-							插件自动生成命令：mvn mybatis-generator:generate
-								
-				测试：
-							@RunWith(SpringRunner.class)
-							@SpringBootTest(classes = HelloSpringBootApplication.class)
-							@Transactional
-							@Rollback
-							public class MyBatisTests {
-	
-									/**
-									* 注入数据查询接口
-									*/
-									@Autowired
-									private TbUserMapper tbUserMapper;
-		
-									/**
-									* 测试插入数据
-									*/
-									@Test
-									public void testInsert() {
-											// 构造一条测试数据
-											TbUser tbUser = new TbUser();
-										tbUser.setUsername("Lusifer");
-											tbUser.setPassword("123456");
-											tbUser.setPhone("15888888888");
-											tbUser.setEmail("topsale@vip.qq.com");
-											tbUser.setCreated(new Date());
-											tbUser.setUpdated(new Date());
-		
-											// 插入数据
-											tbUserMapper.insert(tbUser);
-									}
-							}
-	### SpringBoot整合JPA
-	
-	​		1、引入spring-boot-starter-data-jpa 
-	​		2、配置文件打印SQL语句 
-	​		3、创建Entity标注JPA注解 
-	​		4、创建Repository接口继承JpaRepository
-	​		5、测试方法
-	
-	### springboot整合redis实现缓存：
-	
-	​    1.引入spring-boot-starter-data-redis 
-	
-	​	2.application.yml配置redis连接地址
-	
-	3. 配置缓存 – @EnableCaching、 – CachingConfigurerSupport、
-	
-	4. 测试使用缓存 
-	
-	5. 切换为其他缓存&CompositeCacheManager
-	
-	   
-	
-	### SpringBoot整合thymeleaf
-	
-	以全部代替jsp的一个类似于freeMarker的模板引擎
-			在无网络情况下也可运行，可以直接在服务器端查看动态页面效果，支持html圆形，在浏览器解析时会直接忽略，
-			开箱即用
-			提供标准，和spring标准，可以使用jstl和ognl表达式相结合，springmvc支持，直接可以绑定表单数据
-			以jar运行的方式，最好不用jsp相关知识，
-			Beetl和freeMarker这些都是相同的框架。
-			1.引入依赖：
-				<dependency>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-thymeleaf</artifactId>
-				</dependency>
-				 <dependency>
-					<groupId>net.sourceforge.nekohtml</groupId>
-					<artifactId>nekohtml</artifactId>
-					<version>1.9.22</version>
-				</dependency>
-			2.配置thymeleaf:
-				在application.yml中配置：
-					spring:
-					 thymeleaf:
-					   cache:false #开发时关闭缓存，
-					   mode:LWGACHTML5
-					   encoding: UTF‐8
-	
-	### idea中使用springboot组件开发：
+```yaml
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://192.168.15.22:3306/jdbc
+    driver-class-name: com.mysql.jdbc.Driver
+```
 
-	
-			IDEA -> New Project -> Spring Initializr	
-			选择web版本开发：
-				.gitignore：Git 过滤配置文件
-				pom.xml：Maven 的依赖管理配置文件
-				HelloSpringBootApplication.java：程序入口
-				resources：资源文件目录
-				static: 静态资源文件目录
-				templates：模板资源文件目录
-				application.properties：Spring Boot 的配置文件，实际开发中会替换成 YAML 语言配置（application.yml）
-			pom.xml中：
-				spring-boot-starter-web：包含了 spring-boot-starter 还自动帮我们开启了 Web 支持
-			没有配置 web.xml
-			没有配置 application.xml，Spring Boot 帮你配置了
-			没有配置 application-mvc.xml，Spring Boot 帮你配置了
-			没有配置 Tomcat，Spring Boot 内嵌了 Tomcat 容器
-		自定义bannner:
-			在resource中定义banner.txt在里面书写
-			常用的属性设置：
-				${AnsiColor.BRIGHT_RED}：设置控制台中输出内容的颜色
-				${application.version}：用来获取 MANIFEST.MF 文件中的版本号
-				${application.formatted-version}：格式化后的 ${application.version} 版本信息
-				${spring-boot.version}：Spring Boot 的版本号
-				${spring-boot.formatted-version}：格式化后的 ${spring-boot.version} 版本信息
-		springboot 中的配置文件：
-				修改端口号：
-				在application.properties中添加：
-					server.port=9090
-					server.context-path=/boot
-				在application.yml中配置：
-					server:
-					  port: 9090
-					  context-path: /boot
+效果：
+
+​	默认是用org.apache.tomcat.jdbc.pool.DataSource作为数据源；
+
+​	数据源的相关配置都在DataSourceProperties里面；
+
+自动配置原理：
+
+org.springframework.boot.autoconfigure.jdbc：
+
+1、参考DataSourceConfiguration，根据配置创建数据源，默认使用Tomcat连接池；可以使用spring.datasource.type指定自定义的数据源类型；
+
+2、SpringBoot默认可以支持；
+
+```
+org.apache.tomcat.jdbc.pool.DataSource、HikariDataSource、BasicDataSource、
+```
+
+3、自定义数据源类型
+
+```java
+/**
+ * Generic DataSource configuration.
+ */
+@ConditionalOnMissingBean(DataSource.class)
+@ConditionalOnProperty(name = "spring.datasource.type")
+static class Generic {
+
+   @Bean
+   public DataSource dataSource(DataSourceProperties properties) {
+       //使用DataSourceBuilder创建数据源，利用反射创建响应type的数据源，并且绑定相关属性
+      return properties.initializeDataSourceBuilder().build();
+   }
+
+}
+```
+
+4、**DataSourceInitializer：ApplicationListener**；
+
+​	作用：
+
+​		1）、runSchemaScripts();运行建表语句；
+
+​		2）、runDataScripts();运行插入数据的sql语句；
+
+默认只需要将文件命名为：
+
+```properties
+schema-*.sql、data-*.sql
+默认规则：schema.sql，schema-all.sql；
+可以使用   
+	schema:
+      - classpath:department.sql
+      指定位置
+```
+
+5、操作数据库：自动配置了JdbcTemplate操作数据库
+
+## 2、Springboot整合Druid数据源
+
+```java
+导入druid数据源
+@Configuration
+public class DruidConfig {
+
+    @ConfigurationProperties(prefix = "spring.datasource")
+    @Bean
+    public DataSource druid(){
+       return  new DruidDataSource();
+    }
+
+    //配置Druid的监控
+    //1、配置一个管理后台的Servlet
+    @Bean
+    public ServletRegistrationBean statViewServlet(){
+        ServletRegistrationBean bean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+        Map<String,String> initParams = new HashMap<>();
+
+        initParams.put("loginUsername","admin");
+        initParams.put("loginPassword","123456");
+        initParams.put("allow","");//默认就是允许所有访问
+        initParams.put("deny","192.168.15.21");
+
+        bean.setInitParameters(initParams);
+        return bean;
+    }
+
+
+    //2、配置一个web监控的filter
+    @Bean
+    public FilterRegistrationBean webStatFilter(){
+        FilterRegistrationBean bean = new FilterRegistrationBean();
+        bean.setFilter(new WebStatFilter());
+
+        Map<String,String> initParams = new HashMap<>();
+        initParams.put("exclusions","*.js,*.css,/druid/*");
+
+        bean.setInitParameters(initParams);
+
+        bean.setUrlPatterns(Arrays.asList("/*"));
+
+        return  bean;
+    }
+}
+
+```
+
+## 3、Springboot整合MyBatis
+
+```xml
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+```
+
+步骤：
+
+​	1）、配置数据源相关属性（见上一节Druid）
+
+​	2）、给数据库建表
+
+​	3）、创建JavaBean
+
+### 1）、注解版
+
+```java
+//指定这是一个操作数据库的mapper
+@Mapper
+public interface DepartmentMapper {
+
+    @Select("select * from department where id=#{id}")
+    public Department getDeptById(Integer id);
+
+    @Delete("delete from department where id=#{id}")
+    public int deleteDeptById(Integer id);
+
+    @Options(useGeneratedKeys = true,keyProperty = "id")
+    @Insert("insert into department(departmentName) values(#{departmentName})")
+    public int insertDept(Department department);
+
+    @Update("update department set departmentName=#{departmentName} where id=#{id}")
+    public int updateDept(Department department);
+}
+```
+
+问题：
+
+自定义MyBatis的配置规则；给容器中添加一个ConfigurationCustomizer；
+
+```java
+@org.springframework.context.annotation.Configuration
+public class MyBatisConfig {
+
+    @Bean
+    public ConfigurationCustomizer configurationCustomizer(){
+        return new ConfigurationCustomizer(){
+
+            @Override
+            public void customize(Configuration configuration) {
+                configuration.setMapUnderscoreToCamelCase(true);
+            }
+        };
+    }
+}
+```
+
+
+
+```java
+使用MapperScan批量扫描所有的Mapper接口；
+@MapperScan(value = "com.atguigu.springboot.mapper")
+@SpringBootApplication
+public class SpringBoot06DataMybatisApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringBoot06DataMybatisApplication.class, args);
+	}
+}
+```
+
+### 2）、配置文件版
+
+```yaml
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml 指定全局配置文件的位置
+  mapper-locations: classpath:mybatis/mapper/*.xml  指定sql映射文件的位置
+```
+
+更多使用参照
+
+http://www.mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/
+
+
+
+## 4、Springboot整合SpringData JPA
+
+### 1）、SpringData简介
+
+Spring Data的使命是为数据访问提供一个熟悉且一致的，基于Spring的编程模型，同时仍保留基础数据存储的特殊特征。
+
+它使使用数据访问技术，关系和非关系数据库，map-reduce框架以及基于云的数据服务变得容易。 这是一个总括项目，其中包含许多特定于给定数据库的子项目。 这些项目是通过与这些令人兴奋的技术背后的许多公司和开发人员共同开发的。
+
+**主要模块**
+
+Spring Data Commons-每个Spring Data模块的核心Spring概念。
+
+Spring Data JDBC-Spring Data存储库对JDBC的支持。
+
+Spring Data JDBC Ext-支持标准JDBC的数据库特定扩展，包括对Oracle RAC快速连接故障转移的支持，对AQ JMS的支持以及对使用高级数据类型的支持。
+
+Spring Data JPA-对JPA的Spring Data存储库支持。
+
+Spring Data KeyValue-基于映射的存储库和SPI，可以轻松地为键值存储构建Spring Data模块。
+
+Spring Data LDAP-Spring数据存储库对Spring LDAP的支持。
+
+Spring Data MongoDB-MongoDB的基于Spring的对象文档支持和存储库。
+
+Spring Data Redis-轻松配置和从Spring应用程序访问Redis。
+
+Spring Data REST-将Spring Data存储库导出为超媒体驱动的RESTful资源。
+
+适用于Apache Cassandra的Spring数据-易于配置和访问Apache Cassandra或大规模，高可用性，面向数据的Spring应用程序。
+
+用于Apache Geode的Spring Data-易于配置和访问Apache Geode，以实现高度一致，低延迟的面向数据的Spring应用程序。
+
+适用于Apache Solr的Spring数据-易于配置，并可访问面向搜索的Spring应用程序访问Apache Solr。
+
+用于Pivotal GemFire的Spring数据-可以轻松配置并访问Pivotal GemFire，以实现高度一致，低延迟/高吞吐量的面向数据的Spring应用程序。
+
+### 2）、整合SpringData JPA
+
+JPA:ORM（Object Relational Mapping）；
+
+1）、编写一个实体类（bean）和数据表进行映射，并且配置好映射关系；
+
+```java
+//使用JPA注解配置映射关系
+@Entity //告诉JPA这是一个实体类（和数据表映射的类）
+@Table(name = "tbl_user") //@Table来指定和哪个数据表对应;如果省略默认表名就是user；
+public class User {
+
+    @Id //这是一个主键
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//自增主键
+    private Integer id;
+
+    @Column(name = "last_name",length = 50) //这是和数据表对应的一个列
+    private String lastName;
+    @Column //省略默认列名就是属性名
+    private String email;
+```
+
+2）、编写一个Dao接口来操作实体类对应的数据表（Repository）
+
+```java
+//继承JpaRepository来完成对数据库的操作
+public interface UserRepository extends JpaRepository<User,Integer> {
+}
+
+```
+
+3）、基本的配置JpaProperties
+
+```yaml
+spring:  
+ jpa:
+    hibernate:
+#     更新或者创建数据表结构
+      ddl-auto: update
+#    控制台显示SQL
+    show-sql: true
+```
+
+
+
+# 更多SpringBoot整合示例
+
+https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples
+
+
+
+# SpringBoot与缓存
+
+## 1.JSR-107
+
+Java Caching定义了5个核心接口，分别是CachingProvider, CacheManager, Cache, Entry 和 Expiry。
+
+- CachingProvider定义了创建、配置、获取、管理和控制多个CacheManager。一个应用可 以在运行期访问多个CachingProvider。
+- CacheManager定义了创建、配置、获取、管理和控制多个唯一命名的Cache，这些Cache 存在于CacheManager的上下文中。一个CacheManager仅被一个CachingProvider所拥有。
+- Cache是一个类似Map的数据结构并临时存储以Key为索引的值。一个Cache仅被一个 CacheManager所拥有。
+- Entry是一个存储在Cache中的key-value对。
+- Expiry 每一个存储在Cache中的条目有一个定义的有效期。一旦超过这个时间，条目为过期 的状态。一旦过期，条目将不可访问、更新和删除。缓存有效期可以通过ExpiryPolicy设置。
+
+![0w6PQP.png](https://s1.ax1x.com/2020/10/08/0w6PQP.png)
+
+## 2.Spring缓存抽象
+
+Spring从3.1开始定义了org.springframework.cache.Cache
+
+和org.springframework.cache.CacheManager接口来统一不同的缓存技术；
+
+并支持使用JCache（JSR-107）注解简化我们开发；
+
+•Cache接口为缓存的组件规范定义，包含缓存的各种操作集合；
+
+•Cache接口下Spring提供了各种xxxCache的实现；如RedisCache，EhCacheCache , ConcurrentMapCache等；
+
+•每次调用需要缓存功能的方法时，Spring会检查检查指定参数的指定的目标方法是否已经被调用过；如果有就直接从缓存中获取方法调用后的结果，如果没有就调用方法并缓存结果后返回给用户。下次调用直接从缓存中获取。
+
+•使用Spring缓存抽象时我们需要关注以下两点；
+
+1、确定方法需要被缓存以及他们的缓存策略
+
+2、从缓存中读取之前缓存存储的数据
+
+![0w69zt.png](https://s1.ax1x.com/2020/10/08/0w69zt.png)
+
+## 3.概念和缓存注解
+
+| **Cache**          | **缓存接口，定义缓存操作。实现有：****RedisCache****、****EhCacheCache****、****ConcurrentMapCache****等** |
+| ------------------ | ------------------------------------------------------------ |
+| **CacheManager**   | **缓存管理器，管理各种缓存（****Cache****）组件**            |
+| **@Cacheable**     | **主要针对方法配置，能够根据方法的请求参数对其结果进行缓存** |
+| **@CacheEvict**    | **清空缓存**                                                 |
+| **@CachePut**      | **保证方法被调用，又希望结果被缓存。**                       |
+| **@EnableCaching** | **开启基于注解的缓存**                                       |
+| **keyGenerator**   | **缓存数据时key生成策略**                                    |
+| **serialize**      | **缓存数据时value序列化策略**                                |
+
+| @Cacheable/@CachePut/ @CacheEvict主要的参数 |                                                              |                                                              |
+| ------------------------------------------- | ------------------------------------------------------------ | :----------------------------------------------------------: |
+| value                                       | 缓存的名称，在   spring 配置文件中定义，必须指定至少一个     | 例如：      @Cacheable(value=”mycache”) 或者       @Cacheable(value={”cache1”,”cache2”} |
+| key                                         | 缓存的   key，可以为空，如果指定要按照   SpEL 表达式编写，如果不指定，则缺省按照方法的所有参数进行组合 |       例@Cacheable(value=”testcache”,key=”#userName”)        |
+| condition                                   | 缓存的条件，可以为空，使用   SpEL 编写，返回   true 或者 false，只有为   true 才进行缓存/清除缓存，在调用方法之前之后都能判断 | 例如：      @Cacheable(value=”testcache”,condition=”#userName.length()>2”) |
+| allEntries   (**@CacheEvict**   )           | 是否清空所有缓存内容，缺省为   false，如果指定为 true，则方法调用后将立即清空所有缓存 |  例如：      @CachEvict(value=”testcache”,allEntries=true)   |
+| unless   **(@CachePut)**   **(@Cacheable)** | 用于否决缓存的，不像condition，该表达式只在方法执行之后判断，此时可以拿到返回值result进行判断。条件为true不会缓存，fasle才缓存 | 例如：      @Cacheable(value=”testcache”,unless=”#result   == null”) |
+| beforeInvocation   **(@CacheEvict)**        | 是否在方法执行前就清空，缺省为   false，如果指定为 true，则在方法还没有执行的时候就清空缓存，缺省情况下，如果方法执行抛出异常，则不会清空缓存 | 例如：   @CachEvict(value=”testcache”，beforeInvocation=true) |
+
+| **名字**        | **位置**           | **描述**                                                     | **示例**             |
+| --------------- | ------------------ | ------------------------------------------------------------ | -------------------- |
+| methodName      | root object        | 当前被调用的方法名                                           | #root.methodName     |
+| method          | root object        | 当前被调用的方法                                             | #root.method.name    |
+| target          | root object        | 当前被调用的目标对象                                         | #root.target         |
+| targetClass     | root object        | 当前被调用的目标对象类                                       | #root.targetClass    |
+| args            | root object        | 当前被调用的方法的参数列表                                   | #root.args[0]        |
+| caches          | root object        | 当前方法调用使用的缓存列表（如@Cacheable(value={"cache1",   "cache2"})），则有两个cache | #root.caches[0].name |
+| *argument name* | evaluation context | 方法参数的名字. 可以直接 #参数名 ，也可以使用 #p0或#a0 的形式，0代表参数的索引； | #iban 、 #a0 、  #p0 |
+| result          | evaluation context | 方法执行后的返回值（仅当方法执行之后的判断有效，如‘unless’，’cache put’的表达式 ’cache evict’的表达式beforeInvocation=false） | #result              |
+
+## 4.缓存的使用
+
+• 1、引入spring-boot-starter-cache模块
+
+ • 2、@EnableCaching开启缓存
+
+ • 3、使用缓存注解
+
+ • 4、切换为其他缓存
+
+## 5.SpringBoot整合Redis实现缓存
+
+1.引入pom.xml。前提说下这里使用的mybatis的文件是这样的：
+
+```xml
+<dependency>   
+    <groupId>org.mybatis.spring.boot</groupId>    
+    <artifactId>mybatis-spring-boot-starter</artifactId>   
+    <version>2.0.1</version>
+</dependency>
+```
+
+如果这里是高版本的当我们自定义配置cache的方式就不是本文章所看到的那样了
+
+2.spring.application的配置文件
+
+```xml
+spring.datasource.url=jdbc:mysql://localhost:3306/spring-boot-cache?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+spring.datasource.password=123
+spring.datasource.username=root
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+#开启驼峰mybatis.configuration.map-underscore-to-camel-case=trues
+pring.redis.host=127.0.0.1
+```
+
+3.redis的配置类：
+
+```java
+package com.kayleoi.springbootcache.config;
+
+import com.kayleoi.springbootcache.bean.Department;
+import com.kayleoi.springbootcache.bean.Employee;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+
+import java.net.UnknownHostException;
+import java.util.LinkedHashSet;
+import java.util.List;
+
+/**
+ * @Author kay三石
+ * @date:2019/8/3
+ * 当有多个缓存管理器时，必须指定一个默认的缓存管理器
+ *     @Primary 指定默认的缓存管理器，这里我们话应该使用spring中自带的(不加会出现以下错误)
+ *     java.lang.IllegalStateException: No CacheResolver specified, and no unique bean of type CacheManager found.
+ *     Mark one as primary or declare a specific CacheManager to use.
+ *需要使用低版本的对于2.0.0以上的版本使用方法不是这样的
+ */
+@Configuration
+public class MyRedisConfig {
+    /**
+     * 用自己的CacheManager 为 employee序列化缓存
+     *@Primary 将某个缓存管理器设为默认的
+     * @param
+     * @return
+     */
+    @Bean
+    public RedisCacheManager employeeCacheManager(RedisTemplate<Object,Employee> empRedisTemplate) {
+        RedisCacheManager cacheManager = new RedisCacheManager(empRedisTemplate);
+        //key 使用前缀，将CacheName最为前缀
+        cacheManager.setUsePrefix(true);
+        return cacheManager;
+    }
+    /**
+     * 用自己的CacheManager 为 depart序列化缓存管理器
+     * @param
+     * @return
+     */
+    @Bean
+    public RedisCacheManager departmentCacheManager(RedisTemplate<Object,Department> depRedisTemplate) {
+        RedisCacheManager cacheManager = new RedisCacheManager(depRedisTemplate);
+        //key 使用前缀，将CacheName最为前缀
+        cacheManager.setUsePrefix(true);
+        return cacheManager;
+    }
+
+    /**
+     * 使用自己的将object对象转化为json
+     * @param redisConnectionFactory
+     * @return
+     * @throws UnknownHostException
+     */
+    @Bean
+    public RedisTemplate<Object,Employee> empRedisTemplate(
+            RedisConnectionFactory redisConnectionFactory)throws UnknownHostException {
+        RedisTemplate<Object, Employee> template = new RedisTemplate <>();
+        template.setConnectionFactory(redisConnectionFactory);
+        template.setDefaultSerializer(new Jackson2JsonRedisSerializer <Employee>(Employee.class));
+        return template;
+    }
+
+    @Bean
+    public RedisTemplate<Object, Department> depRedisTemplate(
+            RedisConnectionFactory redisConnectionFactory)throws UnknownHostException {
+        RedisTemplate<Object, Department> template = new RedisTemplate <>();
+        template.setConnectionFactory(redisConnectionFactory);
+        template.setDefaultSerializer(new Jackson2JsonRedisSerializer <Department>(Department.class));
+        return template;
+    }
+
+    /**
+     * 选择redis作为默认缓存工具
+     * @param redisTemplate
+     * @return
+     */
+    @Primary
+    @Bean
+    public RedisCacheManager cacheManager(RedisTemplate redisTemplate) {
+        RedisCacheManager caheManager = new RedisCacheManager(redisTemplate);
+        return caheManager;
+    }
+}
+
+/**
+ * 默认使用时ConcurrentMapCacheManager == ConcurrentMapCache 将数据保存到ConcurrentMap<Object,Object>
+ *  实际开发中使用的是 中间件， redis,ehcache
+ *
+ *  redis 测试缓存，原理 CacheManager === Cache 将组件来实际给缓存存取数据
+ *  引入redis的start后容器所用的是RedisCacheManager
+ *  RedisCacheManager 帮我们创建 RedisCache来作为缓存组件
+ *  默认保存数据 k,v 都是object 利用序列化转化为json
+ *      1.引入redis的start后CacheManager变为 RedisCacheManager
+ *      2.默认创建的 RedisCacheManager 操作redis的时候使用的是 RedisTemplate<Object,Object>
+ *      3.RedisTemplate<Object, Object>是默认使用jdk的序列化机制
+ *   自定义CacheManager:
+ *
+ */
+
+@SpringBootApplication
+@MapperScan("com.kayleoi.springbootcache.mapper")
+@EnableCaching
+public class SpringBootCacheApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootCacheApplication.class, args);
+    }
+
+}
+
+```
+
+service层：
+
+```java
+package com.kayleoi.springbootcache.service;
+
+import com.kayleoi.springbootcache.bean.Employee;
+import com.kayleoi.springbootcache.mapper.EmployeeMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
+import org.springframework.stereotype.Service;
+
+/**
+ * @Author kay三石
+ * @date:2019/7/22
+ * @CacheConfig(cacheNames = "emp") 抽取缓存的公共配置
+ * 原理：
+ *  1.自动配置类：CacheAutoConfiguration
+ *  2.缓存的配置类：
+ *
+ *  3.默认的配置类：SimpleCaCheConfiguration
+ *  当写了多个cacheManager 的需要指定哪个管理器使用的
+ *  当使用了不同的管理器时，需要指定一个默认的缓存管理器，要不然不会找到自己写的缓存管理器
+ *
+ */
+@CacheConfig(cacheNames = "emp", cacheManager = "employeeCacheManager")
+@Service
+public class EmployeeService {
+
+    @Autowired
+    EmployeeMapper employeeMapper;
+
+    /**
+     * 属性：
+     * cacheNames/value: 执行缓存组件的名字，将方法的返回结果放到哪个缓存中是数组方式，可指定多个缓存
+     * key: 缓存数据使用的key，可以用来指定默认使用方法参数的值，1-方法的返回值
+     * 编写spel： # id: 参数id的值， #a0 #p0  #root.args[0]
+     * 执行使用的key ：key = "#root.methodName+'['+#id+']'" ====getEmployee(id)
+     * keyGenerator:key的生成器，可以自己指定key的生成器的组件的id
+     * key/keyGenerator二则选一使用
+     * <p>
+     * cacheManager: 指定缓存管理器，或者cacheResolver指定获取解析器
+     * condition: 指定符合条件的情况下才缓存 condion= "#id >0 and #id <10"
+     * unless: 否定缓存，当unless指定条件为true时，方法的返回值就不会被缓存，可以获取到结果进行判断
+     * unless = "#result == null"
+     * unless = "#a0==2" 如果第一个参数为2时则不缓存
+     * sync:  是否使用异步的方式
+     *
+     * @param id
+     * @return
+     */
+    @Cacheable(value = {"emp"}, key = "#root.methodName+'['+#id+']'")
+    public Employee getEmployee(Integer id) {
+        //用默认的需要序列化
+        System.out.println("查询数据库");
+        Employee empById = employeeMapper.getEmpById(id);
+        return empById;
+    }
+
+    /**
+     * 指定缓存
+     *
+     * @param id
+     * @return
+     */
+    @Cacheable(value = {"emp2"}, keyGenerator = "myKeyGenerator", condition = "#a0>0", unless = "#a0==2")
+    public Employee getEmployee2(Integer id) {
+        Employee empById = employeeMapper.getEmpById(id);
+        return empById;
+    }
+
+    /**
+     * @CachePut: 调用方法，又更新缓存  ，修改的同时更新(同步更新缓存)
+     * 运行实机：
+     *  1.先调用目标方法
+     *  2.将目标方法的结果缓存起来
+     *      方法运行后将结果放入
+     *
+     * 调式步骤：
+     *  1.查询1号员工，查到的结果放入缓存中：
+     *      key :1 value: lastName:
+     *  2. 以后查询还是之前的结果
+     *  3. 更新1号员工，
+     *      将方法的返回值放入了缓存 key:传入的emplyee对象，返回的也是对象
+     *  4. 查询1号员工
+     *      应该是更新后的员工
+     *          key = "#employee.id" 使用传入参数的id
+     *          key = "#result.id" 使用返回值的id
+     * @Caheable的key不能使用#result
+     *      但为什么是没有更新前呢？【1号员工没有在缓冲中更新,就是缓存中没有这个key】
+     */
+    @CachePut(value = {"emp"}, key = "#employee.id")
+    public Employee update(Employee employee){
+        System.out.println("employee = [" + employee + "]");
+        employeeMapper.updateEmp(employee);
+        return employee;
+
+    }
+
+    /**
+     * 清除缓存
+     *  key:指定清除的数据
+     *  allEntries = true 指定清除这缓存中的所有的数据
+     *  beforeInvocation = false：
+     *          默认是方法执行之后执行，如果出现异常缓存不会清除
+     *
+     *  beforeInvocation = true
+     *          代表清除缓存操作是在方法运行之前执行，无论方法是否出现异常，缓存都清除
+     *
+     *
+     * @param id
+     */
+    @CacheEvict(value = "emp",beforeInvocation = true, key = "#id")
+    public void deleteEmp(Integer id){
+        employeeMapper.deleteEmById(id);
+    }
+    @Caching(
+            cacheable = {
+                    @Cacheable(value = "emp", key = "#lastName")
+            },
+            put = {
+                    @CachePut(value = "emp", key = "#result.id"),
+                    @CachePut(value = "emp", key = "#result.email")
+            }
+    )
+    public Employee getEmployeeByName(String lastName){
+        return employeeMapper.getEmpByName(lastName);
+    }
+}
+
+```
+
+通过以上的配置的代码可以实现redis操作缓存数据。
+
+参看fork的一个项目：https://github.com/kaysanshi/spring-boot/tree/master/spring-boot-Redis-master
+
+# SpringBoot与消息队列
+
+## 1.简述：
+
+1.大多应用中，可通过消息服务中间件来提升系统异步通信、扩展解耦能力
+
+2.消息服务中两个重要概念：
+
+​       消息代理（message broker）和目的地（destination）
+
+当消息发送者发送消息以后，将由消息代理接管，消息代理保证消息传递到指定目的地。
+
+3.消息队列主要有两种形式的目的地
+
+- 1.队列（queue）：点对点消息通信（point-to-point）
+- 2.主题（topic）：发布（publish）/订阅（subscribe）消息通信6
+
+4.点对点式：
+
+–消息发送者发送消息，消息代理将其放入一个队列中，消息接收者从队列中获取消息内容，消息读取后被移出队列
+
+–**消息只有唯一的发送者和接受者，但并不是说只能有一个接收者**
+
+5.发布订阅式：
+
+–发送者（发布者）发送消息到主题，多个接收者（订阅者）监听（订阅）这个主题，那么就会在消息到达时同时收到消息
+
+6.JMS（Java Message Service）JAVA消息服务：
+
+–基于JVM消息代理的规范。ActiveMQ、HornetMQ是JMS实现
+
+7.AMQP（Advanced Message Queuing Protocol）
+
+–高级消息队列协议，也是一个消息代理的规范，兼容JMS
+
+–RabbitMQ是AMQP的实现
+
+|              | JMS                                                          | AMQP                                                         |
+| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 定义         | Java   api                                                   | 网络线级协议                                                 |
+| 跨语言       | 否                                                           | 是                                                           |
+| 跨平台       | 否                                                           | 是                                                           |
+| Model        | 提供两种消息模型：   （1）、Peer-2-Peer   （2）、Pub/sub     | 提供了五种消息模型：   （1）、direct   exchange   （2）、fanout   exchange   （3）、topic   change   （4）、headers   exchange   （5）、system   exchange   本质来讲，后四种和JMS的pub/sub模型没有太大差别，仅是在路由机制上做了更详细的划分； |
+| 支持消息类型 | 多种消息类型：   TextMessage   MapMessage   BytesMessage   StreamMessage   ObjectMessage   Message   （只有消息头和属性） | byte[]   当实际应用时，有复杂的消息，可以将消息序列化后发送。 |
+| 综合评价     | JMS   定义了JAVA   API层面的标准；在java体系中，多个client均可以通过JMS进行交互，不需要应用修改代码，但是其对跨平台的支持较差； | AMQP定义了wire-level层的协议标准；天然具有跨平台、跨语言特性。 |
+
+8.Spring支持
+
+**spring-jms提供了对JMS的支持**
+
+**spring-rabbit提供了对AMQP的支持**
+
+**需要ConnectionFactory的实现来连接消息代理**
+
+**提供JmsTemplate、RabbitTemplate来发送消息**
+
+**@JmsListener（JMS）、@RabbitListener（AMQP）注解在方法上监听消息代理发布的消息**
+
+**@EnableJms、@EnableRabbit启支持**
+
+9.Spring Boot自动配置
+
+**JmsAutoConfiguration**
+
+**RabbitAutoConfiguration**
+
+## 2.RabbitMQ简介：
+
+RabbitMQ是由erlang开发的AMQP(Advanved Message Queue Protocol)的开源实现
+
+### **核心概念**
+
+#### **Message**
+
+消息，消息是不具名的，它由消息头和消息体组成。消息体是不透明的，而消息头则由一系列的可选属性组成，这些属性包括routing-key（路由键）、priority（相对于其他消息的优先权）、delivery-mode（指出该消息可能需要持久性存储）等。
+
+#### **Publisher**
+
+消息的生产者，也是一个向交换器发布消息的客户端应用程序。
+
+#### **Exchange**
+
+交换器，用来接收生产者发送的消息并将这些消息路由给服务器中的队列。
+
+Exchange有4种类型：direct(默认)，fanout, topic, 和headers，不同类型的Exchange转发消息的策略有所区别
+
+#### **Queue**
+
+消息队列，用来保存消息直到发送给消费者。它是消息的容器，也是消息的终点。一个消息可投入一个或多个队列。消息一直在队列里面，等待消费者连接到这个队列将其取走。
+
+#### **Binding**
+
+绑定，用于消息队列和交换器之间的关联。一个绑定就是基于路由键将交换器和消息队列连接起来的路由规则，所以可以将交换器理解成一个由绑定构成的路由表。
+
+Exchange 和Queue的绑定可以是多对多的关系。
+
+#### **Connection**
+
+网络连接，比如一个TCP连接。
+
+#### **Channel**
+
+信道，多路复用连接中的一条独立的双向数据流通道。信道是建立在真实的TCP连接内的虚拟连接，AMQP 命令都是通过信道发出去的，不管是发布消息、订阅队列还是接收消息，这些动作都是通过信道完成。因为对于操作系统来说建立和销毁 TCP 都是非常昂贵的开销，所以引入了信道的概念，以复用一条 TCP 连接。
+
+#### **Consumer**
+
+消息的消费者，表示一个从消息队列中取得消息的客户端应用程序。
+
+#### **Virtual Host**
+
+虚拟主机，表示一批交换器、消息队列和相关对象。虚拟主机是共享相同的身份认证和加密环境的独立服务器域。每个 vhost 本质上就是一个 mini 版的 RabbitMQ 服务器，拥有自己的队列、交换器、绑定和权限机制。vhost 是 AMQP 概念的基础，必须在连接时指定，RabbitMQ 默认的 vhost 是 / 。
+
+#### **Broker**
+
+表示消息队列服务器实体
+
+![0wyzid.png](https://s1.ax1x.com/2020/10/08/0wyzid.png)
+
+## 3.RabbitMQ运行机制：
+
+AMQP中的消息路由：
+
+AMQP中消息的路由过程和java开发中jms存在差别AMQP
+
+中增加了 **Exchange** 和 **Binding** 的角色。生产者把消息发布到 Exchange 上，消息最终到达队列并被消费者接收，而 Binding 决定交换器的消息应该发送到那个队列。：
+
+![0w6SJA.png](https://s1.ax1x.com/2020/10/08/0w6SJA.png)
+
+每个发到 fanout 类型交换器的消息都会分到所有绑定的队列上去。fanout
+交换器不处理路由键，只是简单的将队列绑定到交换器上，每个发送到交换器的消息都会被转发到与该交换器绑定的所有队列上。很像子网广播，每台子网内的主机都获得了一份复制的消息。fanout
+类型转发消息是最快的。
+
+![0w6SJA.png](https://s1.ax1x.com/2020/10/08/0w6SJA.png)
+
+topic 交换器通过模式匹配分配消息的路由键属性，将路由键和某个模式进行匹配，此时队列需要绑定到一个模式上。它将路由键和绑定键的字符串切分成单词，这些**单词之间用点隔开**。它同样也会识别两个通配符：符号“#”和符号“**”**。**#**匹配**0**个或多个单词**，****匹配一个单词。
+
+![0w6FL8.png](https://s1.ax1x.com/2020/10/08/0w6FL8.png)
+
+
+
+## 4.RabbitMQ整合使用：
+
+1.**引入** spring-boot-starter-amqp
+
+2.**application.yml配置**
+
+```
+spring.rabbitmq.host=192.167.147.132
+spring.rabbitmq.username= rabbit
+spring.rabbitmq.password= 123456
+spring.rabbitmq.port=15672
+#spring.rabbitmq.virtual-host
+```
+
+3.**测试RabbitMQ**
+
+1.**AmqpAdmin：管理组件**
+
+```java
+@Autowired
+    AmqpAdmin amqpAdmin;
+
+    /**
+     * 以declare开头是创建的机制
+     */
+    @Test
+    public void createExchange(){
+        amqpAdmin.declareExchange(new DirectExchange("amqpadmin.exchange"));
+    }
+
+    /**
+     * 创建对列
+     */
+    @Test
+    public void createExchangeQueue(){
+        amqpAdmin.declareQueue(new Queue("amqpadmin.queue",true));
+        amqpAdmin.declareBinding(new Binding("amqpadmin.queue",Binding.DestinationType.QUEUE,"amqpadmin.exchange","amqpadmin.rout",null));
+
+    }
+    /**
+     * 删除
+     */
+    public void deleteExchange(){
+        amqpAdmin.deleteQueue("amqpadmin.exchange");
+    }
+```
+
+2.**RabbitTemplate：消息发送处理组件**
+
+```java
+ /**
+     * 1.单播(点兑点)
+     */
+    @Test
+    public void contextLoads(){
+        //Message需要自己构造一个，自定义的消息头，和消息内容
+        //rabbitTemplate.send(exchange,routerKey,message);
+
+        //object默认当成消息体，只需要传入发送的对象，自动序列发送
+        //rabbitTemplate.convertAndSend(exchange,routerKey,object);
+        Map<String,Object> map = new HashMap<>();
+        map.put("msg","rabbitQ消息");
+        map.put("data", Arrays.asList("helloworld",123,true));
+        //对象被默认序列化后发送
+        rabbitTemplate.convertAndSend("exchange.direct","atguigu.news",map);
+
+    }
+
+    /**
+     *接受数据
+     */
+    @Test
+    public void receive(){
+        Object o = rabbitTemplate.receiveAndConvert("atguigu.news");
+
+        System.out.println(o.getClass());
+        System.out.println(o);
+    }
+    /***
+     * 序列化数据，序列化为json数据
+     */
+
+    /***
+     * 广播
+     */
+    @Test
+    public void sendMsg(){
+        rabbitTemplate.convertAndSend("exchange.fanout","",new Book("北京姑娘","那方"));
+    }
+
+```
+
+## 5.环境搭建：
+
+docker-comose.yml
+
+```yaml
+version:'3'
+services:
+ rabbitmq:
+   restart: always
+   image: rabbitmq:management
+   container_name:rabbitmq
+   ports:
+     - 5672:5672
+     - 15672:15672
+   enviroment:
+     TZ: Asia/Shanghai
+     RABBITMQ_DEFAULT_USER:rabbit
+     RABBITMQ_DEFAULT_PASS:123456
+   volumes:
+     - ./data:/var/lib/rabbitmq
+     
+```
+
+
+
+# 十一， SpringBoot与检索
+
+## 1.简述
+
+安装
+

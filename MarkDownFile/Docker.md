@@ -242,6 +242,44 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 ​	将这些文件移动到conf目录下
 ​	注意：这里出现了错误并不能够去copy过去。。。。
 
+## Docker构建oracle
+
+1.拉去oracle数据库镜像
+docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g 
+2.启动oracle  自动启动镜像 --restart=always
+docker run -p 1521:1521 --name oracle_11g -d --restart=always registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g
+3.启动服务
+docker start oracle_11g
+4.进入控制台设置用户信息 
+docker exec -it oracle_11g bash
+5.切换到root用户模式下
+su root
+输入密码helowin
+6.编辑profile文件配置ORACLE环境变量
+export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2
+export ORACLE_SID=helowin
+export PATH=$ORACLE_HOME/bin:$PATH
+7.重启配置文件服务
+source /etc/profile
+8.建立sqlplus软连接
+ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
+9.切换到oracle用户，修改oracle的相关账号密码
+>su oracle
+>//登录sqlplus并修改sys、system用户密码
+>sqlplus /nolog
+>conn /as sysdba
+>alter user system identified by oracle;  # 将system的密码改为oracle
+>alter user sys identified by oracle; # 将sys的密码改为oracle
+>ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED; # 更改配置文件默认限制密码
+
+10.使用navicat进行连接：
+
+[![0wqRa9.png](https://s1.ax1x.com/2020/10/08/0wqRa9.png)](https://imgchr.com/i/0wqRa9)
+
+![0wq9E9.png](https://s1.ax1x.com/2020/10/08/0wq9E9.png)
+
+
+
 ## docker命令：
 
 ​	运行 docker run --name container-name -d image-name eg:docker run –name myredis –d redis
@@ -403,7 +441,7 @@ services:
   			TZ: Asia/Shanghai
 ```
 
-​	Docker compose 实战mysql5：
+### Docker compose 实战mysql5：
 ​				
 
 ```
@@ -434,6 +472,28 @@ services:
 就是为了简化docker的使用：
 直接运行 docker-compose.yml中的就可以使用。运行即可以
 				docker-compose up
+
+### DockerCompose 实战oracle
+
+```java
+version: '2'
+services:
+  oracle:
+    # sid: xe
+    # username: system
+    # password: oracle
+    image: sath89/oracle-xe-11g
+    restart: always   #如果docker容器由于一些问题挂掉的化，docker-composer会自动把容器给启动起来
+    container_name: oracle  #启动之后容器的名称
+    volumes:
+      - /my-docker-data/oracle-11g/data:/u01/app/oracle
+    ports:
+      - 1521:1521
+```
+
+ 启动服务：docker-compose -f oracle.yml up -d
+
+查看运行的组件：docker ps -a 
 
 ## Docker-Registry:
 
