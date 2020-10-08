@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/hteml;charset=utf-8">
+<script language="javascript">
+//执行的是顺序是有上到下;
+	var sum=0;
+	function add( a, b){
+		sum=a+b;
+		alert(sum);
+	}
+	//等号==是根据表面值进行比较,因为都是var,所以为真
+	//绝对等号===是要判断类型和值得
+	//类似的有!=;和!==;
+	//计算价格
+	var price=100;
+	var number=10;
+	var sum1=price*number;
+	alert(sum1);
+	//判断润年;
+	//var year=0;
+	function addtype(year){
+	if(year%4==0&&year%100!=0||year%400==0){
+		alert(year+"是润年");
+		}else{
+		alert(year+"不是润年");
+		}
+	} 
+	alert(addtype(2000));
+	</script>
+</head>
+<body onload="add(3,4)">
+//boady里面的是 直接是显示出来的;
+
+</body>
+</html>

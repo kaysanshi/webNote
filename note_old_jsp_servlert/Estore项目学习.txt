@@ -1,0 +1,44 @@
+Estore项目学习：
+	目的：知识的整合，加入真实的开发的思想，利用注解加本地线程和事务管理
+	用户注册（发送激活邮件/利用js前台实现数据校验/验证码）
+	用户激活
+	用户登录（记住用户名/30天自动登录）
+	用户注销
+	添加商品（文件上传）
+	查看商品列表
+	查看商品详情
+	加入购物车（cookie/session/sol库时间久，）
+	增删改查购物车
+	生成订单（多表设计）
+	订单查询（多表查询）
+	订单删除（多表删除，事务管理/注解+本地线程+动态代理+Aop）
+	在线支付（用第三方接口实现特定功能）
+	销售榜单下载（利用程序生成Excel数据，文件的下载）
+	
+	权限过滤器：
+	全站乱码处理器：
+
+	数据库设计：表名以及各个字段项
+	用户及授权：
+	create user estore identified by 'estore'
+	grant all on estore.*to estore;
+	users表：id,用户名，密码，邮箱，角色，激活状态，激活码，注册时间
+	products表：id,商品名，商品种类，库存量，价格，图片，描述
+	order订单表:id,价格，收货信息，支付状态，订单时间，外键（user表中的id）
+	orderitem订单项表:订单order_id（外键）,产品products_id（外键）,购买数量.（联合主键，两列的值加起来合作为这个表的主键）
+
+	项目包结构：
+	javaee三层架构+工厂类实现解耦
+
+	com.itheima.web;
+	com.itheima.service;
+	com.itheima.util
+		   .domain
+		   .factory
+		   .exception
+		   .test
+		   .filter
+		   .listener
+	第三方jar包 ,配置文件；
+	配置虚拟主机
+

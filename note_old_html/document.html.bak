@@ -1,0 +1,39 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<script language="javascript">
+
+with (document) {
+    write ("你的浏览器信息：<OL>");
+    write ("<LI>代码："+navigator.appCodeName);//navigator是领航员;
+    write ("<LI>名称："+navigator.appName);
+    write ("<LI>版本："+navigator.appVersion);
+    write ("<LI>语言："+navigator.language);
+    write ("<LI>编译平台："+navigator.platform);
+    write ("<LI>用户表头："+navigator.userAgent);
+} 
+if (document.all) {
+   document.write("你的浏览器是：MSIE");
+}   else {
+   document.write("你的浏览器是：Navigator");
+}
+var len = navigator.mimeTypes.length;
+with (document) {
+    write ("你的浏览器共支持" + len + "种MIME类型：");
+    write ("<TABLE BORDER>")
+    write ("<CAPTION>MIME type 清单</CAPTION>")
+    write ("<TR><TH> <TH>名称<TH>描述<TH>扩展名<TH>附注")
+   for (var i=0; i<len; i++) {
+       write("<TR><TD>" + i + 
+           "<TD>" + navigator.mimeTypes[i].type +
+           "<TD>" + navigator.mimeTypes[i].description +
+           "<TD>" + navigator.mimeTypes[i].suffixes +
+           "<TD>" + 
+          navigator.mimeTypes[i].enabledPlugin.name);
+	}
+}
+</script>
+</head>
+<body>
+</body>
+</html>

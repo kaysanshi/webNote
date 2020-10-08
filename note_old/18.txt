@@ -1,0 +1,5 @@
+18年总结：
+		学习分析总计学习的课题：
+			web，Tomcat基本使用，http协议，response,request,jsp,jsp九大隐式对象，四大作用域，session,cookie, el表达式,jstl,文件上传servlert,
+			xml格式,xml解析，ajax,jquery,bootstrap,jqueryEasyUI,服务器ubuntu,json,javamail,
+			struts2,spring,hibernate,springmvc,mytatis,maven,POI,pinyim4j,shiro权限控制,webservice,ehcache,quartz,jpa

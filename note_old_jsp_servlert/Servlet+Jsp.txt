@@ -1,0 +1,1059 @@
+一、web概述
+	静态web资源：内容是静态的，不同的人在不同的时间来访问时都是相同的内容。HTML、CSS、JS
+	动态web资源：内容是由程序生成的，不同的人在不同的时间访问的内容很可能是不同的。
+	常见的动态web资源开发技术：
+		ASP、PHP、JSP/Servlet
+		C/S B/S之争
+		云、移动互联网、html5、物联网
+			
+二、TOMCAT服务器的安装与配置
+	1.常见服务器：WebLogic（BEA）、webSphere（IBM）、Tomcat（Apache）
+	2.Tomcat 的下载与安装
+		下载地址：http://tomcat.apache.org/
+		安装目录不能包含中文和空格
+		JAVA_HOME环境变量指定Tomcat运行时所要用的jdk所在的位置，注意，配到目录就行了，不用指定到bin
+		端口占用问题：netstat -ano命令查看端口占用信息
+		Catalina_Home环境变量：startup.bat启动哪个tomcat由此环境变量指定，如果不配置则启动当前tomcat，推荐不要配置此环境变量
+	3.Tomcat的目录结构
+		bin--存放tomcat启动关闭所用的批处理文件
+		conf--tomcat的配置文件，最终要的是server.xml
+		*实验:修改servlet.xml,更改tomcat运行所在的端口号，从8080改为80
+		lib--tomcat运行所需jar包
+		logs--tomcat运行时产生的日志文件
+		temp--tomcat运行时使用的临时目录，不需要我们关注
+		webapps--web应用所应存放的目录
+		work--tomcat工作目录，后面学jsp用到
+	4.虚拟主机（一个真实主机可以运行多个网站，对于浏览器来说访问这些网站感觉起来就像这些网站都运行在自己的独立主机中一样，所以，我们可以说这里的每一个网站都运行在一个虚拟主机上，一个网站就是一个虚拟主机）
+		4.1配置虚拟主机
+			在server.xml中<Engine>标签下配置<Host>,其中name属性指定虚拟主机名，appBase指定虚拟主机所在的目录
+			只在servlet.xml中配置Hosts，还不能是其他人通过虚拟主机名访问网站，还需要在DNS服务器上注册一把，我们可以使用hosts文件模拟这个过程
+			默认虚拟主机：在配置多个虚拟主机的情况下，如果浏览器使用ip地址直接访问网站时，该使用哪个虚拟主机响应呢？可以在<Engine>标签上设置defaultHost来指定
+	5.web应用（web资源不能直接交给虚拟主机，需要按照功能组织用目录成一个web应用再交给虚拟主机管理）
+		5.1web应用的目录结构
+			web应用目录
+				|
+				-html、css、js、jsp
+				|
+				-WEB-INF
+					|
+					-classes
+					|
+					-lib
+					|
+					-web.xml
+		5.2web.xml文件的作用：
+			某个web资源配置为web应用首页
+			将servlet程序映射到某个url地址上
+			为web应用配置监听器
+			为web应用配置过滤器
+			但凡涉及到对web资源进行配置，都需要通过web.xml文件
+			*实验：配置一个web应用的主页
+		5.3web应用的虚拟目录映射			
+			（1）在server.xml的<Host>标签下配置<Context path="虚拟路径" docBase="真实路径">如果path=""则这个web应用就被配置为了这个虚拟主机的默认web应用
+			（2）在tomcat/conf/引擎名/虚拟主机名 之下建立一个.xml文件，其中文件名用来指定虚拟路径，如果是多级的用#代替/表示，文件中配置<Context docBase="真实目录">，如果文件名起为ROOT.xml则此web应用为默认web应用
+			（3）直接将web应用放置到虚拟主机对应的目录下，如果目录名起为ROOT则此web应用为默认web应用			
+			~如果三处都配置默认web应用则server.xml > config/.../xx.xml > webapps									
+		5.4杂项				
+			(1)打war包：方式一：jar -cvf news.war * 方式二：直接用压缩工具压缩为zip包，该后缀为.war
+			(2)通用context和通用web.xml，所有的<Context>都继承子conf/context.xml,所有的web.xml都继承自conf/web.xml
+			(3)reloadable让tomcat自动加载更新后的web应用，当java程序修改后不用重启，服务器自动从新加载，开发时设为true方便开发，发布时设为false，提高性能
+			(4)Tomcat管理平台，可以在conf/tomcat-users.xml下配置用户名密码及权限
+						
+	6.作业				
+		配置一个www.google.com这样一台虚拟主机，其中包含news应用和mail应用，news应用中有一个new.html。实现在浏览器中输入www.google.com直接看到new.html中的芙蓉姐姐。
+				
+
+二、HTTP协议
+1.HTTP协议概述
+		HTTP协议用于定义客户端与web服务器通迅的格式。
+		HTTP是hypertext transfer protocol（超文本传输协议）的简写，它是TCP/IP协议的一个应用层协议
+		HTTP使用请求-响应的方式进行传输，一个请求对应一个响应，并且请求只能是由客户端发起的。
+		HTTP协议的版本：HTTP/1.0、HTTP/1.1，其中1.0一次请求发起一次连接，响应过后连接自动断开。1.1里每次请求响应后连接将保持一段时间，这段时间内可以再执行请求响应。
+		
+2.HTTP请求
+	2.1请求行
+		GET /books/java.html HTTP/1.1
+		请求方式 请求的资源名 所遵循的协议
+		2.1.1请求方式：GET、POST，
+			其中GET方式在请求资源的URL后跟“？参数名=参数值&参数名=。。。”方式传递参数，传输的数据内容最大为1K
+			其中POST方式在请求实体中传输数据
+			除了用Form表单明确用method指定用post方式提交数据以外，其他的方式都是GET提交方式
+
+	2.2请求头((request)
+		Accept: text/html,image/*    客户端可以接受的数据类型
+		Accept-Charset: ISO-8859-1	客户端接受数据需要使用的字符集编码
+		Accept-Encoding: gzip,compress 客户端可以接受的数据压缩格式
+		Accept-Language: en-us,zh-cn  可接受的语言环境
+		Host: www.it315.org:80 想要访问的虚拟主机名
+		If-Modified-Since: Tue, 11 Jul 2000 18:23:51 GMT 这是和缓存相关的一个头，带着缓存资源的最后获取时间
+		Referer: http://www.it315.org/index.jsp 这个头表示当前的请求来自哪个链接，这个头和防盗链的功能相关
+		User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0) 客户端的一些基本信息
+		Cookie 会在后面讲会话技术的时候单讲
+		Connection: close/Keep-Alive 指定是否继续保持连接
+		Date: Tue, 11 Jul 2000 18:23:51 GMT 当前时间
+	2.3实体内容
+
+3.HTTP响应
+	3.1状态行
+		HTTP/1.1 200 OK
+		格式： HTTP版本号　状态码　原因叙述<CRLF>
+		状态码：
+			200：请求处理成功
+			302：请求重定向
+			304、307：服务器通知浏览器使用缓存
+			404：资源未找到
+			500：服务器端错误
+
+	3.2若干响应头(response)
+		Location: http://www.it315.org/index.jsp  配合302实现请求重定向
+		Server:apache tomcat 服务器的基本信息
+		Content-Encoding: gzip 服务器发送数据时使用的压缩格式
+		Content-Length: 80 发送数据的大小
+		Content-Language: zh-cn 发送的数据使用的语言环境
+		Content-Type: text/html; charset=GB2312 当前所发送的数据的基本信息，（数据的类型，所使用的编码）
+		Last-Modified: Tue, 11 Jul 2000 18:23:51 GMT 缓存相关的头
+		Refresh: 1;url=http://www.it315.org 通知浏览器进行定时刷新，此值可以是一个数字指定多长时间以后刷新当前页面，这个数字之后也可以接一个分号后跟一个URL地址指定多长时间后刷新到哪个URL
+		Content-Disposition: attachment;filename=aaa.zip 与下载相关的头
+		Transfer-Encoding: chunked 传输类型，如果是此值是一个chunked说明当前的数据是一块一块传输的
+		Set-Cookie:SS=Q0=5Lb_nQ; path=/search 和cookie相关的头，后面课程单讲
+		ETag: W/"83794-1208174400000" 和缓存机制相关的头
+		Expires: -1 指定资源缓存的时间，如果取值为0或-1浏览就不缓存资源
+		Cache-Control: no-cache  缓存相关的头，如果为no-cache则通知浏览器不缓存
+		Pragma: no-cache   缓存相关的头，如果为no-cache则不缓存
+		以上三个头都是用来控制缓存的，是因为历史原因造成的，不同的浏览器认识不同的头，我们通常三个一起使用保证通用性。
+		Connection: close/Keep-Alive   是否保持连接
+		Date: Tue, 11 Jul 2000 18:23:51 GMT 当前时间
+	
+	3.3实体内容
+	*额外作业：重写学生信息管理系统的DAO，用Dom4j去实现
+_______________________________________________________________________________
+*******************************************************************************
+________________________________________________________________________________
+一、response
+	ServletResponse -- 通用的response提供了一个响应应该具有最基本的属性和方法
+		|
+		|-HttpServletResponse -- 在ServletResponse的基础上针对于HTTP协议增加了很多强化的属性和方法
+    1.输出数据
+	有以下几种方式:
+		//指定服务器查的码表
+		response.setCharacterEncoding("gbk");
+		response.getWriter().write("beijiang");
+		response.getWriter().write("中国");
+		//或者指定浏览器和服务器一起指定;
+		response.setHeader("Content-Type", "text/html;charset=utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.getWriter().write("中国");
+		//或者这样;setContentType可以直接指定浏览器和服务器的编码方式
+		response.setContentType("text/html,charset=utf-8");
+		response.getWriter().write("中国");
+		//或者这样SetCharacterEnconding指定服务器的编码
+		//setContentType指定浏览器的编码
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html,charset=utf-8");
+		response.getWriter().write("中国");
+	    response会默认以ISO8859-1将需要输出到浏览器的字符进行解码，如果输出的字符在IOS8859-1中不存在，就会导致乱码问题。可以使用setCharacterEncoding(String charset)方法设置解码用的字符集为其他字
+	    *response.setContetnType("text/html;charset=utf-8");方法可以同时设定response所使用的字符集编码和浏览器打开所用的字符集编码。
+	    //同时设置浏览器和服务器的编码方式
+	    response.setContentTye("text/html;charset=utf-8");
+	    response.getOUtputStream().write("".getBytes("utf-8"));
+	    //////
+	    ``````
+	    //设置服务器的编码方式
+	    response.setCharacterEncoding("utf-8");
+	    //设置浏览器的
+	    response.setContentType("text/html;charset=utf-8");
+	    response.getWriter().write("");
+	
+    2.实现下载
+	利用response将HTTP的响应头"content-disposition"设置为"attachment;filename=xxx"即可实现文件下载功能
+
+	如果文件名中包含中文，则文件名要进行URL编码，URLEncoding.encode('啊啊.jpg','utf-8');如果不进行编码则文件名显示错误并且不可下载
+		///下载的形式应该用这个方式  翻译:Disposition:配置
+		response.setHeader("Content-Disposition", "attachment;filename=1.jpg");
+		//这样只是读取到这样的文件但是并没有实现下载功能
+		InputStream in=new  FileInputStream(this.getServletContext().getRealPath("1.jpg"));
+		OutputStream out=response.getOutputStream();
+		byte[]bs=new byte[1024];
+		int i=0;
+		i=in.read(bs);
+		while(i!=-1){
+			out.write(bs,0,i);
+			i=in.read(bs);
+		}
+		in.close();
+
+	可以用url编码,利用这种算法将非ascII码转换为指定的编码集
+	response.setHeader("Content-Disposition", "attachment;filename="+URLEncoder.encode("美女.jpg","utf-8"));
+    3.定时刷新页面
+	//隔几秒刷新页面
+		//response.getWriter().write(new Date().toString());
+		//response.setHeader("Refresh", "1");
+		//隔几秒会到主页
+		//response.setCharacterEncoding("utf-8");
+		//response.setHeader("Content-Type", "text/html;charset=utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write("恭喜你注册成功 3秒后跳转页面....");
+		response.setHeader("refresh", "3;url=/Test/index.jsp");
+		//但是一般不会这样写会把写出的话放到html页面中
+		//向newFilehtml那样进行操作可以在html中用<meta http-equiv="" content="">来模拟响应头信息
+	
+    4.控制是否缓存资源
+    //////不进行缓存的设置形式
+		response.setIntHeader("Expires", -1);
+		response.setHeader("Cache-control","no-cache");
+		response.setHeader("Pragma","no-cache");
+    //设置缓冲并设置缓存的时间
+		response.setDateHeader("Expires", System.currentTimeMillis()+1000L*3600*24*30);
+    
+    5.请求重定向
+	//请求重定向方式1
+		//.setStatus(302);
+		//response.setHeader("Location", "/Test/index.jsp");
+	//请求重定向方式2常用
+		response.sendRedirect("/Test/index.jsp");
+		跳转到主页面
+		推荐使用请求转发,请求转发可以减少对服务器的访问;
+
+
+    *getOutputStream和getWriter这两个方法互相排斥，调用了其中的任何一个方法后，就不能再调用另一方法。  
+    *response中获取的输出流,在service方法结束后服务器会帮我们关闭,所以一般不要自己在Servlet中关闭这个流.
+    在请求重定向时在两个不同的界面时,是可以的同时使用
+    
+二、request
+    ServletRequest -- 通用request，提供一个request应该具有的最基本的方法
+        |
+        |--HttpServletRequest -- ServletRequest的孩子，针对http协议进行了进一步的增强
+        
+        
+    1.获取客户机信息
+        getRequestURL方法返回客户端发出请求完整URL
+        !!getRequestURI方法返回请求行中的资源名部分
+        getQueryString 方法返回请求行中的参数部分
+        !!getRemoteAddr方法返回发出请求的客户机的IP地址
+        !!getMethod得到客户机请求方式
+        !!getContextPath 获得当前web应用虚拟目录名称
+        
+    2.获取请求头信息
+        获得客户机请求头
+            getHeader(name)方法 --- String 
+            getHeaders(String name)方法 --- Enumeration<String>枚举变量<string类型的>
+            getHeaderNames方法 --- Enumeration<String>
+        获得具体类型客户机请求头
+            getIntHeader(name)方法  --- int
+            getDateHeader(name)方法 --- long(日期对应毫秒)
+
+        *防盗链
+	response.setContentType("text/html;charset=utf-8");
+		String ref=request.getHeader("Referer");
+		if(ref==null || "".equals(ref)||!ref.startsWith("http://localhost")){
+			response.sendRedirect(request.getContextPath()+"/index.html");
+			return; 
+		}	
+	response.getWriter().write("防盗链.....这是主页");
+	在index标签中直接这样设置
+	<a href="/Test/FangdaoServlet">防盗练....</a>
+    3.获取请求参数
+        乱码的问题:
+            浏览器以什么编码来发送请求参数? 浏览器以什么编码打开的表单页面,就用什么编码发送这个页面提交的数据
+            服务器以什么编码来打开呢?如果不指定,则使用ISO8859-1,这样如果请求参数中有中文必然就乱码了
+            
+            对于POST提交,可以设置request.setCharacterEncoding("utf-8");明确的通知服务器以浏览器发送过来的编码来打开数据就可以解决乱码
+            但是上面的方法只对请求中实体内容部分起作用,所以GET提交的乱码并不能解决.
+            对于GET提交的乱码,只能手动的进行编解码从而解决乱码问题:
+                String username = request.getParameter("username");
+		 username = new String(username.getBytes("iso8859-1"),"utf-8");
+        
+	乱码问题：：：：：：
+
+	解决时要格外小心：为何我自己设置的pageEncoding="Utf-8"显示出现问题？？？？
+	直接可以使用这个pageEnconding就是自动设置ContentType();这个属性
+    4.利用请求域传递对象
+        
+        作用范围:整个请求链上
+        生命周期:当服务器收到一个请求,创建出代表请求的request对象,request开始.当请求结束,服务器销毁代表请求的request对象,request域结束.
+        作用:在整个请求链范围内共享数据,通常我们在Servlet中处理好的数据会存入request域后请求转发到jsp页面来进行展示
+        
+        setAttribute
+        getAttribute
+        removeAttribute
+
+    5.实现请求转发和请求包含
+        (1)请求转发(.forward()):
+            this.getServletContext().getRequestDispatcher("").forward(request,response);
+            request.getRequestDispatcher("").forward(request,response);
+            
+            ~请求转发是希望将请求交给另外一个资源执行,所以应该保证只有最后真正要执行的资源才能够输出数据,所以:
+               
+                *请求转发时,如果已经有数据被写入到了response的缓冲区,但是这些数据还没有被发送到客户端,则请求转发时,这些数据将会被清空.但是清空的只是响应中的实体内容部分,头信息并不会被清空.
+                *而请求转发时已经有数据被打给了浏览器,那么再进行请求转发,不能成功,会抛出异常,原因是响应已经结束了,再转发交给其他人没意义了
+                *在最终输出数据的Servlet执行完成后,response实体内容中的数据将会被设置为已提交的状态,再往里写数据也不会起作用
+                
+		//请求转发时响应的类型也是在当前页面设置的
+		response.setContentType("text/html;charset=utf-8");
+		////
+		response.getWriter().write("demo3...");
+		//用flush时就会把转发的内容显示出来
+		//response.getWriter().flush();
+		//请求转发
+		request.getRequestDispatcher("/Demo4").forward(request, response);
+		//请求转发时不能同时设置多个转发
+		//request.getRequestDispatcher("/index.jsp").forward(request, response);
+		//
+
+                -------使用以上三条,就保证了最终只有一个Servlet能够向浏览器输出数据,所以
+                   
+                *一个Servlet里两次请求转发也是不可以的,一次请求交给两人处理自然也是不行.
+       
+      
+        
+        (2)请求包含(.include()):将两个资源的输出进行合并后输出多个资源同是输出
+            this.getServletContext().getRequestDispatcher("").include(request,response);
+            request.getRequestDispatcher("").include(request,response);
+            
+            *被包含的Servlet程序不能改变响应消息的状态码和响应头，如果它里面存在这样的语句，这些语句的执行结果将被忽略
+            *常被用来进行页面布局
+
+
+        (3)三种资源处理方式的区别
+            请求重定向
+                response.sendRedirect();
+            请求转发
+                request.getRequestDispatcher().forward();
+            请求包含
+                request.getRequestDispatcher().include();
+                
+                
+            请求重定向和请求转发的区别:
+                请求重定向地址栏会发生变化.请求转发地址栏不发生变化.
+                请求重定向两次请求两次响应.请求转发一次请求一次响应.
+                
+                如果需要在资源跳转时利用request域传递域属性则必须使用请求转发 request.getRequestDispatcher().forward();
+                如果希望资源跳转后修改用户的地址栏则使用请求重定向response.sendRedirect();
+                如果使用请求转发也可以重定向也可以,则优先使用请求转发,减少浏览器对服务器的访问次数减轻服务器的压力.
+
+============================================================================================
+常用地址的写法:  
+    绝对路径:以/开头的路径就叫做绝对路径,绝对路径在相对于的路径上直接拼接得到最终的路径
+    相对路径:不以/开头的路径就叫做相对路径,相对路径基于当前所在的路径计算的到最终的路径
+    硬盘路径:以盘符开头的路径就叫做硬盘路径.是哪个路径就是哪个路径.没有相对于谁的问题
+
+    虚拟路径: --写虚拟路径时都使用绝对路径
+        如果路径是给浏览器用的,这个路径相对于虚拟主机,所以需要写上web应用的名称
+        如果路径是个服务器用的,这个路径相对于web应用,所以可以省写web应用的名称
+      <a href="/Day04/.....">
+      <form action="/Day04/...">
+      <img src="/Day04/....">
+      //请求头信息
+      response.setHeader("Location","/Day04/....");
+      response.setHeader("refresh","3;url=/Day04/...");
+      response.sendRedirect("/Day04/...");
+      request.getRequestDispathce("/index.jsp").forward();
+      request.getRequestDispathce("/index.jsp").include();
+   
+    真实路径: --写真实路径时都使用相对路径
+        根据原理,具体问题具体分析
+        
+        servletContext.getRealPath("config.properties");//--给一个相对于web应用目录的路径
+        classLoader.getResource("../../config.properties");//--给一个相对于类加载目录的路径
+        
+        File file = new File("config.properties");//--相对于程序的启动目录
+        new InputStream("config.properties");//--相对于程序的启动目录
+//////////////////////////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+以下响应重要记忆
+	1.设置编码方式
+		response.setHeader("Content-Type", "text/html;charset=utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.getWriter().write("中国");
+	2.设置是否缓存(缓存时间)
+		不进行缓存的设置形式
+		response.setIntHeader("Expires", -1);
+		response.setHeader("Cache-control","no-cache");
+		response.setHeader("Pragma","no-cache");
+		设置缓冲并设置缓存的时间
+		response.setDateHeader("Expires", System.currentTimeMillis()+1000L*3600*24*30);
+	3.设置资源下载
+		文件名中包含中文，则文件名要进行URL编码，URLEncoding.encode('啊啊.jpg','utf-8');如果不进行编码则文件名显示错误并且不可下载
+		///下载的形式应该用这个方式  翻译:Disposition:配置
+		response.setHeader("Content-Disposition", "attachment;filename=1.jpg");
+		//这样只是读取到这样的文件但是并没有实现下载功能
+		InputStream in=new  FileInputStream(this.getServletContext().getRealPath("1.jpg"));
+		OutputStream out=response.getOutputStream();
+	4.请求从定向
+	response.sendRedirect("/Test/index.jsp");
+	5.设置刷新跳转
+	response.setHeader("refresh", "3;url=/Test/index.jsp");
+	转发//request.getRequestDispatcher("/index.jsp").forward(request, response);
+	包含/request.getRequestDispatcher("/index.jsp").include(request, response);
+	重定向response.sendRedirect("/Test/index.jsp");
+《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《
+》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》》
+一JSP:
+	1.jsp技术
+		  Java Server pages
+        jsp是sun提供动态web资源开发技术。为了解决在Servlet中拼写html内容css、js内容十分不方便的问题，
+	sun提供了这样一门技术。如果说Servlet是在java中嵌套HTML，则jsp就是在HTML中嵌套java代码,从而十分便于组织html页面
+        
+        jsp页面在第一次被访问到时会被jsp翻译引擎翻译成一个Servlet,从此对这个jsp页面的访问都是由这个Servlet执行后进行输出
+        
+	jsp被编译后会生成servlet，拿eclipse来说，编译后的路径：
+	工程\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\work\Catalina\localhost\JspProject\org\apache\jsp
+    2.jsp语法
+        (1)JSP模版元素 :jsp页面中书写的HTML内容称作JSP的模版元素,在翻译过来的Servlet中直接被out.write()输出到浏览器页面上了
+            
+        (2)JSP表达式 <%= java表达式 %> 在翻译过来的Servlet中,计算java表达式的值后,被out输出到浏览器上
+        
+        (3)JSP脚本片断 <% 若干java语句 %> 在翻译过来的Servlet中,直接被复制粘贴到了对应的位置执行.
+            在一个JSP页面中可以有多个脚本片断，在两个或多个脚本片断之间可以嵌入文本、HTML标记和其他JSP元素
+            多个脚本片断中的代码可以相互访问，犹如将所有的代码放在一对<%%>之中的情况
+            单个脚本片断中的Java语句可以是不完整的，但是，多个脚本片断组合后的结果必须是完整的Java语句
+        (4)JSP声明  <%! 若干java语句 %> 在翻译过来的Servlet中会被放置到和Service方法同级的位置,变成了类的一个成员
+            
+        (5)JSP注释 
+         <%-- 注释的内容 --%> 被jsp注释注释掉的内容,在jsp翻译引擎将jsp翻译成Servlet的过程中会被丢弃,在翻译过来的Servlet中没有这些信息
+         <%//java注释%> java注释被当作jsp脚本片段被翻译到了Servlet中,在.java文件被翻译成.class文件的时候注释信息被丢弃
+         <!-- HTML注释 --> html注释被当作模版元素输出到了浏览器上,浏览器认识html注释不予显示
+       
+        JSP指令:
+	    JSP指令的基本语法格式：<%@ 指令 属性名="值" %>
+			举例：<%@ page contentType="text/html;charset=gb2312"%>
+	    jsp指令是为jsp引擎而设计的，是用来告诉引擎如何处理jsp页面
+	    如果一个指令有多个属性，这多个属性可以写在一个指令中，也可以分开写。
+		例如：
+			<%@ page contentType="text/html;charset=gb2312"%>
+			<%@ page import="java.util.Date"%>
+
+		page指令:
+		<%@ page 
+			[ language="java" ]		生明用哪个语言
+			[ extends="package.class" ]	翻译过的servlet继承哪个
+			[ import="{package.class | package.*}, ..." ] 导包
+			[ session="true | false" ]    是否有回话
+			[ buffer="none | 8kb | sizekb" ] 
+			[ autoFlush="true | false" ] 
+			[ isThreadSafe="true | false" ] 
+			[ errorPage="relative_url" ]相对路径； 
+			[ isErrorPage="true | false" ] 
+			[ contentType="mimeType [ ;charset=characterSet ]" | "text/html ; charset=ISO-8859-1" ] 
+			[ pageEncoding="characterSet | ISO-8859-1" ] 
+			[ isELIgnored="true | false" ] 
+		%>
+		
+		<%@ page import="java.util.Date,java.sql.*,java.io.*"%>
+		上面的语句也可以改写为使用多条page指令的import属性来分别引入各个包或类：
+		<%@ page import="java.util.Date"%>
+		<%@ page import="java.sql.*"%>
+		<%@ page import="java.io.*"%>
+			
+			errorPage属性的设置值必须使用相对路径，如果以“/”开头，表示相对于当前WEB应用程序的根目录（注意不是站点根目录），否则，表示相对于当前页面。
+			可以在web.xml文件中使用<error-page>元素为整个WEB应用程序设置错误处理页面，其中的<exception-type>子元素指定异常类的完全限定名，<location>元素指定以“/”开头的错误处理页面的路径。 
+			如果设置了某个JSP页面的errorPage属性，那么在web.xml文件中设置的错误处理将不对该页面起作用。
+			 <error-page>
+				<error-code>500</error-code>
+				<location>/error/500.jsp</location>
+			  </error-page>
+			  <error-page>
+				<error-code>404</error-code>
+				<location>/error/404.jsp</location>
+			  </error-page>
+			  <error-page>
+				<exception-type>java.lang.Throwable</exception-type>
+				<location>/error/500.jsp</location>
+			  </error-page>
+			JSP引擎会根据page指令的contentType属性生成相应的调用ServletResponse.setContentType方法的语句。
+			page指令的contentType属性还具有说明JSP源文件的字符编码的作用。
+			可以在一条page指令的import属性中引入多个类或包，其中的每个包或类之间使用逗号分隔：
+
+		使用page指令来是实现解决中文乱码问题:
+			JSP程序存在有与Servlet程序完全相同的中文乱码问题
+				输出响应正文时出现的中文乱码问题 
+				读取浏览器传递的参数信息时出现的中文乱码问题
+				JSP引擎将JSP页面翻译成Servlet源文件时也可能导致中文乱码问题 
+				JSP引擎将JSP源文件翻译成的Servlet源文件默认采用UTF-8编码，而JSP开发人员可以采用各种字符集编码来编写JSP源文件，因此，JSP引擎将JSP源文件翻译成Servlet源文件时，需要进行字符编码转换。 
+				如果JSP文件中没有说明它采用的字符集编码，JSP引擎将把它当作默认的ISO8859-1字符集编码处理。
+				如何解决JSP引擎翻译JSP页面时的中文乱码问题 
+				通过page指令的contentType属性说明JSP源文件的字符集编码
+				page指令的pageEncoding属性说明JSP源文件的字符集编码
+
+		Include指令:
+			include指令用于引入其它JSP页面，如果使用include指令引入了其它JSP页面，那么JSP引擎将把这两个JSP翻译成一个servlet。所以include指令引入通常也称之为静态引入。
+			语法：
+				<%@ include file="relativeURL"%>
+				其中的file属性用于指定被引入文件的路径。路径以“/”开头，表示代表当前web应用。
+			细节：
+			被引入的文件必须遵循JSP语法。
+			被引入的文件可以使用任意的扩展名，即使其扩展名是html，JSP引擎也会按照处理jsp页面的方式处理它里面的内容，为了见明知意，JSP规范建议使用.jspf（JSP fragments）作为静态引入文件的扩展名。 
+			由于使用include指令将会涉及到2个JSP页面，并会把2个JSP翻译成一个servlet，所以这2个JSP页面的指令不能冲突（除了pageEncoding和导包除外）。 
+
+		taglib指令:
+
+        JSP标签 
+        JSP内置对象
+		九大隐示对象：在翻译过来的servlet中的service方法自动帮我们前置定义九个对象
+		request:请求
+		response:响应
+		config：配置
+		application：
+		page：用来告诉jsp引擎如何处理页面
+		[ buffer="none | 8kb | sizekb" ] 用来禁用out缓冲区或设置out的大小
+		默认为8kb
+		[ autoFlush="true | false" ] 
+		用来设置当out缓冲区满了以后写入数据时如何处理;如果为true时：满了以后将
+		数据写到response中；；false时,满了会出现异常；
+
+		session：会话
+		pagecontent:
+			域对象：
+			1.可以获取其他八大隐示对象的引用
+			getException方法返回exception隐式对象 
+			getPage方法返回page隐式对象
+			getRequest方法返回request隐式对象 
+			getResponse方法返回response隐式对象 
+			getServletConfig方法返回config隐式对象
+			getServletContext方法返回application隐式对象
+			getSession方法返回session隐式对象 
+			getOut方法返回out隐式对象
+			自定义标签时用：
+
+			2.四大作用域的入口，可以操作四大域中的属性
+			pageContext对象的方法 
+				public void setAttribute(java.lang.String name,java.lang.Object value)
+				public java.lang.Object getAttribute(java.lang.String name)
+				public void removeAttribute(java.lang.String name)
+				pageContext对象中还封装了访问其它域的方法
+				public java.lang.Object getAttribute(java.lang.String name,int scope)
+				public void setAttribute(java.lang.String name, java.lang.Object value,int scope)
+				public void removeAttribute(java.lang.String name,int scope)
+				代表各个域的常量
+				PageContext.APPLICATION_SCOPE
+				PageContext.SESSION_SCOPE
+				PageContext.REQUEST_SCOPE
+				PageContext.PAGE_SCOPE 
+				findAttribute方法    （*重点，查找各个域中的属性） EL表达式
+					可以搜寻四大域中属性，如果找不到返回null
+				作用范围：当前jsp页面
+				生明周期：访问jsp页面开始，jsp页面结束
+				作用：在当前jsp中共享数据；
+
+			3.提供请求转发
+			request.getRequestDispatcher().include();
+			pageContent.include("/");
+			request.getRequestDispatcher().forward();
+			pageContent.forward("/");
+		exception：异常
+
+		out：输出
+		相当于response.getWriter得到的Printwriter
+		out和response.getWriter获取的流不同在于：out
+		本身就具有一个缓冲区，先写到缓冲区，直到缓冲区满或则整个页面结束
+		时out缓冲区才会被写到response缓冲区中
+		在jsp需要数据输出时用out输出而不用response.getWriter();
+
+
+		jsp映射：
+			<servlet>
+			<servlet-name>SimpleJspServlet</servlet-name>
+			<jsp-file>/jsp/simple.jsp</jsp-file>
+			<load-on-startup>1</load-on-startup >
+			</servlet>
+			<servlet-mapping>
+			<servlet-name>SimpleJspServlet</servlet-name>
+			<url-pattern>/xxx/yyy.html</url-pattern>
+			</servlet-mapping>
+		jsp和servlet:
+			让jsp既用java代码产生动态数据，又做美化会导致页面难以维护。
+			让servlet既产生数据，又在里面嵌套html代码美化数据，同样也会导致程序可读性差，难以维护。
+			因此最好的办法就是根据这两门技术的特点，让它们各自负责各的，servlet只负责响应请求产生数据，并把数据通过转发技术带给jsp，数据的显示jsp来做。
+			JSP页面不写java代码，只用来显示数据，
+
+		四大域：
+			pageContext（称之为page域） 
+			request（称之为request域）
+			session（称之为session域）
+			servletContext（称之为application域）
+		使用时根据生命周期使用：
+			在当前页面：pageContent
+			在servlet中用还要请求转发点到其他servlet中用request
+			回话级别的用session,自己用过一会自己还用
+			自己用其他人一会也用 用servletContent域
+	__________________________________________________________________________________
+<<request域对于访问太小，用response context()域时会太大不利于多个浏览器访问
+二、会话技术
+    1.浏览器开始访问网站到访问网站结束期间产生的多次请求响应组合在一起叫做一次会话
+    会话的过程中会产生会话相关的数据，我们需要将这些数据保存起来。
+    
+    Cookie：客户端技术
+    Session：服务器端技术
+    
+    2.Cookie   
+	是客户端的技术，程序把每个用户的数据以cookie的形式写给用户的各自的浏览器，
+        当用户使用浏览器再去访问服务器中的web资源时，这样，web资源处理的就是用户各自的数据了。
+	Cookie是基于set-Cookie响应头和Cookie请求头工作的,服务器可以发送set-Cookie请求头命令浏览器保存一个cookie信息,浏览器会在访问服务器时以Cookie请求头的方式带回之前保存的信息
+        
+
+	cookie在浏览器中的存放只允许存300个cookie，每个站点最多有20个cookie
+	在浏览器的存放cookie是不安全的，很有很能被丢失；
+	删除cookie必须设置maxAge path 一致性才可以覆盖；
+        request.getCookies();
+        
+        response.addCookie(Cookie c);
+        
+        new  Cookie(String name,String value)//Cookie在构造的时候就需要设定好cookie的名字和值
+        getName();
+        getValue();
+        setValue();
+        !!setMaxAge与getMaxAge方法  
+            -- 一个Cookie如果没有设置过MaxAge则这个Cookie是一个会话级别的Cookie,这个Cookie信息打给浏览器后浏览器会将它保存在浏览器的内存中,这意味着只要浏览器已关闭随着浏览器内存的销毁Cookie信息也就消失了.
+	    一个Cookie也可以设置MaxAge,浏览一一旦发现收到的Cookie被设置了MaxAge,则会将这个Cookie信息以文件的形式保存在浏览器的临时文件夹中,保存到指定的时间到来为止.这样一来即使多次开关浏览器,
+	    由于这些浏览器都能在临时文件夹中看到cookie文件,所以在cookie失效之前cookie信息都存在.
+            -- 想要命令浏览器删除一个Cookie,发送一个同名同path的cookie,maxage设置为0,浏览器以名字+path识别cookie,发现同名同path,cookie覆盖后立即超时被删除,从而就删除了cookie.
+		就是一个覆盖：
+        !!setPath与getPath方法
+            -- 用来通知浏览器在访问服务器中的哪个路径及其子路径时带着当前cookie信息过来
+                如果不明确设置,则默认的路径是发送Cookie的Servlet所在的路径
+                http://localhost/Day05/servlet/...
+        setDomain与getDomain方法
+            -- 用来通知浏览器在访问哪个域名的时候带着当前的cookie信息.但是要注意,现代的浏览器一旦发现cookie设置过domain信息则会拒绝接受这个Cookie.我们平常不要设置这个方法
+      
+        
+	!案例:曾经看过的书
+		显示上次浏览的信息，用cookie技术来应用；
+        
+    
+    3.Session
+		服务端的对象；
+        Session 是一个域
+            !!作用范围:当前会话范围
+            !!生命周期:
+                当程序第一次调用到request.getSession()方法时说明客户端明确的需要用到session此时创建出对应客户端的Session对象.
+                当session超过30分钟(这个时间是可以在web.xml文件中进行修改的)没有人使用则认为session超时销毁这个session.
+                程序中明确的调用session.invalidate()方法可以立即杀死session.
+                当服务器被非正常关闭时,随着虚拟机的死亡而死亡.
+                *如果服务器是正常关闭,还未超时的session会被以文件的形式保存在服务器的work目录下,
+		这个过程叫做session的钝化.下次再正常启动服务器时,
+		钝化着的session会被恢复到内存中,这个过程叫做session的活化.
+            !!作用:在会话范围内共享数据
+	    session时间的配置：在配置的时是以分钟为单位的；
+		在web.xml中用配置<session-config><session-timeout>30</></>
+		
+	!!session 的原理:
+		request.getSession()方法会检查请求中有没有JSESSIONID cookie,如果有拿出他的值找到对应的session为他服务.
+		如果没有则检查请求的URL后有没有以参数的形式带着JSESSIONID过来,如果有则找到对应的Session为浏览器服务器
+		如果还找不到则认为这个浏览器没有对应的Session,创建一个Session然后再在响应中添加JSESSIONID cookie,值就是这个Session 的id
+
+		默认情况下,JSESSIONID 的path为当前web应用的名称,并且没有设置过MaxAge,是一个会话级别的cookie.
+		
+		这意味着一旦关闭浏览器再新开浏览器时,由于JSESSIONID丢失,会找不到之前的Session
+		我们可以手动的发送JSESSIONID cookie,名字和path设置的和自动发送时一样,但是设置一下MaxAge,使浏览器除了在内存中保存JSESSIONID信息以外还在临时文件夹中以文件的形式保存,这样即使重开浏览器仍然可以使用之前的session
+
+	URL重写:
+		如果浏览器禁用了Cookie,浏览器就没有办法JSESSIONID cookie,这样就用不了Session了.
+		我们可以使用URL重写的机制,在所有的超链接后都以参数的形式拼接JSESSIONID信息,从而在点击超链接时可以使用URL参数的方式待会JSESSIONID,从而使用Session
+		将URL进行重写拼接上JSESSIONID的过程就叫做URL重写
+
+		request.getSession() --在URL重写之前一定要先创建出Session,才有Session id,才能进行重写
+		response.encodeURL()--- 一般的地址都用这个方法重写
+		response.encodeRedirectURL() --- 如果地址是用来进行重定向的则使用这个方法
+		
+		*url重写的方法一旦发现浏览器带回了任意cookie信息,则认为客户端没有禁用cookie,就不会再进行重写操作
+
+
+
+	cookie是客户端技术
+		数据保存在客户端,这个信息可以保存很长时间
+		数据随时有可能被清空,所以cookie保存的数据是不太靠谱的
+		数据被保存在了客户端,随时有可能被人看走,如果将一些敏感信息比如用户名密码等信息存在cookie中,可能有安全问题
+
+	session是服务器端技术
+		数据保存在服务区端,相对来说比较稳定和安全
+		占用服务器内存,所以一般存活的时间不会太长,超过超时时间就会被销毁.我们要根据服务器的压力和session 的使用情况合理设置session的超时时间,既能保证session的存活时间够用,同时不用的session可以及时销毁减少对服务器内存的占用.
+
+	Session案例:
+		!!用户登录注销
+		防止表单重复提交
+		实现一次性验证码
+
+	
+《《《《《《《《《《《《《《《《《《《《《《《《《《
+jsp的标签技术：在jsp中把java代码替换到标签标示：
+
+	1.jsp标签：sun公司原生提供的标签：
+		<jsp:include>请求包含：标签用于把另外一个资源的输出内容插入进当前JSP页面的输出内容之中，这种在JSP页面执行时的引入方式称之为动态引入。
+		语法：
+			<jsp:include page="relativeURL | <%=expression%>" flush="true|false" />
+		 
+		page属性用于指定被引入资源的相对路径，它也可以通过执行一个表达式来获得。
+		flush属性指定在插入其他资源的输出内容时，是否先将当前JSP页面的已输出的内容刷新到客户端。  
+		<jsp:forward>请求转发
+		当使用<jsp:include>和<jsp:forward>标签引入或将请求转发给其它资源时，可以使用<jsp:param>标签向这个资源传递参数。
+		<jsp:param>传递资源 配合请求装发，和请求包含进去
+		语法1：
+			<jsp:include page="relativeURL | <%=expression%>">
+				<jsp:param name="parameterName" value="parameterValue|<%= expression %>" />
+			</jsp:include>
+		语法2：
+			<jsp:forward page="relativeURL | <%=expression%>">
+				<jsp:param name="parameterName" value="parameterValue|<%= expression %>" />
+			</jsp:include>
+		<jsp:param>标签的name属性用于指定参数名，value属性用于指定参数值。在<jsp:include>和<jsp:forward>标签中可以使用多个<jsp:param>标签来传递多个参数。 
+
+	2.EL表达式：Expression Language:
+		最初用来取代jsp中的jsp脚本表达式；
+		功能：
+			获取数据：
+				语法：${el标示符}
+				获取常量：
+					字符串，数字，boolean，直接写在el表达式中;
+				获取变量：
+					如果el中写的是一个变量名，el会调用find变量名
+				获取域中的数据
+				获取数组中的数据
+				获取集合的数据
+				获取map中的数据
+				${propName}在四个域中搜寻proName属性，输出该值到输出流中
+		${pageScope/requestScope/sessionScope/applicationScope.proName}获取指定域中的属性
+		${attr[0]}获取域中的集合的指定元素
+		${list[0]}获取list中的指定位置元素
+		${map.keyName}获取map中指定键的值
+		${bean.propName}获取javaBean的属性，可以认为是调用了javaBean的getXXX方法，
+		~最重要的一个应用场景：在写路径的时候最好不要把web应用名称写死，
+		java中应该用request.getContextPath去获取。jsp中就用el获取：${pageContext.request.contextPth}
+				获取数据时可以使用那个中括号的地方都可以用点号替代(.)
+					除中括号是数字或包含特殊字符时(.-)
+					在中括号如果不用双引号是变量，否则是常量；
+				获取javabean的属性：
+			执行运算：
+				（1）算数运算：所有参与元算的元素都会被转成数字，如果不能转就报错，空元素参与运算当作没参与。
+				（2）关系运算：
+				（3）逻辑运算:
+				（4）empty/not empty判断一个对象或集合或数组是否为空或长度为0		
+				（5）三元表达式 name == null ? "张三" : name;
+			获取web常用对象：
+			调用java方法：
+			el表达式可以调用java中的静态方法,分如下步骤完成：
+			(1)编写一个类，其中应该包含要使用el调用的静态方法
+			(2)编写一个tld文件，描述该方法的调用，在创建tld文件时应选用2.0版本的jsp配置，指定名称空间uri和缩写prefix
+				在eclipes中的tld文件的创建方式：
+					在webcontent目录下创建xml文件，
+						2.然后把xml的后缀名改为tld文件，
+						3.Create XML file from a DTD file ----> Next
+						4.Select XML Catalog entry
+						5. 选择-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN----->Next
+						6. finish---->ok
+	
+			(3)在tld文件中配置方法信息
+				<function>
+					<name>encodeURL</name>el在调用时所使用的方法名
+					<function-class>cn.itheima.util.EncodeURL</function-class>静态方法所在的类全路径名
+					<function-signature>
+						java.lang.String EncodURL( java.lang.String )//对该方法的描述：返回值类型 方法名(参数类型)
+					</function-signature>
+				</function>
+			(4)在jsp中使用<%@ taglib uri="" prefix="ppp"%>引入tld文件
+			(5)在jsp中使用${ppp:encodeURL("xxxx")}调用
+
+			
+
+		
+
+	3.JSTL:
+		<!-- -JSTL core库的有两种taglib伪指令, 其中RT库即是依赖于JSP传统的请求时属性值, 而不是依赖于EL来实现(称为EL库.JSP2.0将支持EL)
+		JSP中使用<%@ taglib uri=http://java.sun.com/jstl/core prefix="c"%>在2.3版本都可以,在2.4就不行了, 难道是版本不兼容吗?
+		只要将
+		<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+		改为
+		<%@ taglib uri=http://java.sun.com/jstl/core_rt prefix="c"%> -->
+		tag标签的自定义有点难？？？？
+	主要进行使用核心标签库：
+		通用标签：<c:out>
+			  <c:set>
+			  <c:remove>
+			  <c:catch>
+		条件标签：
+			<c:if test="" var="" sape="">
+	<c:foreach>
+	int atts[] = {1,2,3,4,5,6,7,8,9,10};
+	request.setAttribute("atts", atts);
+	%>
+
+	<c:forEach items="${atts}" var="item" 
+		begin="0" end="9" step="1" >
+		${item}</br>
+	</c:forEach>
+
+	
+	
+	4.自定义标签技术：
+		传统标签库：
+			
+
+		简单标签：
+			简单标签的开发原理不太清楚：：：
+			最后一个防盗链网页未能展示出来，它获取的是一个空；
+			1.写一个类实现simpleTag接口(继承SimpleTag接口默认的实现类SimpleTagSumpport)
+			2.写一个tld文件,描述写好的类
+			3.在jsp页面中引入tld文件，就jsp页面中使用自定义的标签了
+
+			在jsp中执行的过程中，每个遇到一个简单标签时都会创建一个处理类对象
+			调用setJspContext传入当前页面的pageContent对象
+			如果在当前标签具有父标签则调用setParent方法将父标签传入如果没有
+			父标签则不会被调用
+			如果当前标签具有标签体则会调用setJspBody将封装了的标签体信息的jspFragment传入
+			如果没有标签体，这个方法不执行
+			最后调用doTag方法，在方法里我们可以书写处理标签的事件java代码
+			当自定义标签执行完毕后简单标签的对象会销毁
+
+			控制标签是否执行
+			控制标签自后的内容是否执行
+			控制重复执行
+			修改标签体后输出；
+//////////////////////////////////////////////////////////////////
+javaBean:
+	Servlet:在servlet中拼接html代码很不方便
+	jsp:改变了servlet在java代码中拼写html的过程，改成了在html中嵌入java代码
+	java和html代码混合开发不方便。
+	模式一：
+	jsp+javaBean:javabean用于把大量的java代码提取出来，jsp页面负责接受页面的请求
+		      javaBean负责装处理的数据
+	模式二：
+	jsp+jsp+javaBean:servlet负责请求/控制程序的流转 javabean 负责封装数据
+			 jsp负责展示数据在这种开发模式下各个组件只负责自己的事情便于开发
+
+			浏览器先访问servlet然后servlet负责把数据封装到javabean，javabean处理数据
+			后把数据给servlet servlet用请求转发的方式给jsp，jsp在把数据展示给浏览器。
+	MVC模式：
+		控制器control：用来控制程序的流转，界面VIEW:用来和用户交互
+		模型MOdel：用于封装数据，一个好的程序应将这三个模块分开并且互不影响。
+	javaweb经典的三层架构：
+			只需将javabean的功能拆分 使javabean只负责自己擅长的工作--封装数据，处理业务逻辑
+			交给service处理数据，访问交给dao层
+			m:service--->dao--->db
+				      |
+				     javabean
+			c:sevlet
+
+			v:jsp;
+		三层架构有以下建包：
+			com.itheima.web
+			com.itheima.service
+			com.itheima.dao
+			com.itheima.util
+			com.itheima.test
+			com.itheima.exception
+
+			会导入以下包：
+			junit
+			dom4j
+			jstl
+			beanutils
+
+			会有以下配置文件：
+
+		开发步骤：由javabean--->dao层--->service--->
+
+
+软件分层：
+一、为什么：要分层
+	使软件具有结构性，便于开发、维护和管理。
+	将不同功能模块独立，在需要替换某一模块时不需要改动其他模块，方便代码的复用、替换
+二、层与层耦合的概念，利用工厂类解耦
+	在分层结构中，我们希望将各个功能
+	约束在各自的模块（层）当中的，而当属于某一层的对象、方法“入侵”到了其他层，如将web层的ServletContext对象传入service层，或service层调用XMLDao独有的方法，就会导致层与层之间的关系过于“紧密”，当需要修改某一层时不可避免的要修改其他关联的层，这和我们软件分层最初的设想-----层与层分离，一个层尽量不依赖其他层存在，当修改一层时无需修改另一层的设想是违背的。这种“入侵”造成的“紧密”关系就早做层与层之间发生的“耦合”，而去掉这种耦合性的过程就叫做层与层之间“解耦”
+	利用工厂类可以实现解耦的功能
+三、如何判断一项功能到底属于哪一层
+	某一项功能属于哪一层，往往是不能明确确定出来的，这时可以参考如下标准进行判断：
+		此项功能在业务逻辑上更贴近与哪一层,放在哪一层更能较少耦合
+		此项功能是否必须使用某一层特有的对象
+		如果放在哪一层都可以，那么放在哪一层更方便技术上的实现，及方便代码的编写和维护
+	
+四、异常的处理
+	如果一个异常抛给上一层会增加程序的耦合性，请当场解决:如将xml解析错误抛给service层，那么当换成mysqldao时，还需要修改service去掉xml解析异常的处理
+	如果上一层明确需要此异常进行代码的流转，请抛出：如当查找一个用户信息而用户找不到时，可以抛出一个用户找不到异常，明确要求上一层处理
+	如果这一层和上一层都能解决尽量在这一层解决掉
+	如果这一层不能解决，而上一层能解决抛给上一层
+	如果所有层都不能解决，则应抛出给虚拟机使线程停止，但是如果直接抛出这个异常，则还需要调用者一级一级继续往上抛出最后才能抛给虚拟机，所以还不如在出现异常的位置直接trycatch住后转换为RuntimeException抛出。：如读取配置文件出错，任何层都不能解决，转为RuntimeException抛出，停止线程。
+
+《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《《
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+文件上传
+jspSmartUpload组件
+	只适合小文件的传输；jsmartcom_zh_CN.jar
+	是一个可以免费使用的文件上传的组件，功能齐全，可以获得上传文件的全部信息(文件名，大小，类型，扩展名，文件数据)
+	同时可以获得上传文件的大小，类型等的限制，
+	包括以下类：Files File Request SmartUpload等；
+	File类方法有：
+	isMissing 用于判断用户是否选择文件，即对应的表单是否有值，选着文件为false，未选文件为true;
+	getFiledName获取html表单中对应于吃文件的表单项的名值；
+	getFileName获取文件名（不含目录信息）
+	getFilePathName获取全名
+	getFileExt获取扩展名
+	getSize获取文件长度
+	getBinaryData获取文件数据中指定位移的一个字节，用于检测文件等处理；
+	saveAs另存
+	Files类中：
+	getCount 获取上传文件的数目
+	getFile 获取指定位移处的文件对象
+	getSize获取上传文件长度
+	....
+	Request相当于jsp中的request对象必须通过jspSmartUpload组件中的Request对象获取；
+	getParameter:获取指定参数的值；
+	getParametervalues获取一个参数的多个值；
+	....
+	SmartUpload文成文件上传；
+	initialize 执行上传文件的初始化
+	upload上传文件数据
+	save将文件保存到指定目录下并返回保存的文件的个数
+	getSize取上传文件数据的总长度；
+	getFiles获取全部上传文件可以利用File类来操作获得文件的数目等信息
+	getRequest取得上传文件类的request对象
+	....
+commons-fileupload组件：
+	适合大文件上传；要有以下组件：commons-fileupload-1.3.1.jar;commons-io-2.4.jar;
+	主要类和接口有：DiskFileItemFactory,ServletFileUpload,FileItem.
+	DiskFileItemFactory代表本地的硬盘次盘文件，用来配置上传组件ServletFileUpload
+	setSizeThreshold(int sizeThreshold)代表本地上传文件时临时存放文件的内存大小
+	setRepository()设置存放临时文件的目录；
+	ServletFileUpload用来获得上传文件；
+	parseRequest(request):返回表单中所用的内容；
+	isMultipartContent(request):判断form表单是否是multipart数据(Form表单是否设置enctype="multipart/form-data ")
+	FileItem：代表每组数据的接口
+	getName()获得上传文件在客户机的全名称
+	getSize()获得上传文件的大小；
+	isFormFiled()判断是否为普通的文本域
+	write()写入
+servlet3.0中的文件上传
+ HttpServletRequest提供了如下两个方法处理上传文件：
+	Part getPart(String name)获取上传文件的域
+	Collection<Part> getParts()获取文件所有的上传域
+	Part类：
+	string getContentType();获取类型
+	long getSize()获取文件的大小
+	String getHeader(String name) 获取name 的头部信息；
+	InputStream()获得读取文件的内容的输入流；
+	void write()将文件写到磁盘
+
+	注意事项：
+		表单必须为post提交
+		文件的表单必须有name属性，只有有name属性才会进行提交
+		需要设置enctype属性值为：multipart/form-data
+		在servlet中将上传的文件保存在服务器的硬盘中
+	文件上传时：需要server配置以下的方式1.server右键-->open，然后在server Locations
+	选择use Tomact installation(takes control of Tomact installtion)
+	配置deploy path:webapps;然后就可以在tomact文件夹下就可以看到这个web应用；
+        upload temp文件夹都应放到web-INF目录下，防止上传入侵和访问其他用户资源
+		文件名要拼接uuid保证唯一
+		文件要分目录储存保证同一目录下不要有过多的文件要用分目录实现hash值来用
+UUID:用于生成一个独一无二的数码，
+String uuidfilename=UUID.randomUUID().toString()+"_"+filename;
+分目录实现：//设置一个独一无二的文件名
+		String uuidfilename=UUID.randomUUID().toString()+"_"+filename;
+		//转换为hash值
+		int hash=uuidfilename.hashCode();
+		//转化为hash字符串
+		String hashstr=Integer.toHexString(hash);
+		char[] hss=hashstr.toCharArray();
+		String path=this.getServletContext().getRealPath("upload");
+		for(char c:hss){
+			path+="/"+c;
+			}
+		new File(path).mkdirs();
+		InputStream inputStream=item.getInputStream();
+					
+		OutputStream outputStream=new FileOutputStream(new File(path,uuidfilename));
+实现文件上传监听器：上传进度；
+	ProgressListener progressListener = new ProgressListener() {
+	public void update(long pBytesRead, long pContentLength, int pItems) {
+
+	System.out.println("到现在为止,  " + pBytesRead + " 字节已上传，总大小为 "
+			  + pContentLength);
+	}
+};
+upload.setProgressListener(progressListener);
+问件上传时的bug:
+	/设置上传监听进度时这个监听器源码导入时出现问题，不能放入lib文件下tomact启动不起来解决问题
+	把源码source文件删除即可。
+		fileUpload.setProgressListener(new ProgressListener() {
+			//
+			//已经读了，总共多少 ，读到第几个了
+			@Override
+			public void update(long pBytesRead, long pContentLength, int pItems) {
+				// TODO Auto-generated method stub
+				//转换为kb
+				double br=pBytesRead*1.0/1024;
+				double cl=pContentLength*1.0/1024;
+				System.out.println("已读取"+pBytesRead+"当前读到"+pItems+"总共："+pContentLength);
+			}	
+		});是0
+	
+文件的下载：
+String filename=request.getParameter("file");
+		//浏览器以附件的形式打开
+		response.setHeader("Content-Disposition", "attachment;filename=+"+URLEncoder.encode(filename,"utf-8"));
+		response.setContentType(this.getServletContext().getMimeType(filename));//MIME类型
+		InputStream in=new FileInputStream(this.getServletContext().getRealPath(filename));
+		OutputStream out=response.getOutputStream();
+		IOUtils.In2Out(in, out);
+		IOUtils.close(in, out);
+文件上下传的案例：
+综合网盘：
+	秒传---都是在服务器的copy的
+	需要一个数据库：
+	index.jsp---提供上传下载表单
+	upload.jsp---
+	uploadServlet--保存上传的文件到服务器中，在数据库中保存相关信息
+	DownListServlt---查询数据库表找到所有可以提供下载的资源信息，存入request域
+	downlist.jsp---遍历request中所有资源信息提供下载链接
+	Downservlet---下载指定id的资源
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+软件国际化“
+	1.页面固定元素的国际化
+		对于软件中的菜单栏、导航条、错误提示信息，状态信息等这些固定不变的文本信息，
+		可以把它们写在一个properties文件中，并根据不同的国家编写不同的properties文件。这一组properties文件称之为一个资源包。
+		创建资源包：
+			一个资源包中的每个资源文件都必须拥有共同的basename基名。
+			除了基名，每个资源文件的名称中还必须有标识其本地信息的附加部分。
+			例如：一个资源包的基名是“myproperties”，则与中文、英文环境相对应的资源文件名则为: 
+			“myproperites_zh.properties”  “myproperites_en.properties”
+			每个资源包都应有一个默认资源文件，这个文件不带有标识本地信息的附加部分。
+			若ResourceBundle对象在资源包中找不到与用户匹配的资源文件，它将选择该资源包中与用户最相近的资源文件，如果再找不到，则使用默认资源文件。
+			例如：myproperites.properties
+		***eclipse中的properties文件的解决中文找到help--->eclipseMarkplace-->搜索properties---》install--> properties Editior;-->next--》》》
+		打开properties时右键以prpperties Editor打开 就可以解决中文乱码；
+		在JavaAPI中提供了一个ResourceBundle 类用于描述一个资源包，并且 ResourceBundle类提供了相应的方法getBundle，
+		这个方法可以根据来访者的国家地区自动获取与之对应的资源文件予以显示。
+	2.对程序动态产生的数据的国际化：
+		例如(日期，货币等)，软件应能根据当前所在的国家或地区的文化习惯进行显示。
+		日期时间的国际化：
+		DateFormat 类可以将一个日期/时间对象格式化为表示某个国家地区的日期/时间字符串。
+		DateFormat 类除了可按国家地区格式化输出日期外，它还定义了一些用于描述日期/时间的显示模式的 int 型的常量，
+		包括FULL, LONG, MEDIUM, DEFAULT, SHORT，实例化DateFormat对象时，可以使用这些常量，控制日期/时间的显示长度。
+		实例化DateFormat类有九种方式，以下三种为带参形式，下面列出的三种方式也可以分别不带参，或只带显示样式的参数。
+		static DateFormat getDateInstance(int style, Locale aLocale)：以指定的日期显示模式和本地信息来获得DateFormat实例对象，该实例对象不处理时间值部分。
+		static DateFormat getTimeInstance(int style, Locale aLocale)：以指定的时间显示模式和本地信息来获得DateFormat实例对象，该实例对象不处理日期值部分。
+		static DateFormat getDateTimeInstance(int dateStyle, int timeStyle, Locale aLocale)：以单独指定的日期显示模式、时间显示模式和本地信息来获得DateFormat实例对象。
+
+		实例化NumberFormat类时，可以使用locale对象作为参数，也可以不使用，下面列出的是使用参数的。
+		getNumberInstance(Locale locale)：以参数locale对象所标识的本地信息来获得具有多种用途的NumberFormat实例对象
+		getIntegerInstance(Locale locale)：以参数locale对象所标识的本地信息来获得处理整数的NumberFormat实例对象
+		getCurrencyInstance(Locale locale)：以参数locale对象所标识的本地信息来获得处理货币的NumberFormat实例对象
+		getPercentInstance(Locale locale)：以参数locale对象所标识的本地信息来获得处理百分比数值的NumberFormat实例对象
+
+		如果一个字符串中包含了多个与国际化相关的数据，可以使用MessageFormat类对这些数据进行批量处理。
+		例如：
+	At 12:30 pm on jul 3,1998, a hurricance destroyed 99 houses and caused $1000000 of damage
+	以上字符串中包含了时间、数字、货币等多个与国际化相关的数据，对于这种字符串，可以使用MessageFormat类对其国际化相关的数据进行批量处理。
+	MessageFormat 类如何进行批量处理呢？
+		1.MessageFormat类允许开发人员用占位符{0}{1}{2}…替换掉字符串中的敏感数据（即国际化相关的数据）。
+		2.MessageFormat类在格式化输出包含占位符的文本时，messageFormat类可以接收一个参数数组，以替换文本中的每一个占位符。
+		模式字符串：
+		On {0}, a hurricance destroyed {１} houses and caused {２} of damage.
+		MessageFormat类
+		默认Locale
+		format(String pattern, Object... arguments)  static
+		pattern 模式字符串
+		arguments 参数数组
+		自定义Locale
+		MessageFormat(String pattern, Locale locale)
+		format(Object obj)

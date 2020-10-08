@@ -1,0 +1,1183 @@
+疯狂java笔记：
+		疯狂java讲义知识点总结:
+				●面向对象的方式实际上由OOA（面向对象分析）、OOD （面向对象设计）和OOP（面向对象编程）三个部分有机组成。其中，OOA和OOD的结构需要使用一种方式来描述并记录，目前业界统一采用UML（统一建模语言）来描述并记录OOA和OOD的结果。
+				●对象是面向对象方法中最基本的概念，它的基本特点有：标识唯一性、分类性、多态性、封装性、模块独立性好。
+				① 类是具有共同属性、共同方法的一类事物。类是对象的抽象；对象则是类的实例。而类是整个软件系统最小的程序单元，类的封装性将各种信息细节隐藏起来，并通过公用方法来暴露该类对外所提供的功能，从而提高了类的内聚性，降低了对象之间的耦合性。
+				②对象间的这种相互合作需要一个机制协助进行，这样的机制称为“消息”。消息是一个实例与另一个实例之间相互通信的机制。
+				③在面向对象方法中，类之间共享属性和操作的机制称为继承。继承具有传递性。继承可分为单继承（一个继承只允许有一个直接父类，即类等级为树形结构）与多继承（一个类允许有多个直接父类）。
+				Field（状态数据）+方法（行为）=类定义
+		uml用例图：
+				用例图包括用例（以一个椭圆表示，用例的名称放在椭圆的中心或椭圆下面）、角色（Actor，也就是与系统交互的其他实体，以一个人形符号表示）、角色和用例之间的关系（以简单的线段来表示），以及系统内用例之间的关系。用例图一般表示出用例的组织关系——要么是整个系统的全部用例，要么是完成具体功能的一组用例
+		类图：
+				类在类图上使用包含三个部分的矩形来描述，最上面的部分显示类的名称，中间部分包含类的属性，最下面的部分包含类的方法。
+				类图除了可以表示实体的静态内部结构之外，还可以表示实体之间的相互关系。类之间有三种基本关系： 关联（包括聚合、组合）泛化（与继承同一个概念） 依赖
+	java八大基本数据类型：
+				布尔型：Boolean
+				整数型：byte1 short 2.int 4.long8
+				字符型：char
+				浮点型：float double
+		常量池（constant pool）指的是在编译期被确定，并被保存在已编译的.class文件中的一些数据。它包括关于类、方法、接口中的常量，也包括字符串直接量。
+		构造器是一个类创建对象的根本途径，如果一个类没有构造器，这个类通常无法创建实例。因此， Java语言提供了一个功能：
+				如果程序员没有为一个类编写构造器，则系统会为该类提供一个默认的构造器
+		静态变量调用：
+				Java编程时不要使用对象去调用static修饰的Field、方法，而是应该使用类去调用static修饰的Field、方法！如果在其他Java代码中看到对象调用static修饰的Field、方法的情形，完全可以把这种用法当成假象，将其替换成用类来调用static修饰的Field、方法的代码
+		封装（Encapsulation）
+				是面向对象的三大特征之一（另外两个是继承和多态），它指的是将对象的状态信息隐藏在对象内部，不允许外部程序直接访问对象内部信息，而是通过该类所提供的方法来实现对内部信息的操作和访问。
+				将对象的Field和实现细节隐藏起来，不允许外部直接访问。把方法暴露出来，让方法来控制对这些Field进行安全的访问和操作。
+		String的equals()方法判断两个字符串相等的标准是：只要两个字符串所包含的字符序列相同，通过equals()比较将返回true，否则将返回false。当使用==来判断两个变量是否相等时，如果两个变量是基本类型变量，且都是数值类型（不一定要求数据类型严格相同），则只要两个变量的值相等，就将返回true。
+		抽象类：
+				体现的就是一种模板模式的设计，抽象类作为多个子类的通用模板，子类在抽象类的基础上进行扩展、改造，但子类总体上会大致保留抽象类的行为方式。
+				抽象方法和空方法体的方法不是同一个概念。例如，public abstract void test();是一个抽象方法，它根本没有方法体，即方法定义后面没有一对花括号；但public void test(){}方法是一个普通方法，它已经定义了方法体，只是方法体为空，即它的方法体什么也不做，因此这个方法不可使用abstract来修饰。
+				abstract不能用于修饰Field，不能用于修饰局部变量，即没有抽象变量、没有抽象Field等说法；abstract也不能用于修饰构造器，没有抽象构造器，抽象类里定义的构造器只能是普通构造器。
+				抽象父类可以只定义需要使用的某些方法，把不能实现的部分抽象成抽象方法，留给其子类去实现。父类中可能包含需要调用的其他系列方法的方法，这些被调方法既可以由父类实现，也可以由其子类实现。父类里提供的方法只是定义了一个通用算法，其实现也许并不完全由自身实现，而必须依赖于其子类的辅助。
+		接口：
+				对于接口里定义的常量Field而言，它们是接口相关的，而且它们只能是常量，因此系统会自动为这些Field增加static和final两个修饰符。也就是说，在接口中定义Field时，不管是否使用public static final修饰符，接口里的Field总将使用这三个修饰符来修饰。而且，接口里没有构造器和初始化块
+				对于接口里定义的方法而言，它们只能抽象方法，因此系统会自动为其增加abstract修饰符；由于接口里的方法全部是抽象方法，因此接口里不允许定义静态方法，即不可使用static修饰接口里定义的方法。不管定义接口里方法时是否使用public abstract修饰符，接口里的方法总是使用public abstract来修饰。
+		接口与抽象类比较：
+				接口里只能包含抽象方法，不包含已经提供实现的方法；抽象类则完全可以包含普通方法。
+				接口里不能定义静态方法；抽象类里可以定义静态方法。
+				接口里只能定义静态常量Field，不能定义普通Field；抽象类里则既可以定义普通Field，也可以定义静态常量Field。
+				接口里不包含构造器；抽象类里可以包含构造器，抽象类里的构造器并不是用于创建对象，而是让其子类调用这些构造器来完成属于抽象类的初始化操作。
+				接口里不能包含初始化块；但抽象类则完全可以包含初始化块。
+				一个类最多只能有一个直接父类，包括抽象类；但一个类可以直接实现多个接口，通过实现多个接口可以弥补Java单继承的不足。
+		内部类：
+				匿名内部类不能是抽象类，因为系统在创建匿名内部类时，会立即创建匿名内部类的对象。因此不允许将匿名内部类定义成抽象类。
+				匿名内部类不能定义构造器，因为匿名内部类没有类名，所以无法定义构造器，但匿名内部类可以定义实例初始化块，通过实例初始化块来完成构造器需要完成的事情。
+		finalize()方法具有如下4个特点：
+				永远不要主动调用某个对象的finalize()方法，该方法应交给垃圾回收机制调用。
+				finalize()方法何时被调用，是否被调用具有不确定性，不要把finalize()方法当成一定会被执行的方法。
+				 当JVM执行可恢复对象的finalize()方法时，可能使该对象或系统中其他对象重新变成可达状态。
+				当JVM执行finalize()方法时出现异常时，垃圾回收机制不会报告异常，程序继续执行。
+				注意：
+					由于finalize()方法并不一定会被执行，因此如果想清理某个类里打开的资源，则不要放在finalize()方法中进行清理，后面会介绍专门用于清理资源的方法。
+					java操作系统底层：加载文件和动态链接库主要对native方法有用，对于一些特殊的功能（如访问操作系统底层硬件设备等）Java程序无法实现，必须借助C语言来完成，此时需要使用C语言为Java方法提供实现。其实现步骤如下：
+					（1）Java程序中声明native()方法，类似于abstract方法，只有方法签名，没有实现。编译该Java程序，生成一个class文件。
+					（2）用javah编译第1步生成的class文件，将产生一个.h文件。
+					（3）写一个.cpp文件实现native方法，其中需要包含第2步产生的.h文件（.h文件中又包含了JDK带的jni.h文件）。
+					（4）将第3步的.cpp文件编译成动态链接库文件。
+					（5）在Java中用System类的loadLibrary..()方法或Runtime类的loadLibrary()方法加载第4步产生的动态链接库文件，Java程序中就可以调用这个native()方法了。
+		java中获取当地时间：
+						public class LocaleList
+						{
+						    public static void main(String[] args)
+						    {
+							  // 返回Java所支持的全部国家和语言的数组
+							  Locale[] localeList=Locale.getAvailableLocales();
+							  // 遍历数组的每个元素，依次获取所支持的国家和语言
+							  for (int i=0; i < localeList.length ; i++ )
+							  {
+								// 输出所支持的国家和语言
+								System.out.println(localeList[i].getDisplayCountry()
+								    + "=" + localeList[i].getCountry()+ " "
+								    + localeList[i].getDisplayLanguage()
+								    + "=" + localeList[i].getLanguage());
+							  }
+						    }
+						}
+		集合：
+				Collection接口是List、Set和Queue接口的父接口，该接口里定义的方法既可用于操作Set集合，也可用于操作List和Queue集合。
+				Collection接口里定义了如下操作集合元素的方法：
+								[插图] boolean add(Object o)：该方法用于向集合里添加一个元素。如果集合对象被添加操作改变了，则返回true。
+								[插图] boolean addAll(Collection c)：该方法把集合c里的所有元素添加到指定集合里。如果集合对象被添加操作改变了，则返回true。
+								[插图] void clear()：清除集合里的所有元素，将集合长度变为0。
+								[插图] boolean contains(Object o)：返回集合里是否包含指定元素。
+								[插图] boolean containsAll(Collection c)：返回集合里是否包含集合c里的所有元素。
+								[插图] boolean isEmpty()：返回集合是否为空。当集合长度为0时返回true，否则返回false。
+								[插图] Iterator iterator()：返回一个Iterator对象，用于遍历集合里的元素。
+								[插图] boolean remove(Object o)：删除集合中的指定元素o，当集合中包含了一个或多个元素o时，这些元素将被删除，该方法将返回true。
+								[插图] boolean removeAll(Collection c)：从集合中删除集合c里包含的所有元素（相当于用调用该方法的集合减集合c），如果删除了一个或一个以上的元素，则该方法返回true。
+								[插图] boolean retainAll(Collection c)：从集合中删除集合c里不包含的元素（相当于把调用该方法的集合变成该集合和集合c的交集），如果该操作改变了调用该方法的集合，则该方法返回true。
+								[插图] int size()：该方法返回集合里元素的个数。
+								[插图] Object[] toArray()：该方法把集合转换成一个数组，所有的集合元素变成对应的数组元素。
+		遍历集合：
+					Iterator接口也是Java集合框架的成员，但它与Collection系列、Map系列的集合不一样：Collection系列集合、Map系列集合主要用于盛装其他对象，而Iterator则主要用于遍历（即迭代访问）Collection集合中的元素，Iterator对象也被称为迭代器。
+					Iterator接口隐藏了各种Collection实现类的底层细节，向应用程序提供了遍历Collection集合元素的统一编程接口。Iterator接口里定义了如下三个方法。
+							 boolean hasNext()：如果被迭代的集合元素还没有被遍历，则返回true。
+							Object next()：返回集合里的下一个元素。
+							 void remove()：删除集合里上一次next方法返回的元素。
+					Iterator必须依附于Collection对象，若有一个Iterator对象，则必然有一个与之关联的Collection对象。Iterator提供了两个方法来迭代访问Collection集合里的元素，并可通过remove()方法来删除集合中上一次next()方法返回的集合元素
+					foreach循环中的迭代变量也不是集合元素本身，系统只是依次把集合元素的值赋给迭代变量，因此在foreach循环中修改迭代变量的值也没有任何实际意义。
+					同样，当使用foreach循环迭代访问集合元素时，该集合也不能被改变，否则将引发Concurrent ModificationException异常。所以上面程序中①行代码处将引发该异常。
+
+		set集合：
+				Set集合不允许包含相同的元素，如果试图把两个相同的元素加入同一个Set集合中，则添加操作失败，add方法返回false，且新元素不会被加入。
+				Set判断两个对象相同不是使用==运算符，而是根据equals方法。也就是说，只要两个对象用equals方法比较返回true，Set就不会接受这两个对象；反之，只要两个对象用equals方法比较返回false，Set就会接受这两个对象（甚至这两个对象是同一个对象，Set也可把它们当成两个对象处理，在后面程序中可以看到这种极端的情况
+		HashSet具有以下特点。
+					[插图] 不能保证元素的排列顺序，顺序有可能发生变化。
+					[插图] HashSet不是同步的，如果多个线程同时访问一个HashSet，假设有两个或者两个以上线程同时修改了HashSet集合时，则必须通过代码来保证其同步。
+					[插图] 集合元素值可以是null。
+					当向HashSet集合中存入一个元素时，HashSet会调用该对象的hashCode()方法来得到该对象的hashCode值，然后根据该HashCode值决定该对象在HashSet中的存储位置。如果有两个元素通过equals()方法比较返回true，但它们的hashCode()方法返回值不相等，HashSet将会把它们存储在不同的位置，依然可以添加成功。
+					简单地说，HashSet集合判断两个元素相等的标准是两个对象通过equals()方法比较相等，并且两个对象的hashCode()方法返回值也相等。
+					当把一个对象放入HashSet中时，如果需要重写该对象对应类的equals()方法，则也应该重写其hashCode()方法。其规则是：如果两个对象通过equals()方法比较返回true，这两个对象的hashCode值也应该相同。
+					如果两个对象通过equals()方法比较返回true，但这两个对象的hashCode()方法返回不同的hashCode值时，这将导致HashSet会把这两个对象保存在Hash表的不同位置，从而使两个对象都可以添加成功，这就与Set集合的规则有些出入了。
+					如果两个对象的hashCode()方法返回的hashCode值相同，但它们通过equals()方法比较返回false时将更麻烦：因为两个对象的hashCode值相同，HashSet将试图把它们保存在同一个位置，但又不行（否则将只剩下一个对象），所以实际上会在这个位置用链式结构来保存多个对象；而HashSet访问集合元素时也是根据元素的hashCode值来快速定位的，如果HashSet中两个以上的元素具有相同的hashCode值，将会导致性能下降。
+					重写hashCode()方法的基本规则。
+					[插图] 在程序运行过程中，同一个对象多次调用hashCode()方法应该返回相同的值。
+					[插图] 当两个对象通过equals()方法比较返回true时，这两个对象的hashCode()方法应返回相等的值。
+					[插图] 对象中用作equals()方法比较标准的Field，都应该用来计算hashCode值
+					♢重写equals和hashCOde方法：
+					public boolean equals(Object obj)
+					    {
+						  if(this==obj)
+							return true;
+						  if (obj !=null && obj.getClass()==R.class)
+						  {
+							R r=(R)obj;
+							if (r.count==this.count)
+							{
+							    return true;
+							}
+						  }
+						  return false;
+					    }
+					    public int hashCode()
+					    {
+						  return this.count;
+					    }
+					}
+			LinkedHashSet使用了链表记录集合元素的添加顺序，但LinkedHashSet依然是HashSet，因此它依然不允许集合元素重复
+			如果向TreeSet中添加一个可变对象后，并且后面程序修改了该可变对象的Field，这将导致它与其他对象的大小顺序发生了改变，但TreeSet不会再次调整它们的顺序，甚至可能导致TreeSet中保存的这两个对象通过compareTo(Object obj)方法比较返回0。下面程序演示了这种情况。
+			程序清单：codes\08\8.3\TreeSetTest3.java
+			  class R implements Comparable
+			  {
+			      int count;
+			      public R(int count)
+			      {
+				    this.count=count;
+			      }
+			      public String toString()
+			      {
+				    return "R[count:" + count + "]";
+			      }
+			      //重写equals()方法，根据count来判断是否相等
+			      public boolean equals(Object obj)
+			      {
+				    if (this==obj)
+				    {
+					  return true;
+				    }
+				    if(obj !=null && obj.getClass()==Z.class)
+				  {
+					R r=(R)obj;
+					if (r.count==this.count)
+					{
+					return true;
+					}
+				  }
+				  return false;
+			    }
+			    //重写compareTo()方法，根据count来比较大小
+			    public int compareTo(Object obj)
+			    {
+				  R r=(R)obj;
+				  return count > r.count ? 1 :
+					count < r.count ? -1 : 0;
+			    }
+			}
+			public class TreeSetTest3
+			{
+			    public static void main(String[] args)
+			    {
+				  TreeSet ts=new TreeSet();
+				  ts.add(new R(5));
+				  ts.add(new R(-3));
+				  ts.add(new R(9));
+				  ts.add(new R(-2));
+				  //打印TreeSet集合，集合元素是有序排列的
+				  System.out.println(ts);   //①
+				  //取出第一个元素R first=(R)ts.first();//对第一个元素的count赋值first.count=20;//取出最后一个元素R last=(R)ts.last();//对最后一个元素的count赋值，与第二个元素的count相同last.count=-2;          //再次输出将看到TreeSet里的元素处于无序状态，且有重复元素
+				  System.out.println(ts);   //②
+				  //删除Field被改变的元素，删除失败
+				  System.out.println(ts.remove(new R(-2)));   //③
+				  System.out.println(ts);
+				  //删除Field没有改变的元素，删除成功
+				  System.out.println(ts.remove(new R(5)));  //④
+				  System.out.println(ts);
+			    }
+			}
+			上面程序中的R对象对应的类正常重写了equals()方法和compareTo()方法，这两个方法都以R对象的count实例变量作为判断的依据。当程序执行①行代码时，看到程序输出的Set集合元素处于有序状态；因为R类是一个可变类，因此可以改变R对象的count实例变量的值，程序通过粗体字代码行改变了该集合里第一个元素和最后一个元素的count实例变量的值。当程序执行②行代码输出时，将看到该集合处于无序状态，而且集合中包含了重复元素。
+	ArrayList和Vector类:
+			都是基于数组实现的List类，所以ArrayList和Vector类封装了一个动态的、允许再分配的Object[]数组。ArrayList或Vector对象使用initialCapacity参数来设置该数组的长度，当向ArrayList或Vector中添加元素超出了该数组的长度时，它们的initialCapacity会自动增加。
+			对于通常的编程场景，程序员无须关心ArrayList或Vector的initialCapacity。但如果向ArrayList或Vector集合中添加大量元素时，可使用ensureCapacity(int minCapacity)方法一次性地增加initialCapacity。这可以减少重分配的次数，从而提高性能。
+			如果开始就知道ArrayList或Vector集合需要保存多少个元素，则可以在创建它们时就指定initialCapacity大小。如果创建空的ArrayList或Vector集合时不指定initialCapacity参数，则Object[]数组的长度默认为10。
+			除此之外，ArrayList和Vector还提供了如下两个方法来重新分配Object[]数组。
+			[插图] void ensureCapacity(int minCapacity)：将ArrayList或Vector集合的Object[]数组长度增加minCapacity。
+			[插图] void trimToSize()：调整ArrayList或Vector集合的Object[]数组长度为当前元素的个数。程序可调用该方法来减少ArrayList或Vector集合对象占用的存储空间。
+			ArrayList和Vector在用法上几乎完全相同，但由于Vector是一个古老的集合（从JDK 1.0就有了），那时候Java还没有提供系统的集合框架，所以Vector里提供了一些方法名很长的方法，例如addElement(Object obj)，实际上这个方法与add (Object obj)没有任何区别。从JDK 1.2以后，Java提供了系统的集合框架，就将Vector改为实现List接口，作为List的实现之一，从而导致Vector里有一些功能重复的方法。
+			提示：
+				Vector里有一些功能重复的方法，这些方法中方法名更短的方法属于后来新增的方法，方法名更长的方法则是Vector原有的方法。Java改写了Vector原有的方法，将其方法名缩短是为了简化编程。而ArrayList开始就作为List的主要实现类，因此没有那些方法名很长的方法。实际上，Vector具有很多缺点，通常尽量少用Vector实现类。
+				除此之外，ArrayList和Vector的显著区别是：ArrayList是线程不安全的，当多个线程访问同一个ArrayList集合时，如果有超过一个线程修改了ArrayList集合，则程序必须手动保证该集合的同步性；但Vector集合则是线程安全的，无须程序保证该集合的同步性。因为Vector是线程安全的，所以Vector的性能比ArrayList的性能要低。实际上，即使需要保证List集合线程安全，也同样不推荐使用Vector实现类。后面会介绍一个Collections工具类，它可以将一个ArrayList变成线程安全的。
+				Vector还提供了一个Stack子类，它用于模拟“栈”这种数据结构，“栈”通常是指“后进先出”（LIFO）的容器。最后“push”进栈的元素，将最先被“pop”出栈。与Java中的其他集合一样，进栈出栈的都是Object，因此从栈中取出元素后必须进行类型转换，除非你只是使用Object具有的操作。所以Stack类里提供了如下几个方法。
+				[插图] Object peek()：返回“栈”的第一个元素，但并不将该元素“pop”出栈。
+				[插图] Object pop()：返回“栈”的第一个元素，并将该元素“pop”出
+	Set与Map之间的关系非常密切:
+			虽然Map中放的元素是key-value对，Set集合中放的元素是单个对象，但如果我们把key-value对中的value当成key的附庸：key在哪里，value就跟在哪里。这样就可以像对待Set一样来对待Map了。事实上，Map提供了一个Entry内部类来封装key-value对，而计算Entry存储时则只考虑Entry封装的key。从Java源码来看， Java是先实现了Map，然后通过包装一个所有value都为null的Map就实现了Set集合。
+			如果把Map里的所有value放在一起来看，它们又非常类似于一个List：元素与元素之间可以重复，每个元素可以根据索引来查找，只是Map中的索引不再使用整数值，而是以另一个对象作为索引。如果需要从List集合中取出元素，则需要提供该元素的数字索引；如果需要从Map中取出元素，则需要提供该元素的key索引。因此，Map有时也被称为字典，或关联数组
+					遍历map用keyset()方法：
+					public class LinkedHashMapTest
+					{
+					    public static void main(String[] args)
+					    {
+						  LinkedHashMap scores=new LinkedHashMap();
+						  scores.put("语文" , 80);
+						  scores.put("英文" , 82);
+						  scores.put("数学" , 76);
+						  //遍历scores里的所有key-value对
+						  for (Object key : scores.keySet())
+						  {
+							System.out.println(key + "------>"
+							    + scores.get(key));
+						  }
+					    }
+					}
+	Properties类:
+			可以把Map对象和属性文件关联起来，从而可以把Map对象中的key-value对写入属性文件中，也可以把属性文件中的“属性名=属性值”加载到Map对象中。由于属性文件里的属性名、属性值只能是字符串类型，所以Properties里的key、value都是字符串类型。该类提供了如下三个方法来修改Properties里的key、value值。
+				  public static void main(String[] args)
+					  throws Exception
+				    {
+					  Properties props=new Properties();
+					  //向Properties中添加属性
+					  props.setProperty("username" , "yeeku");props.setProperty("password" , "123456");
+					  //将Properties中的key-value对保存到a.ini文件中
+					  props.store(new FileOutputStream("a.ini"), "comment line"); 
+					  //①//新建一个Properties对象
+					Properties props2=new Properties();
+					//向Properties中添加属性
+					props2.setProperty("gender" , "male");
+					//将a.ini文件中的key-value对追加到props2中
+					props2.load(new FileInputStream("a.ini") );
+					//②        
+					System.out.println(props2);
+				    }
+				}
+	Map间的比较常用的类：
+				对于一般的应用场景，程序应该多考虑使用HashMap，因为HashMap正是为快速查询设计的（HashMap底层其实也是采用数组来存储key-value对）。但如果程序需要一个总是排好序的Map时，则可以考虑使用TreeMap。
+				LinkedHashMap比HashMap慢一点，因为它需要维护链表来保持Map中key-value时的添加顺序。IdentityHashMap性能没有特别出色之处，因为它采用与HashMap基本相似的实现，只是它使用==而不是equals()方法来判断元素相等。EnumMap的性能最好，但它只能使用同一个枚举类的枚举值作为key。
+				Collections
+				public class SynchronizedTest
+				{
+				    public static void main(String[] args)
+				    {
+					  //下面程序创建了4个同步的集合对象
+					  Collection c=Collections.synchronizedCollection(new ArrayList());
+					  List list=Collections.synchronizedList(new ArrayList());
+					  Set s=Collections.synchronizedSet(new HashSet());
+					  Map m=Collections.synchronizedMap(new HashMap());    
+					  }
+				}
+	泛型：
+			增加了泛型支持后的集合，完全可以记住集合中元素的类型，并可以在编译时检查集合中元素的类型，如果试图向集合中添加不满足类型要求的对象，编译器就会提示错误。增加泛型后的集合，可以让代码更加简洁，程序更加健壮（Java泛型可以保证如果程序在编译时没有发出警告，运行时就不会产生ClassCastException异常）。除此之外，Java泛型还增强了枚举类、反射等方面的功能
+			当创建带泛型声明的自定义类，为该类定义构造器时，构造器名还是原来的类名，不要增加泛型声明。
+			例如，为Apple<T>类定义构造器，其构造器名依然是Apple，而不是Apple<T>！调用该构造器时却可以使用Apple<T>的形式，当然应该为T形参传入实际的类型参数。Java 7提供了菱形语法，允许省略<>中的类型实参。
+	泛型方法：
+			public class MyUtils
+			{
+			    public static <T> void copy(Collection<T> dest , Collection<? extends T> src)
+			    {...}   //①
+			    public static <T> T copy(Collection<? super T> dest , Collection<T> src)
+			    {...}   //②
+			}
+			泛型中的类型转换，在未知类型时不能进行强转：用下面方式应该先判断
+			List<?>[] lsa=new ArrayList<?>[10];
+			Object[] oa=(Object[]) lsa;
+			List<Integer> li=new ArrayList<Integer>();
+			li.add(new Integer(3));
+			oa[1]=li;
+			Object target=lsa[1].get(0);
+			if (target instanceof String)
+			{
+			    // 下面代码安全了
+			    String s=(String) target;
+			}
+	异常：
+		Java的异常机制主要依赖于try、catch、finally、throw和throws五个关键字，其中try关键字后紧跟一个花括号扩起来的代码块（花括号不可省略），简称try块，它里面放置可能引发异常的代码。catch后对应异常类型和一个代码块，用于表明该catch块用于处理这种类型的代码块。多个catch块后还可以跟一个finally块，finally块用于回收在try块里打开的物理资源，异常机制会保证finally块总被执行。throws关键字主要在方法签名中使用，用于声明该方法可能抛出的异常；而throw用于抛出一个实际的异常，throw可以单独作为语句使用，抛出一个具体的异常对象。
+		Java将异常分为两种“：
+				Checked异常和Runtime异常， Java认为Checked异常都是可以在编译阶段被处理的异常，所以它强制程序处理所有的Checked异常；而Runtime异常则无须处理。Checked异常可以提醒程序员需要处理所有可能发生的异常，但Checked异常也给编程带来一些烦琐之处，所以Checked异常也是Java领域一个备受争论的话题。
+				不要在finally块中使用如return或throw等导致方法终止的语句，（throw语句将在后面介绍），一旦在finally块中使用了return或throw语句，将会导致try块、catch块中的return、throw语句失效。看如下程序。
+				程序清单：codes\10\10.2\FinallyFlowTest.java
+				public class FinallyFlowTest
+				{
+				    public static void main(String[] args)
+					  throws Exception
+				    {
+					  boolean a=test();
+					  System.out.println(a);
+				    }
+				    public static boolean test()
+				    {
+					  try
+					  {
+						// 因为finally块中包含了return语句
+						// 所以下面的return语句失去作用return true;}
+				finally
+				{return false;          }
+				    }
+				}
+				如果有finally块，系统立即开始执行finally块——只有当finally块执行完成后，系统才会再次跳回来执行try块、catch块里的return或throw语句；如果finally块里也使用了return或throw等导致方法终止的语句，finally块已经终止了方法，系统将不会跳回去执行try块、catch块里的任何代码
+				throws语句：
+				用了throws来声明抛出IOException异常，一旦使用throws语句声明抛出该异常，程序就无须使用try...catch块来捕获该异常了
+				使用throws声明抛出异常时有一个限制，就是方法重写时“两小”中的一条规则：子类方法声明抛出的异常类型应该是父类方法声明抛出的异常类型的子类或相同，子类方法声明抛出的异常不允许比父类方法声明抛出的异常多。
+				如果需要在程序中自行抛出异常，则应使用throw语句：
+				throw语句可以单独使用，throw语句抛出的不是异常类，而是一个异常实例，而且每次只能抛出一个异常实例。throw语句的语法格式如下：throw ExceptionInstance;
+	Jdbc:
+				JDBC的全称是JavaDatabaseConnectivity，即Java数据库连接，它是一种可以执行SQL语句的JavaAPI。程序可通过JDBC API连接到关系数据库，并使用结构化查询语言（SQL，数据库标准的查询语言）来完成对数据库的查询、更新。
+				JDBC驱动通常有如下4种类型。
+						 第1种JDBC驱动：称为JDBC–ODBC桥，这种驱动是最早实现的JDBC驱动程序，主要目的是为了快速推广JDBC。这种驱动将JDBC API映射到ODBC API。JDBC-ODBC也需要驱动，这种驱动由Sun公司提供实现。
+						第2种JDBC驱动：直接将JDBC API映射成数据库特定的客户端API。这种驱动包含特定数据库的本地代码，用于访问特定数据库的客户端。
+						[第3种JDBC驱动：支持三层结构的JDBC访问方式，主要用于Applet阶段，通过Applet访问数据库。
+						 第4种JDBC驱动：是纯Java的，直接与数据库实例交互。这种驱动是智能的，它知道数据库使用的底层协议。这种驱动是目前最流行的JDBC驱动。
+				SQL的全称是Structured Query Language，也就是结构化查询语言。SQL是操作和检索关系数据库的标准语言，标准的SQL语句可用于操作任何关系数据库。
+							使用SQL语句，程序员和数据库管理员（DBA）可以完成如下任务。
+							在数据库中检索信息。
+							对数据库的信息进行更新。
+							改变数据库的结构。
+							更改系统的安全设置。
+							增加用户对数据库或表的许可权限。
+							在上面5个任务中，一般程序员可以管理前3个任务，后面2个任务通常由DBA来完成
+				查询语句：主要由select关键字完成，查询语句是SQL语句中最复杂、功能最丰富的语句。
+							DML（Data Manipulation Language，数据操作语言）语句：主要由insert、update和delete三个关键字完成。
+							 DDL（Data Definition Language，数据定义语言）语句：主要由create、alter、drop和truncate四个关键字完成。
+							DCL（Data Control Language，数据控制语言）语句：主要由grant和revoke两个关键字完成。
+				事务控制语句：主要由commit、rollback和savepoint三个关键字完成。
+				SQL语句的关键字不区分大小写，也就是说，create和CREATE的作用完全一样。
+				在上面5种SQL语句中，DCL语句用于为数据库用户授权，或者回收指定用户的权限，通常无须程序员操作，所以本节不打算介绍任何关于DCL的知识。
+				在SQL命令中也可能需要使用标识符，标识符可用于定义表名、列名，也可用于定义变量等。这些标识符的命名规则如下。
+						[插图] 标识符通常必须以字母开头。
+						[插图] 标识符包括字母、数字和三个特殊字符（# _ $）。
+						[插图] 不要使用当前数据库系统的关键字、保留字，通常建议使用多个单词连缀而成，单词之间以_分隔。
+						[插图] 同一个模式下的对象不应该同名，这里的模式指的是外模式。
+				ResultSet：
+						里包含一个getMetaData()方法，该方法返回该ResultSet对应的ResultSetMetaData对象。一旦获得了ResultSetMetaData对象，就可通过ResultSetMetaData提供的大量方法来返回ResultSet的描述信息。常用的方法有如下3个。
+						[插图] int getColumnCount()：返回该ResultSet的列数量。
+						[插图] String getColumnName(int column)：返回指定索引的列名。
+						[插图] int getColumnType(int column)：返回指定索引的列类型。
+						例代码块：
+						 ResultSet rs=stmt.executeQuery(sqlField.getText()))
+								{
+								    // 取出ResultSet的MetaData
+								    ResultSetMetaData rsmd=rs.getMetaData();
+								    Vector<String> columnNames=new Vector<>();
+								    Vector<Vector<String>> data=new Vector<>();
+								    // 把ResultSet的所有列名添加到Vector里
+								    for (int i=0 ; i < rsmd.getColumnCount(); i++ ){
+								    columnNames.add(rsmd.getColumnName(i + 1));
+								    }
+								    // 把ResultSet的所有记录添加到Vector里
+								    while (rs.next()){
+										Vector<String> v=new Vector<>();
+										for (int i=0 ; i < rsmd.getColumnCount(); i++ ){
+										v.add(rs.getString(i + 1));
+										}
+										data.add(v);
+								}
+	事务:
+
+			自动提交和开启事务恰好相反，如果开启自动提交就是关闭事务；关闭自动提交就是开启事务。
+			Connection也提供了设置中间点的方法：setSavepoint()，Connection提供了两个方法来设置中间点。
+			[插图] Savepoint setSavepoint()：在当前事务中创建一个未命名的中间点，并返回代表该中间点的Savepoint对象。
+			[插图] Savepoint setSavepoint(String name)：在当前事务中创建一个具有指定名称的中间点，并返回代表该中间点的Savepoint对象。
+			通常来说，设置中间点时没有太大的必要指定名称，因为Connection回滚到指定中间点时，并不是根据名字回滚的，而是根据中间点对象回滚的。Connection提供了rollback(Savepoint savepoint)方法来回滚到指定中间点。
+		下面程序通过DatabaseMetaData分析了当前Connection连接对应数据库的一些基本信息，包括当前数据库包含多少数据表，存储过程，student_table表的数据列、主键、外键等信息。
+				程序清单：codes\13\13.8\DatabaseMetaDataTest.java
+				  public class DatabaseMetaDataTest
+				  {
+					  private String driver;
+					  private String url;
+					  private String user;
+					  private String pass;
+					  public void initParam(String paramFile)throws Exception
+					  {
+						// 使用Properties类来加载属性文件
+						Properties props=new Properties();
+						props.load(new FileInputStream(paramFile));
+						driver=props.getProperty("driver");
+						url=props.getProperty("url");
+						user=props.getProperty("user");
+				      pass=props.getProperty("pass");
+				}
+				public void info() throws Exception
+				{
+				      // 加载驱动
+				      Class.forName(driver);
+				      try(
+					    // 获取数据库连接
+					    Connection conn=DriverManager.getConnection(url
+						  , user , pass))
+				      {
+					    // 获取DatabaseMetaData对象
+					    DatabaseMetaData dbmd=conn.getMetaData();
+					    // 获取MySQL支持的所有表类型ResultSet rs=dbmd.getTableTypes();System.out.println("--MySQL支持的表类型信息--");
+							printResultSet(rs);
+					// 获取当前数据库的全部数据表rs=dbmd.getTables(null,null, "%" , new String[]{"TABLE"});System.out.println("--当前数据库里的数据表信息--");
+							printResultSet(rs);
+					// 获取student_table表的主键rs=dbmd.getPrimaryKeys(null , null, "student_table");System.out.println("--student_table表的主键信息--");
+							printResultSet(rs);
+					// 获取当前数据库的全部存储过程rs=dbmd.getProcedures(null , null, "%");System.out.println("--当前数据库里的存储过程信息--");
+							printResultSet(rs);
+					// 获取teacher_table表和student_table表之间的外键约束
+						rs=dbmd.getCrossReference(null,null, "teacher_table", null, null, "student_table");
+						System.out.println("--teacher_table表和student_table表之间"   + "的外键约束--");
+						printResultSet(rs);
+					// 获取student_table表的全部数据列
+						rs=dbmd.getColumns(null, null, "student_table", "%"); 
+					      System.out.println("--student_table表的全部数据列--"); 
+					      printResultSet(rs); 
+					} 
+				  } 
+				  public void printResultSet(ResultSet rs)throws SQLException 
+				  { 
+					ResultSetMetaData rsmd=rs.getMetaData(); 
+					// 打印ResultSet的所有列标题 
+					for (int i=0 ; i < rsmd.getColumnCount() ; i++ ) 
+					{ 
+					      System.out.print(rsmd.getColumnName(i + 1) + "\t"); 
+					} 
+					System.out.print("\n"); 
+					// 打印ResultSet里的全部数据 
+					while (rs.next()) 
+					{ 
+					      for (int i=0; i < rsmd.getColumnCount() ; i++ ) 
+					      { 
+						    System.out.print(rs.getString(i + 1) + "\t"); 
+					      } 
+					      System.out.print("\n"); 
+					} 
+					rs.close(); 
+				  }
+				  public static void main(String[] args) 
+					throws Exception 
+				  { 
+					DatabaseMetaDataTest dt=new DatabaseMetaDataTest(); 
+					dt.initParam("mysql.ini"); 
+					dt.info(); 
+				  } 
+				} 
+	DBCP：
+			Apache软件基金组织下的开源连接池实现，该连接池依赖该组织下的另一个开源系统：common-pool。如果需要使用该连接池实现，则应在系统中增加如下两个jar文件。
+				commons-dbcp.jar：连接池的实现。 commons-pool.jar：连接池实现的依赖库。 
+				 创建数据源对象
+				BasicDataSource ds=new BasicDataSource();
+				// 设置连接池所需的驱动
+				ds.setDriverClassName("com.mysql.jdbc.Driver");
+				// 设置连接数据库的URL
+				ds.setUrl("jdbc:mysql://localhost:3306/javaee");
+				// 设置连接数据库的用户名
+				ds.setUsername("root");
+				// 设置连接数据库的密码
+				ds.setPassword("pass");
+				// 设置连接池的初始连接数
+				ds.setInitialSize(5);
+				// 设置连接池最多可有多少个活动连接数
+				ds.setMaxActive(20);
+				// 设置连接池中最少有2个空闲的连接
+				ds.setMinIdle(2)
+				// 通过数据源获取数据库连接
+				Connection conn=ds.getConnection();
+	c3p0：
+				C3P0数据源性能更胜一筹，Hibernate就推荐使用该连接池。C3P0连接池不仅可以自动清理不再使用的Connection，还可以自动清理Statement和ResultSet
+				// 创建连接池实例
+				ComboPooledDataSource ds=new ComboPooledDataSource();
+				// 设置连接池连接数据库所需的驱动
+				ds.setDriverClass("com.mysql.jdbc.Driver");
+				// 设置连接数据库的URL
+				ds.setJdbcUrl("jdbc:mysql://localhost:3306/javaee");
+				// 设置连接数据库的用户名
+				ds.setUser("root");
+				// 设置连接数据库的密码
+				ds.setPassword("32147");
+				// 设置连接池的最大连接数
+				ds.setMaxPoolSize(40);
+				// 设置连接池的最小连接数
+				ds.setMinPoolSize(2);
+				// 设置连接池的初始连接数
+				ds. setInitialPoolSize(10);
+				// 设置连接池的缓存Statement的最大数
+				ds.setMaxStatements(180);
+				在程序中创建C3P0连接池的方法与前面介绍的创建DBCP连接池的方法基本类似，此处不再解释。
+				一旦获取了C3P0连接池之后，程序同样可以通过如下代码来获取数据库连接。
+				// 获得数据库连接
+				Connection conn=ds.getConnection();
+	注解：
+		Annotation提供了一种为程序元素设置元数据的方法，从某些方面来看，Annotation就像修饰符一样，可用于修饰包、类、构造器、方法、成员变量、参数、局部变量的声明，这些信息被存储在Annotation的“name=value”对中。
+		注意：
+		Annotation是一个接口，程序可以通过反射来获取指定程序元素的Annotation对象，然后通过Annotation对象来取得注释里的元数据。
+		有的Annotation指的是java.lang.Annotation接口，有的指的是注释本身：
+			4个基本的Annotation如下：
+				@Override
+				 @Deprecated
+				 @SuppressWarnings
+				@SafeVarargs
+				@Override只能作用于方法，不能作用于其他程序元素。
+				@Deprecated用于表示某个程序元素（类、方法等）已过时，当其他程序使用已过时的类、方法时，编译器将会给出警告
+				@SuppressWarnings指示被该Annotation修饰的程序元素（以及该程序元素中的所有子元素）取消显示指定的编译器警告
+				java.lang.annotation包下提供了4个Meta Annotation（元Annotation），这4个元Annotation都用于修饰其他的Annotation定义
+			@Retention只能用于修饰一个Annotation定义，用于指定被修饰的Annotation可以保留多长时间，
+			@Retention包含一个RetentionPolicy类型的value成员变量，所以使用@Retention时必须为该value成员变量指定值。
+				// 定义下面的Testable Annotation保留到运行时
+				@Retention(value=RetentionPolicy.RUNTIME)
+				public @interface Testable{}
+				//定义下面的Testable Annotation将被编译器直接丢弃
+				@Retention(RetentionPolicy.SOURCE)
+				public @interface Testable{}
+					如果Annotation里只有一个value成员变量，使用该Annotation时可以直接在Annotation后的括号里指定value成员变量的值，
+					无须使用name=value的形式。
+				@Target也只能修饰一个Annotation定义，它用于指定被修饰的Annotation能用于修饰哪些程序单元。
+				@Target(ElementType.METHOD)
+				public @interface Testable { }…………
+				@Documented用于指定被该元Annotation修饰的Annotation类将被javadoc工具提取成文档，如果定义Annotation类时使用了@Documented修饰，则所有使用该Annotation修饰的程序元素的API文档中将会包含该Annotation说明
+	IO操作：
+				Java的IO流是实现输入/输出的基础，它可以方便地实现数据的输入/输出操作，在Java中把不同的输入/输出源（键盘、文件、网络连接等）抽象表述为“流”（stream），通过流的方式允许Java程序使用相同的方式来访问不同的输入/输出源。stream是从起源（source）到接收（sink）的有序数据。
+				Java把所有传统的流类型（类或抽象类）都放在java.io包中，用以实现输入/输出功能。
+				Java的IO流的40多个类都是从如下4个抽象基类派生的：
+					InputStream/Reader：所有输入流的基类，前者是字节输入流，后者是字符输入流。
+					OutputStream/Writer：所有输出流的基类，前者是字节输出流，后者是字符输出流。
+	FIle：
+				public class FileTest
+				{
+				    public static void main(String[] args)
+					  throws IOException
+				    {
+					  // 以当前路径来创建一个File对象
+					  File file=new File(".");
+					  // 直接获取文件名，输出一点
+					  System.out.println(file.getName());
+					  // 获取相对路径的父路径可能出错，下面代码输出nullSystem.out.println(file.getParent());
+					  // 获取绝对路径
+					  System.out.println(file.getAbsoluteFile());
+					  // 获取上一级路径
+					  System.out.println(file.getAbsoluteFile().getParent());       
+					  // 在当前路径下创建一个临时文件
+					File tmpFile=File.createTempFile("aaa", ".txt", file);
+					// 指定当JVM退出时删除该文件
+					tmpFile.deleteOnExit();
+					// 以系统当前时间作为新文件名来创建新文件
+					File newFile=new File(System.currentTimeMillis() + "");
+					System.out.println("newFile对象是否存在：" + newFile.exists());
+					// 以指定newFile对象来创建一个文件
+					newFile.createNewFile();
+					// 以newFile对象来创建一个目录，因为newFile已经存在
+					// 所以下面方法返回false，即无法创建该目录
+					newFile.mkdir();
+					// 使用list()方法列出当前路径下的所有文件和路径
+					String[] fileList=file.list();
+					System.out.println("====当前路径下所有文件和路径如下====");
+					for (String fileName : fileList)
+					{
+					      System.out.println(fileName);
+					}
+					// listRoots()静态方法列出所有的磁盘根路径
+					File[] roots=File.listRoots();
+					System.out.println("====系统所有根路径如下====");
+					for (File root : roots)
+					{
+					      System.out.println(root);
+					}
+				  }
+				}
+				运行上面程序，可以看到程序列出当前路径的所有文件和路径时，列出了程序创建的临时文件，但程序运行结束后，aaa.txt临时文件并不存在，因为程序指定虚拟机退出时自动删除该文件。
+				上面程序还有一点需要注意，当使用相对路径的File对象来获取父路径时可能引起错误，因为该方法返回将File对象所对应的目录名、文件名里最后一个子目录名、子文件名删除后的结果
+	字节流和字符流：
+				OutputStream和Writer
+				InputStream和Reader
+						java虚拟机读取其他进程
+						下面程序示范了读取其他进程的输出信息。
+						程序清单：codes\15\15.6\ReadFromProcess.java
+						public class ReadFromProcess
+						{
+						    public static void main(String[] args)
+							  throws IOException
+						    {
+							  // 运行javac命令，返回运行该命令的子进程Process p=Runtime.getRuntime().exec("javac");try(
+						    // 以p进程的错误流创建BufferedReader对象
+						    // 这个错误流对本程序是输入流，对p进程则是输出流BufferedReader br=new BufferedReader(newInputStreamReader(p.getErrorStream())))          {
+								String buff=null;
+								// 采取循环方式来读取p进程的错误输出
+								while((buff=br.readLine()) !=null)
+								{
+								      System.out.println(buff);
+								}
+							  }
+						    }
+						}
+						随机读取写：
+						下面程序实现了向指定文件、指定位置插入内容的功能。
+						程序清单：codes\15\15.7\InsertContent.java
+						 public class InsertContent
+						 {
+						     public static void insert(String fileName , long pos
+							   , String insertContent) throws IOException
+						     {
+							   File tmp=File.createTempFile("tmp" , null);
+							   tmp.deleteOnExit();
+							   try(
+								 RandomAccessFile raf=new RandomAccessFile(fileName , "rw");
+								 // 创建一个临时文件来保存插入点后的数据
+								 FileOutputStream tmpOut=new FileOutputStream(tmp);
+								 FileInputStream tmpIn=new FileInputStream(tmp))
+							   {
+								 raf.seek(pos);
+								 // ------下面代码将插入点后的内容读入临时文件中保存------
+								 byte[] bbuf=new byte[64];
+								 // 用于保存实际读取的字节数
+								 int hasRead=0;
+								 // 使用循环方式读取插入点后的数据
+								 while ((hasRead=raf.read(bbuf)) > 0 )
+								 {
+								       // 将读取的数据写入临时文件
+								       tmpOut.write(bbuf, 0 , hasRead);
+								 }
+								 // ----------下面代码用于插入内容----------
+								 // 把文件记录指针重新定位到pos位置
+								 raf.seek(pos);
+								 // 追加需要插入的内容
+								 raf.write(insertContent.getBytes());
+								 // 追加临时文件中的内容
+								 while ((hasRead=tmpIn.read(bbuf)) > 0 )
+								 {
+								       raf.write(bbuf , 0 , hasRead);
+								 }
+							   }
+						     }
+						     public static void main(String[] args)
+							   throws IOException
+						     {
+							   insert("InsertContent.java" , 45 , "插入的内容\r\n");
+						     }
+						}
+						上面程序中使用File的createTempFile(String prefix, String suffix)方法创建了一个临时文件（该临时文件将在JVM退出时被删除），用以保存被插入文件的插入点后面的内容。程序先将文件中插入点后的内容读入临时文件中，然后重新定位到插入点，将需要插入的内容添加到文件后面，最后将临时文件的内容添加到文件后面，通过这个过程就可以向指定文件、指定位置插入内容。
+						每次运行上面程序，都会看到向InsertContent.java中插入了一行字符串。
+		序列化：
+						对象的序列化（Serialize）指将一个Java对象写入IO流中，与此对应的是，对象的反序列化（Deserialize）则指从IO流中恢复该Java对象。
+						如果需要让某个对象支持序列化机制，则必须让它的类是可序列化的（serializable）。为了让某个类是可序列化的，该类必须实现如下两个接口之一：
+						Serializable， Externalizable
+						Java的很多类已经实现了Serializable，该接口是一个标记接口，实现该接口无须实现任何方法，它只是表明该类的实例是可序列化的。
+						所有可能在网络上传输的对象的类都应该是可序列化的，否则程序将会出现异常，比如RMI （Remote Method Invoke，即远程方法调用，是JavaEE的基础）过程中的参数和返回值；所有需要保存到磁盘里的对象的类都必须可序列化，比如Web应用中需要保存到HttpSession或ServletContext属性的Java对象。
+						通过在Field前面使用transient关键字修饰，可以指定Java序列化时无须理会该Field。
+						但被transient修饰的Field将被完全隔离在序列化机制之外，这样导致在反序列化恢复Java对象时无法取得该Field值。
+		Charset：
+						JDK 1.4提供了Charset来处理字节序列和字符序列（字符串）之间的转换关系，该类包含了用于创建解码器和编码器的方法，还提供了获取Charset所支持字符集的方法，Charset类是不可变的。
+						使用了CharsetEncoder和CharsetDecoder完成了ByteBuffer和CharBuffer之间的转换。
+						public class CharsetTransform
+						{
+						    public static void main(String[] args)
+							  throws Exception
+						    {
+							  // 创建简体中文对应的Charset
+							  Charset cn=Charset.forName("GBK");
+							  // 获取cn对象对应的编码器和解码器
+							  CharsetEncoder cnEncoder=cn.newEncoder();
+							  CharsetDecoder cnDecoder=cn.newDecoder();
+							  // 创建一个CharBuffer对象
+							  CharBuffer cbuff=CharBuffer.allocate(8);
+							  cbuff.put('孙');
+							  cbuff.put('悟');
+							  cbuff.put('空');
+							  cbuff.flip();
+							  // 将CharBuffer中的字符序列转换成字节序列ByteBuffer bbuff=cnEncoder.encode(cbuff);// 循环访问ByteBuffer中的每个字节
+						for (int i=0; i < bbuff.capacity() ; i++)
+						{
+						      System.out.print(bbuff.get(i) + " ");
+						}
+						// 将ByteBuffer的数据解码成字符序列System.out.println("\n" + cnDecoder.decode(bbuff));    }
+						}
+						上面程序中的两行粗体字代码分别实现了将CharBuffer转换成ByteBuffer，将ByteBuffer转换成CharBuffer的功能。实际上，Charset类也提供了如下3个方法。
+						CharBuffer decode(ByteBuffer bb)：将ByteBuffer中的字节序列转换成字符序列的便捷方法。
+						ByteBuffer encode(CharBuffer cb)：将CharBuffer中的字符序列转换成字节序列的便捷方法。
+						ByteBuffer encode(String str)：将String中的字符序列转换成字节序列的便捷方法。
+						也就是说，获取了Charset对象后，如果仅仅需要进行简单的编码、解码操作，其实无须创建CharsetEncoder和CharsetDecoder对象，直接调用Charset的encode()和decode()方法进行编码、解码即可。
+		文件锁：
+				在NIO中，Java提供了FileLock来支持文件锁定功能，在FileChannel中提供的lock()/tryLock()方法可以获得文件锁FileLock对象，从而锁定文件。lock()和tryLock()方法存在区别：当lock()试图锁定某个文件时，如果无法得到文件锁，程序将一直阻塞；而tryLock()是尝试锁定文件，它将直接返回而不是阻塞，如果获得了文件锁，该方法则返回该文件锁，否则将返回null。
+				如果FileChannel只想锁定文件的部分内容，而不是锁定全部内容，则可以使用如下的lock()或tryLock()方法。
+				[插图] lock(long position, long size, boolean shared)：对文件从position开始，长度为size的内容加锁，该方法是阻塞式的。
+				[插图] tryLock(long position, long size, boolean shared)：非阻塞式的加锁方法。参数的作用与上一个方法类似。
+				当参数shared为true时，表明该锁是一个共享锁，它将允许多个进程来读取该文件，但阻止其他进程获得对该文件的排他锁。当shared为false时，表明该锁是一个排他锁，它将锁住对该文件的读写。程序可以通过调用FileLock的isShared来判断它获得的锁是否为共享锁。
+		注意：
+				直接使用lock()或tryLock()方法获取的文件锁是排他锁。
+				下面程序简单示范了Path接口的功能和用法。
+				程序清单：codes\15\15.10\PathTest.java
+				public class PathTest
+				{
+				    public static void main(String[] args)
+					  throws Exception
+				    {
+					  // 以当前路径来创建Path对象
+					  Path path=Paths.get(".");
+					  System.out.println("path里包含的路径数量："+ path.getNameCount());System.out.println("path的根路径：" + path.getRoot());
+					  // 获取path对应的绝对路径
+					  Path absolutePath=path.toAbsolutePath();System.out.println(absolutePath);
+					// 获取绝对路径的根路径
+					System.out.println("absolutePath的跟路径："+ absolutePath.getRoot());
+					// 获取绝对路径所包含的路径数量
+						System.out.println("absolutePath里包含的路径数量："+ absolutePath.getNameCount());
+						System.out.println(absolutePath.getName(3));
+						// 以多个String来构建Path对象Path path2=Paths.get("g:" , "publish" , "codes");       
+						System.out.println(path2);
+				  }
+				}
+				从上面程序可以看出，Paths提供了get(String first, String... more)方法来获取Path对象，Paths会将给定的多个字符串连缀成路径，比如Paths.get("g:" , "publish" , "codes")就返回g:\publish\codes路径。
+				上面程序中的粗体字代码示范了Path接口的常用方法，读者可能对getNameCount()方法感到有点困惑，此处简要说明一下：它会返回Path路径所包含的路径名的数量，例如g:\publish\codes调用该方法就会返回3。
+				Files是一个操作文件的工具类，它提供了大量便捷的工具方法，下面程序简单示范了Files类的用法。
+				程序清单：codes\15\15.10\FilesTest.java
+				public class FilesTest
+				{
+				    public static void main(String[] args)
+					  throws Exception
+				    {
+					  // 复制文件
+					  Files.copy(Paths.get("FilesTest.java"), new FileOutputStream("a.txt"));
+					  // 判断FilesTest.java文件是否为隐藏文件
+						System.out.println("FilesTest.java是否为隐藏文件："+ Files.isHidden(Paths.get("FilesTest.java")));
+						// 一次性读取FilesTest.java文件的所有行
+						List<String> lines=Files.readAllLines(Paths.get("FilesTest.java"), Charset.forName("gbk"));System.out.println(lines);
+						// 判断指定文件的大小
+						System.out.println("FilesTest.java的大小为："+ Files.size(Paths.get("FilesTest.java")));
+						List<String> poem=new ArrayList<>();
+							poem.add("水晶潭底银鱼跃");
+							poem.add("清徐风中碧竿横");
+						// 直接将多个字符串内容写入指定文件中
+						Files.write(Paths.get("pome.txt") , poem, Charset.forName("gbk"));          
+						FileStore cStore=Files.getFileStore(Paths.get("C:"));
+							  // 判断C盘的总空间、可用空间
+							  System.out.println("C:共有空间：" + cStore.getTotalSpace());
+							  System.out.println("C:可用空间：" + cStore.getUsableSpace());
+				    }
+				}
+				上面程序中的粗体字代码简单示范了Files工具类的用法。从上面程序不难看出，Files类是一个高度封装的工具类，它提供了大量的工具方法来完成文件复制、读取文件内容、写入文件内容等功能——这些原本需要程序员通过IO操作才能完成的功能，
+				现在Files类只要一个工具方法即可。
+				
+		线程：
+					多线程则扩展了多进程的概念，使得同一个进程可以同时并发处理多个任务。线程（Thread）也被称作轻量级进程（Lightweight Process），线程是进程的执行单元。就像进程在操作系统中的地位一样，线程在程序中是独立的、并发的执行流。当进程被初始化后，主线程就被创建了。对于绝大多数的应用程序来说，通常仅要求有一个主线程，但也可以在该进程内创建多条顺序执行流，这些顺序执行流就是线程，每个线程也是互相独立的。
+					线程是进程的组成部分，一个进程可以拥有多个线程，一个线程必须有一个父进程。线程可以拥有自己的堆栈、自己的程序计数器和自己的局部变量，但不拥有系统资源，它与父进程的其他线程共享该进程所拥有的全部资源。因为多个线程共享父进程里的全部资源，因此编程更加方便；但必须更加小心，我们必须确保线程不会妨碍同一进程里的其他线程。
+					线程可以完成一定的任务，可以与其他线程共享父进程中的共享变量及部分环境，相互之间协同来完成进程所要完成的任务。
+					线程是独立运行的，它并不知道进程中是否还有其他线程存在。线程的执行是抢占式的，也就是说，当前运行的线程在任何时候都可能被挂起，以便另外一个线程可以运行。
+					一个线程可以创建和撤销另一个线程，同一个进程中的多个线程之间可以并发执行。
+					从逻辑角度来看，多线程存在于一个应用程序中，让一个应用程序中可以有多个执行部分同时执行，但操作系统无须将多个线程看作多个独立的应用，对多线程实现调度和管理以及资源分配。线程的调度和管理由进程本身负责完成。
+					简而言之，一个程序运行后至少有一个进程，一个进程里可以包含多个线程，但至少要包含一个线程。
+					线程比进程具有更高的性能，这是由于同一个进程中的线程都有共性——多个线程共享同一个进程虚拟空间。线程共享的环境包括：进程代码段、进程的公有数据等。利用这些共享的数据，线程很容易实现相互之间的通信。
+					当操作系统创建一个进程时，必须为该进程分配独立的内存空间，并分配大量的相关资源；但创建一个线程则简单得多，因此使用多线程来实现并发比使用多进程实现并发的性能要高得多。
+					总结起来，使用多线程编程具有如下几个优点。
+								进程之间不能共享内存，但线程之间共享内存非常容易。
+								系统创建进程时需要为该进程重新分配系统资源，但创建线程则代价小得多，因此使用多线程来实现多任务并发比多进程的效率高。
+								Java语言内置了多线程功能支持，而不是单纯地作为底层操作系统的调度方式，从而简化了Java的多线程编程。
+					当发生如下情况时，线程将会进入阻塞状态。
+								 线程调用sleep()方法主动放弃所占用的处理器资源。
+								 线程调用了一个阻塞式IO方法，在该方法返回之前，该线程被阻塞。
+								线程试图获得一个同步监视器，但该同步监视器正被其他线程所持有。关于同步监视器的知识、后面将有更深入的介绍。
+								线程在等待某个通知（notify）。
+								程序调用了线程的suspend()方法将该线程挂起。但这个方法容易导致死锁，所以应该尽量避免使用该方法。
+					当前正在执行的线程被阻塞之后，其他线程就可以获得执行的机会。被阻塞的线程会在合适的时候重新进入就绪状态，注意是就绪状态而不是运行状态。也就是说，被阻塞线程的阻塞解除后，必须重新等待线程调度器再次调度它。
+					针对上面几种情况，当发生如下特定的情况时可以解除上面的阻塞，让该线程重新进入就绪状态。
+								[插图] 调用sleep()方法的线程经过了指定时间。
+								[插图] 线程调用的阻塞式IO方法已经返回。
+								[插图] 线程成功地获得了试图取得的同步监视器。
+								[插图] 线程正在等待某个通知时，其他线程发出了一个通知。
+								[插图] 处于挂起状态的线程被调用了resume()恢复方法。
+				
+					线程从阻塞状态只能进入就绪状态，无法直接进入运行状态。而就绪和运行状态之间的转换通常不受程序控制，而是由系统线程调度所决定，当处于就绪状态的线程获得处理器资源时，该线程进入运行状态；当处于运行状态的线程失去处理器资源时，该线程进入就绪状态。但有一个方法例外，调用yield()方法可以让运行状态的线程转入就绪状态。关于yield()方法后面有更详细的介绍。
+			Thread类
+				提供了setPriority(int newPriority)、getPriority()方法来设置和返回指定线程的优先级，其中setPriority()方法的参数可以是一个整数，范围是1～10之间，也可以使用Thread类的如下3个静态常量。
+					MAX_PRIORITY：其值是10。MIN_PRIORITY：其值是1。NORM_PRIORITY：其值是5。
+					下面程序使用了setPriority()方法来改变主线程的优先级，并使用该方法改变了两个线程的优先级，从而可以看到高优先级的线程将会获得更多的执行机会。
+					程序清单：codes\16\16.4\PriorityTest.java
+							public class PriorityTest extends Thread
+							{
+							    // 定义一个有参数的构造器，用于创建线程时指定name
+							    public PriorityTest(String name)
+							    {
+								  super(name);
+							    }
+							    public void run()
+							    {
+								  for (int i=0 ; i < 50 ; i++ )
+								  {
+									System.out.println(getName() +  ",其优先级是："
+									    + getPriority() + ",循环变量的值为:" + i);
+								  }
+							    }
+							    public static void main(String[] args)
+							    {
+								  // 改变主线程的优先级Thread.currentThread().setPriority(6);          for (int i=0 ; i < 30 ; i++ )
+								  {
+									if (i==10)
+									{
+									    PriorityTest low=new PriorityTest("低级");
+									    low.start();
+									    System.out.println("创建之初的优先级:"
+										  + low.getPriority());
+									    // 设置该线程为最低优先级
+									    low.setPriority(Thread.MIN_PRIORITY);
+									}
+									if (i==20)
+									{
+									    PriorityTest high=new PriorityTest("高级");
+									    high.start();
+									    System.out.println("创建之初的优先级:"
+										  + high.getPriority());
+									    // 设置该线程为最高优先级
+									    high.setPriority(Thread.MAX_PRIORITY);
+									}
+								  }
+							    }
+							}
+					上面程序中的第一行粗体字代码改变了主线程的优先级为6，这样由main线程所创建的子线程的优先级默认都是6，所以程序直接输出low、high两个线程的优先级时应该看到6。接着程序将low线程的优先级设为Priority.MIN_PRIORITY，将high线程的优先级设置为Priority.MAX_PRIORITY。
+		网络编程：
+				InetAddress类没有提供构造器，而是提供了如下两个静态方法来获取InetAddress实例。
+					 getByName(String host)：根据主机获取对应的InetAddress对象。
+					getByAddress(byte[] addr)：根据原始IP地址来获取对应的InetAddress对象。
+				InetAddress还提供了如下三个方法来获取InetAddress实例对应的IP地址和主机名。
+					 String getCanonicalHostName()：获取此IP地址的全限定域名。
+					 String getHostAddress()：返回该InetAddress实例对应的IP地址字符串（以字符串形式）。
+					 String getHostName()：获取此IP地址的主机名。
+					除此之外，InetAddress类还提供了一个getLocalHost()方法来获取本机IP地址对应的InetAddress实例。
+					InetAddress类还提供了一个isReachable()方法，用于测试是否可以到达该地址。该方法将尽最大努力试图到达主机，但防火墙和服务器配置可能阻塞请求，使得它在访问某些特定的端口时处于不可达状态。如果可以获得权限，典型的实现将使用ICMP ECHO REQUEST；否则它将试图在目标主机的端口7（Echo）上建立TCP连接。下面程序测试了InetAddress类的简单用法。
+							public class InetAddressTest
+							{
+							    public static void main(String[] args)
+								  throws Exception
+							    {
+								  // 根据主机名来获取对应的InetAddress实例
+								  InetAddress ip=InetAddress.getByName("www.crazyit.org");
+								  // 判断是否可达
+								  System.out.println("crazyit是否可达：" + ip.isReachable(2000));
+								  // 获取该InetAddress实例的IP字符串
+								  System.out.println(ip.getHostAddress());
+								  // 根据原始IP地址来获取对应的InetAddress实例
+								  InetAddress local=InetAddress.getByAddress(
+									new byte[]{127,0,0,1});
+								  System.out.println("本机是否可达：" + local.isReachable(5000));
+								  // 获取该InetAddress实例对应的全限定域名
+								  System.out.println(local.getCanonicalHostName());
+							    }
+							}
+	URLDecoder和URLEncoder类：。
+					 URLDecoder类包含一个decode(String s,String enc)静态方法，它可以将看上去是乱码的特殊字符串转换成普通字符串。
+					 URLEncoder类包含一个encode(String s,String enc)静态方法，它可以将普通字符串转换成application/x-www-form-urlencoded MIME字符串。
+					下面程序示范了如何将图17.3所示地址栏中的“乱码”转换成普通字符串，并示范了如何将普通字符串转换成application/x-www-form-urlencoded MIME字符串。
+					程序清单：codes\17\17.2\URLDecoderTest.java
+					public class URLDecoderTest
+					{
+					    public static void main(String[] args)
+						  throws Exception
+					    {
+						  // 将application/x-www-form-urlenco
+					疯狂java:
+					public class URLDecoderTest
+					{
+					    public static void main(String[] args)
+						  throws Exception
+					    {
+						  // 将application/x-www-form-urlencoded字符串
+						  // 转换成普通字符串
+						  // 其中的字符串直接从图17.3所示的窗口中复制过来String keyWord=URLDecoder.decode("%B7%E8%BF%F1java", "GBK");System.out.println(keyWord);
+					// 将普通字符串转换成
+					// application/x-www-form-urlencoded字符串String urlStr=URLEncoder.encode("疯狂Android讲义" , "GBK");          System.out.println(urlStr);
+					    }
+					}
+					例子：
+						public class DownUtil
+						{
+						    // 定义下载资源的路径
+						    private String path;
+						    // 指定所下载的文件的保存位置
+						    private String targetFile;
+						    // 定义需要使用多少个线程下载资源
+						    private int threadNum;
+						    // 定义下载的线程对象
+						    private DownThread[] threads;
+						    // 定义下载的文件的总大小
+						    private int fileSize;
+						    public DownUtil(String path, String targetFile, int threadNum)
+						    {
+							  this.path=path;
+							  this.threadNum=threadNum;
+							  // 初始化threads数组
+							  threads=new DownThread[threadNum];
+							  this.targetFile=targetFile;
+						    }
+						    public void download() throws Exception
+						    {
+							  URL url=new URL(path);
+							  HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+							  conn.setConnectTimeout(5 ＊ 1000);
+							  conn.setRequestMethod("GET");
+							  conn.setRequestProperty(
+								"Accept",
+								"image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
+								+ "application/x-shockwave-flash, application/xaml+xml, "
+								+ "application/vnd.ms-xpsdocument, application/x-ms-xbap, "
+								+ "application/x-ms-application, application/vnd.ms-excel, "
+								+ "application/vnd.ms-powerpoint, application/msword, ＊/＊");
+							  conn.setRequestProperty("Accept-Language", "zh-CN");
+							  conn.setRequestProperty("Charset", "UTF-8");
+							  conn.setRequestProperty("Connection", "Keep-Alive");
+							  // 得到文件大小
+							  fileSize=conn.getContentLength();
+							  conn.disconnect();
+							  int currentPartSize=fileSize / threadNum + 1;
+							  RandomAccessFile file=new RandomAccessFile(targetFile, "rw");
+							  // 设置本地文件的大小
+							  file.setLength(fileSize);
+							  file.close();
+							  for (int i=0; i < threadNum; i++)
+							  {
+								// 计算每个线程下载的开始位置
+								int startPos=i ＊ currentPartSize;
+								// 每个线程使用一个RandomAccessFile进行下载
+								RandomAccessFile currentPart=new RandomAccessFile(targetFile,
+								    "rw");
+								// 定位该线程的下载位置
+								currentPart.seek(startPos);
+								// 创建下载线程
+								threads[i]=new DownThread(startPos, currentPartSize,
+								    currentPart);
+								// 启动下载线程
+								threads[i].start();
+							  }
+						    }
+						    // 获取下载的完成百分比
+						    public double getCompleteRate()
+						    {
+							  // 统计多个线程已经下载的总大小
+							  int sumSize=0;
+							  for (int i=0; i < threadNum; i++)
+							  {
+								sumSize +=threads[i].length;
+							  }
+							  // 返回已经完成的百分比
+							  return sumSize ＊ 1.0 / fileSize;
+						    }
+						    private class DownThread extends Thread
+						    {
+							  // 当前线程的下载位置
+							  private int startPos;
+							  // 定义当前线程负责下载的文件大小
+							  private int currentPartSize;
+							  // 当前线程需要下载的文件块
+							  private RandomAccessFile currentPart;
+							  // 定义该线程已下载的字节数
+							  public int length;
+							  public DownThread(int startPos, int currentPartSize,
+								RandomAccessFile currentPart)
+							  {
+								this.startPos=startPos;
+								this.currentPartSize=currentPartSize;
+								this.currentPart=currentPart;
+							  }
+							  public void run()
+							  {
+								try
+								{
+								    URL url=new URL(path);
+								    HttpURLConnection conn=(HttpURLConnection)url
+									  .openConnection();
+								    conn.setConnectTimeout(5 ＊ 1000);
+								    conn.setRequestMethod("GET");
+								    conn.setRequestProperty(
+									  "Accept",
+									  "image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
+									  + "application/x-shockwave-flash, application/xaml+xml, "
+									  + "application/vnd.ms-xpsdocument, application/x-ms-xbap, "
+									  + "application/x-ms-application, application/vnd.ms-excel, "
+									  + "application/vnd.ms-powerpoint, application/msword, ＊/＊");
+								    conn.setRequestProperty("Accept-Language", "zh-CN");
+								    conn.setRequestProperty("Charset", "UTF-8");
+								    InputStream inStream=conn.getInputStream();
+								    // 跳过startPos个字节，表明该线程只下载自己负责的那部分文件
+								    inStream.skip(this.startPos);
+								    byte[] buffer=new byte[1024];
+								    int hasRead=0;
+								    // 读取网络数据，并写入本地文件
+								    while (length < currentPartSize
+									  && (hasRead=inStream.read(buffer)) !=-1)
+								    {
+									  currentPart.write(buffer, 0, hasRead);
+									  // 累计该线程下载的总大小
+									  length +=hasRead;
+								    }
+								    currentPart.close();
+								    inStream.close();
+								}
+								catch (Exception e)
+								{
+								    e.printStackTrace();
+								}
+							  }
+						    }
+						}
+				上面程序中定义了DownThread线程类，该线程负责读取从start开始，到end结束的所有字节数据，并写入RandomAccessFile对象。这个DownThread线程类的run()方法就是一个简单的输入、输出实现。
+				程序中DownUtils类中的download()方法负责按如下步骤来实现多线程下载。
+				（1）创建URL对象。
+				（2）获取指定URL对象所指向资源的大小（通过getContentLength()方法获得），此处用到了URLConnection类，该类代表Java应用程序和URL之间的通信链接。后面还有关于URLConnection更详细的介绍。
+				（3）在本地磁盘上创建一个与网络资源具有相同大小的空文件。
+				（4）计算每个线程应该下载网络资源的哪个部分（从哪个字节开始，到哪个字节结束）。
+				（5）依次创建、启动多个线程来下载网络资源的指定部分。
+				提示：
+				上面程序已经实现了多线程下载的核心代码，如果要实现断点下载，则需要额外增加一个配置文件（读者可以发现，所有的断点下载工具都会在下载开始时生成两个文件：一个是与网络资源具有相同大小的空文件，一个是配置文件），该配置文件分别记录每个线程已经下载到哪个字节，当网络断开后再次开始下载时，每个线程根据配置文件里记录的位置向后下载即可。
+				有了上面的DownUtil工具类之后，接下来就可以在主程序中调用该工具类的down()方法执行下载，如下程序所示。
+程序清单：codes\17\17.2\MultiThreadDown.java
+					public class MultiThreadDown
+					{
+					    public static void main(String[] args) throws Exception
+					    {
+						  // 初始化DownUtil对象
+						  final DownUtil downUtil=new DownUtil("http://www.crazyit.org/"
+							+ "attachment.php?aid=MTY0NXxjNjBiYzNjN3wxMzE1NTQ2MjU5fGNhO"
+							+ "DlKVmpXVmhpNGlkWmVzR2JZbnluZWpqSllOd3JzckdodXJOMUpOWWt0aTJz,"
+							, "oracelsql.rar", 4);
+						  // 开始下载downUtil.download();          new Thread()
+						  {
+							public void run()
+							{
+							    while(downUtil.getCompleteRate() < 1)
+							    {
+								  // 每隔0.1秒查询一次任务的完成进度
+								  // GUI程序中可根据该进度来绘制进度条
+								  System.out.println("已完成："
+									+ downUtil.getCompleteRate());
+								  try
+								  {
+									Thread.sleep(1000);
+								  }
+								  catch (Exception ex){}
+							    }
+							}
+						  }.start();
+					    }
+					}
+			运行上面程序，即可看到程序从www.crazyit.org下载得到一份名为oracelsql.rar的压缩文件。
+			上面程序还用到URLConnection和HttpURLConnection对象，其中前者表示应用程序和URL之间的通信连接，后者表示与URL之间的HTTP连接。程序可以通过URLConnection实例向该URL发送请求、读取URL引用的资源。
+		通常创建一个和URL的连接，并发送请求、读取此URL引用的资源需要如下几个步骤。
+				（1）通过调用URL对象的openConnection()方法来创建URLConnection对象。
+				（2）设置URLConnection的参数和普通请求属性。
+				（3）如果只是发送GET方式请求，则使用connect()方法建立和远程资源之间的实际连接即可；如果需要发送POST方式的请求，则需要获取URLConnection实例对应的输出流来发送请求参数。
+				（4）远程资源变为可用，程序可以访问远程资源的头字段或通过输入流读取远程资源的数据。
+	类加载器:
+			类加载指的是将类的class文件读入内存，并为之创建一个java.lang.Class对象，也就是说，当程序中使用任何类时，系统都会为之建立一个java.lang.Class对象。
+			通过使用不同的类加载器，可以从不同来源加载类的二进制数据，通常有如下几种来源。
+					 从本地文件系统加载class文件，这是前面绝大部分示例程序的类加载方式。
+					 从JAR包加载class文件，这种方式也是很常见的，前面介绍JDBC编程时用到的数据库驱动类就放在JAR文件中，JVM可以从JAR文件中直接加载该class文件。
+					通过网络加载class文件。
+					把一个Java源文件动态编译，并执行加载。
+			类加载器通常无须等到“首次使用”该类时才加载该类，Java虚拟机规范允许系统预先加载某些类当类被加载之后，系统为之生成一个对应的Class对象，接着将会进入连接阶段，连接阶段负责把类的二进制数据合并到JRE中。类连接又可分为如下3个阶段。
+					（1）验证：验证阶段用于检验被加载的类是否有正确的内部结构，并和其他类协调一致。
+					（2）准备：类准备阶段则负责为类的静态Field分配内存，并设置默认初始值。
+					（3）解析：将类的二进制数据中的符号引用替换成直接引用。
+			当使用ClassLoader类的loadClass()方法来加载某个类时，该方法只是加载该类，并不会执行该类的初始化。
+				使用Class的forName()静态方法才会导致强制初始化该类。例如如下代码。
+						程序清单：codes\18\18.1\ClassLoaderTest.java
+						class Tester
+						{
+						    static
+						    {
+							  System.out.println("Tester类的静态初始化块...");
+						    }
+						}
+						public class ClassLoaderTest
+						{
+						    public static void main(String[] args)
+							  throws ClassNotFoundException
+						    {
+							  ClassLoader cl=ClassLoader.getSystemClassLoader();
+							  // 下面语句仅仅是加载Tester类cl.loadClass("Tester");System.out.println("系统加载Tester类");
+						// 下面语句才会初始化Tester类Class.forName("Tester");    }
+						}
+				类加载器负责将.class文件（可能在磁盘上，也可能在网络上）加载到内存中，并为之生成对应的java.lang.Class对象
+				当JVM启动时，会形成由3个类加载器组成的初始类加载器层次结构。
+				[插图] Bootstrap ClassLoader：根类加载器。
+				[插图] Extension ClassLoader：扩展类加载器。
+				[插图] System ClassLoader：系统类加载器。
+				Bootstrap ClassLoader被称为引导（也称为原始或根）类加载器，它负责加载Java的核心类。在Sun的JVM中，当执行java.exe命令时，使用-Xbootclasspath选项或使用-D选项指定sun.boot.class.path系统属性值可以指定加载附加的类。
+				根类加载器非常特殊，它并不是java.lang.ClassLoader的子类，而是由JVM自身实现的。
+				JVM的类加载机制主要有如下3种。
+						[插图] 全盘负责。所谓全盘负责，就是当一个类加载器负责加载某个Class时，该Class所依赖的和引用的其他Class也将由该类加载器负责载入，除非显式使用另外一个类加载器来载入。
+						[插图] 父类委托。所谓父类委托，则是先让parent（父）类加载器试图加载该Class，只有在父类加载器无法加载该类时才尝试从自己的类路径中加载该类。
+						[插图] 缓存机制。缓存机制将会保证所有加载过的Class都会被缓存，当程序中需要使用某个Class时，类加载器先从缓存区中搜寻该Class，只有当缓存区中不存在该Class对象时，系统才会读取该类对应的二进制数据，并将其转换成Class对象，存入缓存区中。这就是为什么修改了Class后，必须重新启动JVM，程序所做的修改才会生效的原因。
+				注意：
+					类加载器之间的父子关系并不是类继承上的父子关系，这里的父子关系是类加载器实例之间的关系。
+					类加载器加载Class大致要经过如下8个步骤。
+					（1）检测此Class是否载入过（即在缓存区中是否有此Class），如果有则直接进入第8步，否则接着执行第2步。
+					（2）如果父类加载器不存在（如果没有父类加载器，则要么parent一定是根类加载器，要么本身就是根类加载器），则跳到第4步执行；如果父类加载器存在，则接着执行第3步。
+					（3）请求使用父类加载器去载入目标类，如果成功载入则跳到第8步，否则接着执行第5步。
+					（4）请求使用根类加载器来载入目标类，如果成功载入则跳到第8步，否则跳到第7步。
+					（5）当前类加载器尝试寻找Class文件（从与此ClassLoader相关的类路径中寻找），如果找到则执行第6步，如果找不到则跳到第7步。
+					（6）从文件中载入Class，成功载入后跳到第8步。
+					（7）抛出ClassNotFoundException异常。
+					（8）返回对应的java.lang.Class对象。
+						public class URLClassLoaderTest
+						{
+						    private static Connection conn;
+						    // 定义一个获取数据库连接的方法
+						    public static Connection getConn(String url ,
+							  String user , String pass) throws Exception
+						    {
+							  if (conn==null)
+							  {
+								// 创建一个URL数组
+								URL[] urls={new URL(
+								    "file:mysql-connector-java-3.1.10-bin.jar")};
+								// 以默认的ClassLoader作为父ClassLoader，创建URLClassLoaderURLClassLoader myClassLoader=new URLClassLoader(urls);// 加载MySQL的JDBC驱动，并创建默认实例Driver driver=(Driver)myClassLoader.loadClass("com.mysql.jdbc.Driver").newInstance();                // 创建一个设置JDBC连接属性的Properties对象
+								Properties props=new Properties();
+								// 至少需要为该对象传入user和password两个属性
+								props.setProperty("user" , user);
+								props.setProperty("password" , pass);
+								// 调用Driver对象的connect方法来取得数据库连接
+								conn=driver.connect(url , props);
+							  }
+							  return conn;
+						    }
+						    public static void main(String[] args)throws Exception
+						    {
+							  System.out.println(getConn("jdbc:mysql://localhost:3306/mysql"
+								, "root" , "32147"));
+						    }
+						}
+		动态代理：
+					interface Person
+					      {
+						  void walk();
+						  void sayHello(String name);
+					      }
+					      class MyInvokationHandler implements InvocationHandler
+					      {
+						  /*
+						  执行动态代理对象的所有方法时，都会被替换成执行如下的invoke方法
+						  其中：
+						  proxy：代表动态代理对象
+						  method：代表正在执行的方法
+						  args：代表调用目标方法时传入的实参
+						  */
+						  public Object invoke(Object proxy, Method method, Object[] args)
+						  {
+							System.out.println("----正在执行的方法:" + method);
+							if (args !=null)
+							{
+							System.out.println("下面是执行该方法时传入的实参为：");
+							for (Object val : args)
+							{
+							      System.out.println(val);
+							}
+						  }
+						  else
+						  {
+							System.out.println("调用该方法没有实参！");
+						  }
+						  return null;
+					    }
+					}
+					public class ProxyTest
+					{
+					    public static void main(String[] args)
+						  throws Exception
+					    {
+						  // 创建一个InvocationHandler对象InvocationHandler handler=new MyInvokationHandler();// 使用指定的InvocationHandler来生成一个动态代理对象Person p=(Person)Proxy.newProxyInstance(Person.class.getClassLoader(), new Class[]{Person.class}, handler);          // 调用动态代理对象的walk()和sayHello()方法
+						  p.walk();
+						  p.sayHello("孙悟空");
+					    }
+					}
+
+
+
+
+
+
+

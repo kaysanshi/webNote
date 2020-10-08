@@ -1,0 +1,31 @@
+<html>
+	<head>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<!--必须要带的-->
+		<title>超链接的使用</title>
+	</head>
+	<body> 
+		<!---在这里加一个顶部位置标记及时a标签-->
+		<a name="top">顶部位置</a>
+		<!--加入target=_block会打开一个新窗口-->
+		<a href="http://www.sina.com.cn"target="_block">我的超链接</a>
+			<br/>
+			<!--打开邮件的协议-->
+		<a href="mailto:abc@sina.com?cc=haha@sohu.com">联系我们</a>
+		<br/>
+		<a href="http://www.thunder.com/moive/bxjg.rmvb">"变形金刚"</a>
+		<br/>
+		<a href="thunder://salkdgjg"></a>
+		<!--定位标记-->
+		<br/>
+		<image height="800" src="yuanyuan.jpg"/>
+		<a href="#top">返回顶部</a>
+		<!--超链接的另一个应用
+		有默认的点击事件想要自定义事件时:
+			1.自定义事件取消默认点击效果,
+			2.通过注册指定事件,定义处理事件按照自定义的方式;
+		-->
+		<!--超链接也可连接到一个事件-->
+		<a href="javascript:void(0)"onclick="alert('这是个超链接')">超链接的重要使用</a>
+	</body>
+</html>

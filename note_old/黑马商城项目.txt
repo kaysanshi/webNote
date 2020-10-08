@@ -1,0 +1,1161 @@
+黑马淘淘系统：
+	
+	分布式架构：多个子系统相互协作才能完成业务流程。系统之间需要进行通信。(通信的方式：使用webservice)
+	集群：同一个工程部署到多台服务器上。
+	分布式架构：
+	把系统按照模块拆分成多个子系统。
+	优点：
+	1、把模块拆分，使用接口通信，降低模块之间的耦合度。
+	2、把项目拆分成若干个子项目，不同的团队负责不同的子项目。
+	3、增加功能时只需要再增加一个子项目，调用其他系统的接口就可以。
+	4、可以灵活的进行分布式部署。
+
+	缺点：
+	1、系统之间交互需要使用远程通信，接口开发增加工作量。
+	2、各个模块有一些通用的业务逻辑无法共用。
+
+SOA:面向服务的架构，可以把工程拆分成服务层，表现层两个架构，服务层包含业务逻辑,只需对外提供服务，表现层只需处理页面的交互
+	业务逻辑都是调用服务层的服务来实现。
+	表现层和服务层不同的工程，那么如何实现两个系统之间的通信呢？
+		1.使用WebService:效率不高基于SOAP协议，项目中不推荐使用
+		2.使用restful形式服务：http+json,如果服务太多服务之间调用关系混乱，需要治疗服务。
+		3.使用dubbo。使用rpc协议进行远程调用，直接使用socket通信。传输效率高，并且可以统计出系统之间的调用关系、调用次数
+		什么是dubbo:
+			Dubbo是  阿里巴巴公司开源的一个高性能优秀的服务框架，使得应用可通过高性能的 RPC 实现服务的输出和输入功能，可以和  Spring框架无缝集成。
+			Dubbo是一款高性能、轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现。
+			主要核心部件：
+					Remoting:网路通讯框架，实现了sync-over-async和request-response消息机制
+					RPC: 一个远程过程调用的抽象，支持负载均衡、容灾和集群功能
+					Registry: 服务目录框架用于服务的注册和服务事件发布和订阅
+			
+		•	为什么要使用他：主要就是为了实现不同系统之间的通信。
+		dubbo的简介：
+			•	单一应用架构 
+				•	当网站流量很小时，只需一个应用，将所有功能都部署在一起，以减少部署节点和成本。
+				•	此时，用于简化增删改查工作量的 数据访问框架(ORM) 是关键。
+			•	垂直应用架构 
+				•	当访问量逐渐增大，单一应用增加机器带来的加速度越来越小，将应用拆成互不相干的几个应用，以提升效率。
+				•	此时，用于加速前端页面开发的 Web框架(MVC) 是关键。
+			•	分布式服务架构 
+				•	当垂直应用越来越多，应用之间交互不可避免，将核心业务抽取出来，作为独立的服务，逐渐形成稳定的服务中心，使前端应用能更快速的响应多变的市场需求。
+				•	此时，用于提高业务复用及整合的 分布式服务框架(RPC) 是关键。
+			•	流动计算架构 
+				•	当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。
+				•	此时，用于提高机器利用率的 资源调度和治理中心(SOA) 是关键。
+
+			Dubbo就是资源调度和治理中心的管理工具。
+			
+			dubbo如何使用：
+				先要在注册中心注册(注册中心)：ZooKeeper使用
+					发布服务：
+					<!-- 和本地服务一样实现远程服务 -->
+					<bean id="xxxService" class="com.xxx.XxxServiceImpl" />
+					<!-- 增加暴露远程服务配置 -->
+					<dubbo:service interface="com.xxx.XxxService" ref="xxxService" />
+
+					调用服务：
+					<!-- 增加引用远程服务配置 -->
+					<dubbo:reference id="xxxService" interface="com.xxx.XxxService" />
+					<!-- 和本地服务一样使用远程服务 -->
+					<bean id="xxxAction" class="com.xxx.XxxAction">
+						<property name="xxxService" ref="xxxService" />
+					</bean>
+				dubbo使用只需要把jar包放到tomcat中
+							
+				ZooKeeper使用：
+					注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小。使用dubbo-2.3.3以上版本，建议使用zookeeper注册中心。
+					Zookeeper是Apacahe Hadoop的子项目，是一个树型的目录服务，支持变更推送，适合作为Dubbo服务的注册中心，工业强度较高，可用于生产环境，并推荐使用
+
+					Zookeeper：
+					1、可以作为集群的管理工具使用。
+					2、可以集中管理配置文件。
+					安装步骤：
+					第一步：安装jdk
+					第二步：把zookeeper的压缩包上传到linux系统。
+					第三步：解压缩压缩包
+					tar -zxvf zookeeper-3.4.6.tar.gz
+					第四步：进入zookeeper-3.4.6目录，创建data文件夹。
+					第五步：把zoo_sample.cfg改名为zoo.cfg
+					[root@localhost conf]# mv zoo_sample.cfg zoo.cfg
+											tickTime = 2000
+											dataDir = /path/to/zookeeper/data
+											clientPort = 2181
+											initLimit = 5
+											syncLimit = 2
+					第六步：修改data属性：dataDir=/root/zookeeper-3.4.6/data
+					第七步：启动zookeeper
+					[root@localhost bin]# ./zkServer.sh start
+					关闭：[root@localhost bin]# ./zkServer.sh stop
+					查看状态：[root@localhost bin]# ./zkServer.sh status
+
+						注意：需要关闭防火墙。
+						service iptables stop
+						永久关闭修改配置开机不启动防火墙：
+						chkconfig iptables off
+						如果不能成功启动zookeeper，需要删除data目录下的zookeeper_server.pid文件。
+				
+PageHelper:		为了使用逆向工程，可以使用分页插件PageHelper：
+				什么是PageHelper:
+					如果你也在用 MyBatis，建议尝试该分页插件，这一定是最方便使用的分页插件。分页插件支持任何复杂的单表、多表分页。
+				使用方法：
+						第一步：
+								1.把pageHelper依赖的jar包添加到工程中,
+									<dependency>
+									    <groupId>com.github.pagehelper</groupId>
+									    <artifactId>pagehelper</artifactId>
+									    <version>最新版本</version>
+									</dependency>
+								2：在Mybatis配置xml中配置拦截器插件:
+									<!--
+									    plugins在配置文件中的位置必须符合要求，否则会报错，顺序如下:
+									    properties?, settings?,
+									    typeAliases?, typeHandlers?,
+									    objectFactory?,objectWrapperFactory?,
+									    plugins?,
+									    environments?, databaseIdProvider?, mappers?
+									-->
+									<plugins>
+									    <!-- com.github.pagehelper为PageHelper类所在包名 -->
+									    <plugin interceptor="com.github.pagehelper.PageInterceptor">
+										<!-- 使用下面的方式配置参数，后面会有所有的参数介绍 -->
+										<!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库-->        
+										<property name="param1" value="value1"/>
+										</plugin>
+									</plugins>
+								param1:dialect
+								value:Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL
+								可以配置以下参数和value：
+										helperDialect：分页插件会自动检测当前的数据库链接，自动选择合适的分页方式。 你可以配置helperDialect属性来指定分页插件使用哪种方言。配置时，可以使用下面的缩写值：
+										oracle,mysql,mariadb,sqlite,hsqldb,postgresql,db2,sqlserver,informix,h2,sqlserver2012,derby
+										特别注意：使用 SqlServer2012 数据库时，需要手动指定为 sqlserver2012，否则会使用 SqlServer2005 的方式进行分页。
+										你也可以实现 AbstractHelperDialect，然后配置该属性为实现类的全限定名称即可使用自定义的实现方法。
+										offsetAsPageNum：默认值为 false，该参数对使用 RowBounds 作为分页参数时有效。 当该参数设置为 true 时，会将 RowBounds 中的 offset 参数当成 pageNum 使用，可以用页码和页面大小两个参数进行分页。
+										rowBoundsWithCount：默认值为false，该参数对使用 RowBounds 作为分页参数时有效。 当该参数设置为true时，使用 RowBounds 分页会进行 count 查询。
+										pageSizeZero：默认值为 false，当该参数设置为 true 时，如果 pageSize=0 或者 RowBounds.limit = 0 就会查询出全部的结果（相当于没有执行分页查询，但是返回结果仍然是 Page 类型）。
+										reasonable：分页合理化参数，默认值为false。当该参数设置为 true 时，pageNum<=0 时会查询第一页， pageNum>pages（超过总数时），会查询最后一页。默认false 时，直接根据参数进行查询。
+										params：为了支持startPage(Object params)方法，增加了该参数来配置参数映射，用于从对象中根据属性名取值， 可以配置 pageNum,pageSize,count,pageSizeZero,reasonable，不配置映射的用默认值， 默认值为pageNum=pageNum;pageSize=pageSize;count=countSql;reasonable=reasonable;pageSizeZero=pageSizeZero。
+										supportMethodsArguments：支持通过 Mapper 接口参数来传递分页参数，默认值false，分页插件会从查询方法的参数值中，自动根据上面 params 配置的字段中取值，查找到合适的值时就会自动分页。 使用方法可以参考测试代码中的 com.github.pagehelper.test.basic 包下的 ArgumentsMapTest 和 ArgumentsObjTest。
+										autoRuntimeDialect：默认值为 false。设置为 true 时，允许在运行时根据多数据源自动识别对应方言的分页 （不支持自动选择sqlserver2012，只能使用sqlserver），用法和注意事项参考下面的场景五。
+										closeConn：默认值为 true。当使用运行时动态数据源或没有设置 helperDialect 属性自动获取数据库类型时，会自动获取一个数据库连接， 通过该属性来设置是否关闭获取的这个连接，默认true关闭，设置为 false 后，不会关闭获取的连接，这个参数的设置要根据自己选择的数据源来决定。
+								3:在spring中配置拦截器插件：
+										<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+										  <!-- 注意其他配置 -->
+										  <property name="plugins">
+										    <array>
+										      <bean class="com.github.pagehelper.PageInterceptor">
+											<property name="properties">
+											  <!--使用下面的方式配置参数，一行配置一个 -->
+											  <value>
+											    params=value1
+											  </value>
+											</property>
+										      </bean>
+										    </array>
+										  </property>
+										</bean>
+						第二步：在代码中使用
+								使用PageInfo的方式
+									1、设置分页信息：
+									    //获取第1页，10条内容，默认查询总数count
+									    PageHelper.startPage(1, 10);
+
+									    //紧跟着的第一个select方法会被分页
+									List<Country> list = countryMapper.selectIf(1);
+									2、取分页信息
+									//分页后，实际返回的结果list类型是Page<E>，如果想取出分页信息，需要强制转换为Page<E>，
+									Page<Country> listCountry = (Page<Country>)list;
+									listCountry.getTotal();
+									3、取分页信息的第二种方法
+									//获取第1页，10条内容，默认查询总数count
+									PageHelper.startPage(1, 10);
+									List<Country> list = countryMapper.selectAll();
+									//用PageInfo对结果进行包装
+									PageInfo page = new PageInfo(list);
+									//测试PageInfo全部属性
+									//PageInfo包含了非常全面的分页属性
+									assertEquals(1, page.getPageNum());
+									assertEquals(10, page.getPageSize());
+									assertEquals(1, page.getStartRow());
+									assertEquals(10, page.getEndRow());
+									assertEquals(183, page.getTotal());
+									assertEquals(19, page.getPages());
+									assertEquals(1, page.getFirstPage());
+									assertEquals(8, page.getLastPage());
+									assertEquals(true, page.isFirstPage());
+									assertEquals(false, page.isLastPage());
+									assertEquals(false, page.isHasPreviousPage());
+									assertEquals(true, page.isHasNextPage());
+
+nginx:负载均衡服务器：
+	Nginx是一款轻量级的Web 服务器/反向代理服务器及电子邮件（IMAP/POP3）代理服务器，并在一个BSD-like 协议下发行。其特点是占有内存少，并发能力强，
+	事实上nginx的并发能力确实在同类型的网页服务器中表现较好。官方测试nginx能够支支撑5万并发链接，并且cpu、内存等资源消耗却非常低，运行非常稳定。
+	Nginx既可以在内部的直接支持Rails和PHP程序对外进行服务,也可以支持HTTP代理服务对外进行服务，采用C语言编写,
+	处理静态文件，索引文件以及自动索引;打开文件描述符缓冲。
+	无缓存的反向代理加速，简单的负载均衡和容错。
+	FastCGI，简单的负载均衡和容错。
+	模块化的结构。包括 gzipping, byte ranges, chunked responses,以及 SSI-filter 等 filter。
+	如果由 FastCG或其它代理服务器处理单页中存在的多个 SSI，则这项处理可以并行运行，而不需要相互等待。
+	支持 SSL 和 TLSSNI。
+	应用它可以干什么：
+		1、http服务器。Nginx是一个http服务可以独立提供http服务。可以做网页静态服务器。
+		2、虚拟主机。可以实现在一台服务器虚拟出多个网站。例如个人网站使用的虚拟主机。
+		3、反向代理，负载均衡。当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，
+							需要用多台服务器集群可以使用nginx做反向代理。并且多台服务器可以平均分担负载，
+							不会因为某台服务器负载高宕机而某台服务器闲置的情况
+		
+
+	安装使用nginx：
+		方式：
+				[root@localhost src]# wget http://nginx.org/download/nginx-1.10.2.tar.gz
+				省略安装内容...
+				[root@localhost src]# wget http://www.openssl.org/source/openssl-fips-2.0.10.tar.gz
+				省略安装内容...
+				[root@localhost src]# wget http://zlib.net/zlib-1.2.11.tar.gz
+				省略安装内容...
+				[root@localhost src]# wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz
+				省略安装内容...
+					安装gcc
+					sudo apt-get install gcc-c++
+					[root@localhost src]# tar zxvf openssl-fips-2.0.10.tar.gz
+					省略安装内容...
+					[root@localhost src]# cd openssl-fips-2.0.10
+					[root@localhost openssl-fips-2.0.10]# ./config && make && make install
+					省略安装内容...
+					pcre安装
+
+					[root@localhost src]# tar zxvf pcre-8.40.tar.gz
+					省略安装内容...
+					[root@localhost src]# cd pcre-8.40
+					[root@localhost pcre-8.40]# ./configure && make && make install
+					省略安装内容...
+					zlib安装
+
+					[root@localhost src]# tar zxvf zlib-1.2.11.tar.gz
+					省略安装内容...
+					[root@localhost src]# cd zlib-1.2.11
+					[root@localhost zlib-1.2.11]# ./configure && make && make install
+					省略安装内容...
+					nginx安装
+					[root@localhost src]# tar zxvf nginx-1.10.2.tar.gz
+					省略安装内容...
+					[root@localhost src]# cd nginx-1.10.2
+					//	配置的安装路径是你当前源码路径 
+							./configure \
+							--prefix=/usr/local/nginx \
+							--pid-path=/var/run/nginx/nginx.pid \
+							--lock-path=/var/lock/nginx.lock \
+							--error-log-path=/var/log/nginx/error.log \
+							--http-log-path=/var/log/nginx/access.log \
+							--with-http_gzip_static_module \
+							--http-client-body-temp-path=/var/temp/nginx/client \
+							--http-proxy-temp-path=/var/temp/nginx/proxy \
+							--http-fastcgi-temp-path=/var/temp/nginx/fastcgi \
+							--http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
+							--http-scgi-temp-path=/var/temp/nginx/scgi
+
+					执行执行：./configure --prefix=/usr/local/nginx
+					[root@localhost nginx-1.10.2]# ./configure && make && make install
+					省略安装内容...
+					这样就可以了能够启动了：
+						可以忽略错误：因为你的文件 由于你配置的安装路径是你当前源码路径 ./configure --prefix=【你要安装的路径 而不是当前源码路径】
+					启动：
+							cd /usr/local/nginx/sbin/    ----》./nginx
+					重启： ./nginx -s quit   ------》》./nginx
+					快速停止：cd /usr/local/nginx/sbin
+										./nginx -s quit
+									此方式停止步骤是待nginx进程处理任务完毕进行停止。
+						
+
+
+
+
+		1.先安装gcc: sudo apt-get update ---> sudo apt-get install gcc
+		2.安装pcre依赖库 sudo apt-get install libpcre3 libpcre3-dev
+			安装zlib依赖库 apt-get install zlib1g-dev
+			安装ssl依赖库：apt-get install openssl
+		3.解压文件：
+			tar -zxvf  nginx-1.8.0.1.tar.gz 
+		4.配置文件：
+			进入目录nginx：
+			         执行：./configure --prefix=/usr/local/nginx
+				需要安装 install gcc automake autoconf libtool make
+				同时./configure && make && make install
+				编辑nginx: 
+					make
+					这里出现一个错误：/Makefile:431: recipe for target 'objs/src/core/ngx_murmurhash.o' failed	
+						解决方法：在objs/Makefile中找到这个配置把其中的-Werror删除：
+									CC =	cc
+									CFLAGS =  -pipe  -O -W -Wall -Wpointer-arith -Wno-unused -Werror  -g 
+									CPP =	cc -E
+									LINK =	$(CC)
+								把其中的-Werror删除
+						启动 sudo /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+		make时出现以下异常：
+					
+		
+	
+nginx实现反向代理：
+		什么是代理Proxy：
+			也称网络代理，是一种特殊的网络服务，允许一个网络终端（一般为客户端）通过这个服务与另一个网络终端（一般为服务器）进行非直接的连接。
+			一些网关、路由器等网络设备具备网络代理功能。一般认为代理服务有利于保障网络终端的隐私或安全，防止攻击
+			提供代理服务的电脑系统或其它类型的网络终端称为代理服务器
+			有Http代理,socks代理，vpn代理，反向代理
+		什么是反向代理：
+			使用反向代理的原因：
+								加密和SSL加速
+								负载平衡
+								缓存静态内容
+								压缩 减速上传
+								安全 外网发布
+								大多使用开放源代代码的squid做反向代理
+nginx负载均衡机制：
+		主要的算法有：
+			1.weight轮训默认：接收到的请求按照顺序逐一分配到不同的后端服务器，如果某个服务器拓机的情况下，nginx会将其剔除队列，请求受理情况不会受到影响，可以给不同的后端服务配置权重值，
+			用于调整不同的服务器上请求的分配率，权重越大被分配到的请求的几率越大。
+			2.ip_hash:每个请求按照发起客户端的ip的hash结果进行匹配，这样的算法下一个固定ip地址的客户端总会访问到同一个后端服务器，这也在一定程度上解决了集群部署环境下session共享的问题
+			3.fair：智能调整调度算法，动态的根据后端服务器的请求处理到响应的时间进行均衡分配，响应时间短处理效率高的服务器分配到请求的概率高，响应时间长处理效率低的服务器分配到的请求少；结合了前两者的优点的一种调度算法。但是需要注意的是nginx默认不支持fair算法，如果要使用这种调度算法，请安装upstream_fair模块
+            4.url_hash：按照访问的url的hash结果分配请求，每个请求的url会指向后端固定的某个服务器，可以在nginx作为静态服务器的情况下提高缓存效率。同样要注意nginx默认不支持这种调度算法，要使用的话需要安装nginx的hash软件包
+			
+
+FastDFS:
+		FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，功能包括：文件存储、文件同步、文件访问（文件上传、文件下载）等，解决了大容量存储和负载均衡的问题。
+		特别适合以文件为载体的在线服务，如相册网站、视频网站等等。
+		FastDFS为互联网量身定制，充分考虑了冗余备份、负载均衡、线性扩容等机制，并注重高可用、高性能等指标，使用FastDFS很容易搭建一套高性能的文件服务器集群提供文件上传、下载等服务。
+		FastDFS服务端主要有：跟踪器(tracker)群和存储节点(storage)，跟踪器做调度工作，在访问上起负载均衡的作用，
+		跟踪器和存储节点都可以由一台或多台服务器构成。跟踪器和存储节点中的服务器均可以随时增加或下线而不会影响线上服务。
+		其中跟踪器中的所有服务器都是对等的，可以根据服务器的压力情况随时增加或减少。
+		上传交互过程编辑
+				1. client询问tracker上传到的storage，不需要附加参数；
+				2. tracker返回一台可用的storage；
+				3. client直接和storage通讯完成文件上传。
+		下载交互过程编辑
+				1. client询问tracker下载文件的storage，参数为文件标识（卷名和文件名）；
+				2. tracker返回一台可用的storage；
+				3. client直接和storage通讯完成文件下载。
+		需要说明的是，client为使用FastDFS服务的调用方，client也应该是一台服务器，它对tracker和storage的调用均为服务器间的调用。
+		安装方式：
+					1.gcc环境
+					2.FastDFS依赖libevent库，需要安装：sudo apt-get install libevent
+					3.libfastcommon是FastDFS官方提供的，libfastcommon包含了FastDFS运行所需要的一些基础库。
+						将libfastcommonV1.0.7.tar.gz拷贝至/usr/local/下
+						cd /usr/local
+						tar -zxvf libfastcommonV1.0.7.tar.gz
+						cd libfastcommon-1.0.7
+						./make.sh
+						./make.sh install（下一步最重要）
+					同时要注意：libfastcommon安装好后会自动将库文件拷贝至/usr/lib64下，由于FastDFS程序引用usr/lib目录所以需要将/usr/lib64下的库文件拷贝至/usr/lib下
+					4.将FastDFS_v5.05.tar.gz拷贝至/usr/local/下
+							tar -zxvf FastDFS_v5.05.tar.gz
+
+							cd FastDFS
+
+							./make.sh
+							./make.sh install   安装成功将安装目录下的conf下的文件拷贝到/etc/fdfs/下。
+					5.配置tracker:
+							拷贝一份新的tracker配置文件：
+								cp tracker.conf.sample tracker.conf
+
+								修改tracker.conf
+								vi tracker.conf
+								base_path=/home/yuqing/FastDFS   
+								改为：
+								base_path=/home/FastDFS
+							启动：tracker:/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf restart
+					6.配置存储的仓库：
+							拷贝一份新的storage配置文件：
+							cp storage.conf.sample storage.conf
+
+							修改storage.conf
+							vi storage.conf
+							group_name=group1
+							base_path=/home/yuqing/FastDFS改为：base_path=/home/FastDFS
+							store_path0=/home/yuqing/FastDFS改为：store_path0=/home/FastDFS/fdfs_storage
+							#如果有多个挂载磁盘则定义多个store_path，如下
+							#store_path1=.....
+							#store_path2=......
+							tracker_server=192.168.101.3:22122   #配置tracker服务器:IP
+							#如果有多个则配置多个tracker
+							tracker_server=192.168.101.4:22122
+							启动仓库：/usr/bin/fdfs_storaged /etc/fdfs/storage.conf restart
+					7.配置开机自启：
+							在vim /etc/rc.local加入
+							/usr/bin/fdfs_storaged /etc/fdfs/storage.conf restart
+							/usr/bin/fdfs_trackerd /etc/fdfs/tracker.conf restart
+
+
+
+		使用的方式：
+				先把fastdfs_client的客户端jar包依赖加入maven中：
+				@Test
+					public void testUpload() throws Exception, MyException {
+						//trackerserver的服务器端口号为22122
+						//创建一个配置文件，文件名任意，内容就是tracker服务器的地址
+						//使用全局对象加载配置文件(必须是绝对路径)
+							ClientGlobal.init("F:\\Java\\javaEE/e3-manager-web/src/main/resources/conf/client.conf");
+						//创建一个TrackerClient对象
+							TrackerClient trackerClient=new TrackerClient();
+						//通过TrackerClient获得TrackerServer对象
+							TrackerServer trackerServer=trackerClient.getConnection();
+						//创建一个引用的StorageServer的引用可以为null
+							StorageServer storageServer=null;
+						//创建一个StoreageClient参数需要TrackerServer和StorageServer
+							StorageClient storageClient=new StorageClient(trackerServer,storageServer);
+						//使用StorageClient上传文件(必须为绝对路径)
+							String[] upload_file = storageClient.upload_file("/.jpg","jpg", null);
+							for(String string :upload_file) {
+								System.out.println(string);
+							}
+					}
+
+					
+					private
+					/**
+					 * 用工具类的方式测试
+					 * @throws Exception 
+					 */
+					public void testFastDfsClient() throws Exception {
+						FastDFSClient fastDFSClient=new FastDFSClient("F:\\Java\\javaEE/e3-manager-web/src/main/resources/conf/client.conf");
+						String string=fastDFSClient.uploadFile("////.jpg");
+						System.out.println(string);
+					}
+					使用工具类上传，需要建立文件夹，然后通过文件的使用需要配置value()
+					/**
+					 * 图片上传的
+					 * @author leoill
+					 *TODO
+					 *2019年1月6日
+					 */
+					@Controller
+					public class PictureController {
+						
+						@Value("IMAGE_SERVER")
+						private String IMAGE_URL;
+						
+						@RequestMapping("/pic/upload")
+						@ResponseBody
+						public String uploadFile(MultipartFile uploadFile){
+							//返回String对象时直接返回的是contentType="text/plain"
+							//把图片上传到服务器
+							try {
+								FastDFSClient fastDFSClient=new FastDFSClient("classpath:conf/client.conf");
+								//取出扩展名
+								String originalFilename = uploadFile.getOriginalFilename();
+								//originalFilename.substring(originalFilename.lastIndexOf(".")+1)
+								//返回一个图片的地址和文件名
+								String url = fastDFSClient.uploadFile(uploadFile.getBytes(), originalFilename.substring(originalFilename.lastIndexOf(".")+1));
+								//补充完整的URL
+								url=IMAGE_URL+url;
+								//封装到map
+								Map<String, Object> map=new HashMap<>();
+								map.put("error", 0);
+								map.put("url", url);
+								return JsonUtils.objectToJson(map);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								Map<String, Object> map=new HashMap<>();
+								map.put("error", 1);
+								map.put("message", "图片上传失败");
+								return JsonUtils.objectToJson(map);
+							}
+
+		使用前必须搭建这个服务，通过加载配置文件，把其中的数据给加载进去。
+		
+		
+		
+Redis：
+		Redis是c语言开发的。
+		安装redis需要c语言的编译环境。如果没有gcc需要在线安装。yum install gcc-c++
+		安装:make :sudo apt-get install make
+		安装步骤：
+		第一步：redis的源码包上传到linux系统。
+		第二步：解压缩redis。
+		第三步：编译。进入redis源码目录。make 
+		
+		第四步：安装。make install PREFIX=/usr/local/redis
+		PREFIX参数指定redis的安装目录。一般软件安装到/usr目录下
+		3.2.	连接redis
+		3.2.1.	redis的启动：
+		前端启动：在redis的安装目录下直接启动redis-server
+		[root@localhost bin]# ./redis-server 
+
+		后台启动：
+		把/root/redis-3.0.0/redis.conf复制到/usr/local/redis/bin目录下
+		[root@localhost redis-3.0.0]# cp redis.conf /usr/local/redis/bin/
+		修改配置文件：
+					daemonize yes
+		[root@localhost bin]# ./redis-server redis.conf
+		查看redis进程：
+		[root@localhost bin]# ps aux|grep redis
+		root      5190  0.1  0.3  33936  1712 ?        Ssl  18:23   0:00 ./redis-server *:6379    
+		root      5196  0.0  0.1   4356   728 pts/0    S+   18:24   0:00 grep redis
+		[root@localhost bin]# 
+		redis开启自启：	在vim /etc/rc.local加入
+				/usr/local/redis/bin/redis-server /usr/local/redis/etc/redis-conf
+	Redis持久化方案：	
+			Redis的所有数据都是保存到内存中的。
+			Rdb：快照形式，定期把内存中当前时刻的数据保存到磁盘。Redis默认支持的持久化方案。
+			aof形式：append only file。把所有对redis数据库操作的命令，增删改操作的命令。保存到文件中。数据库恢复时把所有的命令执行一遍即可。
+
+			在redis.conf配置文件中配置。
+			Rdb：
+					save 900 1
+					save 300 10
+					save 60  10000
+			aof形式：
+					appendonly yes
+					appendfilename "appendonly.aof"
+
+	redis-cluster架构：
+			(1)所有的redis节点彼此互联(PING-PONG机制),内部使用二进制协议优化传输速度和带宽.
+			(2)节点的fail是通过集群中超过半数的节点检测失效时才生效.
+			(3)客户端与redis节点直连,不需要中间proxy层.客户端不需要连接集群所有节点,连接集群中任何一个可用节点即可
+			(4)redis-cluster把所有的物理节点映射到[0-16383]slot上,cluster 负责维护node<->slot<->value
+			Redis 集群中内置了 16384 个哈希槽，当需要在 Redis 集群中放置一个 key-value 时，redis 先对 key 使用 crc16 算法算出一个结果，然后把结果对 16384 求余数，这样每个 key 都会对应一个编号在 0-16383 之间的哈希槽，redis 会根据节点数量大致均等的将哈希槽映射到不同的节点
+	Redis集群的搭建：
+			Redis集群中至少应该有三个节点。要保证集群的高可用，需要每个节点有一个备份机。
+			Redis集群至少需要6台服务器。
+			搭建伪分布式。可以使用一台虚拟机运行6个redis实例。需要修改redis的端口号7001-7006
+
+	jedis:
+			连接单机版：
+				第一步：创建一个Jedis对象。需要指定服务端的ip及端口。
+				第二步：使用Jedis对象操作数据库，每个redis命令对应一个方法。
+				第三步：打印结果。
+				第四步：关闭Jedis
+
+				public void testJedis() throws Exception {
+			// 第一步：创建一个Jedis对象。需要指定服务端的ip及端口。
+			Jedis jedis = new Jedis("192.168.25.153", 6379);
+			// 第二步：使用Jedis对象操作数据库，每个redis命令对应一个方法。
+			String result = jedis.get("hello");
+			// 第三步：打印结果。
+			System.out.println(result);
+			// 第四步：关闭Jedis
+			jedis.close();
+		}
+		使用连接池连接单机版：
+			public void testJedisPool() throws Exception {
+				// 第一步：创建一个JedisPool对象。需要指定服务端的ip及端口。
+				JedisPool jedisPool = new JedisPool("192.168.25.153", 6379);
+				// 第二步：从JedisPool中获得Jedis对象。
+				Jedis jedis = jedisPool.getResource();
+				// 第三步：使用Jedis操作redis服务器。
+				jedis.set("jedis", "test");
+				String result = jedis.get("jedis");
+				System.out.println(result);
+				// 第四步：操作完毕后关闭jedis对象，连接池回收资源。
+				jedis.close();
+				// 第五步：关闭JedisPool对象。
+				jedisPool.close();
+			}
+		连接集群版：
+			public void testJedisCluster() throws Exception {
+				// 第一步：使用JedisCluster对象。需要一个Set<HostAndPort>参数。Redis节点的列表。
+				Set<HostAndPort> nodes = new HashSet<>();
+				nodes.add(new HostAndPort("192.168.25.153", 7001));
+				nodes.add(new HostAndPort("192.168.25.153", 7002));
+				nodes.add(new HostAndPort("192.168.25.153", 7003));
+				nodes.add(new HostAndPort("192.168.25.153", 7004));
+				nodes.add(new HostAndPort("192.168.25.153", 7005));
+				nodes.add(new HostAndPort("192.168.25.153", 7006));
+				JedisCluster jedisCluster = new JedisCluster(nodes);
+				// 第二步：直接使用JedisCluster对象操作redis。在系统中单例存在。
+				jedisCluster.set("hello", "100");
+				String result = jedisCluster.get("hello");
+				// 第三步：打印结果
+				System.out.println(result);
+				// 第四步：系统关闭前，关闭JedisCluster对象。
+				jedisCluster.close();
+				}
+		Spring的配置：
+				<!-- 集群版的配置 -->
+			<bean id="jedisCluster" class="redis.clients.jedis.JedisCluster">
+				<constructor-arg>
+					<set>
+						<bean class="redis.clients.jedis.HostAndPort">
+							<constructor-arg name="host" value="192.168.25.153"></constructor-arg>
+							<constructor-arg name="port" value="7001"></constructor-arg>
+						</bean>
+						<bean class="redis.clients.jedis.HostAndPort">
+							<constructor-arg name="host" value="192.168.25.153"></constructor-arg>
+							<constructor-arg name="port" value="7002"></constructor-arg>
+						</bean>
+						<bean class="redis.clients.jedis.HostAndPort">
+							<constructor-arg name="host" value="192.168.25.153"></constructor-arg>
+							<constructor-arg name="port" value="7003"></constructor-arg>
+						</bean>
+						<bean class="redis.clients.jedis.HostAndPort">
+							<constructor-arg name="host" value="192.168.25.153"></constructor-arg>
+							<constructor-arg name="port" value="7004"></constructor-arg>
+						</bean>
+						<bean class="redis.clients.jedis.HostAndPort">
+							<constructor-arg name="host" value="192.168.25.153"></constructor-arg>
+							<constructor-arg name="port" value="7005"></constructor-arg>
+						</bean>
+						<bean class="redis.clients.jedis.HostAndPort">
+							<constructor-arg name="host" value="192.168.25.153"></constructor-arg>
+							<constructor-arg name="port" value="7006"></constructor-arg>
+						</bean>
+					</set>
+				</constructor-arg>
+			</bean>
+			<bean id="jedisClientCluster" class="cn.e3mall.jedis.JedisClientCluster"/>
+
+		注意：单机版和集群版不能共存，使用单机版时注释集群版的配置。使用集群版，把单机版注释。
+	测试：
+			public void testJedisClient() throws Exception {
+			//初始化Spring容器
+			ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring/applicationContext-redis.xml");
+			//从容器中获得JedisClient对象
+			JedisClient jedisClient = applicationContext.getBean(JedisClient.class);
+			jedisClient.set("first", "100");
+			String result = jedisClient.get("first");
+			System.out.println(result);				
+		}
+	
+
+
+
+solr:是一个独立的企业级的搜索应用服务器，她是对外提供webservice的API接口，用户可以通过Http请求向搜索引擎服务器提交一定格式的xml文件，生成索引，也可以
+	通过Http Get操作提出查找的请求，并得到xml格式的返回结果
+
+	特点：
+	Solr是一个高性能，采用Java5开发，基于Lucene的全文搜索服务器。同时对其进行了扩展，提供了比Lucene更为丰富的查询语言，
+	同时实现了可配置、可扩展并对查询性能进行了优化，并且提供了一个完善的功能管理界面，是一款非常优秀的全文搜索引擎。
+	服务器安装solr：先上传，然后解压缩 tar -zxf solr-4.10.3.tgz.tagz
+				bin:
+				contrib:
+				dist:目标文件保存的目录
+				docs:文档
+				example:是一个例子文件夹，
+				licenses:
+
+				cp xxxxx  目标文件-r：复制文件的目录
+				安装到 tomcat中：
+					直接把他丢到tomcat中，这是一个war包
+				需要创间solrhome文件夹，然后需要改写配置文件：
+				webapps下文件夹中的web.xml中配置以下 solrhome路径。
+		使用：
+		第一步：把solr 的压缩包上传到Linux系统
+		第二步：解压solr。
+		第三步：安装Tomcat，解压缩即可。
+		第四步：把solr部署到Tomcat下。
+		第五步：解压缩war包。启动Tomcat解压。
+		第六步：把/root/solr-4.10.3/example/lib/ext目录下的所有的jar包，添加到solr工程中。
+		[root@localhost ext]# pwd
+		/root/solr-4.10.3/example/lib/ext
+		[root@localhost ext]# cp * /usr/local/solr/tomcat/webapps/solr/WEB-INF/lib/
+		第七步：创建一个solrhome。/example/solr目录就是一个solrhome。复制此目录到/usr/local/solr/solrhome
+		[root@localhost example]# pwd
+		/root/solr-4.10.3/example
+		[root@localhost example]# cp -r solr /usr/local/solr/solrhome
+		[root@localhost example]# 
+		第八步：关联solr及solrhome。需要修改solr工程的web.xml文件。
+			<env-entry>
+					<env-entry-name>solr/home</env-entry-name>
+					<env-entry-value>/usr/local/solr/solrhome</env-entry-value>
+					<env-entry-type>java.lang.String</env-entry-type>
+			</entry-entry>
+		第九步：启动Tomcat
+		http://192.168.25.154:8080/solr/
+		和windows下的配置完全一样。
+	
+ActiveMQ:
+		消息总系，是一个完全支持JMS1.1和J2EE规范的JMS Provider实现，
+		特点：
+		ActiveMQ 是Apache出品，最流行的，能力强劲的开源消息总线。ActiveMQ 是一个完全支持JMS1.1和J2EE 1.4规范的 JMS Provider实现,尽管JMS规范出台已经是很久的事情了,但是JMS在当今的J2EE应用中间仍然扮演着特殊的地位。
+			主要特点：
+			1. 多种语言和协议编写客户端。语言: Java, C, C++, C#, Ruby, Perl, Python, PHP。应用协议: OpenWire,Stomp REST,WS Notification,XMPP,AMQP
+			2. 完全支持JMS1.1和J2EE 1.4规范 (持久化,XA消息,事务)
+			3. 对Spring的支持,ActiveMQ可以很容易内嵌到使用Spring的系统里面去,而且也支持Spring2.0的特性
+			4. 通过了常见J2EE服务器(如 Geronimo,JBoss 4, GlassFish,WebLogic)的测试,其中通过JCA 1.5 resource adaptors的配置,可以让ActiveMQ可以自动的部署到任何兼容J2EE 1.4 商业服务器上
+			5. 支持多种传送协议:in-VM,TCP,SSL,NIO,UDP,JGroups,JXTA
+			6. 支持通过JDBC和journal提供高速的消息持久化
+			7. 从设计上保证了高性能的集群,客户端-服务器,点对点
+			8. 支持Ajax
+			9. 支持与Axis的整合
+			10. 可以很容易得调用内嵌JMS provider,进行测试
+
+			10.2.	ActiveMQ的消息形式
+			对于消息的传递有两种类型：
+			一种是点对点的，即一个生产者和一个消费者一一对应；
+			另一种是发布/订阅模式，即一个生产者产生消息并进行发送后，可以由多个消费者进行接收。
+			JMS定义了五种不同的消息正文格式，以及调用的消息类型，允许你发送并接收以一些不同形式的数据，提供现有消息格式的一些级别的兼容性。
+			　　· StreamMessage -- Java原始值的数据流
+			　　· MapMessage--一套名称-值对
+			　　· TextMessage--一个字符串对象
+			　　· ObjectMessage--一个序列化的 Java对象
+			　　· BytesMessage--一个字节的数据流
+			第一步： 把ActiveMQ 的压缩包上传到Linux系统。
+			第二步：解压缩。
+			第三步：启动。
+			使用bin目录下的activemq命令启动：
+			[root@localhost bin]# ./activemq start
+			关闭：
+			[root@localhost bin]# ./activemq stop
+			查看状态：
+			[root@localhost bin]# ./activemq status
+
+			注意：如果ActiveMQ整合spring使用不要使用activemq-all-5.12.0.jar包。建议使用5.11.2
+
+			进入管理后台：
+			http://192.168.25.168:8161/admin
+			用户名：admin
+			密码：admin
+			
+			第一步：创建ConnectionFactory对象，需要指定服务端ip及端口号。
+			第二步：使用ConnectionFactory对象创建一个Connection对象。
+			第三步：开启连接，调用Connection对象的start方法。
+			第四步：使用Connection对象创建一个Session对象。
+			第五步：使用Session对象创建一个Destination对象（topic、queue），此处创建一个Queue对象。
+			第六步：使用Session对象创建一个Producer对象。
+			第七步：创建一个Message对象，创建一个TextMessage对象。
+			第八步：使用Producer对象发送消息。
+			第九步：关闭资源。
+
+						public void testQueueProducer() throws Exception {
+					// 第一步：创建ConnectionFactory对象，需要指定服务端ip及端口号。
+					//brokerURL服务器的ip及端口号
+					ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.25.168:61616");
+					// 第二步：使用ConnectionFactory对象创建一个Connection对象。
+					Connection connection = connectionFactory.createConnection();
+					// 第三步：开启连接，调用Connection对象的start方法。
+					connection.start();
+					// 第四步：使用Connection对象创建一个Session对象。
+					//第一个参数：是否开启事务。true：开启事务，第二个参数忽略。
+					//第二个参数：当第一个参数为false时，才有意义。消息的应答模式。1、自动应答2、手动应答。一般是自动应答。
+					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+					// 第五步：使用Session对象创建一个Destination对象（topic、queue），此处创建一个Queue对象。
+					//参数：队列的名称。
+					Queue queue = session.createQueue("test-queue");
+					// 第六步：使用Session对象创建一个Producer对象。
+					MessageProducer producer = session.createProducer(queue);
+					// 第七步：创建一个Message对象，创建一个TextMessage对象。
+					/*TextMessage message = new ActiveMQTextMessage();
+					message.setText("hello activeMq,this is my first test.");*/
+					TextMessage textMessage = session.createTextMessage("hello activeMq,this is my first test.");
+					// 第八步：使用Producer对象发送消息。
+					producer.send(textMessage);
+					// 第九步：关闭资源。
+					producer.close();
+					session.close();
+					connection.close();
+				}
+				第一步：创建一个ConnectionFactory对象。
+				第二步：从ConnectionFactory对象中获得一个Connection对象。
+				第三步：开启连接。调用Connection对象的start方法。
+				第四步：使用Connection对象创建一个Session对象。
+				第五步：使用Session对象创建一个Destination对象。和发送端保持一致queue，并且队列的名称一致。
+				第六步：使用Session对象创建一个Consumer对象。
+				第七步：接收消息。
+				第八步：打印消息。
+				第九步：关闭资源
+
+				public void testQueueConsumer() throws Exception {
+						// 第一步：创建一个ConnectionFactory对象。
+						ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.25.168:61616");
+						// 第二步：从ConnectionFactory对象中获得一个Connection对象。
+						Connection connection = connectionFactory.createConnection();
+						// 第三步：开启连接。调用Connection对象的start方法。
+						connection.start();
+						// 第四步：使用Connection对象创建一个Session对象。
+						Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+						// 第五步：使用Session对象创建一个Destination对象。和发送端保持一致queue，并且队列的名称一致。
+						Queue queue = session.createQueue("test-queue");
+						// 第六步：使用Session对象创建一个Consumer对象。
+						MessageConsumer consumer = session.createConsumer(queue);
+						// 第七步：接收消息。
+						consumer.setMessageListener(new MessageListener() {
+							
+							@Override
+							public void onMessage(Message message) {
+								try {
+									TextMessage textMessage = (TextMessage) message;
+									String text = null;
+									//取消息的内容
+									text = textMessage.getText();
+									// 第八步：打印消息。
+									System.out.println(text);
+								} catch (JMSException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+						//等待键盘输入
+						System.in.read();
+						// 第九步：关闭资源
+						consumer.close();
+						session.close();
+						connection.close();
+					}
+
+ActiveMQ整合spring
+		在applicationContext中使用：
+						<!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供 -->
+							<bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+								<property name="brokerURL" value="tcp://192.168.25.168:61616" />
+							</bean>
+							<!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory -->
+							<bean id="connectionFactory"
+								class="org.springframework.jms.connection.SingleConnectionFactory">
+								<!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
+								<property name="targetConnectionFactory" ref="targetConnectionFactory" />
+							</bean>
+							<!--这个是队列目的地，点对点的 -->
+							<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+								<constructor-arg>
+									<value>spring-queue</value>
+								</constructor-arg>
+							</bean>
+							<!--这个是主题目的地，一对多的 -->
+							<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+								<constructor-arg value="topic" />
+							</bean>
+							<!-- 接收消息 -->
+							<!-- 配置监听器 -->
+							<bean id="myMessageListener" class="cn.e3mall.search.listener.MyMessageListener" />
+							<!-- 消息监听容器 -->
+							<bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+								<property name="connectionFactory" ref="connectionFactory" />
+								<property name="destination" ref="queueDestination" />
+								<property name="messageListener" ref="myMessageListener" />
+							</bean>
+						</beans>
+					发送消息：
+						public void testQueueProducer() throws Exception {
+							// 第一步：初始化一个spring容器
+							ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring/applicationContext-activemq.xml");
+							// 第二步：从容器中获得JMSTemplate对象。
+							JmsTemplate jmsTemplate = applicationContext.getBean(JmsTemplate.class);
+							// 第三步：从容器中获得一个Destination对象
+							Queue queue = (Queue) applicationContext.getBean("queueDestination");
+							// 第四步：使用JMSTemplate对象发送消息，需要知道Destination
+							jmsTemplate.send(queue, new MessageCreator() {
+								
+								@Override
+								public Message createMessage(Session session) throws JMSException {
+									TextMessage textMessage = session.createTextMessage("spring activemq test");
+									return textMessage;
+								}
+							});
+						}
+					接受消息：	
+						public class MyMessageListener implements MessageListener {
+
+								@Override
+								public void onMessage(Message message) {
+									
+									try {
+										TextMessage textMessage = (TextMessage) message;
+										//取消息内容
+										String text = textMessage.getText();
+										System.out.println(text);
+									} catch (JMSException e) {
+										e.printStackTrace();
+									}
+								}
+
+							}
+	FreeMarker：
+				FreeMarker是一个用Java语言编写的模板引擎，它基于模板来生成文本输出。FreeMarker与Web容器无关，即在Web运行时，它并不知道Servlet或HTTP。
+				它不仅可以用作表现层的实现技术，而且还可以用于生成XML，JSP或Java 等。目前企业中:主要用Freemarker做静态页面或是页面展示
+			使用方式：
+				第一步：创建一个Configuration对象，直接new一个对象。构造方法的参数就是freemarker对于的版本号。
+				第二步：设置模板文件所在的路径。
+				第三步：设置模板文件使用的字符集。一般就是utf-8.
+				第四步：加载一个模板，创建一个模板对象。
+				第五步：创建一个模板使用的数据集，可以是pojo也可以是map。一般是Map。
+				第六步：创建一个Writer对象，一般创建一FileWriter对象，指定生成的文件名。
+				第七步：调用模板对象的process方法输出文件。
+				第八步：关闭流。
+				@Test
+				public void genFile() throws Exception {
+					// 第一步：创建一个Configuration对象，直接new一个对象。构造方法的参数就是freemarker对于的版本号。
+					Configuration configuration = new Configuration(Configuration.getVersion());
+					// 第二步：设置模板文件所在的路径。
+					configuration.setDirectoryForTemplateLoading(new File("D:/workspaces-itcast/term197/e3-item-web/src/main/webapp/WEB-INF/ftl"));
+					// 第三步：设置模板文件使用的字符集。一般就是utf-8.
+					configuration.setDefaultEncoding("utf-8");
+					// 第四步：加载一个模板，创建一个模板对象。
+					Template template = configuration.getTemplate("hello.ftl");
+					// 第五步：创建一个模板使用的数据集，可以是pojo也可以是map。一般是Map。
+					Map dataModel = new HashMap<>();
+					//向数据集中添加数据
+					dataModel.put("hello", "this is my first freemarker test.");
+					// 第六步：创建一个Writer对象，一般创建一FileWriter对象，指定生成的文件名。
+					Writer out = new FileWriter(new File("D:/temp/term197/out/hello.html"));
+					// 第七步：调用模板对象的process方法输出文件。
+					template.process(dataModel, out);
+					// 第八步：关闭流。
+					out.close();
+				}
+	freemarker整合spring
+				配置文件：	
+						<bean id="freemarkerConfig"
+							class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+							<property name="templateLoaderPath" value="/WEB-INF/ftl/" />
+							<property name="defaultEncoding" value="UTF-8" />
+						</bean>
+
+				@Autowired
+				private FreeMarkerConfigurer freeMarkerConfigurer;
+
+				@RequestMapping("/genhtml")
+				@ResponseBody
+				public String genHtml()throws Exception {
+					// 1、从spring容器中获得FreeMarkerConfigurer对象。
+					// 2、从FreeMarkerConfigurer对象中获得Configuration对象。
+					Configuration configuration = freeMarkerConfigurer.getConfiguration();
+					// 3、使用Configuration对象获得Template对象。
+					Template template = configuration.getTemplate("hello.ftl");
+					// 4、创建数据集
+					Map dataModel = new HashMap<>();
+					dataModel.put("hello", "1000");
+					// 5、创建输出文件的Writer对象。
+					Writer out = new FileWriter(new File("D:/temp/term197/out/spring-freemarker.html"));
+					// 6、调用模板对象的process方法，生成文件。
+					template.process(dataModel, out);
+					// 7、关闭流。
+					out.close();
+					return "OK";
+				}
+		sso单点登录：
+				集群环境下会出现让用户多登录几次：
+						1.配置tomcat集群，配置tomcatSession复制，节点不超过5个
+						2，使用session服务器，保存session信息，使得每个节点是无状态，需要模拟Session
+
+				单点登录：是使用redis模拟session实现Session的统一管理
+				@RequestMapping(value="/user/login", method=RequestMethod.POST)
+				@ResponseBody
+				public E3Result login(String username, String password,
+						HttpServletRequest request, HttpServletResponse response) {
+					E3Result e3Result = loginService.userLogin(username, password);
+					//判断是否登录成功
+					if(e3Result.getStatus() == 200) {
+						String token = e3Result.getData().toString();
+						//如果登录成功需要把token写入cookie
+						CookieUtils.setCookie(request, response, TOKEN_KEY, token);
+					}
+					//返回结果
+					return e3Result;
+				}
+				需要使用cookieutils将token写到这个cookie中
+		购物车功能：
+				1、实现简单
+				2、不需要占用服务端存储空间。
+				缺点：
+				1、存储容量有限
+				2、更换设备购车信息不能同步。
+
+				实现购车商品数据同步：
+				1、要求用户登录。
+				2、把购物车商品列表保存到数据库中。推荐使用redis。
+				3、Key：用户id，value：购车商品列表。推荐使用hash，hash的field：商品id，value：商品信息。
+				4、在用户未登录情况下写cookie。当用户登录后，访问购物车列表时，
+				a)	把cookie中的数据同步到redis。
+				b)	把cookie中的数据删除
+				c)	展示购物车列表时以redis为准。
+				d)	如果redis中有数据cookie中也有数据，需要做数据合并。相同商品数量相加，不同商品添加一个新商品。
+				5、如果用户登录状态，展示购物车列表以redis为准。如果未登录，以cookie为准
+						@Value("${TT_CART}")
+						private String TT_CART;
+						@Value("${CART_EXPIRE}")
+						private Integer CART_EXPIRE;
+
+						@Autowired
+						private ItemService itemService;
+						
+						@RequestMapping("/cart/add/{itemId}")
+						public String addCartItem(@PathVariable Long itemId, Integer num,
+								HttpServletRequest request, HttpServletResponse response) {
+							// 1、从cookie中查询商品列表。
+							List<TbItem> cartList = getCartList(request);
+							// 2、判断商品在商品列表中是否存在。
+							boolean hasItem = false;
+							for (TbItem tbItem : cartList) {
+								//对象比较的是地址，应该是值的比较
+								if (tbItem.getId() == itemId.longValue()) {
+									// 3、如果存在，商品数量相加。
+									tbItem.setNum(tbItem.getNum() + num);
+									hasItem = true;
+									break;
+								}
+							}
+							if (!hasItem) {
+								// 4、不存在，根据商品id查询商品信息。
+								TbItem tbItem = itemService.getItemById(itemId);
+								//取一张图片
+								String image = tbItem.getImage();
+								if (StringUtils.isNoneBlank(image)) {
+									String[] images = image.split(",");
+									tbItem.setImage(images[0]);
+								}
+								//设置购买商品数量
+								tbItem.setNum(num);
+								// 5、把商品添加到购车列表。
+								cartList.add(tbItem);
+							}
+							// 6、把购车商品列表写入cookie。
+							CookieUtils.setCookie(request, response, TT_CART, JsonUtils.objectToJson(cartList), CART_EXPIRE, true);
+							return "cartSuccess";
+						}
+						
+						/**
+						* 从cookie中取购物车列表
+						* <p>Title: getCartList</p>
+						* <p>Description: </p>
+						* @param request
+						* @return
+						*/
+						private List<TbItem> getCartList(HttpServletRequest request) {
+							//取购物车列表
+							String json = CookieUtils.getCookieValue(request, TT_CART, true);
+							//判断json是否为null
+							if (StringUtils.isNotBlank(json)) {
+								//把json转换成商品列表返回
+								List<TbItem> list = JsonUtils.jsonToList(json, TbItem.class);
+								return list;
+							}
+							return new ArrayList<>();
+						}
+
+						@RequestMapping("/cart/cart")
+							public String showCartList(HttpServletRequest request, Model model) {
+								//取购物车商品列表
+								List<TbItem> cartList = getCartList(request);
+								//传递给页面
+								model.addAttribute("cartList", cartList);
+								return "cart";
+							}
+
+						
+					}
+					//删除购物车
+					@RequestMapping("/cart/delete/{itemId}")
+					public String deleteCartItem(@PathVariable Long itemId, HttpServletRequest request,
+							HttpServletResponse response) {
+						// 1、从url中取商品id
+						// 2、从cookie中取购物车商品列表
+						List<TbItem> cartList = getCartList(request);
+						// 3、遍历列表找到对应的商品
+						for (TbItem tbItem : cartList) {
+							if (tbItem.getId() == itemId.longValue()) {
+								// 4、删除商品。
+								cartList.remove(tbItem);
+								break;
+							}
+						}
+						// 5、把商品列表写入cookie。
+						CookieUtils.setCookie(request, response, TT_CART, JsonUtils.objectToJson(cartList), CART_EXPIRE, true);
+						// 6、返回逻辑视图：在逻辑视图中做redirect跳转。
+						return "redirect:/cart/cart.html";
+					}
+
+					service:
+
+
+		订单系统：
+
+			
+
+
+
+
+
+		工具类：
+				设置cookie的一些方法：
+					/**
+					* 设置Cookie的值 不设置生效时间默认浏览器关闭即失效,也不编码
+					*/
+					public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName,
+									String cookieValue) {
+							setCookie(request, response, cookieName, cookieValue, -1);
+					}
+
+					/**
+					* 设置Cookie的值 在指定时间内生效,但不编码
+					*/
+					public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName,
+									String cookieValue, int cookieMaxage) {
+							setCookie(request, response, cookieName, cookieValue, cookieMaxage, false);
+					}
+
+					/**
+					* 设置Cookie的值 不设置生效时间,但编码
+					*/
+					public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName,
+									String cookieValue, boolean isEncode) {
+							setCookie(request, response, cookieName, cookieValue, -1, isEncode);
+					}
+
+					/**
+					* 设置Cookie的值 在指定时间内生效, 编码参数
+					*/
+					public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName,
+									String cookieValue, int cookieMaxage, boolean isEncode) {
+							doSetCookie(request, response, cookieName, cookieValue, cookieMaxage, isEncode);
+					}
+
+					/**
+					* 设置Cookie的值 在指定时间内生效, 编码参数(指定编码)
+					*/
+					public static void setCookie(HttpServletRequest request, HttpServletResponse response, String cookieName,
+									String cookieValue, int cookieMaxage, String encodeString) {
+							doSetCookie(request, response, cookieName, cookieValue, cookieMaxage, encodeString);
+					}	
+		整个系统架构运行出现的错误：
+		1.在使用maven整合mybatis时出现数据绑定错误：org.apache.ibatis.binding.BindingException: Invalid bound statement (not found)
+				解释：就是说，你的Mapper接口，被Spring注入后，却无法正常的使用mapper.xml的sql；
+				  这里的Spring注入后的意思是，你的接口已经成功的被扫描到，但是当Spring尝试注入一个代理（MyBatist实现）的实现类后，却无法正常使用。这里的可能发生的情况有如下几种；
+				接口已经被扫描到，但是代理对象没有找到，即使尝试注入，也是注入一个错误的对象（可能就是null）
+				接口已经被扫描到，代理对象找到了，也注入到接口上了，但是调用某个具体方法时，却无法使用（可能别的方法是正常的）
+				当然，我们不好说是那种情况，毕竟报错的结果是一样的，这里就提供几种排查方法：
+				mapper接口和mapper.xml是否在同一个包（package)下？名字是否一样（仅后缀不同）？
+				比如，接口名是NameMapper.java;对应的xml就应该是NameMapper.xml
+				mapper.xml的命名空间（namespace）是否跟mapper接口的包名一致？
+				比如，你接口的包名是com.abc.dao,接口名是NameMapper.java，那么你的mapper.xml的namespace应该是com.abc.dao.NameMapper
+				接口的方法名，与xml中的一条sql标签的id一致
+				比如，接口的方法List<User> findAll();那么，对应的xml里面一定有一条是<select id="findAll" resultMap="**">****</select>
+				如果接口中的返回值List集合（不知道其他集合也是），那么xml里面的配置，尽量用resultMap（保证resultMap配置正确）,不要用resultType
+				最后，如果你的项目是maven项目，请你在编译后，到接口所在目录看一看，很有可能是没有生产对应的xml文件，因为maven默认是不编译的，因此，你需要在你的pom.xml的<build></build>里面，加这么一段：
+					<resources>
+					    <resource>
+						<directory>src/main/java</directory>
+						<includes>
+						    <include>**/*.xml</include>
+						</includes>
+						<filtering>true</filtering>
+					    </resource>
+					</resources>
+		2.使用tomcat7插件时运行时出错：org.springframework.beans.factory.BeanDefinitionStoreException: Unexpected exception parsing XML document from file [F:\Java\javaEE\e3-manager\e3-manager-service\target\classes\spring\applicationContext-service.xml]; nested exception is java.lang.IllegalStateException: Context namespace element 'component-scan' and its parser class [org.springframework.context.annotation.ComponentScanBeanDefinitionParser] are only available on JDK 1.5 and higher
+		解决方法：配置出JAVA的编译版本为1.8
+		<!-- java编译插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		3.在pom.xml中配置出现：web.xml is missing and <failOnMissingWebXml> is set to true
+			这个意思就是未能够在webapps下的目录没有web.xml
+			直接这时候需要右击项目——>Java EE Tools——>Generate Deployment Descriptor Stub.然后系统会在src/main/webapp/WEB_INF文件加下创建web.xml文件。错误解决！
+			或者在pom.xml中配置：
+				<build>
+					  <plugins>
+						   <plugin>
+							    <groupId>org.apache.maven.plugins</groupId>
+								    <artifactId>maven-war-plugin</artifactId>
+									 <version>2.6</version>
+								    <configuration>
+								     <failOnMissingWebXml>false</failOnMissingWebXml>
+							    </configuration>
+						   </plugin>
+					  </plugins>
+				</build>
+		4.
+		
