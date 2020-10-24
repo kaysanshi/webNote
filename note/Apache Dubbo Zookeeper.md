@@ -1,0 +1,531 @@
+## 分布式系统开发一定会遇到的四个问题以及解决方案：
+
+1.服务众多，客户端如何访问。
+
+2.服务众多，服务之间如何通信。
+
+3.服务众多，如何治理。
+
+4.服务众多，如果挂了怎么办；
+
+这四个问题对应了解决四个问题的方式：
+
+1.API网关，服务路由
+
+2.Http,RPC,异步调用
+
+3.服务注册与发现 -》高可用
+
+4.熔断，限流，服务降级
+
+#### 解决方案：
+
+SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到的问题，想要使用Spring Cloud必须基于Spring Boot
+
+1.Spring Cloud Netflix
+
+​	API网关，zuul组件
+
+​	服务注册与发现，Eureka
+
+​	Fegin -> http Client -->http通信方式，同步阻塞
+
+​    熔断机制 Hystrix
+
+2.Apache Dubbo Zookeeper
+
+   Dubbo是一个高效性能的 Java RPC 通信框架，2.6.x
+
+   服务注册与发现，Zookeeper，
+
+   API网关 没有  找第三方或自己实现。
+
+  服务挂了，Hystrix
+
+3.Spring Cloud Alibaba
+
+ Spring Cloud Alibaba致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+
+下一代会是什么呢，Service Mesh 服务网格化，Istio 可能是需要掌握的一套微服务解决方案。
+
+本文主要介绍Apache Dubbo Zookeeper
+
+## Apache Dubbo Zookeeper
+
+目前市场上主流的 **第二套微服务架构解决方案：Spring Boot + Dubbo + Zookeeper**
+
+- Apache Dubbo (incubating) |ˈdʌbəʊ| 是一款高性能、轻量级的开源 Java RPC 框架。
+- ZooKeeper 是一种分布式协调服务，用于管理大型主机。在分布式环境中协调和管理服务是一个复杂的过程
+
+#### 单一应用架构 
+
+​			当网站流量很小时，只需一个应用，将所有功能都部署在一起，以减少部署节点和成此时，用于简化增删改查工作量的 数据访问框架(ORM) 是关键。
+
+#### 垂直应用架构 
+
+​		当访问量逐渐增大，单一应用增加机器带来的加速度越来越小，将应用拆成互不相干的几个应用，以提升效率。此时，用于加速前端页面开发的 Web框架(MVC) 是关键。
+
+#### 分布式服务架构
+
+​	当垂直应用越来越多，应用之间交互不可避免，将核心业务抽取出来，作为独立的服务，逐渐形成稳定的服务中心，使前端应用能更快速的响应多变的市场需求。此时，用于提高业务复用及整合的 分布式服务框架(RPC) 是关键。
+
+#### 流动计算架构 
+
+​	当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。
+​		此时，用于提高机器利用率的 资源调度和治理中心(SOA) 是关键。
+
+​	Dubbo就是资源调度和治理中心的管理工具。
+
+## Dubbo和Zookpper
+
+### Dubbo
+
+随着互联网的发展，网站应用的规模不断扩大，常规的垂直应用架构已无法应对，分布式服务架构以及流动计算架构势在必行，亟需一个治理系统确保架构有条不紊的演进
+
+![img](F:\Java\web学习笔记\note\clip_image001.jpg)
+
+**节点角色说明：**
+
+·        **Provider:** 暴露服务的服务提供方。
+
+·        **Consumer:** 调用远程服务的服务消费方。
+
+·        **Registry:** 服务注册与发现的注册中心。
+
+·        **Monitor:** 统计服务的调用次调和调用时间的监控中心。
+
+·        **Container:** 服务运行容器。
+
+**调用关系说明：**
+
+·        0. 服务容器负责启动，加载，运行服务提供者。
+
+·        1. 服务提供者在启动时，向注册中心注册自己提供的服务。
+
+·        2. 服务消费者在启动时，向注册中心订阅自己所需的服务。
+
+·        3. 注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。
+
+·        4. 服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。
+
+·        5. 服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。
+
+### Apache Zookeeper
+
+ZooKeeper 是一种分布式协调服务，用于管理大型主机。在分布式环境中协调和管理服务是一个复杂的过程。ZooKeeper 通过其简单的架构和 API 解决了这个问题。ZooKeeper 允许开发人员专注于核心应用程序逻辑，而不必担心应用程序的分布式特性。
+
+以下为 Zookeeper 的基本概念
+
+#### Zookeeper 的数据模型
+
+Zookeeper 的数据模型是什么样子呢？它很像数据结构当中的树，也很像文件系统的目录。
+
+![img](https://www.funtl.com/assets/Lusifer201810170010.png)
+
+树是由节点所组成，Zookeeper 的数据存储也同样是基于节点，这种节点叫做 **Znode**
+
+但是，不同于树的节点，Znode 的引用方式是路径引用，类似于文件路径：
+
+```text
+/动物/猫
+/汽车/宝马
+```
+
+这样的层级结构，让每一个 Znode 节点拥有唯一的路径，就像命名空间一样对不同信息作出清晰的隔离。
+
+##### Znode 包含哪些元素
+
+![img](https://www.funtl.com/assets/Lusifer201810170011.png)
+
+- data：Znode 存储的数据信息。
+- ACL：记录 Znode 的访问权限，即哪些人或哪些 IP 可以访问本节点。
+- stat：包含 Znode 的各种元数据，比如事务 ID、版本号、时间戳、大小等等。
+- child：当前节点的子节点引用
+
+这里需要注意一点，Zookeeper 是为读多写少的场景所设计。Znode 并不是用来存储大规模业务数据，而是用于存储少量的状态和配置信息，`每个节点的数据最大不能超过 1MB`。
+
+#### Zookeeper 的基本操作
+
+创建节点
+
+```text
+create
+```
+
+删除节点
+
+```text
+delete
+```
+
+判断节点是否存在
+
+```text
+exists
+```
+
+获得一个节点的数据
+
+```text
+getData
+```
+
+设置一个节点的数据
+
+```text
+setData
+```
+
+获取节点下的所有子节点
+
+```text
+getChildren
+```
+
+这其中，`exists`，`getData`，`getChildren` 属于读操作。Zookeeper 客户端在请求读操作的时候，可以选择是否设置 **Watch**
+
+#### Zookeeper 的事件通知
+
+我们可以把 **Watch** 理解成是注册在特定 Znode 上的触发器。当这个 Znode 发生改变，也就是调用了 `create`，`delete`，`setData` 方法的时候，将会触发 Znode 上注册的对应事件，请求 Watch 的客户端会接收到异步通知。
+
+具体交互过程如下：
+
+- 客户端调用 `getData` 方法，`watch` 参数是 `true`。服务端接到请求，返回节点数据，并且在对应的哈希表里插入被 Watch 的 Znode 路径，以及 Watcher 列表。
+
+![img](https://www.funtl.com/assets/Lusifer201810170012.png)
+
+- 当被 Watch 的 Znode 已删除，服务端会查找哈希表，找到该 Znode 对应的所有 Watcher，异步通知客户端，并且删除哈希表中对应的 Key-Value。
+
+![img](https://www.funtl.com/assets/Lusifer201810170013.png)
+
+#### Zookeeper 的一致性
+
+Zookeeper 身为分布式系统协调服务，如果自身挂了如何处理呢？为了防止单机挂掉的情况，Zookeeper 维护了一个集群。如下图：
+
+![img](https://www.funtl.com/assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20181017182528.jpg)
+
+Zookeeper Service 集群是一主多从结构。
+
+在更新数据时，首先更新到主节点（这里的节点是指服务器，不是 Znode），再同步到从节点。
+
+在读取数据时，直接读取任意从节点。
+
+为了保证主从节点的数据一致性，Zookeeper 采用了 **ZAB 协议**，这种协议非常类似于一致性算法 **Paxos** 和 **Raft**。
+
+##### 什么是 ZAB
+
+Zookeeper Atomic Broadcast，有效解决了 Zookeeper 集群崩溃恢复，以及主从同步数据的问题。
+
+##### ZAB 协议定义的三种节点状态
+
+- Looking ：选举状态。
+- Following ：Follower 节点（从节点）所处的状态。
+- Leading ：Leader 节点（主节点）所处状态。
+
+##### 最大 ZXID
+
+最大 ZXID 也就是节点本地的最新事务编号，包含 epoch 和计数两部分。epoch 是纪元的意思，相当于 Raft 算法选主时候的 term。
+
+##### ZAB 的崩溃恢复
+
+假如 Zookeeper 当前的主节点挂掉了，集群会进行崩溃恢复。ZAB 的崩溃恢复分成三个阶段：
+
+**Leader election**
+
+选举阶段，此时集群中的节点处于 Looking 状态。它们会各自向其他节点发起投票，投票当中包含自己的服务器 ID 和最新事务 ID（ZXID）。
+
+![img](https://www.funtl.com/assets/Lusifer201810170014.png)
+
+接下来，节点会用自身的 ZXID 和从其他节点接收到的 ZXID 做比较，如果发现别人家的 ZXID 比自己大，也就是数据比自己新，那么就重新发起投票，投票给目前已知最大的 ZXID 所属节点。
+
+![img](https://www.funtl.com/assets/Lusifer201810170015.png)
+
+每次投票后，服务器都会统计投票数量，判断是否有某个节点得到半数以上的投票。如果存在这样的节点，该节点将会成为准 Leader，状态变为 Leading。其他节点的状态变为 Following。
+
+![img](https://www.funtl.com/assets/Lusifer201810170016.png)
+
+**Discovery**
+
+发现阶段，用于在从节点中发现最新的 ZXID 和事务日志。或许有人会问：既然 Leader 被选为主节点，已经是集群里数据最新的了，为什么还要从节点中寻找最新事务呢？
+
+这是为了防止某些意外情况，比如因网络原因在上一阶段产生多个 Leader 的情况。
+
+所以这一阶段，Leader 集思广益，接收所有 Follower 发来各自的最新 epoch 值。Leader 从中选出最大的 epoch，基于此值加 1，生成新的 epoch 分发给各个 Follower。
+
+各个 Follower 收到全新的 epoch 后，返回 ACK 给 Leader，带上各自最大的 ZXID 和历史事务日志。Leader 选出最大的 ZXID，并更新自身历史日志。
+
+**Synchronization**
+
+同步阶段，把 Leader 刚才收集得到的最新历史事务日志，同步给集群中所有的 Follower。只有当半数 Follower 同步成功，这个准 Leader 才能成为正式的 Leader。
+
+自此，故障恢复正式完成。
+
+##### ZAB 的数据写入
+
+**Broadcast**
+
+ZAB 的数据写入涉及到 Broadcast 阶段，简单来说，就是 Zookeeper 常规情况下更新数据的时候，由 Leader 广播到所有的 Follower。其过程如下：
+
+- 客户端发出写入数据请求给任意 Follower。
+- Follower 把写入数据请求转发给 Leader。
+- Leader 采用二阶段提交方式，先发送 Propose 广播给 Follower。
+- Follower 接到 Propose 消息，写入日志成功后，返回 ACK 消息给 Leader。
+- Leader 接到半数以上ACK消息，返回成功给客户端，并且广播 Commit 请求给 Follower
+
+![img](https://www.funtl.com/assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20181017192657.jpg)
+
+ZAB 协议既不是强一致性，也不是弱一致性，而是处于两者之间的**单调一致性（顺序一致性）**。它依靠事务 ID 和版本号，保证了数据的更新和读取是有序的。
+
+#### Zookeeper 的应用场景
+
+##### 分布式锁
+
+这是雅虎研究员设计 Zookeeper 的初衷。利用 Zookeeper 的临时顺序节点，可以轻松实现分布式锁。
+
+##### 服务注册和发现
+
+利用 Znode 和 Watcher，可以实现分布式服务的注册和发现。最著名的应用就是阿里的分布式 RPC 框架 Dubbo。
+
+##### 共享配置和状态信息
+
+Redis 的分布式解决方案 Codis，就利用了 Zookeeper 来存放数据路由表和 codis-proxy 节点的元信息。同时 codis-config 发起的命令都会通过 ZooKeeper 同步到各个存活的 codis-proxy。
+
+此外，Kafka、HBase、Hadoop，也都依靠Zookeeper同步节点信息，实现高可用。
+
+#### Zookeeper 如何实现分布式锁
+
+##### Zookeeper 分布式锁的原理
+
+##### Zookeeper和Redis分布式锁的比较
+
+#### Dubbo和Zookpper安装	
+
+##### dubbo如何使用：
+​		先要在注册中心注册(注册中心)：ZooKeeper使用
+
+```
+发布服务：
+<!-- 和本地服务一样实现远程服务 -->
+<bean id="xxxService" class="com.xxx.XxxServiceImpl" />
+<!-- 增加暴露远程服务配置 -->
+<dubbo:service interface="com.xxx.XxxService" ref="xxxService" />
+
+调用服务：
+<!-- 增加引用远程服务配置 -->
+<dubbo:reference id="xxxService" interface="com.xxx.XxxService" />
+<!-- 和本地服务一样使用远程服务 -->
+<bean id="xxxAction" class="com.xxx.XxxAction">
+<property name="xxxService" ref="xxxService" />
+</bean>
+dubbo使用只需要把jar包放到tomcat中
+```
+
+
+参考修改dubbo不启动的博客：https://blog.csdn.net/qq_37256896/article/details/90048639
+
+dubbo配置dubbo.properties：
+
+```
+dubbo.registry.address=zookeeper://127.0.0.1:2181  
+dubbo.admin.root.password=root
+dubbo.admin.guest.password=guest 
+```
+
+##### ZooKeeper使用：
+​				注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小。使用dubbo-2.3.3以上版本，建议使用zookeeper注册中心。
+​				Zookeeper是Apacahe Hadoop的子项目，是一个树型的目录服务，支持变更推送，适合作为Dubbo服务的注册中心，工业强度较高，可用于生产环境，并推荐使用
+
+Zookeeper安装：
+			1、可以作为集群的管理工具使用。
+			2、可以集中管理配置文件。
+			安装步骤：
+			第一步：安装jdk
+			第二步：把zookeeper的压缩包上传到linux系统。
+			第三步：解压缩压缩包
+			tar -zxvf zookeeper-3.4.6.tar.gz
+			第四步：进入zookeeper-3.4.6目录，创建data文件夹。
+			第五步：把zoo_sample.cfg改名为zoo.cfg
+
+```
+[root@localhost conf]# mv zoo_sample.cfg zoo.cfg
+tickTime = 2000
+dataDir = /path/to/zookeeper/data
+clientPort = 2181
+initLimit = 5
+syncLimit = 2
+```
+
+​			第六步：修改data属性：dataDir=/root/zookeeper-3.4.6/data
+​			第七步：启动zookeeper
+​			[root@localhost bin]# ./zkServer.sh start
+关闭：[root@localhost bin]# ./zkServer.sh stop
+查看状态：[root@localhost bin]# ./zkServer.sh status
+
+重启服务：[root@localhost bin]# ./zkServer.sh restart
+
+<font color="red">注意：需要关闭防火墙。</font>
+			service iptables stop
+			永久关闭修改配置开机不启动防火墙：
+			chkconfig iptables off
+			如果不能成功启动zookeeper，需要删除data目录下的zookeeper_server.pid文件。			
+
+##### 基于Docker安装Zookeeper
+
+Zookeeper 部署有三种方式，单机模式、集群模式、伪集群模式，以下采用 Docker 的方式部署
+
+**注意：** 集群为大于等于3个奇数，如 3、5、7,不宜太多，集群机器多了选举和数据同步耗时长，不稳定。
+
+###### 单机模式
+
+```yaml
+version: '3.1'
+
+services:
+    zoo1:
+        image: zookeeper
+        restart: always
+        hostname: zoo1
+        ports:
+            - 2181:2181
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=zoo1:2888:3888
+```
+
+```yaml
+// 检查是否安装成功
+bash-4.3# ./bin/zkServer.sh status
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Mode: standalone
+```
+
+###### 集群模式
+
+**docker-compose.yml**
+
+```yaml
+version: '3.1'
+services:
+    zoo1:
+        image: zookeeper
+        restart: always
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
+        network_mode: host
+```
+
+**验证测试**
+
+```
+root@UbuntuBase:/usr/local/docker/zookeeper# docker exec -it zookeeper_zoo1_1 /bin/bash
+bash-4.3# ./bin/zkServer.sh status
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Mode: leader
+```
+
+第二台主机
+
+docker-compose.yml
+
+```text
+version: '3.1'
+services:
+    zoo2:
+        image: zookeeper
+        restart: always
+        environment:
+            ZOO_MY_ID: 2
+            ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
+        network_mode: host
+```
+
+验证测试
+
+```text
+root@UbuntuBase:/usr/local/docker/zookeeper# docker exec -it zookeeper_zoo2_1 /bin/bash
+bash-4.3# ./bin/zkServer.sh status
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Mode: follower
+```
+
+第三台主机
+
+**docker-compose.yml**
+
+```text
+version: '3.1'
+services:
+    zoo3:
+        image: zookeeper
+        restart: always
+        environment:
+            ZOO_MY_ID: 3
+            ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
+        network_mode: host
+```
+
+验证测试
+
+```text
+root@UbuntuBase:/usr/local/docker/zookeeper# docker exec -it zookeeper_zoo3_1 /bin/bash
+bash-4.3# ./bin/zkServer.sh status
+ZooKeeper JMX enabled by default
+Using config: /conf/zoo.cfg
+Mode: follower
+```
+
+###### 伪集群模式
+
+```yaml
+version: '3.1'
+services:
+    zoo1:
+        image: zookeeper
+        restart: always
+        hostname: zoo1
+        ports:
+            - 2181:2181
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+    zoo2:
+        image: zookeeper
+        restart: always
+        hostname: zoo2
+        ports:
+            - 2182:2181
+        environment:
+            ZOO_MY_ID: 2
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+    zoo3:
+        image: zookeeper
+        restart: always
+        hostname: zoo3
+        ports:
+            - 2183:2181
+        environment:
+            ZOO_MY_ID: 3
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+```
+
+- 分别以交互方式进入容器查看
+
+```text
+docker exec -it zookeeper_zoo1_1 /bin/bash
+```
+
+```text
+docker exec -it zookeeper_zoo2_1 /bin/bash
+```
+
+```text
+docker exec -it zookeeper_zoo3_1 /bin/bash
+```

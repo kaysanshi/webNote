@@ -57,17 +57,16 @@
 
 ### 服务间的通信
 
-  #### 同步调用：网路间只有字符串可以通过穿透防火墙
+  #### 同步调用：网络间只有字符串可以通过穿透防火墙
 
-  ​            Rest:（对外）HttP通信 
+  ​            Rest:（对外）Http通信 
   ​                Rest API 
   ​                        String json=/usr/list;
   ​                        User usr=new User();
   ​                        usr.setId(json.getId)
   ​                使用框架：springboot+Spring Cloud;
   ​            RPC：（对内） 远程过程调用
-  ​                调用也是对内部的，同样需要new出的，但是不是直接new User()的，而是new 的另一个
-  ​                框架：Dubbo
+  ​                调用也是对内部的，同样需要new出的，但是不是直接new User()的，而是new 的另一个框架：Dubbo
   ​            问题：就会出现阻塞，出现单点故障，
   ​            RPC 也有自己的优点，传输协议更高效，安全更可控，
   ​            特别在一个公司内部，如果有统一个的开发规范和统一的服务框架时，
@@ -161,11 +160,65 @@
   		springCloud 基于springboot的技术技术框架；
   		java原生云开发=springCloud+spring boot
 
-### springCloud Netflix:
+### 分布式系统开发一定会遇到的四个问题以及解决方案：
 
-​    目前最流行的微服务架构解决方案是：springBoot+spring cloud Netflix
+1.服务众多，客户端如何访问。
+
+2.服务众多，服务之间如何通信。
+
+3.服务众多，如何治理。
+
+4.服务众多，如果挂了怎么办；
+
+这四个问题对应了解决四个问题的方式：
+
+1.API网关，服务路由
+
+2.Http,RPC,异步调用
+
+3.服务注册与发现 -》高可用
+
+4.熔断，限流，服务降级
+
+#### 解决方案：
+
+SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到的问题，想要使用Spring Cloud必须基于Spring Boot
+
+1.Spring Cloud Netflix
+
+​	API网关，zuul组件
+
+​	服务注册与发现，Eureka
+
+​	Fegin -> http Client -->http通信方式，同步阻塞
+
+​    熔断机制 Hystrix
+
+2.Apache Dubbo Zookeeper
+
+   Dubbo是一个高效性能的 Java RPC 通信框架，2.6.x
+
+   服务注册与发现，Zookeeper，
+
+   API网关 没有  找第三方或自己实现。
+
+  服务挂了，Hystrix
+
+3.Spring Cloud Alibaba
+
+ Spring Cloud Alibaba致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
+
+依托 Spring Cloud Alibaba，您只需要添加一些注解和少量配置，就可以将 Spring Cloud 应用接入阿里微服务解决方案，通过阿里中间件来迅速搭建分布式应用系统。
+
+下一代会是什么呢，Service Mesh 服务网格化，Istio 可能是需要掌握的一套微服务解决方案。
+
+
+
+### SpringCloud Netflix:
+
+​    到2019目前最流行的微服务架构解决方案是：springBoot+spring cloud Netflix
 ​    Spring Cloud 为开发人员提供了快速构建分布式系统中一些常见模式的工具（例如配置管理，服务发现，断路器，智能路由，微代理，控制总线）。分布式系统的协调导致了样板模式, 使用 Spring Cloud 开发人员可以快速地支持实现这些模式的服务和应用程序。他们将在任何分布式环境中运行良好，包括开发人员自己的笔记本电脑，裸机数据中心，以及 Cloud Foundry 等托管平台。
-​    Spring Cloud 是基于Spring Boot进行开发，并且都是使用 Maven 做项目管理工具。         
+​    Spring Cloud 是基于Spring Boot进行开发，并且都是使用 Maven 做项目管理工具。   然而在2019年Spring Cloud Netflix 开始进入维护模式。所以使用的少了。      
 
 #### 创建一个依赖管理项目：    
 
@@ -944,16 +997,115 @@ public class ConfigApplication {
 ​    启动顺序：
 ​        config->eureka--->--->zipkin--->Admin--->serviceAdmin--->ZuulApplication   
 
-
-​            
-​                       
+### 各组件深入之Spring Cloud Eureka
 
 
-​            
+
+### 各组件深入之Spring Cloud openFeign
+
+Feign是声明性Web服务客户端。 它使编写Web服务客户端更加容易。 要使用Feign，请创建一个接口并对其进行注释。 它具有可插入注释支持，包括Feign注释和JAX-RS注释。 Feign还支持可插拔编码器和解码器。 Spring Cloud添加了对Spring MVC注释的支持，并支持使用Spring Web中默认使用的相同HttpMessageConverters。 Spring Cloud集成了Eureka和Spring Cloud LoadBalancer，以在使用Feign时提供负载平衡的http客户端。 就是通过把http请求封装到了注解中。
+
+Spring Cloud 的 Feign 支持中的一个核心概念是命名客户机。每个佯装的客户机都是一个组件集合的一部分，这些组件一起工作，根据需要联系一个远程服务器，这个集合有一个名称，作为一个使用@feignclient 注释的应用程序开发人员，你可以给它一个名称。Spring Cloud 使用 FeignClientsConfiguration 根据需要为每个命名客户机创建一个新的集合，作为 ApplicationContext。其中包括一个假动作。解码器，一个假装。编码器，和一个假装。合约。可以使用@feignclient 注释的 contextId 属性覆盖集合的名称。
+
+Hystrix 支持熔断(fallback)的概念: 一个默认的代码路径，在熔断或出现错误时执行。要为给定的@feignclient 启用熔断，请将熔断属性设置为实现熔断的类名。您还需要将实现声明为 springbean。
+
+```java
+/**
+ * 去请求feign服务端itoken-service-admin中的服务接口
+ * @Author kay三石
+ * @date:2019/6/22
+ */
+// value 是声明的方式指向了 服务提供者
+@FeignClient(value="itoken-service-admin",fallback = AdminServiceFallback.class)
+public interface AdminService  extends BaseClientService {
+
+    /**
+     * 根据 ID 获取管理员
+     *
+     * @return
+     */
+    @RequestMapping(value = "v1/admins", method = RequestMethod.GET)
+    public String get(
+            @RequestParam(required = true, value = "userCode") String userCode
+    );
+
+```
+
+如果需要访问制造回退触发器的原因，可以在@feignclient 中使用 fallbackFactory 属性。
+
+```java
+// name 调用服务的名称和value等
+@FeignClient(name=ServiceNameConstants.DEMOB_SERVICE,fallbackFactory = DemobServiceClientFallbackFactory.class)
+public interface DemobServiceClient {
+    
+    @GetMapping(value = "/demob/test/getDemobById")
+    DemobDTO getDemobById(@RequestParam("id")String id);
+    
+}   
+@Component
+public class DemobServiceClientFallbackFactory implements FallbackFactory<DemobServiceClient> {
+
+    @Override
+    public DemobServiceClient create(Throwable cause) {
+        DemobServiceClientFallback demobServiceClientFallback = new DemobServiceClientFallback();
+        demobServiceClientFallback.setCause(cause);
+        return demobServiceClientFallback;
+    }
+
+}
+@Slf4j
+public class DemobServiceClientFallback implements DemobServiceClient {
+    @Setter
+    private Throwable cause;
+    
+    @Override
+    public DemobDTO getDemobById(String id) {
+        log.error("根据id获取demob信息失败",cause);
+        throw new FirstException();
+    }
+
+}
+```
+
+| 注解           | 接口Target     | 使用说明                                                     |
+| -------------- | -------------- | ------------------------------------------------------------ |
+| `@RequestLine` | 方法上         | 定义HttpMethod 和 UriTemplate. UriTemplate 中使用`{}` 包裹的表达式，可以通过在方法参数上使用@Param 自动注入 |
+| `@Param`       | 方法参数       | 定义模板变量，模板变量的值可以使用名称的方式使用模板注入解析 |
+| `@Headers`     | 类上或者方法上 | 定义头部模板变量，使用@Param 注解提供参数值的注入。如果该注解添加在接口类上，则所有的请求都会携带对应的Header信息；如果在方法上，则只会添加到对应的方法请求上 |
+| `@QueryMap`    | 方法上         | 定义一个键值对或者 pojo，参数值将会被转换成URL上的 query 字符串上 |
+| `@HeaderMap`   | 方法上         | 定义一个HeaderMap, 与 UrlTemplate 和HeaderTemplate 类型，可以使用@Param 注解提供参数值 |
 
 
-​        
+
+#### FeignClient 的配置参数
+
+| 属性名        | 默认值     | 作用                                                         | 备注                                        |
+| ------------- | ---------- | ------------------------------------------------------------ | ------------------------------------------- |
+| value         | 空字符串   | 调用服务名称，和name属性相同                                 |                                             |
+| serviceId     | 空字符串   | 服务id，作用和name属性相同                                   | 已过期                                      |
+| name          | 空字符串   | 调用服务名称，和value属性相同                                |                                             |
+| url           | 空字符串   | 全路径地址或hostname，http或https可选                        |                                             |
+| decode404     | false      | 配置响应状态码为404时是否应该抛出FeignExceptions             |                                             |
+| configuration | {}         | 自定义当前feign client的一些配置                             | 参考FeignClientsConfiguration               |
+| fallback      | void.class | 熔断机制，调用失败时，走的一些回退方法，可以用来抛出异常或给出默认返回数据。 | 底层依赖hystrix，启动类要加上@EnableHystrix |
+| path          | 空字符串   | 自动给所有方法的requestMapping前加上前缀，类似与controller类上的requestMapping |                                             |
+| primary       | true       |                                                              |                                             |
+
+#### Feign原理：
+
+- 启动时，程序会进行包扫描，扫描所有包下所有@FeignClient注解的类，并将这些类注入到spring的IOC容器中。当定义的Feign中的接口被调用时，通过JDK的动态代理来生成RequestTemplate。
+- RequestTemplate中包含请求的所有信息，如请求参数，请求URL等。
+- RequestTemplate声场Request，然后将Request交给client处理，这个client默认是JDK的HTTPUrlConnection，也可以是OKhttp、Apache的HTTPClient等。
+- 最后client封装成LoadBaLanceClient，结合ribbon负载均衡地发起调用。
+
+### 各组件深入之Spring Cloud Hystrix
+
+### 各组件深入之Spring Cloud Zuul
+
+### 各组件深入之Spring Cloud Config
 
 
-​        
-​            
+
+
+
+​      
