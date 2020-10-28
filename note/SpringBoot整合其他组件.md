@@ -141,6 +141,9 @@ public class DruidConfig {
 			<version>1.3.1</version>
 		</dependency>
 ```
+显示log:
+
+logging.level.com.kaysanshi.dao=debug
 
 步骤：
 
