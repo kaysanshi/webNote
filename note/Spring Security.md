@@ -171,7 +171,7 @@ Spring Security 中提供了 BCryptPasswordEncoder 密码编码工具，可以�
 
 dofilter()-->this.initDelegate()-->this.getTargetName()===(FilterChainProxy) -->this.getFilters()
 
-###UserDetailsService接口
+### UserDetailsService接口
 
 当我们不配置账号密码是由Spring Security定义生成的，而在实际项目中账号和密码是通过从数据库中查询出来的。所以我们要自定义逻辑控制认证逻辑。如果需要自定义逻辑则需要实现UserDetailsService接口中的loadUserByUsername方法。
 
