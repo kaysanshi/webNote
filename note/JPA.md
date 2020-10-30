@@ -11,7 +11,7 @@
 ​		`createEntityManager()：用于创建实体管理器对象实例。`
 `​	createEntityManager(Map map)：用于创建实体管理器对象实例的重载方法，Map 参数用于提供`
 
- #### EntityManager 的属性。
+####  EntityManager 的属性。
 
 ​		`isOpen()：`检查 EntityManagerFactory 是否处于打开状态。实体管理器工厂创建后一直处于打开状态，除非调用close()方法将其关闭。
 ​		`close()：`关闭 EntityManagerFactory 。 EntityManagerFactory 关闭后将释放所有资源，isOpen()方法测试将返回 false，其它方法将不能调用，否则将导致IllegalStateException异常。

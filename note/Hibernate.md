@@ -82,7 +82,7 @@ ORM(对象关系映射)：
 ​		--->持久化对象		     |---> |--------------------->JTA,JDBC,JNDI
 ​							    |----> configuration,session factory,session, Transaction, Query Criteria,
 
-    ### 配置对象：
+### 配置对象：
 
 ​	配置对象是你在任何 Hibernate 应用程序中创造的第一个 Hibernate 对象，并且经常只在应用程序初始化期间创造。它代表了 Hibernate 所需一个配置或属性文件。配置对象提供了两种基础组件。
 ​	数据库连接：由 Hibernate 支持的一个或多个配置文件处理。这些文件是 hibernate.properties 和 hibernate.cfg.xml。
