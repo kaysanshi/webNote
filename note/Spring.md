@@ -630,7 +630,7 @@ public class TextEditor {
 
 ##### Spring切入点：
 
-​	他表示注入切面的位置有以下三种切入点：静态切入点，动态切入点，其他切入点
+​	他表示注入切面的位置有以下三种切入点：`静态切入点，动态切入点，其他切入点`
 
 ##### 静态切入点：
 
@@ -671,7 +671,7 @@ public class TextEditor {
 
 ​				
 
-			
+
 	<?xml version="1.0" encoding="UTF-8"?>
 	<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">	
 			<!-- 指定spring读取db.properties配置 -->
