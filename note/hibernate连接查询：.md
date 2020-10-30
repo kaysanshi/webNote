@@ -35,7 +35,7 @@ String hql = "select c from Customer c inner join c.orders o where c.userName li
 #### 预先抓取内连接
 
 在HQL查询语句中，“inner join fetch”表示预先抓取内连接，“inner join”在默认情况下是延迟加载的，而使用“fetch”关键字后会一次性取出当前对象和该对象的关联实例或关联集合，这种情况就是“预先抓取（预先加载）”。
-下述代码用于实现任务描述6.D.9，利用HQL的inner join fetch查询用户名以“z”开头的Customer对象的所有订单编号。
+下述代码用于实现任务描述6.D.9，利用HQL的inner join fetch查询用户名以“z”开头的Customer对象的所有订单编号。 
 【描述6.D.9】HQL预先抓取内连接
 
 ```java

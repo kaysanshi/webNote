@@ -73,21 +73,24 @@ ORM(对象关系映射)：
 	- 最小化与访问数据库的智能提取策略。
 	- 提供简单的数据询问。
 	- 支持大多数主流的数据库管理系统。支持技术：XDOCLet Spring J2EE，Eclipse plug-ins,Maven,
-  架构：
-	Hibernate 使用不同的现存 Java API，比如 JDBC，Java 事务 API（JTA），以及 Java 命名和目录界面（JNDI）。
-	JDBC 提供了一个基本的抽象级别的通用关系数据库的功能，Hibernate 支持几乎所有带有 JDBC 驱动的数据库。
-	JNDI 和 JTA 允许 Hibernate 与 J2EE 应用程序服务器相集成。
-	Java Application---->hibernate------>database; hibernate中配置：hibernate.xml ,和XML Mapping;
-		--->持久化对象		     |---> |--------------------->JTA,JDBC,JNDI
-							    |----> configuration,session factory,session, Transaction, Query Criteria,
-    配置对象：
-	配置对象是你在任何 Hibernate 应用程序中创造的第一个 Hibernate 对象，并且经常只在应用程序初始化期间创造。它代表了 Hibernate 所需一个配置或属性文件。配置对象提供了两种基础组件。
-	数据库连接：由 Hibernate 支持的一个或多个配置文件处理。这些文件是 hibernate.properties 和 hibernate.cfg.xml。
-	类映射设置：这个组件创造了 Java 类和数据库表格之间的联系。
+  ### 架构：
+
+​	Hibernate 使用不同的现存 Java API，比如 JDBC，Java 事务 API（JTA），以及 Java 命名和目录界面（JNDI）。
+​	JDBC 提供了一个基本的抽象级别的通用关系数据库的功能，Hibernate 支持几乎所有带有 JDBC 驱动的数据库。
+​	JNDI 和 JTA 允许 Hibernate 与 J2EE 应用程序服务器相集成。
+​	Java Application---->hibernate------>database; hibernate中配置：hibernate.xml ,和XML Mapping;
+​		--->持久化对象		     |---> |--------------------->JTA,JDBC,JNDI
+​							    |----> configuration,session factory,session, Transaction, Query Criteria,
+
+    ### 配置对象：
+
+​	配置对象是你在任何 Hibernate 应用程序中创造的第一个 Hibernate 对象，并且经常只在应用程序初始化期间创造。它代表了 Hibernate 所需一个配置或属性文件。配置对象提供了两种基础组件。
+​	数据库连接：由 Hibernate 支持的一个或多个配置文件处理。这些文件是 hibernate.properties 和 hibernate.cfg.xml。
+​	类映射设置：这个组件创造了 Java 类和数据库表格之间的联系。
 
 ### O/R映射：
 
-​主要有集合的映射，实体类之间的关联映射以及组件映射。
+主要有集合的映射，实体类之间的关联映射以及组件映射。
 ​集合映射：
 ​	如果一个实例或者类中有特定变量的值的集合，那么我们可以应用 Java 中的任何的可用的接口来映射这些值。
 ​	Hibernate 可以保存 java.util.Map, java.util.Set, java.util.SortedMap, java.util.SortedSet, java.util.List 和其它持续的实例或者值的任何数组的实例
@@ -99,7 +102,7 @@ ORM(对象关系映射)：
 	- Map它和 \<map> 元素匹配并且用 java.util.HashMap 初始化。
 	- SortedMap它和 \<map> 元素匹配并且用 java.util.TreeMap 初始化。sort 属性可以设置成比较器或者 自然排序
 
-​实体类之间的映射：
+实体类之间的映射：
 ​		多对多，多对一，一对一，
 ​组件映射：
 
@@ -116,10 +119,10 @@ ORM(对象关系映射)：
 ​		@Id 注释将自动确定最合适的主键生成策略，但是你可以通过使用 @GeneratedValue 注释来覆盖掉它。strategy 和 generator 这两个参数我不打算在这里讨论，所以我们只使用默认键生成策略。让 Hibernate 确定使用哪些生成器类型来使代码移植于不同的数据库之间。
 ​		@Column Annotation
 ​		@Column 注释用于指定某一列与某一个字段或是属性映射的细节信息。您可以使用下列注释的最常用的属性:
-	​		name 允许显式地指定列的名称。
-	​		length 特别为一个字符串值的列的大小。
-	​		nullable ，一个列可以被标记为非空。
-	​		unique 唯一的内容
+​	​		name 允许显式地指定列的名称。
+​	​		length 特别为一个字符串值的列的大小。
+​	​		nullable ，一个列可以被标记为非空。
+​	​		unique 唯一的内容
 
 ### HQL查询
 
@@ -150,7 +153,7 @@ Hibernate 查询语言（HQL）是一种面向对象的查询语言，类似于 
 
 #### Select语句：
 
-​SELECT 语句比 from 语句提供了更多的对结果集的控制。如果你只想得到对象的几个属性而不是整个对象你需要使用 SELECT 语句。
+SELECT 语句比 from 语句提供了更多的对结果集的控制。如果你只想得到对象的几个属性而不是整个对象你需要使用 SELECT 语句。
 下面是一个 SELECT 语句的简单语法示例，这个例子是为了得到 Employee 对象的 first_name 字段：
 
 ```java
@@ -172,7 +175,7 @@ List results = query.list();
 
 #### 使用命名参数
 
-​Hibernate 的 HQL 查询功能支持命名参数。这使得 HQL 查询功能既能接受来自用户的简单输入，又无需防御 SQL 注入攻击。下面是使用命名参数的简单的语法:
+Hibernate 的 HQL 查询功能支持命名参数。这使得 HQL 查询功能既能接受来自用户的简单输入，又无需防御 SQL 注入攻击。下面是使用命名参数的简单的语法:
 
 ```java
 	String hql = "FROM Employee E WHERE E.id = :employee_id";
@@ -197,7 +200,7 @@ HQL Hibernate 3 较 HQL Hibernate 2，新增了批量更新功能和选择性删
 
 #### DELETE 语句
 
-​DELETE 语句可以用来删除一个或多个对象。以下是使用 DELETE 语句的简单语法：	
+DELETE 语句可以用来删除一个或多个对象。以下是使用 DELETE 语句的简单语法：	
 
 ```java
 String hql = "DELETE FROM Employee "  + 
@@ -272,7 +275,7 @@ List results = cr.list();
 复杂的业务逻辑的时候还是需要用这个的如果你想使用数据库特定的功能如查询提示或 Oracle 中的 CONNECT 关键字的话，你可以使用原生 SQL 数据库来表达查询。Hibernate 3.x 允许您为所有的创建，更新，删除，和加载操作指定手写 SQL ，包括存储过程。
 您的应用程序会在会话界面用 createSQLQuery() 方法创建一个原生 SQL 查询：
 
-​public SQLQuery createSQLQuery(String sqlString) throws HibernateException
+public SQLQuery createSQLQuery(String sqlString) throws HibernateException
 ​当你通过一个包含 SQL 查询的 createsqlquery() 方法的字符串时，你可以将 SQL 的结果与现有的 Hibernate 实体，一个连接，或一个标量结果分别使用 addEntity(), addJoin(), 和 addScalar() 方法进行关联。
 
 #### 标量查询：
@@ -315,9 +318,9 @@ List results = cr.list();
 
 #### 一级缓存
 
-​第一级缓存是 Session 缓存并且是一种强制性的缓存，所有的要求都必须通过它。Session 对象在它自己的权利之下，在将它提交给数据库之前保存一个对象。
+第一级缓存是 Session 缓存并且是一种强制性的缓存，所有的要求都必须通过它。Session 对象在它自己的权利之下，在将它提交给数据库之前保存一个对象。
 
-​如果你对一个对象发出多个更新，Hibernate 会尝试尽可能长地延迟更新来减少发出的 SQL 更新语句的数目。如果你关闭 session,所有缓存的对象丢失，或是存留，或是在数据库中被更新。提高查询状态，减少不必要的修改语句的发送
+如果你对一个对象发出多个更新，Hibernate 会尝试尽可能长地延迟更新来减少发出的 SQL 更新语句的数目。如果你关闭 session,所有缓存的对象丢失，或是存留，或是在数据库中被更新。提高查询状态，减少不必要的修改语句的发送
 
 #### 二级缓存
 
@@ -483,7 +486,7 @@ user:
 ```
 
 #### 一对多：
-	
+
 ##### 一的一方：
 
 ```

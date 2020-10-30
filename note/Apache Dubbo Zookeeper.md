@@ -551,7 +551,7 @@ services:
             ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
 ```
 
-- 分别以交互方式进入容器查看
+- 分别以交互方式进入容器查看 
 
 ```text
 docker exec -it zookeeper_zoo1_1 /bin/bash

@@ -16,9 +16,10 @@ Spring Web MVC DispatcherServlet 的请求处理的工作流程如下图所示�
 并返回视图名称到 DispatcherServlet 中。
 ​				3.DispatcherServlet 会从 ViewResolver 获取帮助，为请求检取定义视图。
 ​				4.一旦确定视图，DispatcherServlet 将把模型数据传递给视图，最后呈现在浏览器中。
-​				上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。	
+​	上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。	
 
-​			创建SpringMVC项目：
+#### 创建SpringMVC项目：
+
 ​				1.导包
 ​				2.在web.xml配置spring前端的控制器，指定读取的springMVC的配置文件，创建servlet的映射的
 ​				

@@ -29,7 +29,7 @@ Lambda表达式：
 
 ### 函数式接口
 
-函数式接口就是只包含一个方法的接口，比如java.lang.Runnable和java.utilComparetor就是个典型的函数式接口，因为他们只包含一个接口。java8提供@Functionalinterface作为注解，只要接口符合函数式接口的标准，虚拟机会自动判断，但是使用建议添加@Functionalinterface进行声明，java中的lambda无法单独出现，他需要一个函数接口盛放他，
+函数式接口就是只包含一个方法的接口，比如java.lang.Runnable和java.utilComparetor就是个典型的函数式接口，因为他们只包含一个接口。java8提供@Functionalinterface作为注解，只要接口符合函数式接口的标准，虚拟机会自动判断，但是使用建议添加@Functionalinterface进行声明，java中的lambda无法单独出现，他需要一个函数接口盛放他
 
 #### 内置基本类型函数式接口
 

@@ -166,9 +166,7 @@ public class HelloController {
 
 ```
 
-Spring Boot的版本仲裁中心；
-
-以后我们导入依赖默认是不需要写版本；（没有在dependencies里面管理的依赖自然需要声明版本号）
+Spring Boot的版本仲裁中心；以后我们导入依赖默认是不需要写版本；（没有在dependencies里面管理的依赖自然需要声明版本号）
 
 #### 2、启动器
 

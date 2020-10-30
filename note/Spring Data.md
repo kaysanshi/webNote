@@ -6,7 +6,7 @@ Java Persistence API：用于对象持久化的 API，规范，
 
 Java EE 5.0 平台标准的 ORM 规范，使得应用程序以统一的方式访问持久层
 
-![1569768122267](C:\Users\leoill\AppData\Roaming\Typora\typora-user-images\1569768122267.png)
+![1569768122267](C:\Users\leoill\AppData\Roaming\Typora\typora-user-images\1569768122267.png) 
 
 ### JPA和Hibernate
 

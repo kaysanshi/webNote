@@ -636,15 +636,20 @@ public class TextEditor {
 
 ​	 静态往往意味着不变，只能应用在相对不变的位置上静态切入点在某个方法名上是织入切面，在织入代码前，进象进行方法的匹配，判断当前的正在调用的方法是不是已经定义了静态切入点.若定义过说明匹配成功，织入切面，如没有定义为静态的切入点这匹配失败，不进行织入切面。
 ​		Pointcut接口是切入点的定义接口，用它来规定可切入的链接点的属性，通过对该接口的来扩展处理其他类型的链接点
-​						public interface Pointcut{
-​							ClassFilter getClassFilter();
-​							MethodMatcher getMethodMatcher();
-​						}
-​						使用ClassFilter接口匹配目标类
-​						public interface ClassFilter{
-​							//与目标类相匹配
-​							boolean matches(Class class);
-​						}
+​					
+
+```java
+public interface Pointcut{
+                                                  						ClassFilter getClassFilter();                                				MethodMatcher getMethodMatcher();
+}
+//使用ClassFilter接口匹配目标类
+public interface ClassFilter{
+   //与目标类相匹配  
+    boolean matches(Class class);
+}
+```
+
+
 
 ##### 动态切入点：
 
