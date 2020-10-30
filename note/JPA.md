@@ -1,9 +1,8 @@
 ## JPA:
 
-​	是hibernate的抽象是他的一个子集：（jdbc--->mysql）
-​	包括映射元数据：
+​	是hibernate的抽象是他的一个子集：（jdbc--->mysql）包括映射元数据：
 
-	### jPA中的API:
+### jPA中的API:
 
 ​		Persistence  类是用于获取 EntityManagerFactory 实例。该类包含一个名为 createEntityManagerFactory 的 静态方法 。
 ​		createEntityManagerFactory 方法有如下两个重载版本。
@@ -36,31 +35,32 @@
 ​				createNativeQuery (String sqlString)：使用标准 SQL语句创建查询对象。参数为标准SQL语句字符串。
 ​				createNativeQuery (String sqls, String resultSetMapping)：使用标准SQL语句创建查询对象，并指定返回结果集 Map的 名称
 
-		#### EntityTransaction 接口
+#### EntityTransaction 接口
 
-​			用来管理资源层实体管理器的事务操作。通过调用实体管理器的getTransaction方法 获得其实例
-​				begin ()
-​				用于启动一个事务，此后的多个数据库操作将作为整体被提交或撤消。若这时事务已启动则会抛出 IllegalStateException 异常。
-​				commit ()
-​				用于提交当前事务。即将事务启动以后的所有数据库更新操作持久化至数据库中。
-​				rollback ()
-​				撤消(回滚)当前事务。即撤消事务启动后的所有数据库更新操作，从而不对数据库产生影响。
-​				setRollbackOnly ()
-​				使当前事务只能被撤消。
-​				getRollbackOnly ()
-​				查看当前事务是否设置了只能撤消标志
-​				isActive ()
-​				查看当前事务是否是活动的。如果返回true则不能调用begin方法，否则将抛出 IllegalStateException 异常；
-​				如果返回 false 则不能调用 commit、rollback、setRollbackOnly 及 getRollbackOnly 方法，否则将抛出 IllegalStateException 异常
+​	用来管理资源层实体管理器的事务操作。通过调用实体管理器的getTransaction方法 获得其实例
 
-		### 映射关系：
+`begin ()` 用于启动一个事务，此后的多个数据库操作将作为整体被提交或撤消。若这时事务已启动则会抛出 IllegalStateException 异常。
 
-	#### 双向一对多
+`commit ()` 用于提交当前事务。即将事务启动以后的所有数据库更新操作持久化至数据库中 
+
+`rollback ()`  撤消(回滚)当前事务。即撤消事务启动后的所有数据库更新操作，从而不对数据库产生影响。
+
+`setRollbackOnly ()` 使当前事务只能被撤消。
+
+`getRollbackOnly ()`	查看当前事务是否设置了只能撤消标志、
+
+`isActive ()`查看当前事务是否是活动的。如果返回true则不能调用begin方法，否则将抛出 IllegalStateException 异常；如果返回 false 则不能调用 commit、rollback、setRollbackOnly 及 getRollbackOnly 方法，否则将抛出 IllegalStateException 异常
+
+### 映射关系：
+
+#### 双向一对多
 
 ​			必须存在一个关系维护端，在 JPA 规范中，要求  many 的一方作为关系的维护端(owner side), one 的一方作为被维护端(inverse side)。
 ​				可以在 one 方指定 @OneToMany 注释并设置 mappedBy 属性，以指定它是这一关联中的被维护端，many 为维护端。
 ​				在 many 方指定 @ManyToOne 注释，并使用 @JoinColumn 指定外键名称
-​				@OrderBy("OREDER_NAME")
+
+```
+@OrderBy("OREDER_NAME")
 ​				@OneToMany(targetEntity=Order.class,mappedBy="customer")
 ​				public Set<Order> getOrders(){
 ​					return orders;
@@ -70,8 +70,11 @@
 ​				public Customer getCustomer(){
 ​					return customer;
 ​				}
+```
 
-				#### 双向一对一映射：
+
+
+####  双向一对一映射：
 
 ​				在双向的一对一关联中，需要在关系被维护端(inverse side)中的 @OneToOne 注释中指定 mappedBy，以指定是这一关联中的被维护端。
 ​				同时需要在关系维护端(owner side)建立外键列指向关系被维护端的主键列。
@@ -85,7 +88,7 @@
 ​					return mgr;
 ​				}
 
-			#### 双向多对多：
+####  双向多对多：
 
 指定一个维护端
 				@ManyToMany
@@ -157,15 +160,15 @@ JPQL语言的语句可以是 select 语句、update 语句或delete语句，它�
 ​			update Customers c set c.status = '未偿付' where c.balance < 10000
 ​		delete语句：
 
-		#### JPQL中提供了内置的函数：
+####  JPQL中提供了内置的函数：
 
-​				concat(String s1, String s2)：字符串合并/连接函数。
-​				substring(String s, int start, int length)：取字串函数。
-​				trim([leading|trailing|both,] [char c,] String s)：从字符串中去掉首/尾指定的字符或空格。
-​				lower(String s)：将字符串转换成小写形式。
-​				upper(String s)：将字符串转换成大写形式。
-​				length(String s)：求字符串的长度。
-​				locate(String s1, String s2[, int start])：从第一个字符串中查找第二个字符串(子串)出现的位置。若未找到则返回0。
+​				`concat(String s1, String s2)：`字符串合并/连接函数。
+​				`substring(String s, int start, int length)：`取字串函数。
+​				`trim([leading|trailing|both,] [char c,] String s)：`从字符串中去掉首/尾指定的字符或空格。
+​				`lower(String s)：`将字符串转换成小写形式。
+​				`upper(String s)：`将字符串转换成大写形式。
+​				`length(String s)：`求字符串的长度。
+​				`locate(String s1, String s2[, int start])：`从第一个字符串中查找第二个字符串(子串)出现的位置。若未找到则返回0。
 
 ### 注解
 
@@ -429,4 +432,3 @@ System.out.println(order.getCustomer().getLastName());
 }
 
 ```
-  *  * 

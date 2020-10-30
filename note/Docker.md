@@ -7,15 +7,17 @@ Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从Apache2.
 
 ### 为什么使用docker:
 
-由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，
-都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。
-更快速的启动时间
-一致的运行环境
-持续交互和部署
-更轻松的迁移
-更轻松的维护和扩展	
+由于容器不需要进行硬件虚拟以及运行完整操作系统等额外开销，Docker 对系统资源的利用率更高。无论是应用执行速度、内存损耗或者文件存储速度，都要比传统虚拟机技术更高效。因此，相比虚拟机技术，一个相同配置的主机，往往可以运行更多数量的应用。
 
-### Docker引擎：是一个包含以下主要组件的客户端服务器的应用程序
+- 更快速的启动时间
+- 一致的运行环境
+- 持续交互和部署
+- 更轻松的迁移
+- 更轻松的维护和扩展	
+
+### Docker引擎：
+
+### `是一个包含以下主要组件的客户端服务器的应用程序`
 
 - 一种服务器，他是一个称为守护进程并且长时间运行的程序
 - Rest ApI用于指定程序可以用来与守护进程通信的接口，并指示它做什么
@@ -23,28 +25,27 @@ Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从Apache2.
 
 ### Docker系统镜像：
 
-​	docker镜像(Images)：Docker 镜像是用于创建Docker 容器的 模板。 
-​	docker容器(Container)：容器是独立运行的一个或一组应用。
-​	docker客户端(Client)：客户端通过命令行或者其他工具使用 Docker API(https://docs.docker.com/reference/api/docker_remote_api) 与Docker 的守护进程通信 docker主机(Host)：一个物理或者虚拟的机器用于执行 Docker 守护进程和容器。 
-​	docker仓库(Registry)：Docker 仓库用来保存镜像，可以理解 为代码控制中的代码仓库。Docker Hub(https://hub.docker.com) 提供了庞大的镜像集合供使用
+- Docker镜像(Images)：Docker 镜像是用于创建Docker 容器的 模板。
+- Docker容器(Container)：容器是独立运行的一个或一组应用。
+- Docker客户端(Client)：客户端通过命令行或者其他工具使用 Docker API(https://docs.docker.com/reference/api/docker_remote_api) 与Docker 的守护进程通信 docker主机(Host)：一个物理或者虚拟的机器用于执行 Docker 守护进程和容器。 
+- Docker仓库(Registry)：Docker 仓库用来保存镜像，可以理解 为代码控制中的代码仓库。Docker Hub(https://hub.docker.com) 提供了庞大的镜像集合供使用
 
 ### Docker容器：
-docker容器是docker运行的实体，容器可以被创建，启动，停止，删除，暂停等
+Docker容器是docker运行的实体，容器可以被创建，启动，停止，删除，暂停等
 容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的 root 文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。容器内的进程是运行在一个隔离的环境里，使用起来，就好像是在一个独立于宿主的系统下操作一样。容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用 数据卷（Volume）、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主（或网络存储）发生读写，其性能和稳定性更高。数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡
 
 ### Docker仓库：
-​	一个 Docker Registry 中可以包含多个仓库（Repository）；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。
-​	通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 <仓库名>:<标签> 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest 作为默认标签。
+一个 Docker Registry 中可以包含多个仓库（Repository)；每个仓库可以包含多个标签（Tag）；每个标签对应一个镜像。
+​通常，一个仓库会包含同一个软件不同版本的镜像，而标签就常用于对应该软件的各个版本。我们可以通过 <仓库名>:<标签> 的格式来指定具体是这个软件哪个版本的镜像。如果不给出标签，将以 latest 作为默认标签。
 
 ##	ubuntu安装docker:
+
+- 命令:	wget -q0- http://get.docker.com/ |sh
+- 启动：sudo service docker start
+- 测试运行:docker run hello-world
+- 镜像加速:	 /etc/docker/daemon.json 在这里加入{ "registry-mirrors":["http://hub-mirror.c.163.com"]}
+
 ```
-命令	
-	wget -q0- http://get.docker.com/ |sh
-启动：
-	sudo service docker start
-测试运行
-	docker run hello-world
-镜像加速:	 /etc/docker/daemon.json 在这里加入{ "registry-mirrors":["http://hub-mirror.c.163.com"]}
 ubuntu安装：		
 		1.更换国内软件源，推荐中国科技大学的源，稳定速度快（可选）
 
@@ -72,52 +73,51 @@ ubuntu安装：
 
 ### ubuntu脚本自动安装：
 
-​	1.curl -fsSL get.docker.com -o get-docker.sh
-​	2.sh get-docker.sh --mirror Aliyun
-​			或者第二步使用：sudo sh get-docker.sh --mirror AzureChinaCloud
-​	3。测试是否安装成功：
-​			docker version
+- 1.curl -fsSL get.docker.com -o get-docker.sh
+- 2.sh get-docker.sh --mirror Aliyun
+  ​			或者第二步使用：sudo sh get-docker.sh --mirror AzureChinaCloud
+- 3.测试是否安装成功：
+  ​			docker version
 
 ### ubuntu安装加速器：
 
-​	镜像加速: 如果没有则创建这个文件：
+镜像加速: 如果没有则创建这个文件：
 ​		/etc/docker/daemon.json 在这里加入{ "registry-mirrors":["https://registry.docker-cn.com"]}
 重启服务：
 ​		systemctl restart docker
 
 ### docker中安装tomcat：
 
-1.命令：docker pull tomcat
-		下载tomcat 9： docker pull tomcat:9-jre8
-2.docker中运行tomcat：需要制定端口
- 		docker run -p 8080:8080 tomcat
+- 1.命令：docker pull tomcat
+  		下载tomcat 9： docker pull tomcat:9-jre8
+- 2.docker中运行tomcat：需要制定端口
+   		docker run -p 8080:8080 tomcat
 
 ### docker下载镜像：
 
-1.docker pull ubuntu:16.04
-		//docker image ls :查看镜像列表列出的是顶级的镜像
-		// docker ps :查看容器列表
+`1.docker pull ubuntu:16.04`
+		`//docker image ls :查看镜像列表列出的是顶级的镜像`
+		`// docker ps :查看容器列表`
 
-2.运行这个ubuntu容器：
-			docker run  -it --rm \
-			ubuntu:16.04 \
-			bash
-			其实上面的一串命令等于：docker run  -it --rm ubuntu:16.04 bash
-3.说明：
+`2.运行这个ubuntu容器：`
+			`docker run  -it --rm \`
+			`ubuntu:16.04 \`
+			`bash`
+			`其实上面的一串命令等于：docker run  -it --rm ubuntu:16.04 bash`
+`3.说明：`
 			it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。
 			--rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 --rm 可以避免浪费空间。ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash运行一个容器等于运行一个对象，	
 
-## dockerfile：
+## DockerFile：
 
-镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	
-dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建
+镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建
 		在 /usr/local:
 		创建docker目录，然后创建一个tomcat的dockerfile目录，
 			from:必须是第一条指令，用于指定基础的镜像
 			run ：用于执行命令行命令，由于命令行的强大，
 		命令有两种格式：shell格式:    exec格式：
-				这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
-				dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件
+	这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
+	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件
 
 ### 使用上下文环境构建：				
 
@@ -151,12 +151,11 @@ dockerfile是一个文本文件，其内包含了一条条指令，每条指令�
 
 注意：数据卷 的使用，类似于 Linux 下对目录或文件进行 mount，镜像中的被指定为挂载点的目录中的文件会隐藏掉，能显示看的是挂载的 数据卷。
 
-创建一个数据卷：docker volume create my-vol
-查看所有数据卷：docker volume ls
-在主机里查看指定的数据卷：docker volume inspect my-vol
-启动一个挂载的数据容器：
-		在用 docker run 命令的时候，使用 --mount 标记来将 数据卷 挂载到容器里。在一次 docker run 中可以挂载多个 数据卷。
-	下面创建一个名为 web 的容器，并加载一个 数据卷 到容器的 /webapp 目录。：	
+- `创建一个数据卷：docker volume create my-vol`
+- ``查看所有数据卷：docker volume ls`
+- `在`主机里查看指定的数据卷：docker volume inspect my-vol启动一个挂载的数据容器：`
+  		在用 docker run 命令的时候，使用 --mount 标记来将 数据卷 挂载到容器里。在一次 docker run 中可以挂载多个 数据卷。`
+- `下面创建一个名为 web 的容器，并加载一个 数据卷 到容器的 /webapp 目录。：`	
 
 ```
 $ docker run -d -P \
@@ -169,32 +168,33 @@ $ docker run -d -P \
 
 ### 查看数据卷的信息：
 
-​			在主机里使用以下命令可以查看 web 容器的信息
-​			docker inspect web
+​		在主机里使用以下命令可以查看 web 容器的信息
+​		docker inspect web
 
 ### 删除数据卷：
-​			 docker volume rm my-vol
-​			数据卷 是被设计用来持久化数据的，它的生命周期独立于容器，Docker 不会在容器被删除后自动删除 数据卷，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的 数据卷。如果需要在删除容器的同时移除数据卷。可以在删除容器的时候使用 docker rm -v 这个命令。
-###无主的数据卷的删除用以下命令清理：
+​		`命令：docker volume rm my-vol`
+​		数据卷 是被设计用来持久化数据的，它的生命周期独立于容器，Docker 不会在容器被删除后自动删除 数据卷，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的 数据卷。如果需要在删除容器的同时移除数据卷。可以在删除容器的时候使用 docker rm -v 这个命令。
 
-docker volume pruse
+### 无主的数据卷的删除用以下命令清理：
+
+`docker volume pruse`
 
 ### 实例共享数据卷：
-1. 在/usr/loca/docker/tomcat下创建一个ROOT目录，并在里面书写一个index.html
+1. `在/usr/loca/docker/tomcat下创建一个ROOT目录，并在里面书写一个index.html`
 
-2. 然后启动docker容器的tomcat：
+2. `然后启动docker容器的tomcat：`
 
-   docker run -p 8080:8080 --name tomcat -d -v /usr/local/docker/tomcat/ROOT:/usr/local/tomcat/webapps/ROOT tomcat
+   `docker run -p 8080:8080 --name tomcat -d -v /usr/local/docker/tomcat/ROOT:/usr/local/tomcat/webapps/ROOT tomcat`
 
-3. 通过交互式进入容器中的tomcat：docker exec -it tomcat bash
-   			可以在webapps中的ROOT目录看到index.html，
+3. `通过交互式进入容器中的tomcat：docker exec -it tomcat bash`
+      `可以在webapps中的ROOT目录看到index.html，`
 
-4. 然后在启动一个tomcat:docker run -p 8081:8080 --name tomcat1 -d -v /usr/local/docker/tomcat/ROOT:/usr/local/tomcat/webapps/ROOT tomcat
-   这时访问就可以看到两个同时访问了一个数据卷了，这时就可以共享到数据卷了：
+4. `然后在启动一个tomcat:docker run -p 8081:8080 --name tomcat1 -d -v /usr/local/docker/tomcat/ROOT:/usr/local/tomcat/webapps/ROOT tomcat`
+   `这时访问就可以看到两个同时访问了一个数据卷了，这时就可以共享到数据卷了`
 
 ## Docker构建tomact:
 
-​	进入docker目录：docker pull tomcat
+​	进入docker目录：`docker pull tomcat`
 ​	启动：
 
 ```
@@ -206,7 +206,7 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 ## Docker构建mysql:
 
-​	进入docker目录：docker pull mysql:5.7.22
+​	进入docker目录：`docker pull mysql:5.7.22`
 ​	启动运行：docker run -p 3306:3306 --name mysql \
 ​				-v /usr/local/docker/mysql/conf:/etc/mysql \
 ​				-v /usr/local/docker/mysql/logs:/var/log/mysql \
@@ -244,26 +244,24 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 ## Docker构建oracle
 
-1.拉去oracle数据库镜像
-docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g 
-2.启动oracle  自动启动镜像 --restart=always
-docker run -p 1521:1521 --name oracle_11g -d --restart=always registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g
-3.启动服务
-docker start oracle_11g
-4.进入控制台设置用户信息 
-docker exec -it oracle_11g bash
-5.切换到root用户模式下
-su root
-输入密码helowin
-6.编辑profile文件配置ORACLE环境变量
-export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2
-export ORACLE_SID=helowin
-export PATH=$ORACLE_HOME/bin:$PATH
-7.重启配置文件服务
-source /etc/profile
-8.建立sqlplus软连接
-ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
-9.切换到oracle用户，修改oracle的相关账号密码
+- 1.拉去oracle数据库镜像
+  `docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g` 
+- 2.启动oracle  自动启动镜像 --restart=always
+  `docker run -p 1521:1521 --name oracle_11g -d --restart=always registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g`
+- 3.启动服务：`docker start oracle_11g`
+- 4.进入控制台设置用户信息 ：`docker exec -it oracle_11g bash`
+- 5.切换到root用户模式下
+  su root
+  输入密码helowin
+- 6.编辑profile文件配置ORACLE环境变量
+  export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2
+  export ORACLE_SID=helowin
+  export PATH=$ORACLE_HOME/bin:$PATH
+- 7.重启配置文件服务
+  source /etc/profile
+- 8.建立sqlplus软连接
+  ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
+- 9.切换到oracle用户，修改oracle的相关账号密码
 
 >su oracle
 >//登录sqlplus并修改sys、system用户密码
@@ -273,26 +271,27 @@ ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
 >alter user sys identified by oracle; # 将sys的密码改为oracle
 >ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED; # 更改配置文件默认限制密码
 
-10.使用navicat进行连接：
+- 10.使用navicat进行连接：
 
-[![0wqRa9.png](https://s1.ax1x.com/2020/10/08/0wqRa9.png)](https://imgchr.com/i/0wqRa9)
+  [![0wqRa9.png](https://s1.ax1x.com/2020/10/08/0wqRa9.png)](https://imgchr.com/i/0wqRa9)
 
 ![0wq9E9.png](https://s1.ax1x.com/2020/10/08/0wq9E9.png)
 
 #### oracle中的sys用户和system用户的区别：
 
-【sys】所有 oracle 的数据字典的基表和视图都存放在 sys 用户中，这些基表和视图对于 oracle 的运行是至关重要的，由数据库自己维护，任何用户都不能手动更改。 sys 用户拥有 dba ， sysdba ， sysoper 等角色或权限，是 oracle 权限最高的用户。
+- `【sys】所有 oracle 的数据字典的基表和视图都存放在 sys 用户中，这些基表和视图对于 oracle 的运行是至关重要的，由数据库自己维护，任何用户都不能手动更改。 sys 用户拥有 dba ， sysdba ， sysoper 等角色或权限，是 oracle 权限最高的用户。`
+- `【 system】 用户用于存放次一级的内部数据，如 oracle 的一些特性或工具的管理信息。 system 用户拥有普通 dba 角色权限。`
 
-【 system 】 用户用于存放次一级的内部数据，如 oracle 的一些特性或工具的管理信息。 system 用户拥有普通 dba 角色权限。
-
- 【system 】用户只能用 normal 身份登陆 em ，除非你对它授予了 sysdba 的系统权限(grant sysdba to system)或者 sysoper 系统权限。
-【 sys 】用户具有 “SYSDBA” 或者 “SYSOPER” 系统权限，登陆 em 也只能用这两个身份，不能用 normal 。
+-  `【system】用户只能用 normal 身份登陆 em ，除非你对它授予了 sysdba 的系统权限(grant sysdba to system)或者 sysoper 系统权限。`
+  `【 sys 】用户具有 “SYSDBA” 或者 “SYSOPER” 系统权限，登陆 em 也只能用这两个身份，不能用 normal 。`
 
 
 
 ## docker命令：
 
-​	运行 docker run --name container-name -d image-name eg:docker run –name myredis –d redis
+​	运行启动 ： docker run --name container-name -d image-name 
+
+​     eg : docker run –name myredis –d redis
 ​		--name：自定义容器名 -d：后台运行 image-name:指定镜像模板 列表 docker ps（查看运行中的容器）；加上-a；可以查看所有容器 
 ​		//docker image ls :查看镜像列表列出的是顶级的镜像
 ​		//docker ps :查看容器列表
@@ -302,24 +301,23 @@ ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
 镜像列表中，还可以看到一个特殊的镜像，这个镜像既没有仓库名，也没有标签，均为 <none>。：
 原因：
 	这个镜像原本是有镜像名和标签的，原来为 mongo:3.2，随着官方镜像维护，发布了新版本后，重新 docker pull mongo:3.2 时，mongo:3.2 这个镜像名被转移到了新下载的镜像身上，而旧的镜像上的这个名称则被取消，从而成为了 <none>。除了 docker pull 可能导致这种情况，docker build 也同样可以导致这种现象。
-						由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
+	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
 
 #### 删除虚悬镜像：
 
-$ docker image prune	
+`$ docker image prune`	
 
 #### 查看中间层镜像：
 
-docker image ls -a 
+`docker image ls -a` 
 
-这些无标签的镜像很多都是中间层镜像，是其它镜像所依赖的镜像。这些无标签镜像不应该删除，否则会导致上层镜像因为依赖丢失而出错。
-				实际上，这些镜像也没必要删除，因为之前说过，相同的层只会存一遍，而这些镜像是别的镜像的依赖，因此并不会因为它们被列出来而多存了一份，无论如何你也会需要它们	
-			docker image ls 还支持强大的过滤器参数 --filter，或者简写 -f。之前我们已经看到了使用过滤器来列出虚悬镜像的用法，
-			它还有更多的用法。比如，我们希望看到在 mongo:3.2 之后建立的镜像					
+​     这些无标签的镜像很多都是中间层镜像，是其它镜像所依赖的镜像。这些无标签镜像不应该删除，否则会导致上层镜像因为依赖丢失而出错。
+​	实际上，这些镜像也没必要删除，因为之前说过，相同的层只会存一遍，而这些镜像是别的镜像的依赖，因此并不会因为它们被列出来而多存了一份，无论如何你也会需要它们	
+​	docker image ls 还支持强大的过滤器参数 --filter，或者简写 -f。之前我们已经看到了使用过滤器来列出虚悬镜像的用法，它还有更多的用法。比如，我们希望看到在 mongo:3.2 之后建立的镜像					
 
 ```
- $ docker image ls -f since=mongo:3.2  
-				想看某个位置之前的镜像 ：只需要把 since 换成 before
+$ docker image ls -f since=mongo:3.2  
+想看某个位置之前的镜像 ：只需要把 since 换成 before
 ```
 
 #### 删除指定的镜像：
@@ -333,27 +331,25 @@ docker image ls -a
 	容器日志 docker logs container-name/container-id	
 ## Docker Compose:
 
-​	Docker Compose：是docker官方编排的快速，对于容器集群很有利
-​	Compose定位是：定义和运行多个Docker容器的应用，主要是为了解决多个容器间的相互配合来完成某项任务。他允许用户通过docker-compose.yml的定义一组相关连的应用容器为一个项目
-​		服务：一个应用容器，实际上可以包括若干个运行相同镜像的容器实例
-​		项目：由一组关联的应用容器组成的一个完整业务单元，在docker-compose.yml中定义
-
-​			compose默认管理的是对象是项目，通过子命令对项目快捷的生命周期的管理
+- Docker Compose：是docker官方编排的快速，对于容器集群很有利
+- Compose定位是：定义和运行多个Docker容器的应用，主要是为了解决多个容器间的相互配合来完成某项任务。他允许用户通过docker-compose.yml的定义一组相关连的应用容器为一个项目
+- 服务：一个应用容器，实际上可以包括若干个运行相同镜像的容器实例
+- 项目：由一组关联的应用容器组成的一个完整业务单元，在docker-compose.yml中定义compose默认管理的是对象是项目，通过子命令对项目快捷的生命周期的管理
 
 ### 安装docker compose:
 
-如果你已经安装了docker那么就先把docker给删除了，
-先进行卸载：apt-get autoremove docker-cedocker
-然后删除dokcerlist文件：在/etc/apt/sources.list.d
+`如果你已经安装了docker那么就先把docker给删除了，`
+`先进行卸载：apt-get autoremove docker-cedocker`
+`然后删除dokcerlist文件：在/etc/apt/sources.list.d`
 
 #### 安装docker：
 
-​	安装docker:sudo curl -fsSL get.docker.com -o get-docker.sh
-​	因为有的aliyun上面没有具体的升级版本，所以把镜像给改写：sh get-docker.sh --mirror AzureChinaCloudcd 
-​	这时只需等待即可。。。。。。
-​	检查镜像加速文件是否存在：在/etc/docker/daemon.json中
-​	/etc/docker/daemon.json 在这里加入{ "registry-mirrors":["https://registry.docker-cn.com"]}
-​	检查dockerversion:
+安装docker :  `sudo curl -fsSL get.docker.com -o get-docker.sh`
+​因为有的aliyun上面没有具体的升级版本，所以把镜像给改写：`sh get-docker.sh --mirror AzureChinaCloudcd` 
+​这时只需等待即可。。。。。。
+​检查镜像加速文件是否存在：在/etc/docker/daemon.json中
+​	/etc/docker/daemon.json 在这里加入`{ "registry-mirrors":["https://registry.docker-cn.com"]}`
+​检查dockerversion:
 
 然后安装docker-compose看下面的就可以了
 
@@ -364,20 +360,19 @@ linux安装docker compose：采用二进制包进行安装：
 ```
 $ sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
 加入可执行的权限：
-	$ sudo chmod +x /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 
 ### 卸载docker compose:
 
-​	$ sudo rm /usr/local/bin/docker-compose		
+​	`$ sudo rm /usr/local/bin/docker-compose`		
 
 ### Docker Compose 使用：
 
 #### 模板文件：
 
-​		在docker 文件夹中的tomcat中的创建 docker-compose.yml
-​						
+在docker 文件夹中的tomcat中的创建 docker-compose.yml			
 
 	version: "3"
 	services:
@@ -429,11 +424,12 @@ $ sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker
 					--service-ports 配置服务端口并映射到本地主机。
 					-T 不分配伪 tty，意味着依赖 tty 的指令将无法运行。
 					start,stop,top,pause,port 和docker中的使用的都一样
-	前台运行：docker-compose up
-	后台运行：docker-compose up -d
-	启动：docker-compose start
-	停止：docker-compose stop
-	停止并移除容器：docker-compose down
+`前台运行：docker-compose up`
+`后台运行：docker-compose up -d`
+`启动：docker-compose start`
+`停止：docker-compose stop`
+`停止并移除容器：docker-compose down`
+
 ### Docker compose实战tomcat:						
 
 ```
@@ -452,8 +448,6 @@ services:
 ```
 
 ### Docker compose 实战mysql5：
-​				
-
 ```
 version: '3.1'
 services:
@@ -481,7 +475,7 @@ services:
 
 就是为了简化docker的使用：
 直接运行 docker-compose.yml中的就可以使用。运行即可以
-				docker-compose up
+`docker-compose up`
 
 ### DockerCompose 实战oracle
 
@@ -501,17 +495,17 @@ services:
       - 1521:1521
 ```
 
- 启动服务：docker-compose -f oracle.yml up -d
+-  `启动服务：docker-compose -f oracle.yml up -d`
 
-查看运行的组件：docker ps -a 
+- `查看运行的组件：docker ps -a` 
 
 ## Docker-Registry:
 
 ### Docker 私服：
 
-​				cd  /usr/local/docker
-​				创建 registry目录
-​				 使用docker compose命令直接使用：
+​		cd  /usr/local/docker
+​		创建 registry目录
+​		使用docker compose命令直接使用：
 
 ```
 version: '3.1'
@@ -527,9 +521,7 @@ services:
 ```
 
 只要安装之后就可以了，这里只是服务端，同样我们需要客户端测试：http://ip:5000/v2/
-			我们在开发时构建服务端之后，在客户端构建一个服务之后上传到这个docker私服中饭
-			有其他人使用的话直接在这个地方拉取：
-					同时需要在客户端配置：/etc/docker/daemon.json
+我们在开发时构建服务端之后，在客户端构建一个服务之后上传到这个docker私服中有其他人使用的话直接在这个地方拉取：同时需要在客户端配置：/etc/docker/daemon.json
 
 ```
 daemon.json中配置：
@@ -543,29 +535,27 @@ daemon.json中配置：
 }	
 ```
 
-之后重启就可以：sudo systemctl daemon-reload
-											sudo systemctl restart docker
+之后重启就可以：
+
+`sudo systemctl daemon-reload`
+`sudo systemctl restart docker`
 
 ### 测试镜像上传：
 
 ​	 拉取一个镜像
 ​				docker pull nginx
 
-				## 查看全部镜像
-				docker images
-	
-				## 标记本地镜像并指向目标仓库（ip:port/image_name:tag，该格式为标记版本号）
-				docker tag nginx 192.168.75.133:5000/nginx
-	
-				## 提交镜像到仓库
-				docker push 192.168.75.133:5000/nginx
-				查看全部镜像：
-						curl -XGET http://192.168.75.133:5000/v2/_catalog
+	## 查看全部镜像 docker images
+	## 标记本地镜像并指向目标仓库（ip:port/image_name:tag，该格式为标记版本号）
+	    docker tag nginx 192.168.75.133:5000/nginx
+	## 提交镜像到仓库
+		docker push 192.168.75.133:5000/nginx
+	查看全部镜像：
+		curl -XGET http://192.168.75.133:5000/v2/_catalog
 	部署Docker Registry WebUI
-				私服安装成功后就可以使用 docker 命令行工具对 registry 做各种操作了。然而不太方便的地方是不能直观的查看 registry 中的资源情况。如果可以使用 UI 工具管理镜像就更好了。这里介绍两个 Docker Registry WebUI 工具
-	
-				docker-registry-frontend
-				docker-registry-web		
+	私服安装成功后就可以使用 docker 命令行工具对 registry 做各种操作了。然而不太方便的地方是不能直观的查看 registry 中的资源情况。如果可以使用 UI 工具管理镜像就更好了。这里介绍两个 Docker Registry WebUI 工具
+	    docker-registry-frontend
+		docker-registry-web		
 ### 在客户端中docker-compose中使用这个：
 
 	version: '3.1'

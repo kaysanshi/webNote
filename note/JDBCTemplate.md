@@ -1,6 +1,5 @@
 # JDBCTemplate
 
-<a name="JDBCTemplate"></a>
 ### JDBCTemplate
 
 
@@ -16,9 +15,6 @@
 | `<T> T` | `execute(String sql, PreparedStatementCallback<T> action)`Execute a JDBC data access operation, implemented as callback action working on a JDBC PreparedStatement. 执行 JDBC 数据访问操作，实现为在 JDBC PreparedStatement 上工作的回调动作 |
 |  |  |
 
-
-
-<a name="9bdb07e7"></a>
 #### 插入
 
 
@@ -27,8 +23,6 @@ String insertQuery = "insert into student (name, age) values (?, ?)";
 jdbcTemplate.update( insertQuery, name, age)
 ```
 
-
-<a name="1f7cfd22"></a>
 #### 批量插入
 
 
@@ -56,8 +50,6 @@ jdbcTemplate.update( insertQuery, name, age)
     }
 ```
 
-
-<a name="bee912d7"></a>
 #### 查询
 
 
@@ -79,12 +71,8 @@ public class StudentMapper implements RowMapper<Student> {
 }
 ```
 
-
-<a name="69cb4ed5"></a>
 ##### 带参数查询
 
-
-<a name="a748ed36"></a>
 ###### 返回单行单列数据T
 
 
@@ -97,8 +85,6 @@ public class StudentMapper implements RowMapper<Student> {
 String name = template.queryForObject( "select name from student where home_address  limit 1 ", EmptySqlParameterSource.INSTANCE, String.class);
 ```
 
-
-<a name="d7f34de9"></a>
 ###### 返回单行数据T：
 
 
@@ -117,22 +103,16 @@ String name = template.queryForObject(
                 "select name from student limit 1", EmptySqlParameterSource.INSTANCE, new SingleColumnRowMapper<>(String.class));
 ```
 
-
-<a name="c954c6e6"></a>
 ###### 返回Map形式单行数据
 
 
 - public Map< String, Object> queryForMap(String sql, Map< String, ?> paramMap)
 - public Map< String, Object> queryForMap(String sql, SqlParameterSource paramSource)
 
-
-
 ```java
  Map< String, Object> studentMap = template.queryForMap("select * from student limit 1", new HashMap<>());
 ```
 
-
-<a name="aacbd0b6"></a>
 ###### 返回多行单列数据List
 
 
@@ -142,11 +122,6 @@ String name = template.queryForObject(
 List< String> namelist = template.queryForList("select name from student", new HashMap<>(), String.class);
 ```
 
-- 
-
-
-
-<a name="3e7077bf"></a>
 ###### 返回多行数据List
 
 
@@ -220,15 +195,11 @@ public class CompanyDao {
 }
 ```
 
-
-<a name="37662cb7"></a>
 ###### 返回多行数据 map
 
 
 - public List< Map< String, Object>> queryForList(String sql, Map< String, ?> paramMap)
 - public List< Map< String, Object>> queryForList(String sql, SqlParameterSource paramSource)
-
-
 
 ```java
 public Student getStudent(Integer id) {
@@ -280,8 +251,6 @@ public List<PushParentSwitch> getAllParentPushSwitch(String parentIds, String ty
     }
 ```
 
-
-<a name="b293c76a"></a>
 ###### in查询：NamedParameterJdbcTemplate
 
 
@@ -408,8 +377,6 @@ public <T> T query(PreparedStatementCreator psc, final PreparedStatementSetter p
     }
 ```
 
-
-<a name="32ac152b"></a>
 #### 更新
 
 
@@ -420,18 +387,12 @@ API:
 - int update(String sql, SqlParameterSource paramSource)
 - int update(String sql, SqlParameterSource paramSource)
 
-
-
 ```java
 String updateQuery = "update Student set age = ? where id = ?";
 jdbcTemplateObject.update(updateQuery, age, id);
 ```
 
-
-<a name="463e2bed"></a>
 ##### 批量更新
-
-
 
 
 ```java
@@ -448,8 +409,6 @@ int[] updateCounts = jdbcTemplateObject.batchUpdate(SQL,
    });
 ```
 
-
-<a name="2f4aaddd"></a>
 #### 删除
 
 
@@ -458,8 +417,6 @@ String deleteQuery = "delete from Student where id = ?";
 jdbcTemplateObject.update(deleteQuery, id);
 ```
 
-
-<a name="RowMapper"></a>
 #### RowMapper
 
 
@@ -475,8 +432,6 @@ public interface RowMapper
 - 步骤1 - 使用配置的数据源创建一个JdbcTemplate对象。
 - 步骤2 - 创建一个实现RowMapper接口的StudentMapper对象。
 - 步骤3 - 使用JdbcTemplate对象方法在使用StudentMapper对象时进行数据库操作
-
-
 
 ```java
 public void insertMediaAll(MediaEntity media){
@@ -533,8 +488,6 @@ public void insertMediaAll(MediaEntity media){
     }
 ```
 
-
-<a name="9101d5d8"></a>
 #### 查询参数设置值：PreparedStatementSetter
 
 
@@ -543,8 +496,6 @@ public void insertMediaAll(MediaEntity media){
 | `void` | `setValues(PreparedStatement ps)`Set parameter values on the given PreparedStatement. 在给定的 PreparedStatement 上设置参数值 |
 | --- | --- |
 |  |  |
-
-
 
 ```java
 final String SQL = "select * from Student where id = ? ";
@@ -567,8 +518,6 @@ List <Student> students = jdbcTemplateObject.query(SQL, new PreparedStatementSet
 
 在以下类型中处理似乎开发中还未遇见。
 
-
-<a name="6226689e"></a>
 #### JDBC处理Blob类型
 
 
@@ -593,11 +542,9 @@ public class StudentJDBCTemplate implements StudentDAO {
       jdbcTemplateObject.update(SQL, in);
       System.out.println("Updated Record with ID = " + id );
    }
-}//原文出自【易百教程】，商业转载请联系作者获得授权，非商业请保留原文链接：https://www.yiibai.com/springjdbc/handling_blob.html
+}
 ```
 
-
-<a name="9cb1ffaa"></a>
 #### JDBCTemplate处理clob类型字段
 
 
@@ -622,9 +569,5 @@ public class StudentJDBCTemplate implements StudentDAO {
       jdbcTemplateObject.update(SQL, in);
       System.out.println("Updated Record with ID = " + id );
    }
-}//原文出自【易百教程】，商业转载请联系作者获得授权，非商业请保留原文链接：https://www.yiibai.com/springjdbc/handling_blob.html
+}
 ```
-
-
-<a name="d41d8cd9-1"></a>
-#### 

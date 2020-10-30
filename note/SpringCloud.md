@@ -82,7 +82,8 @@
   ​            MessageQueue
   ​    
 
-  ###服务间是如何发现的呢：
+####  服务间是如何发现的呢：
+
   ​        在微服务架构中，一般每一个服务都是有多个拷贝，来做负载均衡。一个服务随时可能下线，也可能应对临时访问压力增加新的服务节点。
   ​        服务之间如何相互感知？服务如何管理？
   ​        这就是服务发现的问题了。一般有两类做法，也各有优缺点。基本都是通过 Zookeeper 等类似技术做服务注册信息的分布式管理。
@@ -216,8 +217,8 @@ SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到�
 
 ### SpringCloud Netflix:
 
-​    到2019目前最流行的微服务架构解决方案是：springBoot+spring cloud Netflix
-​    Spring Cloud 为开发人员提供了快速构建分布式系统中一些常见模式的工具（例如配置管理，服务发现，断路器，智能路由，微代理，控制总线）。分布式系统的协调导致了样板模式, 使用 Spring Cloud 开发人员可以快速地支持实现这些模式的服务和应用程序。他们将在任何分布式环境中运行良好，包括开发人员自己的笔记本电脑，裸机数据中心，以及 Cloud Foundry 等托管平台。
+   到2019目前最流行的微服务架构解决方案是：springBoot+spring cloud Netflix
+​   Spring Cloud 为开发人员提供了快速构建分布式系统中一些常见模式的工具（例如配置管理，服务发现，断路器，智能路由，微代理，控制总线）。分布式系统的协调导致了样板模式, 使用 Spring Cloud 开发人员可以快速地支持实现这些模式的服务和应用程序。他们将在任何分布式环境中运行良好，包括开发人员自己的笔记本电脑，裸机数据中心，以及 Cloud Foundry 等托管平台。
 ​    Spring Cloud 是基于Spring Boot进行开发，并且都是使用 Maven 做项目管理工具。   然而在2019年Spring Cloud Netflix 开始进入维护模式。所以使用的少了。      
 
 #### 创建一个依赖管理项目：    
@@ -593,8 +594,7 @@ spring:
 
 ```
 
-​    创建服务feign:feign是集成了ribbon的一个服务消费者：项目中使用用Feign
-​        可以理解为将ribbon峰会在哪个了一次
+​    创建服务feign:feign是集成了ribbon的一个服务消费者：项目中使用用Feign  可以理解为将ribbon峰会在哪个了一次
 
 #### 熔断器防止服务雪崩：
 
@@ -605,31 +605,30 @@ spring:
 
 ```java
   Feign中自带熔断器：feign:
-                                hystrix:
-                                    enabled: true
-            service中指定fallback的类：
-                @FeignClient(value = "hello-spring-cloud-service-admin", fallback = AdminServiceHystrix.class)
-                public interface AdminService {
+                     hystrix:
+                         enabled: true
+   service中指定fallback的类：
+                                                             @FeignClient(value = "hello-spring-cloud-service-admin", fallback = AdminServiceHystrix.class)
+  public interface AdminService {
 
-                    @RequestMapping(value = "hi", method = RequestMethod.GET)
-                    public String sayHi(@RequestParam(value = "message") String message);
-                }
-            创建这个借口的实现类：
-                @Component
-                public class AdminServiceHystrix implements AdminService {
-
-                    @Override
-                    public String sayHi(String message) {
-                        return "Hi，your message is :"" + message + "" but request error.";
-                    }
-                }
+      @RequestMapping(value = "hi", method = RequestMethod.GET)
+       public String sayHi(@RequestParam(value = "message") String message);
+      }
+   创建这个借口的实现类：
+    @Component
+     public class AdminServiceHystrix implements AdminService {
+        @Override
+        public String sayHi(String message) {
+               return "Hi，your message is :"" + message + "" but request error.";
+       }
+    }
             
 
 ```
 
 ##### 2.在ribbon中使用：
 
-​        pom.xml中加入：
+​        `pom.xml中加入：`
 ​            <dependency>
 ​                <groupId>org.springframework.cloud</groupId>
 ​                <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
@@ -637,7 +636,7 @@ spring:
 ​        主函数中加入注解@EnableHystrix
 ​        在service中使用：
 
-```
+```java
 @HystrixCommand(fallbackMethod = "hiError")
             public String sayHi(String message) {
                 return restTemplate.getForObject("http://HELLO-SPRING-CLOUD-SERVICE-ADMIN/hi?message=" + message, String.class);
@@ -651,7 +650,7 @@ spring:
 
 ##### 使用熔断仪器监控hystrix：
 
-​        pom.xml中加入：
+​        `pom.xml中加入：`
 ​        <dependency>
 ​            <groupId>org.springframework.cloud</groupId>
 ​            <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
@@ -863,11 +862,11 @@ public class ConfigApplication {
 
 ###### 配置说明：
 
-​                    spring.cloud.config.label：配置仓库的分支
-​                    spring.cloud.config.server.git.uri：配置 Git 仓库地址（GitHub、GitLab、码云 ...）
-​                    spring.cloud.config.server.git.search-paths：配置仓库路径（存放配置文件的目录）
-​                    spring.cloud.config.server.git.username：访问 Git 仓库的账号
-​                    spring.cloud.config.server.git.password：访问 Git 仓库的密码
+​           spring.cloud.config.label：配置仓库的分支
+​           spring.cloud.config.server.git.uri：配置 Git 仓库地址（GitHub、GitLab、码云 ...）
+​            spring.cloud.config.server.git.search-paths：配置仓库路径（存放配置文件的目录）
+​             spring.cloud.config.server.git.username：访问 Git 仓库的账号
+​              spring.cloud.config.server.git.password：访问 Git 仓库的密码
 
 ##### 分布式配置中心客户端配置：
 
@@ -942,13 +941,17 @@ public class ConfigApplication {
 ```
 
    入口类处理方式：
-​               @SpringBootApplication
-​                @EnableDiscoveryClient
-​                public class ConfigClientApplication {
-​                    public static void main(String[] args) {
-​                        SpringApplication.run(ConfigClientApplication.class, args);
-​                    }
-​                } 
+​    
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class ConfigClientApplication {
+   public static void main(String[] args) {
+          SpringApplication.run(ConfigClientApplication.class, args);
+   }
+}  
+```
 
 ###### application.yml中书写配置文件： 
 
@@ -985,10 +988,9 @@ public class ConfigApplication {
 
 #### 服务链路追踪：
 
-​    这里主要使用ZipKin：
-​         每个服务向 ZipKin 报告计时数据，ZipKin 会根据调用关系通过 ZipKin UI 生成依赖关系图，显示了多少跟踪请求通过每个服务，
-​         该系统让开发者可通过一个 Web 前端轻松的收集和分析数据，例如用户每次请求服务的处理时间等，可方便的监测系统中存在的瓶颈 。
-​    说明：
+ `这里主要使用ZipKin：`
+​         每个服务向 ZipKin 报告计时数据，ZipKin 会根据调用关系通过 ZipKin UI 生成依赖关系图，显示了多少跟踪请求通过每个服务，该系统让开发者可通过一个 Web 前端轻松的收集和分析数据，例如用户每次请求服务的处理时间等，可方便的监测系统中存在的瓶颈 。
+​    `说明：`
 ​         微服务架构是通过业务来划分服务的，使用 REST 调用。对外暴露的一个接口，可能需要很多个服务协同才能完成这个接口功能，如果链路上任何一个服务出现问题或者网络超时，都会形成导致接口调用失败。随着业务的不断扩张，服务之间互相调用会越来越复杂。
 
 #### 服务监控：

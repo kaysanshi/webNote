@@ -323,7 +323,7 @@ Java Caching定义了5个核心接口，分别是CachingProvider, CacheManager, 
 - Entry是一个存储在Cache中的key-value对。
 - Expiry 每一个存储在Cache中的条目有一个定义的有效期。一旦超过这个时间，条目为过期 的状态。一旦过期，条目将不可访问、更新和删除。缓存有效期可以通过ExpiryPolicy设置。
 
-![0w6PQP.png](https://s1.ax1x.com/2020/10/08/0w6PQP.png)
+[![0w69zt.md.png](https://s1.ax1x.com/2020/10/08/0w69zt.md.png)](https://imgchr.com/i/0w69zt)
 
 ## 2.Spring缓存抽象
 
@@ -345,7 +345,11 @@ Spring从3.1开始定义了org.springframework.cache.Cache
 
 2、从缓存中读取之前缓存存储的数据
 
-![0w69zt.png](https://s1.ax1x.com/2020/10/08/0w69zt.png)
+
+
+[![0w6PQP.md.png](https://s1.ax1x.com/2020/10/08/0w6PQP.md.png)](https://imgchr.com/i/0w6PQP)
+
+
 
 ## 3.概念和缓存注解
 
@@ -787,7 +791,7 @@ Exchange 和Queue的绑定可以是多对多的关系。
 
 表示消息队列服务器实体
 
-![0wyzid.png](https://s1.ax1x.com/2020/10/08/0wyzid.png)
+
 
 ## 3.RabbitMQ运行机制：
 
@@ -797,17 +801,19 @@ AMQP中消息的路由过程和java开发中jms存在差别AMQP
 
 中增加了 **Exchange** 和 **Binding** 的角色。生产者把消息发布到 Exchange 上，消息最终到达队列并被消费者接收，而 Binding 决定交换器的消息应该发送到那个队列。：
 
-![0w6SJA.png](https://s1.ax1x.com/2020/10/08/0w6SJA.png)
+[![0wyzid.md.png](https://s1.ax1x.com/2020/10/08/0wyzid.md.png)](https://imgchr.com/i/0wyzid)
+
+
 
 每个发到 fanout 类型交换器的消息都会分到所有绑定的队列上去。fanout
 交换器不处理路由键，只是简单的将队列绑定到交换器上，每个发送到交换器的消息都会被转发到与该交换器绑定的所有队列上。很像子网广播，每台子网内的主机都获得了一份复制的消息。fanout
 类型转发消息是最快的。
 
-![0w6SJA.png](https://s1.ax1x.com/2020/10/08/0w6SJA.png)
+[![0w6isf.png](https://s1.ax1x.com/2020/10/08/0w6isf.png)](https://imgchr.com/i/0w6isf)
 
 topic 交换器通过模式匹配分配消息的路由键属性，将路由键和某个模式进行匹配，此时队列需要绑定到一个模式上。它将路由键和绑定键的字符串切分成单词，这些**单词之间用点隔开**。它同样也会识别两个通配符：符号“#”和符号“**”**。**#**匹配**0**个或多个单词**，****匹配一个单词。
 
-![0w6FL8.png](https://s1.ax1x.com/2020/10/08/0w6FL8.png)
+[![0w6FL8.png](https://s1.ax1x.com/2020/10/08/0w6FL8.png)](https://imgchr.com/i/0w6FL8)
 
 
 

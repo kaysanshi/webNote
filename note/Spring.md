@@ -3,122 +3,126 @@
 ### 为什么需要Spring FrameWork
 
 当已经存在许多开放源代码（和专有）J2EEframework时，我们为什么还需要Spring Framework？
-	因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。
-		Spring致力于提供一种方法管理你的业务对象。
-		Spring是全面的和模块化的。
-		Spring有分层的体系结构，这意味着你能选择使用它孤立的任何部分，它的架构仍然是内在稳定的。因此从你的学习中，你可得到最大的价值。例如，你可能选择仅仅使用Spring来简单化JDBC的使用，或用来管理所有的业务对象。它的设计从底部帮助你编写易于测试的代码。Spring是用于测试驱动工程的理想的framework。
-		Spring对你的工程来说，它不需要一个以上的framework。Spring是潜在地一站式解决方案，定位于与典型应用相关的大部分基础结构。它也涉及到其他framework没有考虑到的内容。
-		可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，
-		方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
+	`因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。`
+
+​		`Spring致力于提供一种方法管理你的业务对象。`
+
+​		`Spring是全面的和模块化的。`
+
+​		`Spring有分层的体系结构`，这意味着你能选择使用它孤立的任何部分，它的架构仍然是内在稳定的。因此从你的学习中，你可得到最大的价值。例如，你可能选择仅仅使用Spring来简单化JDBC的使用，或用来管理所有的业务对象。它的设计从底部帮助你编写易于测试的代码。   
+
+​        Spring是用于测试驱动工程的理想的framework。
+
+​		Spring对你的工程来说，它不需要一个以上的framework。Spring是潜在地一站式解决方案，定位于与典型应用相关的大部分基础结构。它也涉及到其他framework没有考虑到的内容。可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
 
 ### 体系结构
 
-​				Spring 有可能成为所有企业应用程序的一站式服务点，然而，Spring 是模块化的，允许你挑选和选择适用于你的模块，不必要把剩余部分也引入。
-​				Spring 框架提供约 20 个模块，可以根据应用程序的要求来使用。
+​	Spring 有可能成为所有企业应用程序的一站式服务点，然而，Spring 是模块化的，允许你挑选和选择适用于你的模块，不必要把剩余部分也引入。
+​	Spring 框架提供约 20 个模块，可以根据应用程序的要求来使用。
 
 ![img](https://img-blog.csdn.net/20180825212519786?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)![Click and drag to move](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 ### 核心容器
 
-​					核心容器由spring-core，spring-beans，spring-context，spring-context-support和spring-expression（SpEL，Spring表达式语言，Spring Expression Language）等模块组成，它们的细节如下：
-​					spring-core模块提供了框架的基本组成部分，包括 IoC 和依赖注入功能。
-​					spring-beans 模块提供 BeanFactory，工厂模式的微妙实现，它移除了编码式单例的需要，并且可以把配置和依赖从实际编码逻辑中解耦。
-​					context模块建立在由core和 beans 模块的基础上建立起来的，它以一种类似于JNDI注册的方式访问对象。Context模块继承自Bean模块，并且添加了国际化（比如，使用资源束）、事件传播、资源加载和透明地创建上下文（比如，通过Servelet容器）等功能。Context模块也支持Java EE的功能，比如EJB、JMX和远程调用等。ApplicationContext接口是Context模块的焦点。spring-context-support提供了对第三方库集成到Spring上下文的支持，比如缓存（EhCache, Guava, JCache）、邮件（JavaMail）、调度（CommonJ, Quartz）、模板引擎（FreeMarker, JasperReports, Velocity）等。
-​					spring-expression模块提供了强大的表达式语言，用于在运行时查询和操作对象图。它是JSP2.1规范中定义的统一表达式语言的扩展，支持set和get属性值、属性赋值、方法调用、访问数组集合及索引的内容、逻辑算术运算、命名变量、通过名字从Spring IoC容器检索对象，还支持列表的投影、选择以及聚合等。。
+`核心容器由spring-core，spring-beans，spring-context，spring-context-support和spring-expression（SpEL，Spring表达式语言，Spring Expression Language）等模块组成，它们的细节如下`：
+
+- spring-core模块提供了框架的基本组成部分，包括 IoC 和依赖注入功能。
+- spring-beans 模块提供 BeanFactory，工厂模式的微妙实现，它移除了编码式单例的需要，并且可以把配置和依赖从实际编码逻辑中解耦。
+- context模块建立在由core和 beans 模块的基础上建立起来的，它以一种类似于JNDI注册的方式访问对象。Context模块继承自Bean模块，并且添加了国际化（比如，使用资源束）、事件传播、资源加载和透明地创建上下文（比如，通过Servelet容器）等功能。Context模块也支持Java EE的功能，比如EJB、JMX和远程调用等。ApplicationContext接口是Context模块的焦点。spring-context-support提供了对第三方库集成到Spring上下文的支持，比如缓存（EhCache, Guava, JCache）、邮件（JavaMail）、调度（CommonJ, Quartz）、模板引擎（FreeMarker, JasperReports, Velocity）等。
+- spring-expression模块提供了强大的表达式语言，用于在运行时查询和操作对象图。它是JSP2.1规范中定义的统一表达式语言的扩展，支持set和get属性值、属性赋值、方法调用、访问数组集合及索引的内容、逻辑算术运算、命名变量、通过名字从Spring IoC容器检索对象，还支持列表的投影、选择以及聚合等。。
 
 ### 数据访问/集成
 
-​					数据访问/集成层包括 JDBC，ORM，OXM，JMS 和事务处理模块，它们的细节如下：
-​					（注：JDBC=Java Data Base Connectivity，ORM=Object Relational Mapping，OXM=Object XML Mapping，JMS=Java Message Service）
-​					JDBC 模块提供了JDBC抽象层，它消除了冗长的JDBC编码和对数据库供应商特定错误代码的解析。
-​					ORM 模块提供了对流行的对象关系映射API的集成，包括JPA、JDO和Hibernate等。通过此模块可以让这些ORM框架和spring的其它功能整合，比如前面提及的事务管理。
-​					OXM 模块提供了对OXM实现的支持，比如JAXB、Castor、XML Beans、JiBX、XStream等。
-​					JMS 模块包含生产（produce）和消费（consume）消息的功能。从Spring 4.1开始，集成了spring-messaging模块。
-​					事务模块为实现特殊接口类及所有的 POJO 支持编程式和声明式事务管理。（注：编程式事务需要自己写beginTransaction()、commit()、rollback()等事务管理方法，声明式事务是通过注解或配置由spring自动处理，编程式事务粒度更细）
+- ​	数据访问/集成层包括 JDBC，ORM，OXM，JMS 和事务处理模块，它们的细节如下：
+  ​					（注：JDBC=Java Data Base Connectivity，ORM=Object Relational Mapping，OXM=Object XML Mapping，JMS=Java Message Service）
+- JDBC 模块提供了JDBC抽象层，它消除了冗长的JDBC编码和对数据库供应商特定错误代码的解析。
+-  ORM 模块提供了对流行的对象关系映射API的集成，包括JPA、JDO和Hibernate等。通过此模块可以让这些ORM框架和spring的其它功能整合，比如前面提及的事务管理。
+- OXM 模块提供了对OXM实现的支持，比如JAXB、Castor、XML Beans、JiBX、XStream等。
+- JMS 模块包含生产（produce）和消费（consume）消息的功能。从Spring 4.1开始，集成了spring-messaging模块。
+- 事务模块为实现特殊接口类及所有的 POJO 支持编程式和声明式事务管理。（注：编程式事务需要自己写beginTransaction()、commit()、rollback()等事务管理方法，声明式事务是通过注解或配置由spring自动处理，编程式事务粒度更细）
 
 ### Web
 
-​					Web 层由 Web，Web-MVC，Web-Socket 和 Web-Portlet 组成，它们的细节如下：
-​					Web 模块提供面向web的基本功能和面向web的应用上下文，比如多部分（multipart）文件上传功能、使用Servlet监听器初始化IoC容器等。它还包括HTTP客户端以及Spring远程调用中与web相关的部分。
-​					Web-MVC 模块为web应用提供了模型视图控制（MVC）和REST Web服务的实现。Spring的MVC框架可以使领域模型代码和web表单完全地分离，且可以与Spring框架的其它所有功能进行集成。
-​					Web-Socket 模块为 WebSocket-based 提供了支持，而且在 web 应用程序中提供了客户端和服务器端之间通信的两种方式。
-​					Web-Portlet 模块提供了用于Portlet环境的MVC实现，并反映了spring-webmvc模块的功能。
+`Web 层由 Web，Web-MVC，Web-Socket 和 Web-Portlet 组成，它们的细节如下：`
+
+- Web 模块提供面向web的基本功能和面向web的应用上下文，比如多部分（multipart）文件上传功能、使用Servlet监听器初始化IoC容器等。它还包括HTTP客户端以及Spring远程调用中与web相关的部分。
+- Web-MVC 模块为web应用提供了模型视图控制（MVC）和REST Web服务的实现。Spring的MVC框架可以使领域模型代码和web表单完全地分离，且可以与Spring框架的其它所有功能进行集成。
+- Web-Socket 模块为 WebSocket-based 提供了支持，而且在 web 应用程序中提供了客户端和服务器端之间通信的两种方式。
+- Web-Portlet 模块提供了用于Portlet环境的MVC实现，并反映了spring-webmvc模块的功能。
 
 ### 其他
 
-​					还有其他一些重要的模块，像 AOP，Aspects，Instrumentation，Web 和测试模块，它们的细节如下：
-​					AOP 模块提供了面向方面的编程实现，允许你定义方法拦截器和切入点对代码进行干净地解耦，从而使实现功能的代码彻底的解耦出来。使用源码级的元数据，可以用类似于.Net属性的方式合并行为信息到代码中。
-​					Aspects 模块提供了与 AspectJ 的集成，这是一个功能强大且成熟的面向切面编程（AOP）框架。
-​					Instrumentation 模块在一定的应用服务器中提供了类 instrumentation 的支持和类加载器的实现。
-​					Messaging 模块为 STOMP 提供了支持作为在应用程序中 WebSocket 子协议的使用。它也支持一个注解编程模型，它是为了选路和处理来自 WebSocket 客户端的 STOMP 信息。
-​					测试模块支持对具有 JUnit 或 TestNG 框架的 Spring 组件的测试。
+`还有其他一些重要的模块，像 AOP，Aspects，Instrumentation，Web 和测试模块，它们的细节如下：`
+
+- AOP 模块提供了面向方面的编程实现，允许你定义方法拦截器和切入点对代码进行干净地解耦，从而使实现功能的代码彻底的解耦出来。使用源码级的元数据，可以用类似于.Net属性的方式合并行为信息到代码中。
+- Aspects 模块提供了与 AspectJ 的集成，这是一个功能强大且成熟的面向切面编程（AOP）框架。
+- Instrumentation 模块在一定的应用服务器中提供了类 instrumentation 的支持和类加载器的实现。
+- Messaging 模块为 STOMP 提供了支持作为在应用程序中 WebSocket 子协议的使用。它也支持一个注解编程模型，它是为了选路和处理来自 WebSocket 客户端的 STOMP 信息。
+- 测试模块支持对具有 JUnit 或 TestNG 框架的 Spring 组件的测试。
 
 ### 主要有七大模块
 
-每个模块可以单独使用也可以多模块组合使用，
-			核心模块：spring core是核心容器实现了IoC模式，提供了框架的基础功能，在模块中包含BeanFactory类，负责对JavaBean配置与管理采用Factory模式实现loC容器即依赖注入
-			Context模块：
-						继承了BeanFactory并且添加了处理事件，国际化,资源装载，数据校验等，JNDI访问，ejb,远程调用，集成模块框架，Email,定时任务
-			AOP模块
-						通过事务管理使得任意Spring管理的对象AOP化，
-			DAO模块
-						JDBC的抽象层，简化数据库的厂商的异常错误，减少了代码的书写，并且提供了声明式的任务，和编程式任务
-			O/R映射模块
-						直接用Hibernate
-			Web模块
-						建立在Spring Context 模块的基础，提供servlet监听器的Context和web应用上下文，
-			mvc模块
-						建立在Spring 核心功能之上，使得拥有Spring框架的所有特性适应于多种的视图模块技术
-		
+`每个模块可以单独使用也可以多模块组合使用，`
+
+`核心模块：`spring core是核心容器实现了IoC模式，提供了框架的基础功能，在模块中包含BeanFactory类，负责对JavaBean配置与管理采用Factory模式实现loC容器即依赖注入。
+
+`Context模块：`继承了BeanFactory并且添加了处理事件，国际化,资源装载，数据校验等，JNDI访问，ejb,远程调用，集成模块框架，Email,定时任务。
+
+`AOP模块`：通过事务管理使得任意Spring管理的对象AOP化。
+
+`DAO模块`：JDBC的抽象层，简化数据库的厂商的异常错误，减少了代码的书写，并且提供了声明式的任务，和编程式任务。
+
+`O/R映射模块`：直接用Hibernate。
+
+`Web模块`：建立在Spring Context 模块的基础，提供servlet监听器的Context和web应用上下文
+
+`mvc模块`：建立在Spring 核心功能之上，使得拥有Spring框架的所有特性适应于多种的视图模块技术
 
 ```
 	配置：
-				Spring模块中是根据每一个模块对应的一个jar包
-				spring,jar//整个Spring模块
-				spring-core.jar//核心模块包含ioc容器
-				spring-aop.jar//Aop模块
-				spring-context.jar//Spring上下文包含ApplicationContext容器
-				spring-dao.jar//dao层与jdbc的支持
-				spring-orm.jar
-				spring-web.jar
-				spring-webmvc.jar//
-			Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.xml}
+    Spring模块中是根据每一个模块对应的一个jar包
+    spring,jar//整个Spring模块
+    spring-core.jar//核心模块包含ioc容器
+    spring-aop.jar//Aop模块
+    spring-context.jar//Spring上下文包含ApplicationContext容器
+    spring-dao.jar//dao层与jdbc的支持
+    spring-orm.jar
+    spring-web.jar
+    spring-webmvc.jar//
+    Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.xml}
 ```
 
 ### IOC 容器
 
 IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，
-			Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。
-			Spring 容器使用依赖注入（DI）来管理组成一个应用程序的组件。这些对象被称为 Spring Beans，
-			Spring IoC 容器利用 Java 的 POJO 类和配置元数据来生成完全配置和可执行的系统或应用程序
+	Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。
+	Spring 容器使用依赖注入（DI）来管理组成一个应用程序的组件。这些对象被称为 Spring Beans，
+	Spring IoC 容器利用 Java 的 POJO 类和配置元数据来生成完全配置和可执行的系统或应用程序
 
 #### BeanFactory
 
 它主要的功能是为依赖注入 （DI） 提供支持，这个容器接口在 org.springframework.beans.factory.BeanFactor 中被定义。
-				BeanFactory 和相关的接口，比如BeanFactoryAware、 DisposableBean、InitializingBean，仍旧保留在 Spring 中，
-					主要目的是向后兼容已经存在的和那些 Spring 整合在一起的第三方框架
-					实现了IoC控制，可以称为IoC容器
-					通过xml配置文件或.properties中读取Javabean的定义，来实现Javabean配置和管理创建。
-					XmlBeanFactory可以通过xml读取装配JavaBean
-					在调用getBean()方法时不会实例化任何对象只有在JavaBean需要创建时才会分配资源空间，
-					第一步利用框架提供的 XmlBeanFactory() API 去生成工厂 bean 以及利用 ClassPathResource() API 去加载在路径 CLASSPATH 下可用的 bean 配置文件。
-					XmlBeanFactory() API 负责创建并初始化所有的对象，即在配置文件中提到的 bean。
-					第二步利用第一步生成的 bean 工厂对象的 getBean() 方法得到所需要的 bean。 
-					这个方法通过配置文件中的 bean ID 来返回一个真正的对象，该对象最后可以用于实际的对象。一旦得到这个对象，就可以利用这个对象来调用任何方法
-					例如：
+`BeanFactory 和相关的接口，比如BeanFactoryAware、 DisposableBean、InitializingBean，仍旧保留在 Spring 中，主要目的是向后兼容已经存在的和那些 Spring 整合在一起的第三方框架实现了IoC控制，可以称为IoC容器通过xml配置文件或.properties中读取Javabean的定义，来实现Javabean配置和管理创建。`
+		XmlBeanFactory可以通过xml读取装配JavaBean
+		在调用getBean()方法时不会实例化任何对象只有在JavaBean需要创建时才会分配资源空间，
 
-			Resource re=new ClassPathResource("applicationContext.xml");
-						BeanFactory factory=new XmlBeanFactory(re);
-						Test test =factory.getBean("test");
-				在xml文件中配置如下：
-				<！引入beans.dtd>
-				<beans>
-					< bean id="test" class="com.test.Test">
-				</beans>
+- 第一步利用框架提供的 XmlBeanFactory() API 去生成工厂 bean 以及利用 ClassPathResource() API 去加载在路径 CLASSPATH 下可用的 bean 配置文件。
+  					XmlBeanFactory() API 负责创建并初始化所有的对象，即在配置文件中提到的 bean。
+- 第二步利用第一步生成的 bean 工厂对象的 getBean() 方法得到所需要的 bean。 这个方法通过配置文件中的 bean ID 来返回一个真正的对象，该对象最后可以用于实际的对象。一旦得到这个对象，就可以利用这个对象来调用任何方法
+  例如：
+
+	Resource re=new ClassPathResource("applicationContext.xml");
+	BeanFactory factory=new XmlBeanFactory(re);
+	Test test =factory.getBean("test");
+	在xml文件中配置如下：
+	<！引入beans.dtd>
+	<beans>
+	< bean id="test" class="com.test.Test">
+	</beans>
 #### ApplicationContext:
 
-是Spring中较高级的容器和beanFactory类似，他可以加载配置文件定义的bean，将所有的bean集中在一起，当请求时分配bean，扩展了BeanFactory容器并添加了国际化，生命周期，事件，监听，提供了BeanFactory的所有特性而且允许用户使用更多的声明方式
-	有三个实现的类：	ClassPathXmlApplicationContext,FileSystemXmlApplicationContext,WebApplicationContext
+ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以加载配置文件定义的bean，将所有的bean集中在一起，当请求时分配bean，扩展了BeanFactory容器并添加了国际化，生命周期，事件，监听，提供了BeanFactory的所有特性而且允许用户使用更多的声明方式
+有三个实现的类：	`ClassPathXmlApplicationContext,FileSystemXmlApplicationContext,WebApplicationContext`
 
 ##### ClassPathXmlApplicationContext:
 
@@ -127,8 +131,7 @@ IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦�
 
 ##### FileSystemXmlApplicationContext:
 
-​	不是从类路径中获取配置信息，而是通过参数指定配置文件的位置，可以获取类路径之外的资源，
-​	该容器从 XML 文件中加载已被定义的 bean。在这里，你需要提供给构造器 XML 文件的完整路径
+​	不是从类路径中获取配置信息，而是通过参数指定配置文件的位置，可以获取类路径之外的资源，该容器从 XML 文件中加载已被定义的 bean。在这里，你需要提供给构造器 XML 文件的完整路径
 ​	ApplicationContext context=new  FileSystemXmlApplicationContext(String configLocation);
 
 ##### WebApplicationContext:
@@ -167,23 +170,25 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 
 ##### singleton	
 
-​        在spring IoC容器仅存在一个Bean实例，Bean以单例方式存在，默认值
-​		当一个bean的作用域为Singleton，那么Spring IoC容器中只会存在一个共享的bean实例，并且所有对bean的请求，只要id与该bean定义相匹配，则只会返回bean的同一实例。
-​		Singleton是单例类型，就是在创建起容器时就同时自动创建了一个bean的对象，不管你是否使用他都存在了每次获取到的对象都是同一个对象。
-​	注意，Singleton作用域是Spring中的缺省作用域
+在spring IoC容器仅存在一个Bean实例，Bean以单例方式存在，默认值
+
+当一个bean的作用域为Singleton，那么Spring IoC容器中只会存在一个共享的bean实例，并且所有对bean的请求，只要id与该bean定义相匹配，则只会返回bean的同一实例。
+
+Singleton是单例类型，就是在创建起容器时就同时自动创建了一个bean的对象，不管你是否使用他都存在了每次获取到的对象都是同一个对象。
+
+注意，Singleton作用域是Spring中的缺省作用域
 ​		<bean id="..." class="..." scope="singleton"></bean>	
 
 ##### prototype	
 
-每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()
-这就是平时使用new创建对象的默认方式；
-				表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。
-				Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。
-				通常DAO不会被配置成prototype,因为一个Dao不会支持任何会话状态，
+每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()这就是平时使用new创建对象的默认方式；
+		表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。
+		Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。
+		通常DAO不会被配置成prototype,因为一个Dao不会支持任何会话状态，
 
 ##### request	
 
-每次HTTP请求都会创建一个新的Bean，该作用域仅适用于WebApplicationContext环境				
+每次HTTP请求都会创建一个新的Bean，该作用域仅适用于WebApplicationContext环境			
 
 ##### session	
 
@@ -191,7 +196,7 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 
 ##### global-session	
 
-一般用于Portlet应用环境，改作用于仅适用于WebApplicationContext环境									   
+一般用于Portlet应用环境，改作用于仅适用于WebApplicationContext环境								   
 
 #### Bean的生命周期
 
@@ -233,10 +238,9 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 #### Bean的后置处理
 
 BeanPostProcessor 接口定义回调方法，你可以实现该方法来提供自己的实例化逻辑，依赖解析逻辑等。你也可以在 Spring 容器通过插入一个或多个 BeanPostProcessor 的实现来完成实例化，配置和初始化一个bean之后实现一些自定义逻辑回调方法。
-							你可以配置多个 BeanPostProcesso r接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。
-							BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作。
-							ApplicationContext 会自动检测由 BeanPostProcessor 接口的实现定义的 bean，注册这些 bean 为后置处理器，然后通过在容器中创建 bean，在适当的时候调用它。
-							调用的时候只需要实现BeanPostProcessor接口
+		你可以配置多个 BeanPostProcesso r接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。
+		BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作。
+		ApplicationContext 会自动检测由 BeanPostProcessor 接口的实现定义的 bean，注册这些 bean 为后置处理器，然后通过在容器中创建 bean，在适当的时候调用它。调用的时候只需要实现BeanPostProcessor接口
 
 #### Bean定义继承
 
@@ -284,11 +288,11 @@ Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念�
 
 #### Setter注入
 
-​		基于Java的setter方法的属性赋值最为广泛应用
-​		可以混合这两种方法，基于构造函数和基于 setter 方法的 DI，然而使用有强制性依存关系的构造函数和有可选依赖关系的 setter是一个好的做法。
-​		代码是 DI 原理的清洗机，当对象与它们的依赖关系被提供时，解耦效果更明显。对象不查找它的依赖关系，也不知道依赖关系的位置或类，而这一切都由 Spring 框架控制的。	
-​			例如：
-​				一个简单的Javabean就是有一个私有的属性对应getter() setter()方法，来实现对属性的封装；
+​	基于Java的setter方法的属性赋值最为广泛应用
+​	可以混合这两种方法，基于构造函数和基于 setter 方法的 DI，然而使用有强制性依存关系的构造函数和有可选依赖关系的 setter是一个好的做法。
+​	代码是 DI 原理的清洗机，当对象与它们的依赖关系被提供时，解耦效果更明显。对象不查找它的依赖关系，也不知道依赖关系的位置或类，而这一切都由 Spring 框架控制的。	
+​	例如：
+​		一个简单的Javabean就是有一个私有的属性对应getter() setter()方法，来实现对属性的封装；
 
 ```java
 					class User {
@@ -313,8 +317,7 @@ Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念�
 ```
 #### 构造函数注入
 
-当容器调用带有一组参数的类构造函数时，基于构造函数的 DI 就完成了，其中每个参数代表一个对其他类的依赖。
-		基于构造方法为属性赋值，容器通过调用类的构造方法将其进行依赖注入
+当容器调用带有一组参数的类构造函数时，基于构造函数的 DI 就完成了，其中每个参数代表一个对其他类的依赖。基于构造方法为属性赋值，容器通过调用类的构造方法将其进行依赖注入
 		<constructor-arg>是<bean>元素的子元素，通过 <constructor-arg>的子元素<value>可以传参
 		<ref>元素用于引入其他的Javabean对象
 
@@ -435,23 +438,23 @@ public class TextEditor {
 
 #### 设值函数注入：
 
-​			当容器调用一个无参的构造函数或一个无参的静态 factory 方法来初始化你的 bean 后，通过容器在你的 bean 上调用设值函数，基于设值函数的 DI 就完成了。
+当容器调用一个无参的构造函数或一个无参的静态 factory 方法来初始化你的 bean 后，通过容器在你的 bean 上调用设值函数，基于设值函数的 DI 就完成了。
 
 			<?xml version="1.0" encoding="UTF-8"?>
 			<beans xmlns="http://www.springframework.org/schema/beans"
 			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			    xsi:schemaLocation="http://www.springframework.org/schema/beans
 			    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-
+	
 			   <!-- Definition for textEditor bean -->
 			   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
 			      <property name="spellChecker" ref="spellChecker"/>
 			   </bean>
-
+	
 			   <!-- Definition for spellChecker bean -->
 			   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
 			   </bean>
-
+	
 			</beans>
 			应该注意定义在基于构造函数注入和基于设值函数注入中的 Beans.xml 文件的区别。
 			唯一的区别就是在基于构造函数注入中，我们使用的是〈bean〉标签中的〈constructor-arg〉元素，而在基于设值函数的注入中，我们使用的是〈bean〉标签中的〈property〉元素。
@@ -479,15 +482,15 @@ public class TextEditor {
 						   }
 				配置形式：
 				<?xml version="1.0" encoding="UTF-8"?>
-
+	
 				<beans xmlns="http://www.springframework.org/schema/beans"
 				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				    xsi:schemaLocation="http://www.springframework.org/schema/beans
 				    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-
+	
 				   <!-- Definition for javaCollection -->
 				   <bean id="javaCollection" class="com.tutorialspoint.JavaCollection">
-
+	
 				      <!-- results in a setAddressList(java.util.List) call -->
 				      <property name="addressList">
 					 <list>
@@ -497,7 +500,7 @@ public class TextEditor {
 					    <value>USA</value>
 					 </list>
 				      </property>
-
+	
 				      <!-- results in a setAddressSet(java.util.Set) call -->
 				      <property name="addressSet">
 					 <set>
@@ -507,7 +510,7 @@ public class TextEditor {
 					    <value>USA</value>
 					</set>
 				      </property>
-
+	
 				      <!-- results in a setAddressMap(java.util.Map) call -->
 				      <property name="addressMap">
 					 <map>
@@ -517,7 +520,7 @@ public class TextEditor {
 					    <entry key="4" value="USA"/>
 					 </map>
 				      </property>
-
+	
 				      <!-- results in a setAddressProp(java.util.Properties) call -->
 				      <property name="addressProp">
 					 <props>
@@ -527,9 +530,9 @@ public class TextEditor {
 					    <prop key="four">USA</prop>
 					 </props>
 				      </property>
-
+	
 				   </bean>
-
+	
 				</beans>
 ### 自动装配
 
@@ -595,70 +598,84 @@ public class TextEditor {
 
 ### AOP
 
-Aop:
-		横向重复，纵向抽取
-		Aop基于代理的机制
-		Spring产生代理对象，
-		实现的AOp的原理：
-					动态代理：
-							被代理对象必须实现接口，如果没有接口将不能使用
-							对某一个目标中的方法进行增强
-					cglib代理：
-							可以对任何类生成代理，他可以目标对象进行继承代理。若目标对象被final修饰则该类不可以生成代理
-				Spring两者混合使用。
-		SpringAop开发：
-				Spring封装了动态代理代码，不需受用书写
-				可以对任何类进行d代理的增强
-		Aop术语：	
-				切面(aspect)：对象操作过程中的截面，一段程序代码被植入到程序的流程中，(切入点+通知)
-				连接点(JoinPoint)：对象的操作过程中的某个阶段点，目标对象中所有可以增强的方法
-				切入点(Pointcut)：是连接点的集合，目标对象中已经增强的方法
-				通知(Advice)：某个切入点被横切后所取得处理逻辑，增强的代码
-				目标对象(Target)：所有被通知的对象
-				织入(Weaving)：将切面功能应用到目标对象的过程。织入时期:(编译时期，类加载时期，执行期，
-				引入：已编译的类在运行期动态加载属性和方法。
+​		横向重复，纵向抽取
+​		Aop基于代理的机制
+​		Spring产生代理对象，
 
-Spring切入点：
-				他表示注入切面的位置有以下三种切入点：静态切入点，动态切入点，其他切入点
-				静态切入点：
-					静态往往意味着不变，只能应用在相对不变的位置上
-					静态切入点在某个方法名上是织入切面，在织入代码前，进象进行方法的匹配，判断当前的正在调用的方法是不是已经定义了静态切入点
-					若定义过说明匹配成功，织入切面，如没有定义为静态的切入点这匹配失败，不进行织入切面。
-					Pointcut接口是切入点的定义接口，用它来规定可切入的链接点的属性，通过对该接口的来扩展处理其他类型的链接点
-						public interface Pointcut{
-							ClassFilter getClassFilter();
-							MethodMatcher getMethodMatcher();
-						}
-						使用ClassFilter接口匹配目标类
-						public interface ClassFilter{
-							//与目标类相匹配
-							boolean matches(Class class);
-						}
+#### 实现的AOP的原理：
 
-​		动态切入点：
+##### 动态代理：
+​			被代理对象必须实现接口，如果没有接口将不能使用对某一个目标中的方法进行增强
+
+#### cglib代理：
+
+​			可以对任何类生成代理，他可以目标对象进行继承代理。若目标对象被final修饰则该类不可以生成代理
+
+​				`Spring两者混合使用。`
+
+#### SpringAop开发：
+
+​		Spring封装了动态代理代码，不需受用书写  可以对任何类进行d代理的增强
+
+##### Aop术语：
+
+​	`切面(aspect)：`对象操作过程中的截面，一段程序代码被植入到程序的流程中，(切入点+通知)
+
+​	`连接点(JoinPoint)：`对象的操作过程中的某个阶段点，目标对象中所有可以增强的方法
+​    `切入点(Pointcut)：`是连接点的集合，目标对象中已经增强的方法
+​    `通知(Advice)：`某个切入点被横切后所取得处理逻辑，增强的代码
+​    `目标对象(Target)：`所有被通知的对象
+​	`织入(Weaving)：`将切面功能应用到目标对象的过程。织入时期:(编译时期，类加载时期，执行期，
+   `引入：`已编译的类在运行期动态加载属性和方法。
+
+##### Spring切入点：
+
+​	他表示注入切面的位置有以下三种切入点：静态切入点，动态切入点，其他切入点
+
+##### 静态切入点：
+
+​	 静态往往意味着不变，只能应用在相对不变的位置上静态切入点在某个方法名上是织入切面，在织入代码前，进象进行方法的匹配，判断当前的正在调用的方法是不是已经定义了静态切入点.若定义过说明匹配成功，织入切面，如没有定义为静态的切入点这匹配失败，不进行织入切面。
+​		Pointcut接口是切入点的定义接口，用它来规定可切入的链接点的属性，通过对该接口的来扩展处理其他类型的链接点
+​						public interface Pointcut{
+​							ClassFilter getClassFilter();
+​							MethodMatcher getMethodMatcher();
+​						}
+​						使用ClassFilter接口匹配目标类
+​						public interface ClassFilter{
+​							//与目标类相匹配
+​							boolean matches(Class class);
+​						}
+
+##### 动态切入点：
+
 ​			可以应用在相对变化的位置上，
-Aspect：
-​		就是Spring的切面，他是对象操作过程的截面，
-​		是对系统中的对象操作过程中的截面的逻辑进行模块化的封装的Aop概念实体
+
+##### Aspect：
+
+​		就是Spring的切面，他是对象操作过程的截面，是对系统中的对象操作过程中的截面的逻辑进行模块化的封装的Aop概念实体
 ​		
-Aop事务：
+
+##### Aop事务：
+
 ​		Spring 事务应用的方法上的策略的描述，传播行为，隔离级别，只读，超时属性，
-​		编程式事务管理：
-​			在Spring中主要使用PlatformTransactionManager接口的事务管理器或者是TransactionTemplate,后者符合模板形式
-​			
-​		声明式事务管理：
+
+###### 编程式事务管理：
+
+​		在Spring中主要使用PlatformTransactionManager接口的事务管理器或者是TransactionTemplate,后者符合模板形式
+
+######  声明式事务管理：
+
 ​			在声明的事务中不涉及组建依赖关系，通过AOP来实现事务管理，无需编写任何代码就可以实现基于容器的事务管理，推荐使用
-​			常用TransactionProxyFactoryBean完成声明式事务管理，设置代理的目标对象，代理对象生成的方法和事务的生成方式和事务属性，代理对象是在
-​			目标对象上生成的包含事务和AOP切面的新的对象，可以付给目标的引用代替目标对象，
+​			常用TransactionProxyFactoryBean完成声明式事务管理，设置代理的目标对象，代理对象生成的方法和事务的生成方式和事务属性，代理对象是在目标对象上生成的包含事务和AOP切面的新的对象，可以付给目标的引用代替目标对象，
 
 
 ​				
-​										<?xml version="1.0" encoding="UTF-8"?>
-​					<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
-​	
+
+			
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">	
 			<!-- 指定spring读取db.properties配置 -->
 			<context:property-placeholder location="classpath:db.properties"  />
-
 			<!-- 事务核心管理器,封装了所有事务操作. 依赖于连接池 -->
 			<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
 				<property name="dataSource" ref="dataSource" ></property>
@@ -667,7 +684,7 @@ Aop事务：
 			<bean name="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate" >
 				<property name="transactionManager" ref="transactionManager" ></property>
 			</bean>
-
+	
 			<!-- 配置事务通知 -->
 			<tx:advice id="txAdvice" transaction-manager="transactionManager" >
 				<tx:attributes>
@@ -713,7 +730,7 @@ Aop事务：
 					<property name="ad" ref="accountDao" ></property>
 					<property name="tt" ref="transactionTemplate" ></property>
 				</bean>  
-
+	
 				</beans>
 ### Spring最核心的两个类：
 
@@ -808,120 +825,121 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 
 ### Spring 整合JDBC
 
+JdbcTemplate操作数据库：
+			在这个类中的内部已经处理完了数据库资源的建立和释放并且可以避免一些常见的错误，可以直接实例化，也可以通过依赖注入的方式在ApplicationContext中参生作为Javabean的引用。运行核心的jdbc的工作流程提供很多重载方法提高程序的灵活性。
+		
 
-Spring 整合JDBC:
-		JdbcTemplate操作数据库：
-				在这个类中的内部已经处理完了数据库资源的建立和释放并且可以避免一些常见的错误，可以直接实例化，也可以通过依赖注入
-				的方式在ApplicationContext中参生作为Javabean的引用。运行核心的jdbc的工作流程提供很多重载方法提高程序的灵活性。
-		//public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
-		//super.getJdbcTemplate().
-		//可以直接将DataSource直接在这个类中注入时直接作为参数把数据源给注入就可以了
-		public class UserDaoImpl implements UserDao {
+```java
+//public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
+//super.getJdbcTemplate().
+//可以直接将DataSource直接在这个类中注入时直接作为参数把数据源给注入就可以了
+	 public class UserDaoImpl implements UserDao {
 			private JdbcTemplate Jt;
 			public JdbcTemplate getJt() {
 				return Jt;
 			}
+		
+		public void setJt(JdbcTemplate jt) {
+			Jt = jt;
+		}
 
-			public void setJt(JdbcTemplate jt) {
-				Jt = jt;
-			}
+		@Override
+		public void addUser(User user) {
+			// TODO Auto-generated method stub
+			String sql="insert into user values(null,'kkk','123','kkka222.COM')";
+			Jt.update(sql);
+		}
 
-			@Override
-			public void addUser(User user) {
-				// TODO Auto-generated method stub
-				String sql="insert into user values(null,'kkk','123','kkka222.COM')";
-				Jt.update(sql);
-			}
+		@Override
+		public void deleteUser(int id) {
+			// TODO Auto-generated method stub
+			String sql="delete from user where id=?";
+			Jt.update(sql,id);
+			System.out.println("删除成功");
+		}
 
-			@Override
-			public void deleteUser(int id) {
-				// TODO Auto-generated method stub
-				String sql="delete from user where id=?";
-				Jt.update(sql,id);
-				System.out.println("删除成功");
-			}
+		@Override
+		public void updateUser(User user) {
+			// TODO Auto-generated method stub
+			String sql="update user set name='?',password='?',email='?' where id=?";
+			Jt.update(sql, user.getName(),user.getPassword(),user.getEmail(),user.getId());
+		}
 
-			@Override
-			public void updateUser(User user) {
-				// TODO Auto-generated method stub
-				String sql="update user set name='?',password='?',email='?' where id=?";
-				Jt.update(sql, user.getName(),user.getPassword(),user.getEmail(),user.getId());
-			}
+		@Override
+		public int getTotalCount() {
+			// TODO Auto-generated method stub
+			String sql="select count(*) from user";
+			return Jt.queryForObject(sql, Integer.class);
 
-			@Override
-			public int getTotalCount() {
-				// TODO Auto-generated method stub
-				String sql="select count(*) from user";
-				return Jt.queryForObject(sql, Integer.class);
+		}
 
-			}
+		@Override
+		public List<User> getAllUser() {
+			// TODO Auto-generated method stub
+			String sql="select * from user ";
 
-			@Override
-			public List<User> getAllUser() {
-				// TODO Auto-generated method stub
-				String sql="select * from user ";
+			 List<User> list=Jt.query(sql, new RowMapper<User>(){
 
-				 List<User> list=Jt.query(sql, new RowMapper<User>(){
+				@Override
+				public User mapRow(ResultSet rs, int arg1) throws SQLException {
+					// TODO Auto-generated method stub
+					User user=new User();
+					user.setId(rs.getInt("id"));
+					user.setName(rs.getString("name"));
+					user.setPassword(rs.getString("password"));
+					user.setEmail(rs.getString("email"));
+					return user;
+				}
 
-					@Override
-					public User mapRow(ResultSet rs, int arg1) throws SQLException {
-						// TODO Auto-generated method stub
-						User user=new User();
-						user.setId(rs.getInt("id"));
-						user.setName(rs.getString("name"));
-						user.setPassword(rs.getString("password"));
-						user.setEmail(rs.getString("email"));
-						return user;
-					}
+			});
+			return list;
+		}
 
-				});
-				return list;
-			}
+		@Override
+		public User getUserbyId(Integer id) {
+			// TODO Auto-generated method stub
+			String sql="select * from user where id=?";
+			return Jt.queryForObject(sql, new RowMapper<User>(){
 
-			@Override
-			public User getUserbyId(Integer id) {
-				// TODO Auto-generated method stub
-				String sql="select * from user where id=?";
-				return Jt.queryForObject(sql, new RowMapper<User>(){
+				@Override
+				public User mapRow(ResultSet rs, int arg1) throws SQLException {
+					// TODO Auto-generated method stub
+					User user=new User();
+					user.setId(rs.getInt("id"));
+					user.setName(rs.getString("name"));
+					user.setPassword(rs.getString("password"));
+					user.setEmail(rs.getString("email"));
+					return user;
+				}
 
-					@Override
-					public User mapRow(ResultSet rs, int arg1) throws SQLException {
-						// TODO Auto-generated method stub
-						User user=new User();
-						user.setId(rs.getInt("id"));
-						user.setName(rs.getString("name"));
-						user.setPassword(rs.getString("password"));
-						user.setEmail(rs.getString("email"));
-						return user;
-					}
+			},id);
+		}
+	配置：
+<!--Spring 读取指定的db.property配置  -->
+<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+<!-- 将连接池放到spring 容器 -->
+<bean name ="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+<!-- 直接在这设置：<property name="jdbcUrl" value="jdbc:mysql:///hibernate"></property>
+	<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+	<property name="user" value="root"></property>
+	<property name="password" value="123"></property> -->
+	<!-- 这是通过Spring进行读取配置文件然后进行读取各个属性 -->
+	<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+	<property name="driverClass" value="${jdbc.driverClass}"></property>
+	<property name="user" value="${jdbc.user}"></property>
+	<property name="password" value="${jdbc.password}"></property>
+</bean>
+<!-- 将JdbcTemplate放入Spring容器 -->
+<bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	<property name="dataSource" ref="dataSource"></property>
+</bean>
+<!-- 将UserDao放入到Spring容器中 -->
+<bean name="userDao" class="com.leo.jdbc.UserDaoImpl">
+	<property name="Jt" ref="jdbcTemplate"></property>
+</bean>
 
-				},id);
-			}
-		配置：
-	<!--Spring 读取指定的db.property配置  -->
-	<context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
-	<!-- 将连接池放到spring 容器 -->
-	<bean name ="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-	<!-- 直接在这设置：<property name="jdbcUrl" value="jdbc:mysql:///hibernate"></property>
-		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
-		<property name="user" value="root"></property>
-		<property name="password" value="123"></property> -->
-		<!-- 这是通过Spring进行读取配置文件然后进行读取各个属性 -->
-		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
-		<property name="driverClass" value="${jdbc.driverClass}"></property>
-		<property name="user" value="${jdbc.user}"></property>
-		<property name="password" value="${jdbc.password}"></property>
-	</bean>
-	<!-- 将JdbcTemplate放入Spring容器 -->
-	<bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
-	<!-- 将UserDao放入到Spring容器中 -->
-	<bean name="userDao" class="com.leo.jdbc.UserDaoImpl">
-		<property name="Jt" ref="jdbcTemplate"></property>
-	</bean>
-
-	</beans>
+</beans>
+```
 ### Spring整合其他两大框架
 
 #### web层单独整合
@@ -958,45 +976,49 @@ web应用单独整合struts2:
 				   </filter-mapping>
 web单独整合hibernate :
 			1.配置实体映射文件：
-					<?xml version='1.0' encoding='UTF-8'?>  
-					<!DOCTYPE hibernate-mapping PUBLIC  
-					 "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
-					 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
-					 <!-- 映射文件 -->
-					 <hibernate-mapping>
-					 <!-- <hibernate-mapping> 为根元素的 XML 文件，里面包含所有<class>标签。
-					<class> 标签是用来定义从一个 Java 类到数据库表的特定映射。
-					Java 的类名使用 name 属性来表示，数据库表明用 table 属性来表示。 -->
-							<class name="com.leo.domain.User" table="user">
-							<!-- <meta> 标签是一个可选元素，可以被用来修饰类。 -->
-								<meta attribute="class-description">
-							 This class contains the employee detail. 
-							</meta>
-							<!--主键标签   -->
-								<id name="id" type="int" column="id">
-										<!--generator用来自动生成主键 ,class有以下属性native，使用算法创建主键 -->
-										<generator class="assigned"></generator>  
-								</id>
-								<!-- property用来使属性与数据库表的列匹配 标签中 name 属性引用的是类的性质，column 属性引用的是数据库表的列。
-								type 属性保存 Hibernate 映射的类型，这个类型会将从 Java 转换成 SQL 数据类型。-->
-										<property name="name" column="name" type="string"/>
-									<property name="password" column="password" type="string"/>
-									<property name="email" column="email" type="string"/>
-							</class>
-					 </hibernate-mapping>
-			2.配置hibernate 配置文件：
-					<hibernate-configuration>
-					    <session-factory>
-					    <!--数据库的驱动，URL，用户名，密码，hibernate方言，打印sql,映射文件  -->
-						<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-						<property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
-						<property name="connection.username">root</property>
-						<property name="connection.password">123</property>
-						<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
-						<property name="show_sql">true</property>
-						<mapping resource="com/leo/domain/user.hbm.xml"/> 
-					    </session-factory>
-					</hibernate-configuration>
+
+```java
+<?xml version='1.0' encoding='UTF-8'?>  
+    <!DOCTYPE hibernate-mapping PUBLIC  
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
+    <!-- 映射文件 -->
+    <hibernate-mapping>
+    <!-- <hibernate-mapping> 为根元素的 XML 文件，里面包含所有<class>标签。
+        <class> 标签是用来定义从一个 Java 类到数据库表的特定映射。
+            Java 的类名使用 name 属性来表示，数据库表明用 table 属性来表示。 -->
+            <class name="com.leo.domain.User" table="user">
+                <!-- <meta> 标签是一个可选元素，可以被用来修饰类。 -->
+                <meta attribute="class-description">
+                This class contains the employee detail. 
+                    </meta>
+                    <!--主键标签   -->
+                    <id name="id" type="int" column="id">
+                    <!--generator用来自动生成主键 ,class有以下属性native，使用算法创建主键 -->
+                    <generator class="assigned"></generator>  
+                        </id>
+                        <!-- property用来使属性与数据库表的列匹配 标签中 name 属性引用的是类的性质，column 属性引用的是数据库表的列。
+                        type 属性保存 Hibernate 映射的类型，这个类型会将从 Java 转换成 SQL 数据类型。-->
+                        <property name="name" column="name" type="string"/>
+                        <property name="password" column="password" type="string"/>
+                        <property name="email" column="email" type="string"/>
+                        </class>
+                            </hibernate-mapping>
+2.配置hibernate 配置文件：
+   <hibernate-configuration>
+   <session-factory>
+    <!--数据库的驱动，URL，用户名，密码，hibernate方言，打印sql,映射文件  -->
+     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>                  <property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
+<property name="connection.username">root</property>
+    <property name="connection.password">123</property>
+    <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+    <property name="show_sql">true</property>
+    <mapping resource="com/leo/domain/user.hbm.xml"/> 
+    </session-factory>
+    </hibernate-configuration>
+```
+
+
 #### 完全整合Struts2,hibernate			
 
 
