@@ -1,6 +1,6 @@
 # **python**
 
-![一张图入门python](https://www.pythontab.com/uploadfile/2017/0512/20170512112808642.png)
+[![BUCZdA.png](https://s1.ax1x.com/2020/10/31/BUCZdA.png)](https://imgchr.com/i/BUCZdA)
 
 ## python读取配置文件：
 

@@ -127,24 +127,42 @@ EntityManagerFactory 接口主要用来创建 EntityManager 实例。该接口�
 ​		createEntityManager()：用于创建实体管理器对象实例。
 ​		createEntityManager(Map map)：用于创建实体管理器对象实例的重载方法，Map 参数用于提供 EntityManager 的属性。
 ​		1.isOpen()：检查 EntityManagerFactory 是否处于打开状态。实体管理器工厂创建后一直处于打开状态，除非调用close()方法将其关闭。
+
 ​		2.close()：关闭 EntityManagerFactory 。 EntityManagerFactory 关闭后将释放所有资源，isOpen()方法测试将返回 false，其它方法将不能调用，否则将导致IllegalStateException异常。, EntityManager 是完成持久化操作的核心对象。实体作为普通 Java 对象，只有在调用 EntityManager 将其持久化后才会变成持久化对象。EntityManager 对象在一组实体类与底层数据源之间进行 O/R 映射的管理。它可以用来管理和更新 Entity Bean, 根椐主键查找 Entity Bean, 还可以通过JPQL语句查询实体。
+
 ​		3.persist (Object entity)：用于将新创建的 Entity 纳入到 EntityManager 的管理。该方法执行后，传入 persist() 方法的 Entity 对象转换成持久化状态。
+
 ​		4.remove (Object entity)：删除实例。如果实例是被管理的，即与数据库实体记录关联，则同时会删除关联的数据库记录
+
 ​		5.flush ()：同步持久上下文环境，即将持久上下文环境的所有未保存实体的状态信息保存到数据库中。
+
 ​		6.setFlushMode (FlushModeType flushMode)：设置持久上下文环境的Flush模式。参数可以取2个枚举
+
 ​					FlushModeType.AUTO 为自动更新数据库实体，
+
 ​					FlushModeType.COMMIT 为直到提交事务时才更新数据库记录。
+
 ​		7.getFlushMode ()：获取持久上下文环境的Flush模式。返回FlushModeType类的枚举值。
+
 ​		8.refresh (Object entity)：用数据库实体记录的值更新实体对象的状态，即更新实例的属性值。
+
 ​		9.clear ()：清除持久上下文环境，断开所有关联的实体。如果这时还有未提交的更新则会被撤消。
+
 ​		10.contains (Object entity)：判断一个实例是否属于当前持久上下文环境管理的实体。
+
 ​		11.isOpen ()：判断当前的实体管理器是否是打开状态。
+
 ​		12.getTransaction ()：返回资源层的事务对象。EntityTransaction实例可以用于开始和提交多个事务。
+
 ​		13,close ()：关闭实体管理器。之后若调用实体管理器实例的方法或其派生的查询对象的方法都将抛出 IllegalstateException 异常，除了getTransaction 和 isOpen方法(返回 false)。不过，当与实体管理器关联的事务处于活动状态时，调用 close 方法后持久上下文将仍处于被管理状态，直到事务完成。
 ​				createQuery (String qlString)：创建一个查询对象。
+
 ​				createNamedQuery (String name)：根据命名的查询语句块创建查询对象。参数为命名的查询语句。
+
 ​				createNativeQuery (String sqlString)：使用标准 SQL语句创建查询对象。参数为标准SQL语句字符串。
+
 ​				createNativeQuery (String sqls, String resultSetMapping)：使用标准SQL语句创建查询对象，并指定返回结果集 Map的 名称
+
 ​		EntityTransaction 接口用来管理资源层实体管理器的事务操作。通过调用实体管理器的getTransaction方法 获得其实例
 ​				
 
@@ -164,8 +182,11 @@ EntityManagerFactory 接口主要用来创建 EntityManager 实例。该接口�
   ### 映射关系：
 
   ​				双向一对多关系中，必须存在一个关系维护端，在 JPA 规范中，要求  many 的一方作为关系的维护端(owner side), one 的一方作为被维护端(inverse side)。
+  
   ​				可以在 one 方指定 @OneToMany 注释并设置 mappedBy 属性，以指定它是这一关联中的被维护端，many 为维护端。
+  
   ​				在 many 方指定 @ManyToOne 注释，并使用 @JoinColumn 指定外键名称
+  
   ​				@OrderBy("OREDER_NAME")
   ​				@OneToMany(targetEntity=Order.class,mappedBy="customer")
   ​				public Set<Order> getOrders(){
@@ -173,12 +194,12 @@ EntityManagerFactory 接口主要用来创建 EntityManager 实例。该接口�
   ​				}
   ​				@JoinColumn(name="Customer_ID")
   ​				@ManyToOne(targetEntity=Customer.class)
-  ​				public Customer getCustomer(){
+​				public Customer getCustomer(){
   ​					return customer;
-  ​				}
-
+​				}
+  
   #### 双向一对一映射：
-
+  
   ​				在双向的一对一关联中，需要在关系被维护端(inverse side)中的 @OneToOne 注释中指定 mappedBy，以指定是这一关联中的被维护端。
   ​				同时需要在关系维护端(owner side)建立外键列指向关系被维护端的主键列。
   ​				@OneToOne(mappedBy="mgr")
@@ -187,12 +208,12 @@ EntityManagerFactory 接口主要用来创建 EntityManager 实例。该接口�
   ​				}
   ​				@joinColumn(name="MGR_Id",unique=true)
   ​				@OneToOne(fetch=FetchType.LAZY)
-  ​				public Manager getMgr(){
+​				public Manager getMgr(){
   ​					return mgr;
-  ​				}
-
+​				}
+  
   #### 双向多对多：指定一个维护端
-
+  
   ​				@ManyToMany
   ​				@JoinTable(name="中间表名称",
   ​				joinColumns=@joinColumn(name="本类的外键",
@@ -229,7 +250,7 @@ JPQL语言的语句可以是 select 语句、update 语句或delete语句，它�
 
 #### 语句：
 
-		##### 查询
+#####  查询
 
 ```
 		select o from Order o 或  select o from Order as o
@@ -305,12 +326,16 @@ update Customers c set c.status = '未偿付' where c.balance < 10000
 spring整合JPA三种方式：
 
 - 1.LocalEntityManagerFactoryBean：适用于那些仅使用 JPA 进行数据访问的项目，该 FactoryBean 将根据JPA PersistenceProvider 自动检测配置文件进行工作，一般从“META-INF/persistence.xml”读取配置信息，这种方式最简单，但不能设置 Spring 中定义的DataSource，且不支持 Spring 管理的全局事务
+
 - 2.从JNDI中获取：用于从 Java EE 服务器获取指定的EntityManagerFactory，这种方式在进行 Spring 事务管理时一般要使用 JTA 事务管理
+
 - 3.LocalContainerEntityManagerFactoryBean：适用于所有环境的 FactoryBean，能全面控制 EntityManagerFactory 配置,如指定 Spring 定义的 DataSource 等等。
 
+	一：
+			
 	
-		一：
-		<!-- 配置 JPA 提供者的适配器 -->
+	```java
+	<!-- 配置 JPA 提供者的适配器 -->
 		<bean id="jpaVendorAdapter"  	class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 			<property name="databasePlatform">
 				<bean class="com.atguigu.ssps.modules.persistence.Hibernates" 
@@ -342,6 +367,10 @@ spring整合JPA三种方式：
 					</props>
 				</property>
 			</bean>
+	```
+	
+	
+	
 ### DEMO
 
 ```
@@ -577,21 +606,21 @@ JDBC      JPA
 
 –**配置** **Spring** **整合** **JPA**
 
-–**在** **Spring** **配置文件中配置** **Spring Data****，**让 Spring 为声明的接口创建代理对象。配置了 <jpa:repositories> 后，Spring 初始化容器时将会扫描 base-package  指定的包目录及其子目录，为继承 Repository 或其子接口的接口创建代理对象，并将代理对象注册为 Spring Bean，业务层便可以通过 Spring 自动封装的特性来直接使用该对象。
+–**在** **Spring** **配置文件中配置** **Spring Data**，让 Spring 为声明的接口创建代理对象。配置了 <jpa:repositories> 后，Spring 初始化容器时将会扫描 base-package  指定的包目录及其子目录，为继承 Repository 或其子接口的接口创建代理对象，并将代理对象注册为 Spring Bean，业务层便可以通过 Spring 自动封装的特性来直接使用该对象。
 
 –**声明持久层的接口，该接口继承**  **Repository**，Repository 是一个标记型接口，它不包含任何方法，如必要，Spring Data 可实现 Repository 其他子接口，其中定义了一些常用的增删改查，以及分页相关的方法。
 
-–**在接口中声明需要****的方****法**。Spring Data 将根据给定的策略（具体策略稍后讲解）来为其生成实现代码。
+–**在接口中声明需要的方法**。Spring Data 将根据给定的策略（具体策略稍后讲解）来为其生成实现代码。
 
 ### Repository接口简介：
 
 •Repository 接口是 Spring Data 的一个核心接口，它不提供任何方法，开发者需要在自己定义的接口中声明需要的方法 
 
-​    **public** **interface Repository<T, ID extends** **Serializable****> { }** 
+​    **public** **interface Repository<T, ID extends** **Serializable> { }**
 
 •Spring Data可以让我们只定义接口，只要遵循 **Spring Data****的规范**，就无需写实现类。  
 
-•**与****继承** **Repository** **等价的一种方式，就是在持久层接口上使用** **@****RepositoryDefinition** **注解**，并为其指定 domainClass 和 idClass 属性。如下两种方式是完全等价的
+•**与继承 Repository** **等价的一种方式，就是在持久层接口上使用** **@RepositoryDefinition** **注解**，并为其指定 domainClass 和 idClass 属性。如下两种方式是完全等价的
 
 •基础的 Repository 提供了最基本的数据访问功能，其几个子接口则扩展了一些功能。它们的继承关系如下： 
 
@@ -627,9 +656,9 @@ JDBC      JPA
 
 #### 支持的关键字
 
-![1569658585843](C:\Users\leoill\AppData\Roaming\Typora\typora-user-images\1569658585843.png)
+[![0w6VoQ.png](https://s1.ax1x.com/2020/10/08/0w6VoQ.png)](https://imgchr.com/i/0w6VoQ)
 
-![1569658602100](C:\Users\leoill\AppData\Roaming\Typora\typora-user-images\1569658602100.png)
+[![0w6Edg.png](https://s1.ax1x.com/2020/10/08/0w6Edg.png)](https://imgchr.com/i/0w6Edg)
 
 #### 查询方法解析
 
@@ -645,6 +674,7 @@ JDBC      JPA
 
 •特殊的参数： 还可以直接在方法的参数上加入分页或排序的参数，比如：
 
+```java
 –Page<UserModel> findByName(String name, Pageable pageable);
 
 –List<UserModel> findByName(String name, Sort sort);
@@ -653,30 +683,33 @@ JDBC      JPA
 与
 @Modifying
 执行更新操作
+```
+
+
 
 ### CrudRepository接口
 
 •CrudRepository 接口提供了最基本的对实体类的添删改查操作 
 
-–T save(T entity);//保存单个实体 
+`–T save(T entity);//保存单个实体` 
 
-–Iterable<T> save(Iterable<? extends T> entities);//保存集合        
+`–Iterable<T> save(Iterable<? extends T> entities);//保存集合`        
 
-–T findOne(ID id);//根据id查找实体         
+`–T findOne(ID id);//根据id查找实体`         
 
-–boolean exists(ID id);//根据id判断实体是否存在         
+`–boolean exists(ID id);//根据id判断实体是否存在`         
 
-–Iterable<T> findAll();//查询所有实体,不用或慎用!         
+`–Iterable<T> findAll();//查询所有实体,不用或慎用!`         
 
-–long count();//查询实体数量         
+`–long count();//查询实体数量`         
 
-–void delete(ID id);//根据Id删除实体         
+`–void delete(ID id);//根据Id删除实体`         
 
-–void delete(T entity);//删除一个实体 
+`–void delete(T entity);//删除一个实体` 
 
-–void delete(Iterable<? extends T> entities);//删除一个实体的集合         
+`–void delete(Iterable<? extends T> entities);//删除一个实体的集合`         
 
-–void deleteAll();//删除所有实体,不用或慎用! 
+`–void deleteAll();//删除所有实体,不用或慎用!` 
 
 ### PagingAndSortingRepository接口
 
@@ -706,7 +739,7 @@ JDBC      JPA
 
 •不属于Repository体系，实现一组 JPA **Criteria** 查询相关的方法 
 
-![1569765381258](C:\Users\leoill\AppData\Roaming\Typora\typora-user-images\1569765381258.png)
+[![0w6AeS.png](https://s1.ax1x.com/2020/10/08/0w6AeS.png)](https://imgchr.com/i/0w6AeS)
 
 •Specification：封装  JPA Criteria 查询条件。通常使用匿名内部类的方式来创建该接口的对象
 

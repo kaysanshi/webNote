@@ -8,14 +8,18 @@ Spring Web 模型-视图-控制（MVC）框架是围绕 DispatcherServlet 设计
 
 Spring Web MVC DispatcherServlet 的请求处理的工作流程如下图所示：
 
-![](https://img-blog.csdn.net/20180825212704206?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+[![BU9gxS.png](https://s1.ax1x.com/2020/10/31/BU9gxS.png)](https://imgchr.com/i/BU9gxS)
 
 ​				request---->dipatcherSevlet:(handlerMapping,Controller,View Resolver, View)-------->respose;
+
 ​				1.收到一个 HTTP 请求后，DispatcherServlet 根据 HandlerMapping 来选择并且调用适当的控制器。
-​				2.控制器接受请求，并基于使用的 GET 或 POST 方法来调用适当的 service 方法。Service 方法将设置基于定义的业务逻辑的模型数据，
-并返回视图名称到 DispatcherServlet 中。
+
+​				2.控制器接受请求，并基于使用的 GET 或 POST 方法来调用适当的 service 方法。Service 方法将设置基于定义的业务逻辑的模型数据，并返回视图名称到 DispatcherServlet 中。
+
 ​				3.DispatcherServlet 会从 ViewResolver 获取帮助，为请求检取定义视图。
+
 ​				4.一旦确定视图，DispatcherServlet 将把模型数据传递给视图，最后呈现在浏览器中。
+
 ​	上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。	
 
 #### 创建SpringMVC项目：
@@ -26,32 +30,32 @@ Spring Web MVC DispatcherServlet 的请求处理的工作流程如下图所示�
 
 ```xml
 <!-- 配置SpringMVC前端控制器 -->
-​							  <servlet>
-​									<servlet-name>spring-mvc</servlet-name>
-​									<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>	
-​							  <!-- 指定springmvc的配置文件
-​								默认路径：/WEB-INF/${servlet-name}-servlet.xml
-​							   -->
-​									<init-param>
-​										<param-name>contextConfigLocation</param-name>
-​										<param-value>classpath:spring-mvc-servlet.xml</param-value>
-​									</init-param>
-​							  </servlet>
-​							  <!-- 配置映射的及请求设置 -->
-​							  <servlet-mapping>
-​									<servlet-name>spring-mvc</servlet-name>
-​									<!-- 设置请求拦截规则 
-​										1./*:不能进行对其访问：No mapping found for HTTP request with URI [/spring-mvc/WEB-INF/jsp/hello.jsp] in DispatcherServlet with name 'spring-mvc'
-​											拦截所有，jsp,js，css都会拦截，不建议
-​										2./:拦截所有不包括jsp，肯定可以用
-​										3.*.action,*.do,拦截do,action的结尾请求，一般用于前台，面向消费者的--->
-​									<url-pattern>/</url-pattern>
-​							  </servlet-mapping>
+<servlet>
+    <servlet-name>spring-mvc</servlet-name>
+            <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+      <!-- 指定springmvc的配置文件
+        默认路径：/WEB-INF/${servlet-name}-servlet.xml
+       -->
+            <init-param>
+                <param-name>contextConfigLocation</param-name>
+                <param-value>classpath:spring-mvc-servlet.xml</param-value>
+            </init-param>
+      </servlet>
+      <!-- 配置映射的及请求设置 -->
+      <servlet-mapping>
+            <servlet-name>spring-mvc</servlet-name>
+        <!-- 设置请求拦截规则
+        1./*:不能进行对其访问：No mapping found for HTTP request with URI [/spring-mvc/WEB-INF/jsp/hello.jsp] in DispatcherServlet with name 'spring-mvc'
+            拦截所有，jsp,js，css都会拦截，不建议
+        2./:拦截所有不包括jsp，肯定可以用
+        3.*.action,*.do,拦截do,action的结尾请求，一般用于前台，面向消费者的--->
+    <url-pattern>/</url-pattern>
+</servlet-mapping>
 ```
 
 3.配置spring的配置文件：	在applicationContent.xml中配置	
 
-```
+```xml
 <!-- 配置controller扫描包 ，多个包调用用","隔开-->
 <context:component-scan base-package="com.leo.controller"></context:component-scan>
 <!--配置视图解析器  -->
@@ -65,7 +69,7 @@ Spring Web MVC DispatcherServlet 的请求处理的工作流程如下图所示�
 
 4.创建controller类：控制器配置@Controller//把controller交给spring管理		
 
-```
+```java
 @RequestMapping("/hello")//映射url：即指定请求的url地址
 public class HelloSpringMVC {
  //设置请求的方法
@@ -77,36 +81,54 @@ public class HelloSpringMVC {
 }
 ```
 
-
-​				5.创建视图
+5.创建视图
 
 ### spring mvc架构：
 
 ​	主要就是DispatcherServlet进行对各个组件的调用以及各个组件对DispatcherSevlet的响应
+
 ​	`包括组件有：DispatcherServlet:相当于mvc中的contol,是整个流程控制的中心，由他调用其他组件，降低了组件之间的耦合，`
+
 ​		`HandlerMapping:`处理映射器根据url找到Handler处理器
+
 ​		`Handler:` 是后端控制器在前端控制器下对用户处理请求，需要自己开发里面的业务逻辑
+
 ​		`HandlAdaptcher:` 这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行
+
 ​		`ViewResolver:`视图解析器将结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户
+
 ​		`View:`其中视图包括jstlView,fremarkerView,padfView,最常用的为jsp一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面
+
 ​		在springmvc的各个组件中，处理器映射器、处理器适配器、视图解析器称为springmvc的三大组件。
 ​		
 
 #### 架构流程：
 
 ​					1.请求--->前端控制器DispatcherServlet
+
 ​					2.DispatcherServlet调用HandlerMapping处理器映射器
+
 ​					3、	处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。
+
 ​					4、	DispatcherServlet通过HandlerAdapter处理器适配器调用处理器
+
 ​					5、	执行处理器(Controller，也叫后端控制器)。
+
 ​					6、	Controller执行完成返回ModelAndView
+
 ​					7、	HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet
+
 ​					8、	DispatcherServlet将ModelAndView传给ViewReslover视图解析器
+
 ​					9、	ViewReslover解析后返回具体View
+
 ​					10、DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）。
+
 ​					11、DispatcherServlet响应用户
 
-![](https://img-blog.csdn.net/20180825212704206?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
+
+
+[![BU9gxS.png](https://s1.ax1x.com/2020/10/31/BU9gxS.png)](https://imgchr.com/i/BU9gxS)
 
 
 
@@ -144,16 +166,16 @@ public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue=
 提交修改，参数绑定为对象类型的，前台name属性与你的pojo类的字段必须相同updateitem.action
  与形参没用任何关系
 */
-    			@RequestMapping(value="/item/updateitem.action")
-    			public ModelAndView updateItems(Items items){
-    				//修改
-    				itemService.updateItemById(items);
-    				ModelAndView mav=new ModelAndView();
-    				//要显示的视图
-    				mav.setViewName("success");
-    				return mav;
-    				
-    			} 
+@RequestMapping(value="/item/updateitem.action")
+public ModelAndView updateItems(Items items){
+    //修改
+    itemService.updateItemById(items);
+    ModelAndView mav=new ModelAndView();
+    //要显示的视图
+    mav.setViewName("success");
+    return mav;
+
+} 
 ```
 
 #### 包装类型的参数：
@@ -169,17 +191,16 @@ public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue=
 
         - @return
           */
-          public ModelAndView updateitembyQ(QueryVo vo){
+public ModelAndView updateitembyQ(QueryVo vo){
 
-          ​	//修改
-          ​	itemService.updateItemsByIdByQ(vo.getItems());
-          ​	
-          ​	ModelAndView mav = new ModelAndView();
-          ​	mav.setViewName("success");
-          ​	return mav;
-          ​	
-          }
-          使用list，array的使用必须要放到包装类型中
+    	//修改
+        itemService.updateItemsByIdByQ(vo.getItems());
+    	
+        ModelAndView mav = new ModelAndView();
+    	mav.setViewName("success");
+    	return mav;	
+}
+使用list，array的使用必须要放到包装类型中
           /**
 
           - 在使用list，array时必须使用包装类如果不适用包装不能解析
@@ -188,50 +209,54 @@ public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue=
           - @return
             */
             //删除多个数组的
-            @RequestMapping(value = "/deletes.action")
-            public ModelAndView deletes(QueryVo vo){
-            	
-            	itemService.deleteItemsByIdByQbyArray(vo.getIds());
-            	ModelAndView mav = new ModelAndView();
-            	mav.setViewName("success");
-            	return mav;
-            }
-            controller的方法：
+@RequestMapping(value = "/deletes.action")
+public ModelAndView deletes(QueryVo vo){
+    itemService.deleteItemsByIdByQbyArray(vo.getIds());
+    ModelAndView mav = new ModelAndView();
+    mav.setViewName("success");
+    return mav;
+}
+controller的方法：
             放入model参数的方法的使用：
             /**
 
     - 1.ModelAndView  无敌的    带着数据  返回视图路径           不建议使用
-
     - 2.String    返回视图路径     model带数据      官方推荐此种方式   解耦   数据  视图  分离  MVC  建议使用  
-
     - 3.void       ajax  请求   合适   json格式数据 （response   异步请求使用
-
     - @return
       */
       访问路径的使用：
       /**
-
       - 配置映射的访问路径
       - @return
         */
-        @RequestMapping(value="/item/itemlist")
-        
+   @RequestMapping(value="/item/itemlist")
+
 ```
 
 #### springmvc整合mybatis:
 
 ​        出现这个错误：BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the Application
+
 ​        原因：未能扫描到@controller ，配置controller扫描包 的路径，或者是出现相同的controller的控制器(控制器类的名字相同了)
+
 ​        1.导包。
+
 ​        2.配置配置文件
+
 ​        2.1：web.xml
+
 ​        2.2:applicationContext.xml
+
 ​        2.3springmvc-servlert.xml
+
 ​        2.4sqlMapConfig.xml
+
 ​        2.5db.properties
+
 ​        2.6mapper映射xml
-​        2.1web.xml需要做以下配置：加载spring的配置文件，spring上下的监听器，配置前端控制器并读取springmvc配置文件，配置映射及拦截规则；
-​        						 
+
+​        2.1web.xml需要做以下配置：加载spring的配置文件，spring上下的监听器，配置前端控制器并读取springmvc配置文件，配置映射及拦截规则；   						 
 
 ```xml
    <!-- 加载spring的配置文件 -->
@@ -342,96 +367,103 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 <!-- 已经扫秒的包了，所以不用配置mapper的路径了 -->
 </configuration>
 2.5db.properties：配置数据库的属性
-					2.6mapper映射xml：书写sql的配置文件，
-				3. 在controller中调用其他各层，由于在这里用了接口的方式所以自动装配注解@Autowired就不可以使用，在controller中需要使用service层时就
-				指定这个属性去读取相应bean的id;用下面的方式实现属性的注入。
-												@Resource(name="itemService")
-												private ItemService itemService;
-					在这里说下 @Resource(name="itemService")和 @Autowired的区别：
-					@Resource默认按照名称方式进行bean匹配， j2EE的。可以指定读取按哪个名称的装配方法。
-					@Autowired默认按照类型方式进行bean匹配，spring的。默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。
-					@Resource可以减少代码和Spring之间的耦合
-					@Resource默认按照ByName自动注入，由J2EE提供，需要导入包javax.annotation.Resource。
-					@Resource有两个重要的属性：name和type，而Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
-					所以，如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
-					 @Resource装配顺序：
+
+2.6mapper映射xml：书写sql的配置文件，
 ```
 
 
-					3. 在controller中调用其他各层，由于在这里用了接口的方式所以自动装配注解@Autowired就不可以使用，在controller中需要使用service层时就
-					指定这个属性去读取相应bean的id;用下面的方式实现属性的注入。
-													@Resource(name="itemService")
-													private ItemService itemService;
-						在这里说下 @Resource(name="itemService")和 @Autowired的区别：
-						@Resource默认按照名称方式进行bean匹配， j2EE的。可以指定读取按哪个名称的装配方法。
-						@Autowired默认按照类型方式进行bean匹配，spring的。默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。
-						@Resource可以减少代码和Spring之间的耦合
-						@Resource默认按照ByName自动注入，由J2EE提供，需要导入包javax.annotation.Resource。
-						@Resource有两个重要的属性：name和type，而Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
-						所以，如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
-						 @Resource装配顺序：
+	3. 在controller中调用其他各层，由于在这里用了接口的方式所以自动装配注解@Autowired就不可以使用，在controller中需要使用service层时就指定这个属性去读取相应bean的id;用下面的方式实现属性的注入。
+	
+	@Resource(name="itemService")
+	private ItemService itemService;
+	
+	在这里说下 @Resource(name="itemService")和 @Autowired的区别：
+	@Resource默认按照名称方式进行bean匹配， j2EE的。可以指定读取按哪个名称的装配方法。
+	
+	@Autowired默认按照类型方式进行bean匹配，spring的。默认情况下它要求依赖对象必须存在，如果允许null值，可以设置它的required属性为false。如果我们想使用按照名称（byName）来装配，可以结合@Qualifier注解一起使用。
+	
+	@Resource可以减少代码和Spring之间的耦合
+	
+	@Resource默认按照ByName自动注入，由J2EE提供，需要导入包javax.annotation.Resource。
+	
+	@Resource有两个重要的属性：name和type，而Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。
+	
+	所以，如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不制定name也不制定type属性，这时将通过反射机制使用byName自动注入策略。
+	
 
 
-							①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
-	
-							②如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常。
-	
-							③如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或是找到多个，都会抛出异常。
-	
-							④如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
-	
-							@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
-					4.运行项目并访问就可以拿到你想要的结果及页面。
+```tex
+@Resource装配顺序：		
+①如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常。
+
+②如果指定了name，则从上下文中查找名称（id）匹配的bean进行装配，找不到则抛出异常。
+
+③如果指定了type，则从上下文中找到类型匹配的唯一bean进行装配，找不到或是找到多个，都会抛出异常。
+
+④如果既没有指定name，又没有指定type，则自动按照byName方式进行装配；如果没有匹配，则回退为一个原始类型进行匹配，如果匹配则自动装配。
+
+@Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
+4.运行项目并访问就可以拿到你想要的结果及页面。
+```
 
 ### SpringMVC中的REST:	
 
 即 Representational State Transfer。（资源）表现层状态转化。是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用.
 			@RequestHeader 绑定请求报头的属性值
-			@CookieValue 绑定请求中的 Cookie 值
-			Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为该对象填充属性值。支持级联属性。
-				如：dept.deptId、dept.address.tel 等
-			若希望在多个请求之间共用某个模型属性数据，则可以在控制器类上标注一个 @SessionAttributes, Spring MVC将在模型中对应的属性暂存到 HttpSession 中。
-				• @SessionAttributes 除了可以通过属性名指定需要放到会
-				话中的属性外，还可以通过模型属性的对象类型指定哪些
-				模型属性需要放到会话中
-				– @SessionAttributes(types=User.class) 会将隐含模型中所有类型
-				为 User.class 的属性添加到会话中。
-				– @SessionAttributes(value={“user1”, “user2”})
-				– @SessionAttributes(types={User.class, Dept.class})
-				– @SessionAttributes(value={“user1”, “user2”},
-				types={Dept.class})			
+
+​			@CookieValue 绑定请求中的 Cookie 值
+
+Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为该对象填充属性值。支持级联属性。如：dept.deptId、dept.address.tel 等,若希望在多个请求之间共用某个模型属性数据，则可以在控制器类上标注一个 @SessionAttributes, Spring MVC将在模型中对应的属性暂存到 HttpSession 中。
+
+@SessionAttributes 除了可以通过属性名指定需要放到会话中的属性外，还可以通过模型属性的对象类型指定哪些模型属性需要放到会话中
+				
+
+– @SessionAttributes(types=User.class) 会将隐含模型中所有类型为 User.class 的属性添加到会话中。
+
+​				– @SessionAttributes(value={“user1”, “user2”})
+
+​				– @SessionAttributes(types={User.class, Dept.class})
+
+​				– @SessionAttributes(value={“user1”, “user2”},types={Dept.class})	
+
+​		
 
 
-					1. 使用注解@RequestMapping("item/{id}")声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
-	
-					2. 使用(@PathVariable() Integer id)获取url上的数据	
-	
-					/**
-					 * 使用RESTful风格开发接口，实现根据id查询商品
-					 * 如果不一致，例如"item/{ItemId}"则需要指定名称@PathVariable("itemId")。
-					 * @param id
-					 * @return
-					 */
-					@RequestMapping("item/{id}")
-					@ResponseBody
-					public Item queryItemById(@PathVariable() Integer id) {
-						Item item = this.itemService.queryItemById(id);
-						return item;
-					}
-				1. @ PathVariable 是 获取 url 上数据 的。 @RequestParam获取请求参数的（包括post表单提交）
-	
-				2. 如果加上@ResponseBody注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
+```java
+1. 使用注解@RequestMapping("item/{id}")声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
+
+2. 使用(@PathVariable() Integer id)获取url上的数据	
+
+/**
+* 使用RESTful风格开发接口，实现根据id查询商品
+* 如果不一致，例如"item/{ItemId}"则需要指定名称@PathVariable("itemId")。
+* @param id
+* @return
+*/
+@RequestMapping("item/{id}")
+@ResponseBody
+public Item queryItemById(@PathVariable() Integer id) {
+Item item = this.itemService.queryItemById(id);
+return item;
+}
+1. @ PathVariable 是 获取 url 上数据 的。 @RequestParam获取请求参数的（包括post表单提交）
+
+2. 如果加上@ResponseBody注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
+```
 
 ### springMVC数据格式化：
 
 ​	FormattingConversionServiceFactroyBean 内部已经注册了 :
+
 ​	NumberFormatAnnotationFormatterFactroy：支持对数字类型的属性
+
 ​	使用 @NumberFormat 注解
+
 ​	– JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式，
 如：”yyyy-MM-dd hh:mm:ss”等其他的
 ​					<mvc:annotation-driven/> 默认创建的
-​					ConversionService 实例即为
-​					FormattingConversionServiceFactroyBean
+
+​					ConversionService 实例即为 FormattingConversionServiceFactroyBean
 
 #### springmvc处理json数据:
 
@@ -442,27 +474,36 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 3.在方法上添加 @ResponseBody注解使用的是HttpMessageConverter<T>；
 
 HttpMessageConverter<T>接口定义的方法： – Boolean canRead(Class<?> clazz,MediaType mediaType): 指定转换器可以读取的对象类型，即转换器是否可将请求信息转换为 clazz 类型的对象，同时指定支持 MIME 类型(text/html,applaiction/json等)
+
 ​		`Boolean canWrite(Class<?> clazz,MediaType mediaType):`指定转换器是否可将 clazz 类型的对象写到响应流中，响应流支持的媒体类型在MediaType 中定义。
+
 ​		 `LIst<MediaType> getSupportMediaTypes()：`该转换器支持的媒体类型。
+
 ​		  `T  read(Class<? extends T> clazz,HttpInputMessage inputMessage)：`将请求信息流转换为 T 类型的对象。
+
 ​		`– void write(T t,MediaType contnetType,HttpOutputMessgae outputMessage)`:将T类型的对象写到响应流中，同时指定相应的媒体类型为 contentType。使用 HttpMessageConverter<T> 将请求信息转化并绑定到处理方法的入参中或将响应结果转为对应类型的响应信息，
 
 ##### Spring 提供了两种途径：
 
 ​		使用 @RequestBody / @ResponseBody 对处理方法进行标注
-​		使用 HttpEntity<T> / ResponseEntity<T> 作为处理方法的入参或返回值  当控制器处理方法使用到 @RequestBody/ @ResponseBody 或HttpEntity<T>/ResponseEntity<T> 时, Spring 首先根据请求头或响应头的
-​		Accept 属性选择匹配的 HttpMessageConverter, 进而根据参数类型或泛型类型的过滤得到匹配的 HttpMessageConverter, 若找不到可用的 HttpMessageConverter 将报错
+
+​		使用 HttpEntity<T> / ResponseEntity<T> 作为处理方法的入参或返回值  当控制器处理方法使用到 @RequestBody/ @ResponseBody 或HttpEntity<T>/ResponseEntity<T> 时, Spring 首先根据请求头或响应头的Accept 属性选择匹配的 HttpMessageConverter, 进而根据参数类型或泛型类型的过滤得到匹配的 HttpMessageConverter, 若找不到可用的 HttpMessageConverter 将报错
+
 ​		`@RequestBody 和 @ResponseBody 不需要成对出现`
+
 ​		`@RequestBody注解用于读取http请求的内容(字符串)，通过springmvc提供的HttpMessageConverter接口将读到的内容（json数据）转换为java对象并绑定到Controller方法的参数上。`
-`​  @ResponseBody注解用于将Controller的方法返回的对象，通过springmvc提供的HttpMessageConverter接口转换为指定格式的数据如：json,xml等，通过Response响应给客户端`
-​				这里都要配置注解驱动`。<mvc:annotation-driven/>`
+
+​       `​@ResponseBody注解用于将Controller的方法返回的对象，通过springmvc提供的HttpMessageConverter接口转换为指定格式的数据如：json,xml等，通过Response响应给客户端`
+
+这里都要配置注解驱动`。<mvc:annotation-driven/>`
 
 ### springmvc文件上传：
 
 Spring MVC 为文件上传提供了直接的支持，这种支持是通过即插即用的 MultipartResolver 实现的。Spring 用Jakarta Commons FileUpload 技术实现了一个MultipartResolver 实现类：CommonsMultipartResovler
+
 ​		`Spring MVC 上下文中默认没有装配 MultipartResovler，因此默认情况下不能处理文件的上传工作，如果想使用 Spring的文件上传功能，需现在上下文中配置 MultipartResolver`
-`​defaultEncoding: 必须和用户 JSP 的 pageEncoding 属性一致，以便正确解析表单的内容`
-`​为了让 CommonsMultipartResovler 正确工作，必须先将 Jakarta Commons FileUpload 及 Jakarta Commons io的类包添加到类路径下。`	
+
+`​defaultEncoding: 必须和用户 JSP 的 pageEncoding 属性一致，以便正确解析表单的内容``​为了让 CommonsMultipartResovler 正确工作，必须先将 Jakarta Commons FileUpload 及 Jakarta Commons io的类包添加到类路径下。`	
 
 ```xml
 <bean id="multipartResolver" class="org.springframework.web.multipart.commoms.CommonsMultipartResolver">
@@ -526,58 +567,63 @@ public Map<String, Object> add(User user, @RequestParam(name = "file") Multipart
 ### SpringMVC的自定义拦截器：
 
 ​	Spring MVC也可以使用拦截器对请求进行拦截处理，用户可以自定义拦截器来实现特定的功能，自定义的拦截器必须实现HandlerInterceptor接口
+
 ​	 `preHandle()：`这个方法在业务处理器处理请求之前被调用，在该方法中对用户请求 request 进行处理。如果程序员决定该拦截器对请求进行拦截处理后还要调用其他的拦截器，或者是业务处理器去进行处理，则返回true；如果程序员决定不需要再调用其他的组件去处理请求，则返回false。
+
 ​	`postHandle()：`这个方法在业务处理器处理完请求后，但是DispatcherServlet 向客户端返回响应前被调用，在该方法中对用户请求request进行处理。
+
 ​	`afterCompletion()：`这个方法在 DispatcherServlet 完全处理完请求后被调用，可以在该方法中进行一些资源清理的操作。
+
 ​					
 
 ```java
-    public class HandlerInterceptor1 implements HandlerInterceptor {
-        // controller执行后且视图返回后调用此方法
-        // 这里可得到执行controller时的异常信息
-        // 这里可记录操作日志
-        @Override
-        public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
-                throws Exception {
-            System.out.println("HandlerInterceptor1....afterCompletion");
-        }
-
-        // controller执行后但未返回视图前调用此方法
-        // 这里可在返回用户前对模型数据进行加工处理，比如这里加入公用信息以便页面显示
-        @Override
-        public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
-                throws Exception {
-            System.out.println("HandlerInterceptor1....postHandle");
-        }
-
-        // Controller执行前调用此方法
-        // 返回true表示继续执行，返回false中止执行
-        // 这里可以加入登录校验、权限拦截等
-        @Override
-        public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
-            System.out.println("HandlerInterceptor1....preHandle");
-            // 设置为true，测试使用
-            return true;
-        }
+public class HandlerInterceptor1 implements HandlerInterceptor {
+    // controller执行后且视图返回后调用此方法
+    // 这里可得到执行controller时的异常信息
+    // 这里可记录操作日志
+    @Override
+    public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3)
+            throws Exception {
+        System.out.println("HandlerInterceptor1....afterCompletion");
     }
-    
-    
-		需要在springMvc中的springmvc.xml中配置相应的拦截器规则：
-		<!-- 配置拦截器 -->
-				<mvc:interceptors>
-					<mvc:interceptor>
-						<!-- 所有的请求都进入拦截器 -->
-						<mvc:mapping path="/**" />
-						<!-- 配置具体的拦截器 -->
-						<bean class="cn.itcast.ssm.interceptor.HandlerInterceptor1" />
-					</mvc:interceptor>
-					<mvc:interceptor>
-						<!-- 所有的请求都进入拦截器 -->
-						<mvc:mapping path="/**" />
-						<!-- 配置具体的拦截器 -->
-						<bean class="cn.itcast.ssm.interceptor.HandlerInterceptor2" />
-					</mvc:interceptor>
-				</mvc:interceptors>
+
+    // controller执行后但未返回视图前调用此方法
+    // 这里可在返回用户前对模型数据进行加工处理，比如这里加入公用信息以便页面显示
+    @Override
+    public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
+            throws Exception {
+        System.out.println("HandlerInterceptor1....postHandle");
+    }
+
+    // Controller执行前调用此方法
+    // 返回true表示继续执行，返回false中止执行
+    // 这里可以加入登录校验、权限拦截等
+    @Override
+    public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2) throws Exception {
+        System.out.println("HandlerInterceptor1....preHandle");
+        // 设置为true，测试使用
+        return true;
+    }
+}
+配置文件：
+
+需要在springMvc中的springmvc.xml中配置相应的拦截器规则：
+<!-- 配置拦截器 -->
+<mvc:interceptors>
+    <mvc:interceptor>
+        <!-- 所有的请求都进入拦截器 -->
+        <mvc:mapping path="/**" />
+        <!-- 配置具体的拦截器 -->
+        <bean class="cn.itcast.ssm.interceptor.HandlerInterceptor1" />
+    </mvc:interceptor>
+    <mvc:interceptor>
+        <!-- 所有的请求都进入拦截器 -->
+        <mvc:mapping path="/**" />
+        <!-- 配置具体的拦截器 -->
+        <bean class="cn.itcast.ssm.interceptor.HandlerInterceptor2" />
+    </mvc:interceptor>
+</mvc:interceptors>    
+		
 ```
 
 ### springMVC的异常处理：
