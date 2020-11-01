@@ -1310,7 +1310,7 @@ Spring Security 实现 CSRF的原理：
 
 OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容，OAuth2.0是OAuth协议的延续版本，但不向后兼容OAuth 1.0即完全废止了OAuth1.0。
 
-[![BJTH7d.png](https://s1.ax1x.com/2020/10/29/BJTH7d.png)](https://imgchr.com/i/BJTH7d)
+[![BUCyw9.png](https://s1.ax1x.com/2020/10/31/BUCyw9.png)](https://imgchr.com/i/BUCyw9)
 
 #### 角色
 
@@ -1371,21 +1371,929 @@ Http/JSON友好以用于请求和传递token
 
 ##### 授权码模式
 
+使用最多的一种授权模式。
+
 ##### 简化授权模式
 
 ##### 密码模式
 
 ##### 客户端模式
 
+[参考这个](https://www.jianshu.com/p/68f22f9a00ee)
+
 ### Spring Security Oauth2
 
 #### 授权服务器
 
+[![BUFxOO.png](https://s1.ax1x.com/2020/10/31/BUFxOO.png)](https://imgchr.com/i/BUFxOO)
 
+- `Authorize Endpoint : 授权端点，进行授权`
+- `Token endpoint :令牌端点，进行授权拿到对应的token`
+- `Introspection Endpoint :校验端点，校验token `
+- `Revocation Endpoint` : `撤销端点，撤销授权`
 
 #### Spring Security Oauth2
 
+[![BUAdr8.png](https://s1.ax1x.com/2020/10/31/BUAdr8.png)](https://imgchr.com/i/BUAdr8)
 
+流程：
+
+1.用户访问，此时，没有token , Oauth2RestTemplate会出错，这个报错信息将会被Oauth2ClientContextFilter 捕获并重定向到认证服务器。
+
+2.认证服务器通过Authorization endpoint 进行授权，并通过AuthhorizationServerTokenServices生成授权码并返回给客户端
+
+3.客户端拿到授权码去认证服务器通过Token endpoint 调用AuthorizationServerTokenServices生成Token并返回给客户端
+
+4.客户端拿到Token 去资源服务器访问资源，一般会通过Oauth2AuthenticationManager调用ResourceServerTokenServices进行校验，校验通过后可以获取到资源
+
+##### 授权码模式：
+
+效果是访问http://localhost:8080/oauth/authorize?response_type=code&client_id=admin&redirect_uti=http://www.baidu.com 跳到百度页面并且带授权码，并获取token
+
+先看效果图
+
+![BUvA0I.png](https://s1.ax1x.com/2020/10/31/BUvA0I.png)
+
+![BUvE7t.png](https://s1.ax1x.com/2020/10/31/BUvE7t.png)
+
+通过postman获取token:
+
+![BUz7p8.png](https://s1.ax1x.com/2020/10/31/BUz7p8.png)
+
+![BUzH1S.png](https://s1.ax1x.com/2020/10/31/BUzH1S.png)
+
+
+通过token获取到资源，比如获取当前的用户。
+
+[![BaSwjg.png](https://s1.ax1x.com/2020/10/31/BaSwjg.png)](https://imgchr.com/i/BaSwjg)
+
+当我们把令牌给修改了就会报错。未认证。
+
+看代码：
+
+###### pom.xml
+
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.kaysanshi</groupId>
+    <artifactId>spring-security-oauth2-demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>spring-security-oauth2-demo</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+```
+
+###### java代码：
+
+```java
+/**
+ * 使用授权码模式
+ */
+@SpringBootApplication
+public class SpringSecurityOauth2DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(SpringSecurityOauth2DemoApplication.class, args);
+    }
+
+}
+////////////////////////////////////////////
+//////////// 配置实现类         /////////////
+////////////////////////////////////////////
+/**
+ * Description:
+ * spring security配置
+ * WebSecurityConfigurerAdapter是默认情况下 Spring security的http配置
+ * 优先级高于ResourceServerConfigurer，用于保护oauth相关的endpoints，同时主要作用于用户的登录（form login，Basic auth）
+ *@EnableWebSecurity :表示启动webSecurity
+ * @date:2020/10/29 9:41
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigure extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 进行
+     *
+     * @param http
+     * @throws Exception
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/oauth/**", "/login/**", "logout/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .formLogin()
+                .permitAll();
+    }
+}
+/////////////////////////////
+
+/**
+ * Description: 授权服务器的配置
+ * author2配置
+ * AuthorizationServerConfigurerAdapter 包括：
+ * ClientDetailsServiceConfigurer：用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息。
+ * AuthorizationServerSecurityConfigurer：用来配置令牌端点(Token Endpoint)的安全约束.
+ * AuthorizationServerEndpointsConfigurer：用来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)。
+ *
+ * @date:2020/10/29 9:30
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableAuthorizationServer // 开启认证授权服务器
+public class AuthorizationServerConfigure extends AuthorizationServerConfigurerAdapter {
+
+    /**
+     * 配置密码加密，因为再UserDetailsService是依赖与这个类的。
+     *
+     * @return
+     */
+    // 指定密码的加密方式
+    @Autowired
+    private PasswordEncoder passwordEncode;
+
+    /**
+     * ClientDetailsServiceConfigurer
+     * 主要是注入ClientDetailsService实例对象（唯一配置注入）。其它地方可以通过ClientDetailsServiceConfigurer调用开发配置的ClientDetailsService。
+     * 系统提供的二个ClientDetailsService实现类：JdbcClientDetailsService、InMemoryClientDetailsService。
+     * 演示提供了用户名和密码
+     * @param clients
+     * @throws Exception
+     */
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients)
+            throws Exception {
+        // 配置一个客户端用于password认证的。同时也可以同时配置两个，可以再配置一个基于client认证的。
+        clients.inMemory()
+                // 配置clientId
+                .withClient("admin")
+                // 配置client-secret
+                .secret(passwordEncode.encode("112233"))
+                // 配置token过期时间
+                .accessTokenValiditySeconds(2630)
+                // 配置 redirectUri，用于授权成功后跳转
+                .redirectUris("http://www.baidu.com")
+                // 配置申请的权限范围
+                .scopes("all")
+                // 配置grant_type 表示授权类型。 使用授权码模式
+                .authorizedGrantTypes("authorization_code");
+
+    }
+}
+/////////////////////////
+/**
+ * Description:
+ * 配置资源服务器 : ResourceServerConfigurerAdapter
+ * ResourceServerConfigurerAdapter是默认情况下spring security oauth 的http配置。
+ *
+ * @date:2020/10/29 9:44
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableResourceServer
+public class ResourceServerConfigure extends ResourceServerConfigurerAdapter {
+    /**
+     * 配置响应资源的访问。
+     *
+     * @param http
+     * @throws Exception
+     */
+    // 配置 URL 访问权限
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .requestMatchers()
+                .antMatchers("/test/**");
+    }
+}
+////////////////////////////////////////////
+//////////// user类  ///////////////////////
+////////////////////////////////////////////
+/**
+ * 自定义User 实现时一定要返回true 否则不能进行认证
+ * @Author kay三石
+ * @date:2020/10/31
+ */
+public class User  implements UserDetails {
+    private  String username;
+    private  String password;
+    private List<GrantedAuthority> authorities;
+
+    public User(String username, String password, List <GrantedAuthority> authorities) {
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+	// 自动生成时是返回的为false,会导致不能进入
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+	// 自动生成时是返回的为false,会导致不能进入
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+	// 自动生成时是返回的为false,会导致不能进入
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }	
+	// 自动生成时是返回的为false,会导致不能进入
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}
+////////////////////////////////////////////
+//////////// userService实现类  /////////////
+////////////////////////////////////////////
+/**
+ * @Author kay三石
+ * @date:2020/10/31
+ */
+@Service
+public class UserService implements UserDetailsService {
+    /**
+     * 注入刚引入的bean
+     */
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        String password =passwordEncoder.encode("123");
+        return new User("admin",password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+    }
+}
+////////////////////////////////////////////
+//////////// controller  ///////////////////
+////////////////////////////////////////////
+/**
+ * Description:
+ *  加入了author2的认证，所以要加入token访问资源时
+ * @date:2020/10/29 9:46
+ * @author: kaysanshi
+ **/
+@RestController
+@RequestMapping("/test")
+public class TestController {
+    /**
+     * 获取当前用户
+     * @return
+     */
+    @GetMapping("/getCurrentUser")
+    public Object getCurrentUser(Authentication authentication){
+        return authentication.getPrincipal();
+    }
+}
+
+
+
+```
+
+<font color="red">遇到问题，但是后台并未报错，只需要把这个给修改即可 : 用户已失效，用户账户已经锁定</font>
+
+[![BUjSMj.png](https://s1.ax1x.com/2020/10/31/BUjSMj.png)](https://imgchr.com/i/BUjSMj)
+
+<font color="blue">解决：</font>明明用户名和密码正确，而且没有设置状态锁定，怎么被锁定了呢？这是由于我们在重写`UserDetails`接口时，有个默认实现的方法`public boolean isAccountNonLocked()`，默认返回的是`false`，
+
+```java
+ @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+```
+
+
+
+##### 密码模式
+
+使用密码模式获取资源：
+
+看效果：
+
+获取token
+
+[![BaiSQf.md.png](https://s1.ax1x.com/2020/10/31/BaiSQf.md.png)](https://imgchr.com/i/BaiSQf)
+
+
+
+通过token获取信息
+
+[![Baipy8.md.png](https://s1.ax1x.com/2020/10/31/Baipy8.md.png)](https://imgchr.com/i/Baipy8)
+
+###### pom.xml
+
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.kaysanshi</groupId>
+    <artifactId>spring-security-oauth2</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>spring-security-oauth2</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+```
+
+###### java 代码
+
+由于这个只是配置类中不太一样，这里我只展现出配置类的代码：
+
+```java
+
+/**
+ * Description:
+ * author2配置
+ * AuthorizationServerConfigurerAdapter 包括：
+ * ClientDetailsServiceConfigurer：用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息。
+ * AuthorizationServerSecurityConfigurer：用来配置令牌端点(Token Endpoint)的安全约束.
+ * AuthorizationServerEndpointsConfigurer：用来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)。
+ *
+ * @date:2020/10/29 9:30
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableAuthorizationServer // 开启认证授权服务器
+public class AuthorizationServerConfigure extends AuthorizationServerConfigurerAdapter {
+
+    // 密码授权的操作就是通过这个对象把密码传入授权服务器的
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    // 将令牌信息存储到内存中
+    @Autowired(required = false)
+    private TokenStore inMemoryTokenStore;
+
+    // 该对象将为刷新token提供支持
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    /**
+     * ClientDetailsServiceConfigurer
+     * 主要是注入ClientDetailsService实例对象（唯一配置注入）。其它地方可以通过ClientDetailsServiceConfigurer调用开发配置的ClientDetailsService。
+     * 系统提供的二个ClientDetailsService实现类：JdbcClientDetailsService、InMemoryClientDetailsService。
+     *
+     * @param clients
+     * @throws Exception
+     */
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients)
+            throws Exception {
+        // 配置一个基于password认证的。
+        clients.inMemory()
+                // 配置clientId
+                .withClient("admin")
+                // 配置client-secret
+                .secret(passwordEncoder.encode("112233"))
+                // 配置token过期时间
+                .accessTokenValiditySeconds(2630)
+                // 配置 redirectUri，用于授权成功后跳转
+                .redirectUris("http://www.baidu.com")
+                // 配置申请的权限范围
+                .scopes("all")
+                // 配置grant_type 表示授权类型。 使用密码模式
+                .authorizedGrantTypes("password");
+    }
+
+    /**
+     * 使用密码模式所需配置
+     * AuthorizationServerEndpointsConfigurer 访问端点配置 是一个装载类
+     * 装载Endpoints所有相关的类配置（AuthorizationServer、TokenServices、TokenStore、ClientDetailsService、UserDetailsService）。
+     * @param endpoints
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        endpoints.tokenStore(inMemoryTokenStore) //配置令牌的存储（这里存放在内存中）
+                .authenticationManager(authenticationManager)
+                .userDetailsService(userService);
+    }
+}
+///////////////////////////////////////////////
+///                                         ///
+////////////////////////////////////////////////
+/**
+ * Description:
+ * spring security配置
+ * WebSecurityConfigurerAdapter是默认情况下 Spring security的http配置
+ * 优先级高于ResourceServerConfigurer，用于保护oauth相关的endpoints，同时主要作用于用户的登录（form login，Basic auth）
+ *
+ * @date:2020/10/29 9:41
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigure extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // 使用BCrypt强哈希函数加密方案（密钥迭代次数默认为10）
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 为了让认证配置类注入使用
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    /**
+     * @param http
+     * @throws Exception
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/oauth/**", "/login/**", "logout/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .formLogin()
+                .permitAll();
+    }
+}
+
+```
+
+
+
+##### 将token存到redis
+
+```java
+/**
+ * Description:
+ * 配置把token存到redis 中的redis链接
+ * @date:2020/10/29 15:14
+ * @author: kaysanshi
+ **/
+@Configuration
+public class TokenStoreConfigure {
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+
+    @Bean
+    public TokenStore redisTokenStore(){
+        return new RedisTokenStore(redisConnectionFactory);
+    }
+}
+
+```
+
+在授权服务器中使用redis进行存储
+
+```java
+package com.kaysanshi.springsecurityoauth2.configure;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+
+/**
+ * Description: 授权服务器的配置
+ * author2配置
+ * AuthorizationServerConfigurerAdapter 包括：
+ * ClientDetailsServiceConfigurer：用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息。
+ * AuthorizationServerSecurityConfigurer：用来配置令牌端点(Token Endpoint)的安全约束.
+ * AuthorizationServerEndpointsConfigurer：用来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)。
+ *
+ * @date:2020/10/29 9:30
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableAuthorizationServer // 开启认证授权服务器
+public class AuthorizationServerConfigure extends AuthorizationServerConfigurerAdapter {
+
+    // 该对象用来支持 password 模式
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    // 将令牌信息存储redis中
+    @Autowired
+    TokenStore redisToken;
+
+    // 该对象将为刷新token提供支持
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    /**
+     * 配置密码加密，因为再UserDetailsService是依赖与这个类的。
+     *
+     * @return
+     */
+    // 指定密码的加密方式
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        // 使用BCrypt强哈希函数加密方案（密钥迭代次数默认为10）
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * ClientDetailsServiceConfigurer
+     * 主要是注入ClientDetailsService实例对象（唯一配置注入）。其它地方可以通过ClientDetailsServiceConfigurer调用开发配置的ClientDetailsService。
+     * 系统提供的二个ClientDetailsService实现类：JdbcClientDetailsService、InMemoryClientDetailsService。
+     *
+     * @param clients
+     * @throws Exception
+     */
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients)
+            throws Exception {
+        // 配置一个客户端用于password认证的。同时也可以同时配置两个，可以再配置一个基于client认证的。
+        clients.inMemory()
+                .withClient("password")
+                .authorizedGrantTypes("password", "refresh_token") //授权模式为password和refresh_token两种
+                .accessTokenValiditySeconds(1800) // 配置access_token的过期时间
+                .resourceIds("rid") //配置资源id
+                .scopes("all") // 允许授权范围
+                .secret("$2a$10$RMuFXGQ5AtH4wOvkUqyvuecpqUSeoxZYqilXzbz50dceRsga.WYiq") //123加密后的密码
+                ;
+    }
+
+    /**
+     * AuthorizationServerEndpointsConfigurer 访问端点配置 是一个装载类
+     * 装载Endpoints所有相关的类配置（AuthorizationServer、TokenServices、TokenStore、ClientDetailsService、UserDetailsService）。
+     * tokenService用于存到redis中
+     *
+     * @param endpoints
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        endpoints.tokenStore(redisToken) //配置令牌的存到redis
+                .authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsService);
+    }
+
+    /**
+     * AuthorizationServerSecurityConfigurer继承SecurityConfigurerAdapter.
+     * 也就是一个 Spring Security安全配置提供给AuthorizationServer去配置AuthorizationServer的端点（/oauth/****）的安全访问规则、过滤器Filter。
+     *
+     * @param security
+     */
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) {
+        // 表示支持 client_id 和 client_secret 做登录认证
+        // 允许使用表单认证
+        security.allowFormAuthenticationForClients();
+    }
+}
+
+```
+
+### JWT
+
+#### 常见的认证机制
+
+##### HTTP Basic Auth
+
+HTTP Basic Auth简单点说明就是每次请求API时都提供用户的username和password，简言之，Basic Auth是配合RESTful API 使用的最简单的认证方式，只需提供用户名密码即可，但由于有把用户名密码暴露给第三方客户端的风险，在生产环境下被使用的越来越少。因此，在开发对外开放的RESTful API时，<font color="red">尽量避免采用HTTP Basic Auth</font>
+
+##### Cookie Auth
+
+Cookie认证机制就是为一次请求认证在服务端创建一个Session对象，同时在客户端的浏览器端创建了一个Cookie对象；通过客户端带上来Cookie对象来与服务器端的session对象匹配来实现状态管理的。默认的，当我们关闭浏览器的时候，cookie会被删除。但可以通过修改cookie 的expire time使cookie在一定时间内有效；
+
+[![Bwb5o6.png](https://s1.ax1x.com/2020/11/01/Bwb5o6.png)](https://imgchr.com/i/Bwb5o6)
+
+##### Oauth
+
+OAuth（开放授权）是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方移动应用或分享他们数据的所有内容.
+
+OAuth 允许用户提供一个令牌，而不是用户名和密码来访问他们存放在特定服务提供者的数据。而每一个令牌授权一个特定的第三方系统，在特定的时刻访问特定的资源。这样OAuth让用户可以授权第三方网站访问他们存储在另外服务提供者的某些特定的内信息，而非所有内容。比如一个微博开放平台的OAuth请求。
+
+![](http://www.sinaimg.cn/blog/developer/wiki/oauth_flowchart.jpg)
+
+这种基于OAuth的认证机制适合哟用于个人消费者类的互联网产品，比如社交类APP等应用。缺点：过重
+
+##### Token Auth
+
+使用基于token的身份验证方法，在服务端不需要存储用户的登录信息。大概的流程是：
+
+1. 客户端使用用户名和密码请求登录
+2. 服务端收到请求，去验证用户名与密码
+3. 验证成功后，服务端会签发一个token,再把token发送得到客户端。
+4. 客户端收到token以后可以把他存储起来，比如放到cookie中
+5. 客户端每次向服务器请求资源的时候需要带着服务端签发的token
+6. 服务端收到请求，然后去验证客户端请求里面带着的token,如果验证成功，就向客户端返回请求的数据。
+
+[![BwboFK.png](https://s1.ax1x.com/2020/11/01/BwboFK.png)](https://imgchr.com/i/BwboFK)
+
+这比http basic auth更安全，比cookie auth更节约服务器资源，比Oauth更轻量。
+
+<font color="green">Token机制相对于Cookie机制又有什么好处呢？</font>
+
+- 支持跨域访问: Cookie是不允许垮域访问的，这一点对Token机制是不存在的，前提是传输的用户认证信息通过HTTP头传输.
+- 无状态(也称：服务端可扩展行):Token机制在服务端不需要存储session信息，因为Token 自身包含了所有登录用户的信息，只需要在客户端的cookie或本地介质存储状态信息.
+- 更适用CDN: 可以通过内容分发网络请求你服务端的所有资料（如：javascript，HTML,图片等），而你的服务端只要提供API即可.
+- 去耦: 不需要绑定到一个特定的身份验证方案。Token可以在任何地方生成，只要在你的API被调用的时候，你可以进行Token生成调用即可.
+- 更适用于移动应用: 当你的客户端是一个原生平台（iOS, Android，Windows 8等）时，Cookie是不被支持的（你需要通过Cookie容器进行处理），这时采用Token认证机制就会简单得多。
+- CSRF:因为不再依赖于Cookie，所以你就不需要考虑对CSRF（跨站请求伪造）的防范。
+- 性能: 一次网络往返时间（通过数据库查询session信息）总比做一次HMACSHA256计算 的Token验证和解析要费时得多.
+- 不需要为登录页面做特殊处理: 如果你使用Protractor 做功能测试的时候，不再需要为登录页面做特殊处理.
+- 基于标准化:你的API可以采用标准化的 JSON Web Token (JWT). 这个标准已经存在多个后端库（.NET, Ruby, Java,Python, PHP）和多家公司的支持（如：Firebase,Google, Microsoft）
+
+[参考几种常见的认证机制](https://www.cnblogs.com/xiaofenguo/p/7514854.html)
+
+#### JWT简介
+
+https://jwt.io/
+
+Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（[(RFC 7519](https://link.jianshu.com?t=https://tools.ietf.org/html/rfc7519)).该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。
+
+优点：
+
+1. JWT基于jon,非常方便解析
+2. 可以在令牌中自定义丰富的内容，易扩展
+3. 通过非对称加密算法及数字签名技术，JWT防止篡改，安全性高。
+4. 资源服务使用JWT可不依赖认证服务即可完成授权。
+
+缺点：
+
+JWT令牌长，占用空间比较大。
+
+##### JWT组成：
+
+一个JWT实际上就是一个字符串，他有三部分组成，头部，载荷与签名。
+
+###### 头部（Header）
+
+头部是用于描述关于该JWT的最基本的信息，例如其类型及签名所用的算法等。这也可以被表示成一个JSON对象 。base64编码，可以进行明文解码
+
+```json
+{
+ "alg":"HS256",
+ "typ":"JWT"
+}
+```
+
+- `typ`:是类型。
+
+- `alg`:签名算法，这里使用的算法是HS256算法。
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+```
+
+
+
+###### 载荷（Payload）
+
+负载就是存放有效信息的的地方。包含3个部分：
+
+- 标准中注册的声明
+
+  **iss**: jwt签发者
+
+   **sub**: jwt所面向的用户
+
+   **aud**: 接收jwt的一方
+
+   **exp**: jwt的过期时间，这个过期时间必须要大于签发时间
+
+   **nbf**: 定义在什么时间之前，该jwt都是不可用的.
+
+   **iat**: jwt的签发时间
+
+   **jti**: jwt的唯一身份标识，主要用来作为一次性token,从而回避重放攻击。
+
+- 公共的声明
+
+  公共的声明可以添加任何的信息，一般添加用户的相关信息或其他业务需要的必要信息.但不建议添加敏感信息，因为该部分在客户端可解密.
+
+- 私有的声明
+
+  私有声明是提供者和消费者所共同定义的声明，一般不建议存放敏感信息，因为base64是对称解密的，意味着该部分信息可以归类为明文信息。定义一个私有的声明
+
+  ```json
+  {
+    "sub": "1234567890",
+    "name": "John Doe",
+    "admin": true
+  }
+  ```
+
+  然后将其进行base64加密，得到Jwt的第二部分。
+
+  ```undefined
+  eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9
+  ```
+
+###### 签名
+
+是Jwt的第三部分，这个签证信息是由三部分组成。
+
+- header (base64后的)
+- payload (base64后的)
+- secret（盐，一定要保密）
+
+这个部分需要base64加密后的header和base64加密后的payload使用`.`连接组成的字符串，然后通过header中声明的加密方式进行加盐`secret`组合加密，然后就构成了jwt的第三部分。
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+
+<font color="red">注意：secret是保存在服务器端的，jwt的签发生成也是在服务器端的，`secret就是用来进行jwt的签发和jwt的验证`，`所以，它就是你服务端的私钥，在任何场景都不应该流露出去`。一旦客户端得知这个secret, 那就意味着客户端是可以自我签发jwt了。</font>
+
+jwt 官方进行debug
+
+[![B030nU.png](https://s1.ax1x.com/2020/11/01/B030nU.png)](https://imgchr.com/i/B030nU)
+
+#### JJWT简介
+
+
+
+### Spring Security Oauth2整合JWT
+
+### Spring Security Oauth2整合单点登录
 
 
 
