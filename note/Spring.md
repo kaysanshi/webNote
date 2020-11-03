@@ -970,7 +970,9 @@ public class UserDaoImpl implements UserDao {
 
         },id);
     }
-	配置：
+    
+配置：
+    
 <!--Spring 读取指定的db.property配置  -->
 <context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
 <!-- 将连接池放到spring 容器 -->
@@ -1001,38 +1003,52 @@ public class UserDaoImpl implements UserDao {
 #### web层单独整合
 
 Spring整合其他两大框架原理：
-		web层:用struts2+jsp然后Action对象交给Spring管理
-		service层：JavaBean直接交给Spring 管理
-		dao :hibernate中的sessionfactory和Session获得，aop事务都交给Spring管理都由Spring容器来创建和维护
+
+​		web层:用struts2+jsp然后Action对象交给Spring管理
+
+​		service层：JavaBean直接交给Spring 管理
+
+​		dao :hibernate中的sessionfactory和Session获得，aop事务都交给Spring管理都由Spring容器来创建和维护
 
 > 导包：
+>
 > struts2:基本包+    struts2-spring-plugin-2.5.16是struts把Action对象交给Spring的插件如果没有Spring容器则会报错
+>
 > Spring：基础包：core|bean.context,expression,logging,log4j.   web:-web,    aop:aop,aspect,aopweaving,aop联盟，事务：jdbc,tx,c3p0,orm,
-> 		测试：-test,
+>
+> ​		测试：-test,
 > hibernate：操作数据库的规范-entitymanager;
+>
 > 导入约束：
 > web应用单独配置Spring容器：
+>
 > 在web 的xml配置如下：
+>
+> ```xml
 > <!--将 web 引入Spring容器中 -->
-> 				<context-param>
-> 						<param-name>contextConfigLocation</param-name>
-> 						<param-value>classpath*:/applicationContext3.xml</param-value>
-> 				 </context-param>
+> <context-param>
+>     <param-name>contextConfigLocation</param-name>
+>     <param-value>classpath*:/applicationContext3.xml</param-value>
+> </context-param>
+> 
 > web应用单独整合struts2:
-> 	在web 的xml配置如下：
-> 				 <!-- 配置struts -->
-> 				 <filter>
-> 				      <filter-name>struts2</filter-name>
-> 				      <filter-class>
-> 					 org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
-> 				      </filter-class>
-> 				   </filter>
-> 				   <filter-mapping>
-> 				      <filter-name>struts2</filter-name>
-> 				      <url-pattern>/*</url-pattern>
-> 				   </filter-mapping>
+> 在web 的xml配置如下：
+> <!-- 配置struts -->
+> <filter>
+>     <filter-name>struts2</filter-name>
+>     <filter-class>
+>     org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter
+>     </filter-class>
+> </filter>
+> <filter-mapping>
+>     <filter-name>struts2</filter-name>
+>     <url-pattern>/*</url-pattern>
+> </filter-mapping>
+> ```
+>
 > web单独整合hibernate :
-> 			1.配置实体映射文件：
+>
+> ​			1.配置实体映射文件：
 
 ```java
 <?xml version='1.0' encoding='UTF-8'?>  
