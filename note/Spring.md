@@ -79,17 +79,17 @@
 `mvc模块`：建立在Spring 核心功能之上，使得拥有Spring框架的所有特性适应于多种的视图模块技术
 
 ```
-	配置：
-    Spring模块中是根据每一个模块对应的一个jar包
-    spring,jar//整个Spring模块
-    spring-core.jar//核心模块包含ioc容器
-    spring-aop.jar//Aop模块
-    spring-context.jar//Spring上下文包含ApplicationContext容器
-    spring-dao.jar//dao层与jdbc的支持
-    spring-orm.jar
-    spring-web.jar
-    spring-webmvc.jar//
-    Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.xml}
+配置：
+Spring模块中是根据每一个模块对应的一个jar包
+spring,jar//整个Spring模块
+spring-core.jar//核心模块包含ioc容器
+spring-aop.jar//Aop模块
+spring-context.jar//Spring上下文包含ApplicationContext容器
+spring-dao.jar//dao层与jdbc的支持
+spring-orm.jar
+spring-web.jar
+spring-webmvc.jar//
+Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.xml}
 ```
 
 ### IOC 容器
@@ -111,14 +111,14 @@ IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦�
 - 第二步利用第一步生成的 bean 工厂对象的 getBean() 方法得到所需要的 bean。 这个方法通过配置文件中的 bean ID 来返回一个真正的对象，该对象最后可以用于实际的对象。一旦得到这个对象，就可以利用这个对象来调用任何方法
   例如：
 
-	Resource re=new ClassPathResource("applicationContext.xml");
-	BeanFactory factory=new XmlBeanFactory(re);
-	Test test =factory.getBean("test");
-	在xml文件中配置如下：
-	<！引入beans.dtd>
-	<beans>
-	< bean id="test" class="com.test.Test">
-	</beans>
+	> Resource re=new ClassPathResource("applicationContext.xml");
+	> BeanFactory factory=new XmlBeanFactory(re);
+	> Test test =factory.getBean("test");
+	> 在xml文件中配置如下：
+	> <！引入beans.dtd>
+	> <beans>
+	> < bean id="test" class="com.test.Test">
+	> </beans>
 #### ApplicationContext:
 
 ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以加载配置文件定义的bean，将所有的bean集中在一起，当请求时分配bean，扩展了BeanFactory容器并添加了国际化，生命周期，事件，监听，提供了BeanFactory的所有特性而且允许用户使用更多的声明方式
@@ -131,7 +131,9 @@ ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以
 
 ##### FileSystemXmlApplicationContext:
 
-​	不是从类路径中获取配置信息，而是通过参数指定配置文件的位置，可以获取类路径之外的资源，该容器从 XML 文件中加载已被定义的 bean。在这里，你需要提供给构造器 XML 文件的完整路径
+​	不是从类路径中获取配置信息，而是通过参数指定配置文件的位置，可以获取类路径之外的资源，该容器从 XML 文件中加载已被定义的 bean。
+
+在这里，你需要提供给构造器 XML 文件的完整路径
 ​	ApplicationContext context=new  FileSystemXmlApplicationContext(String configLocation);
 
 ##### WebApplicationContext:
@@ -144,7 +146,7 @@ ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以
 ### Spring Bean
 
 bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装，并通过 Spring IoC 容器所管理的对象。这些 bean 是由用容器提供的配置元数据创建的
-	<bean>元素有以下属性：	id，name,class,singleton,autowire,init-method,destroy-method,depends-on
+	`<bean>元素有以下属性：`	id，name,class,singleton,autowire,init-method,destroy-method,depends-on
 
 ```
 <bean id="id" class="创建的bean类" scope="bean的作用域">
@@ -161,10 +163,14 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 #### Bean元素
 
 使用Spring注册的对象 
-			name属性：给被管理对象起名字，根据改名字获取对象。名字可以重复，可以使用特殊字符
-			class属性：被管理对象完整的类名
-			id属性：与name属性一样，名字不可重复，不能使用特殊字符
-			尽量使用name属性
+
+​			name属性：给被管理对象起名字，根据改名字获取对象。名字可以重复，可以使用特殊字符
+
+​			class属性：被管理对象完整的类名
+
+​			id属性：与name属性一样，名字不可重复，不能使用特殊字符
+
+​			尽量使用name属性
 
 #### Bean作用域
 
@@ -177,14 +183,17 @@ bean 对象也是由Spring IoC容器管理，bean 是一个被实例化，组装
 Singleton是单例类型，就是在创建起容器时就同时自动创建了一个bean的对象，不管你是否使用他都存在了每次获取到的对象都是同一个对象。
 
 注意，Singleton作用域是Spring中的缺省作用域
-​		<bean id="..." class="..." scope="singleton"></bean>	
+		`<bean id="..." class="..." scope="singleton"></bean>`	
 
 ##### prototype	
 
-每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()这就是平时使用new创建对象的默认方式；
-		表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。
-		Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。
-		通常DAO不会被配置成prototype,因为一个Dao不会支持任何会话状态，
+​		每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()这就是平时使用new创建对象的默认方式；
+
+​		表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。
+
+​		Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。
+
+​		通常DAO不会被配置成prototype,因为一个Dao不会支持任何会话状态，
 
 ##### request	
 
@@ -201,19 +210,23 @@ Singleton是单例类型，就是在创建起容器时就同时自动创建了�
 #### Bean的生命周期
 
 声明带有 init-method 和/或 destroy-method 参数的 。init-method 属性指定一个方法，在实例化 bean 时，立即调用该方法。同样，destroy-method 指定一个方法，只有从容器中移除 bean 之后，才能调用该方法
-				<?xml version="1.0" encoding="UTF-8"?>
-				<beans xmlns="http://www.springframework.org/schema/beans"
-				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				    xsi:schemaLocation="http://www.springframework.org/schema/beans
-				    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-				   <bean id="helloWorld" 
-				       class="com.tutorialspoint.HelloWorld"
-				       init-method="init" destroy-method="destroy">
-				       <property name="message" value="Hello World!"/>
-				   </bean>
-				</beans>
-				如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明初始化方法和销毁方法。
-				框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
+				
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean id="helloWorld" class="com.tutorialspoint.HelloWorld" init-method="init" destroy-method="destroy">
+    	<property name="message" value="Hello World!"/>
+    </bean>
+</beans>
+```
+
+​				如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明初始化方法和销毁方法。
+
+​				框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
 
 ##### Bean的初始化步骤
 
@@ -222,64 +235,74 @@ Singleton是单例类型，就是在创建起容器时就同时自动创建了�
 2.通过get(),set()方法。
 
 3.如果实现BeanNameAware接口容器会将调用bean的setBeanName()方法传递bean的ID
+
 4.如果实现BeanFactoryAware接口，容器会将调用的bean得setBeanfactory()方法注入bean，
 
 5.如果注册了BeanPostProcessor接口的实现类，将调用这个实现类的postProcessBeforeInitialization()方法；完成bean的预处理
+
 6.如果是实现了InitializingBean接口容器会调用JavaBean的afterPropertiesSet()方法修改JavaBean的属性。
 
 7.在XML中配置Bean时如果用init-method属性指定来了初始化方法容器会执行指定的方法
+
 8.如果注册了BeanPostProcessor的实现类，将调用实现类的postProcessAfterInitialization()方法完成后置处理方法
 
 ##### Bean的销毁
 
 1.在销毁bean之前如果Bean实现了DisposableBean接口，容器会调用bean的destroy()方法来完成销毁工作，
+
 2.如果在bean定义了指定的销毁方法呢么在bean被销毁前会先执行指定的方法，在同时指定的时候DisposableBean接口时有优先权
 
 #### Bean的后置处理
 
 BeanPostProcessor 接口定义回调方法，你可以实现该方法来提供自己的实例化逻辑，依赖解析逻辑等。你也可以在 Spring 容器通过插入一个或多个 BeanPostProcessor 的实现来完成实例化，配置和初始化一个bean之后实现一些自定义逻辑回调方法。
-		你可以配置多个 BeanPostProcesso r接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。
-		BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作。
-		ApplicationContext 会自动检测由 BeanPostProcessor 接口的实现定义的 bean，注册这些 bean 为后置处理器，然后通过在容器中创建 bean，在适当的时候调用它。调用的时候只需要实现BeanPostProcessor接口
+
+​		你可以配置多个 BeanPostProcesso r接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。
+
+​		BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作。
+
+​		ApplicationContext 会自动检测由 BeanPostProcessor 接口的实现定义的 bean，注册这些 bean 为后置处理器，然后通过在容器中创建 bean，在适当的时候调用它。调用的时候只需要实现BeanPostProcessor接口
 
 #### Bean定义继承
 
 bean 定义可以包含很多的配置信息，包括构造函数的参数，属性值，容器的具体信息例如初始化方法，静态工厂方法名，等等。
+
 子 bean 的定义继承父定义的配置数据。子定义可以根据需要重写一些值，或者添加其他值。
 
 Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念是一样的。你可以定义一个父 bean 的定义作为模板和其他子 bean 就可以从父 bean 中继承所需的配置。当你使用基于 XML 的配置元数据时，通过使用父属性，指定父 bean 作为该属性的值来表明子 bean 的定义。
 
-	xml配置信息：
-			<?xml version="1.0" encoding="UTF-8"?>
-			<beans xmlns="http://www.springframework.org/schema/beans"
-			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			    xsi:schemaLocation="http://www.springframework.org/schema/beans
-			    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-			   <bean id="helloWorld" class="xxxparent">
-			      <property name="message1" value="Hello World!"/>
-			      <property name="message2" value="Hello Second World!"/>
-			   </bean>
-			   <bean id="helloIndia" class="xxx" parent="helloWorld">
-			      <property name="message1" value="Hello India!"/>
-			      <property name="message3" value="Namaste India!"/>
-			   </bean>
-			</beans>
-			使用的时候可以直接定义模板，这样就可以方便让其他子bean定义使用：需要指定抽象属性为true;
-				<?xml version="1.0" encoding="UTF-8"?>
-				<beans xmlns="http://www.springframework.org/schema/beans"
-				    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				    xsi:schemaLocation="http://www.springframework.org/schema/beans
-				    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-				   <bean id="beanTeamplate" abstract="true">
-				      <property name="message1" value="Hello World!"/>
-				      <property name="message2" value="Hello Second World!"/>
-				      <property name="message3" value="Namaste India!"/>
-				   </bean>
-				   <bean id="helloIndia" class="com.tutorialspoint.HelloIndia" parent="beanTeamplate">
-				      <property name="message1" value="Hello India!"/>
-				      <property name="message3" value="Namaste India!"/>
-				   </bean>
-				</beans>
+```xml
+xml配置信息：
+<?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean id="helloWorld" class="xxxparent">
+        <property name="message1" value="Hello World!"/>
+        <property name="message2" value="Hello Second World!"/>
+    </bean>
+    <bean id="helloIndia" class="xxx" parent="helloWorld">
+        <property name="message1" value="Hello India!"/>
+        <property name="message3" value="Namaste India!"/>
+    </bean>
+</beans>
+## 使用的时候可以直接定义模板，这样就可以方便让其他子bean定义使用：需要指定抽象属性为true;
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean id="beanTeamplate" abstract="true">
+        <property name="message1" value="Hello World!"/>
+        <property name="message2" value="Hello Second World!"/>
+        <property name="message3" value="Namaste India!"/>
+    </bean>
+    <bean id="helloIndia" class="com.tutorialspoint.HelloIndia" parent="beanTeamplate">
+        <property name="message1" value="Hello India!"/>
+        <property name="message3" value="Namaste India!"/>
+    </bean>
+</beans>
+```
 ### 依赖注入
 
 #### 接口注入
@@ -289,39 +312,43 @@ Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念�
 #### Setter注入
 
 ​	基于Java的setter方法的属性赋值最为广泛应用
+
 ​	可以混合这两种方法，基于构造函数和基于 setter 方法的 DI，然而使用有强制性依存关系的构造函数和有可选依赖关系的 setter是一个好的做法。
+
 ​	代码是 DI 原理的清洗机，当对象与它们的依赖关系被提供时，解耦效果更明显。对象不查找它的依赖关系，也不知道依赖关系的位置或类，而这一切都由 Spring 框架控制的。	
+
 ​	例如：
+
 ​		一个简单的Javabean就是有一个私有的属性对应getter() setter()方法，来实现对属性的封装；
 
 ```java
-					class User {
-						private  String name;
-						private  String  sex;
-						private  int age;
-						//setter();
-					}
-					applicationContext.xml配置：
-					<bean name="user" class="xxx.User">
-						<property name="name">
-							<value>sssd</value>
-						</property>
-						<property name="age">
-							<value>12</value>
-						</property>
-						<property name="sex">
-							<value>男</value>
-						</property>
-					</bean>
-					直接获取到bean用User对象接收，然后即可以调用对象的属性
+class User {
+    private  String name;
+    private  String  sex;
+    private  int age;
+    //setter();
+}
+## applicationContext.xml配置：
+<bean name="user" class="xxx.User">
+   <property name="name">
+    	<value>sssd</value>
+   </property>
+   <property name="age">
+        <value>12</value>
+   </property>
+   <property name="sex">
+        <value>男</value>
+   </property>
+</bean>
+直接获取到bean用User对象接收，然后即可以调用对象的属性
 ```
 #### 构造函数注入
 
-当容器调用带有一组参数的类构造函数时，基于构造函数的 DI 就完成了，其中每个参数代表一个对其他类的依赖。基于构造方法为属性赋值，容器通过调用类的构造方法将其进行依赖注入
-		<constructor-arg>是<bean>元素的子元素，通过 <constructor-arg>的子元素<value>可以传参
-		<ref>元素用于引入其他的Javabean对象
+> 当容器调用带有一组参数的类构造函数时，基于构造函数的 DI 就完成了，其中每个参数代表一个对其他类的依赖。基于构造方法为属性赋值，容器通过调用类的构造方法将其进行依赖注入
+> 		<constructor-arg>是<bean>元素的子元素，通过 <constructor-arg>的子元素<value>可以传参
+> 		<ref>元素用于引入其他的Javabean对象
 
-```
+```java
 public class TextEditor {
 		   private SpellChecker spellChecker;
 		   public TextEditor(SpellChecker spellChecker) {
@@ -396,44 +423,44 @@ public class TextEditor {
 					<constructor-arg name="car" index="0" ref="car"></constructor-arg>
 					</bean>
 				构造函数如下：
-					/**
+/**
 					 * 指定到这个构造：
 					 * @param car
 					 * @param name
 					 */
-					public User(Car car,String name) {
-						this.car=car;
-						this.name=name;
-						System.out.println("car,name,");
-					}
-					/**
+                        public User(Car car,String name) {
+                        this.car=car;
+                        this.name=name;
+                        System.out.println("car,name,");
+                    }
+/**
 					 * 
 					 * @param name
 					 * @param car
 					 */
-					public User(String name,Car car) {
-						this.car=car;
-						this.name=name;
-						System.out.println("name,car");
-					}
-				使用的时候：
-					@Test
-					public void test5() {
-						ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
-						User bean=(User)context.getBean("user4");
-						System.out.println(bean.getCar().getName());
-						context.close();
-					}
-					/**
+public User(String name,Car car) {
+    this.car=car;
+    this.name=name;
+    System.out.println("name,car");
+}
+使用的时候：
+ @Test
+public void test5() {
+    ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
+    User bean=(User)context.getBean("user4");
+    System.out.println(bean.getCar().getName());
+    context.close();
+}
+/**
 					 * 构造函数注入指定走哪一个构造函数配置走car name
 					 */
-					@Test
-					public void test6() {
-						ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
-						User bean=(User)context.getBean("user5");
-						System.out.println(bean.getCar().getName());
-						context.close();
-					}
+@Test
+public void test6() {
+    ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
+    User bean=(User)context.getBean("user5");
+    System.out.println(bean.getCar().getName());
+    context.close();
+}					
 ```
 
 #### 设值函数注入：

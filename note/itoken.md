@@ -67,32 +67,58 @@
 ##### 安装gitlab Runner：
 
 > ​          curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.deb.sh | sudo bash
+>
 > ​            sudo apt-get update
+>
 > ​            sudo apt-get install gitlab-ci-multi-runner      
 > ​    **注册runner：**
 > ​        gitlab-ci-multi-runner register
+>
 > ​        **命令：**
-> ​            gitlab-ci-multi-runner register：执行注册命令
+>
+> ​            gitlab-ci-multi-runner register：执行注册命令 
+>
 > ​            Please enter the gitlab-ci coordinator URL：输入 ci 地址
+>
 > ​            Please enter the gitlab-ci token for this runner：输入 ci token
+>
 > ​            Please enter the gitlab-ci description for this runner：输入 runner 名称
+>
 > ​            Please enter the gitlab-ci tags for this runner：设置 tag
+>
 > ​            Whether to run untagged builds：这里选择 true ，代码上传后会能够直接执行
+>
 > ​            Whether to lock Runner to current project：直接回车，不用输入任何口令
+>
 > ​            Please enter the executor：选择 runner 类型，这里我们选择的是 shell
+>
 > ​    **将gitlab-runner账户加入root组：**
+>
 > ​         安装完 GitLab Runner 后系统会增加一个 gitlab-runner 账户，我们将它加进 root 组：
+>
 > ​            gpasswd -a gitlab-runner root
+>
 > ​            配置需要操作目录的权限，比如你的 runner 要在 gaming 目录下操作：
+>
 > ​            chmod 775 gaming
+>
 > ​            由于我们的 shell 脚本中有执行 git pull 的命令，我们直接设置以 ssh 方式拉取代码：
+>
 > ​            su gitlab-runner
+>
 > ​            ssh-keygen -t rsa -C "你在 GitLab 上的邮箱地址"
+>
 > ​            cd 
+>
 > ​            cd .ssh
+>
 > ​            cat id_rsa.pub
+>
 > ​            复制 id_rsa.pub 中的秘钥到 GitLab：
+>
 > ​            通过 ssh 的方式将代码拉取到本地
+>
+> 
 
     删除注册信息：
     

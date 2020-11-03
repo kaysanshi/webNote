@@ -119,7 +119,7 @@ password:123456
 
 使用jdbc连接时有两种方式的连接：
 
-**格式一: Oracle JDBC Thin using an SID:**jdbc:oracle:thin:@host:port:SID
+**格式一: Oracle JDBC Thin using an SID:** jdbc:oracle:thin:@host:port:SID
 
 Example: jdbc:oracle:thin:@localhost:1521:orcl
 

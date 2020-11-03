@@ -372,43 +372,44 @@ Long max = (Long)result;
   一：
   <!-- 配置 JPA 提供者的适配器 -->
   <bean id="jpaVendorAdapter"  	class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-  	<property name="databasePlatform">
-  		<bean class="com.atguigu.ssps.modules.persistence.Hibernates" 
-  			factory-method="getDialect">
-  				<constructor-arg ref="dataSource"></constructor-arg>
-  		</bean>
-  	</property>
+      <property name="databasePlatform">
+          <bean class="com.atguigu.ssps.modules.persistence.Hibernates" 
+                factory-method="getDialect">
+              <constructor-arg ref="dataSource"></constructor-arg>
+          </bean>
+      </property>
   </bean>
   二：
-  	<!-- 配置 JPA 的 EntityManager -->
-  	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-  		<property name="dataSource" ref="dataSource"></property>
-  		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"></property>
-  		<property name="packagesToScan" value="com.atuigu.crm"></property>
-  		<property name="jpaProperties">
-  			<props>
-  				<!-- 二级缓存相关 -->
-  				<prop key="hibernate.cache.region.factory_class">
-  					org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
-  				<prop key="net.sf.ehcache.configurationResourceName">
-  					ehcache-hibernate.xml</prop>
-  				<!-- 生成的数据表的列的映射策略 -->
-  				<prop key="hibernate.ejb.naming_strategy">
-  					org.hibernate.cfg.ImprovedNamingStrategy</prop>
-  				<!-- hibernate 基本属性 -->
-  				<prop key="hibernate.show_sql">true</prop>
-  				<prop key="hibernate.format_sql">true</prop>
-  				<prop key="hibernate.hbm2ddl.auto">update</prop>
-  			</props>
-  		</property>
-  	</bean>
+  <!-- 配置 JPA 的 EntityManager -->
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+      <property name="dataSource" ref="dataSource"></property>
+      <property name="jpaVendorAdapter" ref="jpaVendorAdapter"></property>
+      <property name="packagesToScan" value="com.atuigu.crm"></property>
+      <property name="jpaProperties">
+          <props>
+              <!-- 二级缓存相关 -->
+              <prop key="hibernate.cache.region.factory_class">
+                  org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+              <prop key="net.sf.ehcache.configurationResourceName">
+                  ehcache-hibernate.xml</prop>
+              <!-- 生成的数据表的列的映射策略 -->
+              <prop key="hibernate.ejb.naming_strategy">
+                  org.hibernate.cfg.ImprovedNamingStrategy</prop>
+              <!-- hibernate 基本属性 -->
+              <prop key="hibernate.show_sql">true</prop>
+              <prop key="hibernate.format_sql">true</prop>
+              <prop key="hibernate.hbm2ddl.auto">update</prop>
+          </props>
+      </property>
+  </bean>
   		
   ```
   
-  #### demo
+
+#### demo
 
 ```java
-	package com.leo.jpa.test;
+package com.leo.jpa.test;
 
 import java.util.Date;
 
