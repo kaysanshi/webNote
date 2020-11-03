@@ -1,4 +1,4 @@
-# 一、Spring Boot 入门
+# 一、Spring Boot 入门​
 
 ## 1、Spring Boot 简介
 
@@ -7,6 +7,8 @@
 > 整个Spring技术栈的一个大整合；
 >
 > J2EE开发的一站式解决方案；
+>
+> Spring Boot的功能从细节到整体都是基于“约定优于配置”开发的，从基础框架的搭建、配置文件、中间件的集成、内置容器以及其生态中各种Starters，无不遵从此设计范式。Starter作为Spring Boot的核心功能之一，基于自动配置代码提供了自动配置模块及依赖，让软件集成变得简单、易用
 
 ## 2、微服务
 
@@ -3585,4 +3587,3 @@ public class HelloServiceAutoConfiguration {
 
 ```
 
-# 

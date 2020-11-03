@@ -1236,9 +1236,17 @@ public class MvcConfig  extends WebMvcConfigurerAdapter {
 
 #### WebSecurity
 
+`WebSecurity`是`Spring Security`的一个`SecurityBuilder`。它的任务是基于一组`WebSecurityConfigurer`构建出一个`Servlet Filter`,具体来讲就是构建一个`Spring Security`的`FilterChainProxy`实例。这个`FilterChainProxy`实现了`Filter`接口，也是通常我们所说的`Spring Security Filter Chain`,所构建的`FilterChainProxy`实例缺省会使用名称`springSecurityFilterChain`作为`bean`注册到容器，运行时处理`web`请求过程中会使用该`bean`进行安全控制。
 
+每个`FilterChainProxy`包装了一个`HttpFirewall`和若干个`SecurityFilterChain`, 这里每个 `SecurityFilterChain`要么对应于一个要忽略安全控制的`URL`通配符(`RequestMatcher`)；要么对应于一个要进行安全控制的`URL`通配符(`HttpSecurity`)
+
+`WebSecurity`在初始化的时候会扫描`WebSecurityConfigurerAdapter`配置器适配器的子类（即生成`HttpSecurity配置器``的FilterChainProxy`）。所有的`配置器`会被调用`init();configure();`初始化配置，其中生成的每个`HttpSecurity配置器`都代表了一个过滤器链。
+
+[![BBjxzV.png](https://s1.ax1x.com/2020/11/02/BBjxzV.png)](
 
 #### HttpSecurity
+
+`HttpSecurity`作为一个`建造者`，是如何去建造出`SecurityFilterChain`过滤器链实例的！
 
 ```java
 public final class HttpSecurity extends AbstractConfiguredSecurityBuilder<DefaultSecurityFilterChain, HttpSecurity> implements SecurityBuilder<DefaultSecurityFilterChain>, HttpSecurityBuilder<HttpSecurity> {}
