@@ -1051,94 +1051,98 @@ Spring整合其他两大框架原理：
 > ​			1.配置实体映射文件：
 
 ```java
-<?xml version='1.0' encoding='UTF-8'?>  
-    <!DOCTYPE hibernate-mapping PUBLIC  
-    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
-    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">  
-    <!-- 映射文件 -->
-    <hibernate-mapping>
-    <!-- <hibernate-mapping> 为根元素的 XML 文件，里面包含所有<class>标签。
-        <class> 标签是用来定义从一个 Java 类到数据库表的特定映射。
-            Java 的类名使用 name 属性来表示，数据库表明用 table 属性来表示。 -->
-            <class name="com.leo.domain.User" table="user">
-                <!-- <meta> 标签是一个可选元素，可以被用来修饰类。 -->
-                <meta attribute="class-description">
-                This class contains the employee detail. 
-                    </meta>
-                    <!--主键标签   -->
-                    <id name="id" type="int" column="id">
-                    <!--generator用来自动生成主键 ,class有以下属性native，使用算法创建主键 -->
-                    <generator class="assigned"></generator>  
-                        </id>
-                        <!-- property用来使属性与数据库表的列匹配 标签中 name 属性引用的是类的性质，column 属性引用的是数据库表的列。
-                        type 属性保存 Hibernate 映射的类型，这个类型会将从 Java 转换成 SQL 数据类型。-->
-                        <property name="name" column="name" type="string"/>
-                        <property name="password" column="password" type="string"/>
-                        <property name="email" column="email" type="string"/>
-                        </class>
-   </hibernate-mapping>
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- 映射文件 -->
+<hibernate-mapping>
+<!-- <hibernate-mapping> 为根元素的 XML 文件，里面包含所有<class>标签。
+    <class> 标签是用来定义从一个 Java 类到数据库表的特定映射。
+        Java 的类名使用 name 属性来表示，数据库表明用 table 属性来表示。 -->
+<class name="com.leo.domain.User" table="user">
+    <!-- <meta> 标签是一个可选元素，可以被用来修饰类。 -->
+    <meta attribute="class-description">
+        This class contains the employee detail.
+    </meta>
+    <!--主键标签   -->
+    <id name="id" type="int" column="id">
+        <!--generator用来自动生成主键 ,class有以下属性native，使用算法创建主键 -->
+        <generator class="assigned"></generator>
+    </id>
+    <!-- property用来使属性与数据库表的列匹配 标签中 name 属性引用的是类的性质，column 属性引用的是数据库表的列。
+    type 属性保存 Hibernate 映射的类型，这个类型会将从 Java 转换成 SQL 数据类型。-->
+    <property name="name" column="name" type="string"/>
+    <property name="password" column="password" type="string"/>
+    <property name="email" column="email" type="string"/>
+</class>
+</hibernate-mapping>
+    
 2.配置hibernate 配置文件：
-   <hibernate-configuration>
-   <session-factory>
+    
+<hibernate-configuration>
+<session-factory>
     <!--数据库的驱动，URL，用户名，密码，hibernate方言，打印sql,映射文件  -->
-     <property name="connection.driver_class">com.mysql.jdbc.Driver</property>                  <property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
-<property name="connection.username">root</property>
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>                 
+    <property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
+    <property name="connection.username">root</property>
     <property name="connection.password">123</property>
     <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
     <property name="show_sql">true</property>
-    <mapping resource="com/leo/domain/user.hbm.xml"/> 
-    </session-factory>
-    </hibernate-configuration>
+    <mapping resource="com/leo/domain/user.hbm.xml"/>
+</session-factory>
+</hibernate-configuration>
 ```
 
+#### 完全整合Struts2,hibernate	
 
-#### 完全整合Struts2,hibernate			
+> 	Spring与struts2整合：
+> 	导包：struts2-spring-plugin.jar是struts中的Action交于Spring容器
+> 	在struts.xml配置：
+> 	配置常量：struts.objectFactory=spring   :把action创建交给Spring容器
+> 	struts.objectFactory.spring.autowise=name   ，Spring负者依赖注入属性
 
 
 ```xml
-    Spring与struts2整合：
-    导包：struts2-spring-plugin.jar是struts中的Action交于Spring容器
-    在struts.xml配置：
-    配置常量：struts.objectFactory=spring   :把action创建交给Spring容器
-    struts.objectFactory.spring.autowise=name   ，Spring负者依赖注入属性
-    整合方式一：
-    整合方案一：用原来的class属性来使用
+   
+整合方案一：用原来的class属性来使用
     由struts创建对象，Spring用来组装和管理	
-    <package name="" namespace="/" extends="struts-default">
+<package name="" namespace="/" extends="struts-default">
     <!-- 整合方案一：用原来的class属性来使用
     由struts创建对象，Spring用来组装和管理	
     -->
     <action name="userAction_" class="com/leo/struts2/UserAction.java" method="{1}">
-    <result name="suceesss">/index.jsp</result>
+    	<result name="suceesss">/index.jsp</result>
     </action>
-    </package>
+</package>
     自动装配时其实就是属性的注入：必须提供setget方法，然后属性名与<bean>下的name一致，这样就可以交给Spring容器来创建管理对象
-    整合方式二（推荐使用）：
+        
+整合方式二（推荐使用）：
     在applicationContext.xml配置如下：
     class属性填写Spring中action对象的beanName，就是spring管理的xml中配置的bean的名字。完全有Spring来创建管理action的周期
     注意；Spring不能自动组装，只能手动注入依赖属性
-
+<beans>
 <!-- action对象的作用范围一定为多例 这样才符合struts2架构 -->
 <!-- 这是有Spring来创建和管理 注意；Spring不能自动组装，只能手动注入依赖属性 -->
 <bean name="userAction" class="com.leo.struts2.UserAction" scope="prototype">
-<property name="userservice" ref="userService"></property>
+	<property name="userservice" ref="userService"></property>
 </bean>
 <bean name="userservice" class="com.leo.service.impl.UserServiceImpl"></bean>
 </beans>
 在struts.xml配置如下：
 <struts>
-<!-- 配置常量意思是否把action对象交给Spring容器来管理和创建 -->
-<constant name="struts.objectFactory" value="spring"></constant>
-<!-- 用来配置Action的的依赖注入属性 -->
-<constant name="struts.objectFactory.spring.autoWire" value="name"></constant>
+    <!-- 配置常量意思是否把action对象交给Spring容器来管理和创建 -->
+    <constant name="struts.objectFactory" value="spring"></constant>
+    <!-- 用来配置Action的的依赖注入属性 -->
+    <constant name="struts.objectFactory.spring.autoWire" value="name"></constant>
 
-<package name="" namespace="/" extends="struts-default">	
-<!--方案二：	class属性填写Spring中action对象的beanName，就是spring管理的xml中配置的bean的名字。完全有Spring来创建管理action的周期
-注意；Spring不能自动组装，只能手动注入依赖属性 -->
-<action name="userAction_" class="userAction" method="{1}">
-<result name="suceesss">/index.jsp</result>
-</action>
-</package>
+    <package name="" namespace="/" extends="struts-default">	
+    <!--方案二：	class属性填写Spring中action对象的beanName，就是spring管理的xml中配置的bean的名字。完全有Spring来创建管理action的周期
+    注意；Spring不能自动组装，只能手动注入依赖属性 -->
+        <action name="userAction_" class="userAction" method="{1}">
+        <result name="suceesss">/index.jsp</result>
+        </action>
+    </package>
 </struts>
 引入C3p0连接池：
 创建c3p0配置文件：
@@ -1148,24 +1152,24 @@ Spring整合其他两大框架原理：
 <context:property-placeholder location="classpath:db.properties"  />
 <!-- 1.将连接池 -->
 <bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
-<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
-<property name="driverClass" value="${jdbc.driverClass}" ></property>
-<property name="user" value="${jdbc.user}" ></property>
-<property name="password" value="${jdbc.password}" ></property>
+    <property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
+    <property name="driverClass" value="${jdbc.driverClass}" ></property>
+    <property name="user" value="${jdbc.user}" ></property>
+    <property name="password" value="${jdbc.password}" ></property>
 </bean>
 <bean name="sFactory" class="org.springframework.orm.hibernate5.LocalSessionFactotyBean">
 <!-- 将连接池注入到sessionfactory ,hibernate 获得连接 -->
-<property name="dataSource" ref="dataSource"></property>
-<property name="hibernateProperties">
-<props>
-<!-- <prop key="hibernate.hbm2ddl.auto" >update</prop>
-<prop key="hibernate.connection.driver_class" >com.mysql.jdbc.Driver</prop>
-<prop key="hibernate.connection.username" >root</prop>
-<prop key="hibernate.connection.password" >123</prop> -->
-<prop key="hibernate.dialect" >org.hibernate.dialect.MySQL5InnoDBDialect</prop>
-<prop key="show_sql" >true</prop>
-<prop key="hibernate.format_sql" >true</prop>
-</props>
+    <property name="dataSource" ref="dataSource"></property>
+    <property name="hibernateProperties">
+    <props>
+        <!-- <prop key="hibernate.hbm2ddl.auto" >update</prop>
+        <prop key="hibernate.connection.driver_class" >com.mysql.jdbc.Driver</prop>
+        <prop key="hibernate.connection.username" >root</prop>
+        <prop key="hibernate.connection.password" >123</prop> -->
+        <prop key="hibernate.dialect" >org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+        <prop key="show_sql" >true</prop>
+        <prop key="hibernate.format_sql" >true</prop>	
+    </props>
 </property>
 Spring 整合hibernate:
 Spring
@@ -1177,25 +1181,25 @@ Spring
 -->
 <!-- 方式二：在Spring中配置 hibernate.cfg.xml-->
 <bean name="sFactory" class="org.springframework.orm.hibernate5.LocalSessionFactotyBean">
-<property name="hibernateProperties">
-<props>
-<prop key="hibernate.hbm2ddl.auto" >update</prop>
-<prop key="hibernate.connection.driver_class" >com.mysql.jdbc.Driver</prop>
-<prop key="hibernate.connection.username" >root</prop>
-<prop key="hibernate.connection.password" >123</prop>
-<prop key="hibernate.dialect" >org.hibernate.dialect.MySQL5InnoDBDialect</prop>
-<prop key="show_sql" >true</prop>
-<prop key="hibernate.format_sql" >true</prop>
-</props>
-</property>
-<!-- 引入元数据 方式一:这是通过在列表中指定相应的实体-->
-<property name="mappingResource">
-<list> <value>com/leo/domain/user.hbm.xml</value></list>
-</property>
-<!-- 引入元数据方式二：直接可以读取这个包下面的所有的映射文件-->
-<property name="mappingDirectoryLocations">
-<value>classpath:com/leo/domain</value>
-</property>
+    <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.hbm2ddl.auto" >update</prop>
+            <prop key="hibernate.connection.driver_class" >com.mysql.jdbc.Driver</prop>
+            <prop key="hibernate.connection.username" >root</prop>
+            <prop key="hibernate.connection.password" >123</prop>
+            <prop key="hibernate.dialect" >org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+            <prop key="show_sql" >true</prop>
+            <prop key="hibernate.format_sql" >true</prop>
+        </props>
+    </property>
+    <!-- 引入元数据 方式一:这是通过在列表中指定相应的实体-->
+    <property name="mappingResource">
+        <list> <value>com/leo/domain/user.hbm.xml</value></list>
+    </property>
+    <!-- 引入元数据方式二：直接可以读取这个包下面的所有的映射文件-->
+    <property name="mappingDirectoryLocations">
+        <value>classpath:com/leo/domain</value>
+    </property>
 </bean>
 扩大Session的作用域：
 在web.xml中配置扩大session的作用域：
@@ -1203,14 +1207,14 @@ Spring
 注意 openSessionInView一定要在struts中的filter的之前
 -->
 <filter>
-<filter-name>openSessionInView</filter-name>
-<filter-class>
-org.springframework.orm.hibernate5.support.OpenSessionInViewFilter
-</filter-class>
+    <filter-name>openSessionInView</filter-name>
+    <filter-class>
+    org.springframework.orm.hibernate5.support.OpenSessionInViewFilter
+    </filter-class>
 </filter>
 <filter-mapping>
-<filter-name>openSessionInView</filter-name>
-<url-pattern>/*</url-pattern>
+    <filter-name>openSessionInView</filter-name>
+    <url-pattern>/*</url-pattern>
 </filter-mapping>
 ```
 
