@@ -40,7 +40,7 @@ Lambda表达式：
 | Function<T,R>函数型接口 |    T     | R        | 消费型为T的对象应用操作，并返回结果，结果为R类型的对象，包含方法：R apply（T t） |
 | Predicate<T>断定型接口  |    T     | boolean  | 确定类型为T的对象是否满足某约束，并返回boolean值，包含 boolean test(T t) |
 
-```
+```java
 /**
  * @Author kay三石
  * @date:2020/2/26
@@ -156,7 +156,7 @@ ObjectReference::methodName
 
 <font color="red">方法引用可以看做lambda表达式深层次的表达。换句话说方法引用就是lambda表达式，是一个函数式接口实例。实现接口的抽象方法的参数列表和返回值类型必须和方法引用的类型保持一致}</font>
 
-```
+```java
 package com.kaysanshi.java8;
 
 import org.junit.Test;
@@ -335,7 +335,7 @@ public void test1(){
 }
 ```
 
-```
+```java
 package com.kaysanshi.java8;
 
 import org.junit.Test;
@@ -404,6 +404,8 @@ public class ConstructorRefTest {
 }
 
 ```
+
+
 
 
 
@@ -525,7 +527,7 @@ Stream的操作三个步骤：1.创建Stream,2,中间操作，3.终止操作、
 
 在数据流中实现过滤功能是首先我们可以想到的最自然的操作了。Stream接口暴露了一个filter方法，它可以接受表示操作的[Predicate](http://javadocs.techempower.com/jdk18/api/java/util/function/Predicate.html)实现来使用定义了过滤条件的lambda表达式。
 
-```
+```java
 List persons = …
 Stream personsOver18 = persons.stream().filter(p -> p.getAge() > 18);//过滤18岁以上的人
 
@@ -535,7 +537,7 @@ Stream personsOver18 = persons.stream().filter(p -> p.getAge() > 18);//过滤18�
 
 假使我们现在过滤了一些数据，比如转换对象的时候。Map操作允许我们执行一个[Function](http://javadocs.techempower.com/jdk18/api/java/util/function/Function.html)的实现（Function的泛型T,R分别表示执行输入和执行结果），它接受入参并返回。首先，让我们来看看怎样以匿名内部类的方式来描述它：
 
-```
+```java
 Stream adult= persons
               .stream()
               .filter(p -> p.getAge() > 18)
@@ -550,7 +552,7 @@ Stream adult= persons
 
 现在，把上述例子转换成使用lambda表达式的写法：
 
-```
+```java
 Stream map = persons.stream()
                     .filter(p -> p.getAge() > 18)
                     .map(person -> new Adult(person));
@@ -561,7 +563,7 @@ Stream map = persons.stream()
 
 count方法是一个流的终点方法，可使流的结果最终统计，返回int，比如我们计算一下满足18岁的总人数
 
-```
+```java
 int countOfAdult=persons.stream()
                        .filter(p -> p.getAge() > 18)
                        .map(person -> new Adult(person))
@@ -573,7 +575,7 @@ int countOfAdult=persons.stream()
 
 collect方法也是一个流的终点方法，可收集最终的结果
 
-```
+```java
 List adultList= persons.stream()
                        .filter(p -> p.getAge() > 18)
                        .map(person -> new Adult(person))
@@ -583,7 +585,7 @@ List adultList= persons.stream()
 
 或者，如果我们想使用特定的实现类来收集结果：
 
-```
+```java
 List adultList = persons
                  .stream()
                  .filter(p -> p.getAge() > 18)
@@ -600,14 +602,14 @@ List adultList = persons
 
 顺序流：
 
-```
+```java
 List <Person> people = list.getStream.collect(Collectors.toList());
 
 ```
 
 并行流：
 
-```
+```java
 List <Person> people = list.getStream.parallel().collect(Collectors.toList());
 
 ```
@@ -616,7 +618,7 @@ List <Person> people = list.getStream.parallel().collect(Collectors.toList());
 
 ###### **并行流原理：**
 
-```
+```java
 List originalList = someData;
 split1 = originalList(0, mid);//将数据分小部分
 split2 = originalList(mid,end);
@@ -632,7 +634,7 @@ List revisedList = split1 + split2;//将结果合并
 
 如果是多核机器，理论上并行流则会比顺序流快上一倍，下面是测试代码
 
-```
+```java
 long t0 = System.nanoTime();
 
 //初始化一个范围100万整数流,求能被2整除的数字，toArray（）是终点方法
@@ -661,7 +663,7 @@ System.out.printf("serial: %.2fs, parallel %.2fs%n", (t1 - t0) * 1e-9, (t2 - t1)
 
 在Java SE 7中，这种方式得以改进，现在你可以使用如下语句进行声明并赋值：
 
-```
+```java
 Map<String, String> myMap = new HashMap<>(); //注意后面的"<>"
 ```
 
@@ -675,7 +677,7 @@ java8里面泛型的目标类型推断主要2个：
 
 让我们看看官网的例子
 
-```
+```java
 class List<E> {
    static <Z> List<Z> nil() { ... };
    static <Z> List<Z> cons(Z head, List<Z> tail) { ... };
@@ -732,7 +734,7 @@ List.cons(42, List.nil());
 
 大家对此应该不陌生，所以不多讲了，以下是代码示例
 
-```
+```java
 synchronized(this)
 // do operation
 }
@@ -743,7 +745,7 @@ synchronized(this)
 
 #### **Lock**
 
-```
+```java
 rwlock.writeLock().lock();
 try {
 // do operation
@@ -763,7 +765,7 @@ ReentrantReadWriteLock, ReentrantLock 和synchronized锁都有相同的内存语
 
 下面是Lock的一个代码示例
 
-```
+```java
 class Point {
    private double x, y;
    private final StampedLock sl = new StampedLock();
@@ -833,7 +835,7 @@ StampedLock控制锁有三种模式（写，读，乐观读），一个StampedLo
 
 下面是java doc提供的StampedLock一个例子
 
-```
+```java
 class Point {
    private double x, y;
    private final StampedLock sl = new StampedLock();
