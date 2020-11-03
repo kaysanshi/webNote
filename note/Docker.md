@@ -3,7 +3,8 @@
 ## 简介
 
 Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从Apache2.0协议开源。 Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中， 然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。 容器是完全使用沙箱机制，相互之间不会有任何接口,更重要的是容器性能开销极低。
-	Docker支持将软件编译成一个镜像；然后 在镜像中各种软件做好配置，将镜像发布 出去，其他使用者可以直接使用这个镜像。运行中的这个镜像称为容器，容器启动是 非常快速的。类似windows里面的ghost操 作系统，安装好后什么都有了
+
+​	Docker支持将软件编译成一个镜像；然后 在镜像中各种软件做好配置，将镜像发布 出去，其他使用者可以直接使用这个镜像。运行中的这个镜像称为容器，容器启动是 非常快速的。类似windows里面的ghost操 作系统，安装好后什么都有了
 
 ### 为什么使用docker:
 
@@ -106,18 +107,24 @@ ubuntu安装：
 			`其实上面的一串命令等于：docker run  -it --rm ubuntu:16.04 bash`
 `3.说明：`
 			it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。
-			--rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 --rm 可以避免浪费空间。ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash运行一个容器等于运行一个对象，	
+
+​			--rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 --rm 可以避免浪费空间。ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash运行一个容器等于运行一个对象，	
 
 ## DockerFile：
 
 镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建
-		在 /usr/local:
-		创建docker目录，然后创建一个tomcat的dockerfile目录，
-			from:必须是第一条指令，用于指定基础的镜像
-			run ：用于执行命令行命令，由于命令行的强大，
-		命令有两种格式：shell格式:    exec格式：
-	这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
-	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件
+
+在 /usr/local:
+
+​		创建docker目录，然后创建一个tomcat的dockerfile目录，
+​			from:必须是第一条指令，用于指定基础的镜像
+​			run ：用于执行命令行命令，由于命令行的强大，
+
+命令有两种格式：shell格式:    exec格式：
+
+这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
+
+​	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件
 
 ### 使用上下文环境构建：				
 
@@ -173,6 +180,7 @@ $ docker run -d -P \
 
 ### 删除数据卷：
 ​		`命令：docker volume rm my-vol`
+
 ​		数据卷 是被设计用来持久化数据的，它的生命周期独立于容器，Docker 不会在容器被删除后自动删除 数据卷，并且也不存在垃圾回收这样的机制来处理没有任何容器引用的 数据卷。如果需要在删除容器的同时移除数据卷。可以在删除容器的时候使用 docker rm -v 这个命令。
 
 ### 无主的数据卷的删除用以下命令清理：
@@ -207,68 +215,94 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 ## Docker构建mysql:
 
 ​	进入docker目录：`docker pull mysql:5.7.22`
-​	启动运行：docker run -p 3306:3306 --name mysql \
-​				-v /usr/local/docker/mysql/conf:/etc/mysql \
-​				-v /usr/local/docker/mysql/logs:/var/log/mysql \
-​				-v /usr/local/docker/mysql/data:/var/lib/mysql \
-​				-e MYSQL_ROOT_PASSWORD=lkl555 \
-​				-d mysql:5.7.22
-​	说明：-p 3306:3306：将容器的3306端口映射到主机的3306端口
-​			-v /usr/local/docker/mysql/conf:/etc/mysql：将主机当前目录下的 conf 挂载到容器的 /etc/mysql
-​			-v /usr/local/docker/mysql/logs:/var/log/mysql：将主机当前目录下的 logs 目录挂载到容器的 /var/log/mysql
-​			-v /usr/local/docker/mysql/data:/var/lib/mysql：将主机当前目录下的 data 目录挂载到容器的 /var/lib/mysql
-​			-e MYSQL\_ROOT\_PASSWORD=123456：初始化root用户的密码
-​	查看：docker ps -a 查看刚刚启动的服务
+​	启动运行：
+
+> docker run -p 3306:3306 --name mysql \
+> ​				-v /usr/local/docker/mysql/conf:/etc/mysql \
+> ​				-v /usr/local/docker/mysql/logs:/var/log/mysql \
+> ​				-v /usr/local/docker/mysql/data:/var/lib/mysql \
+> ​				-e MYSQL_ROOT_PASSWORD=lkl555 \
+> ​				-d mysql:5.7.22
+> ​	说明：-p 3306:3306：将容器的3306端口映射到主机的3306端口
+> ​			-v /usr/local/docker/mysql/conf:/etc/mysql：将主机当前目录下的 conf 挂载到容器的 /etc/mysql
+> ​			-v /usr/local/docker/mysql/logs:/var/log/mysql：将主机当前目录下的 logs 目录挂载到容器的 /var/log/mysql
+> ​			-v /usr/local/docker/mysql/data:/var/lib/mysql：将主机当前目录下的 data 目录挂载到容器的 /var/lib/mysql
+> ​			-e MYSQL\_ROOT\_PASSWORD=123456：初始化root用户的密码
+> ​	查看：docker ps -a 查看刚刚启动的服务
 
 ### 出现的错误：
 
 ​	Error response from daemon: driver failed programming external connectivity on endpoint mysql (c28bcf099d63d5f3b2affd38a033a42d60e3cf7054fc1bd520342b73f6a2987b): Error starting userland proxy: listen tcp 0.0.0.0:3306: bind: address already in use
+
 ​		原因是本地的mysql已经启动了端口不能够进行映射了、
+
 ​		所以停掉本地的mysql服务：sudo service mysql stop
+
 ​		或者使用：docker ps -a
+
 ​		然后使用 docker rm xxxxxxxxx
+
 ​		然后再从新启动
 
 ​	需要进入：docker容器内
-​		docker run -it --rm mysql:5.7.22 bash
-​		ls  -al
-​		查看安装到容器的哪个位置：whereis mysql
-​		进入、etc/mysql/mysql.conf.d 
-​		查看 mysqld.cnf是否有 max_allowd_packet=128M
-​		没有的话则进行追加：echo "max_allowd_packet=128M" >> mysqld.cnf
-​		这样是为了设置mysql可以执行文件的大小。
-​		修改之后退出，进入ubuntu界面，然后重启mysql容器 docker restart mysql
-​	将容器里面的配置文件移到宿主机 mysql/conf 目录下: docker cp  mysql:/etc/mysql .
-​	将这些文件移动到conf目录下
+
+> ​		docker run -it --rm mysql:5.7.22 bash
+> ​		ls  -al
+> ​		查看安装到容器的哪个位置：whereis mysql
+> ​		进入、etc/mysql/mysql.conf.d 
+>
+> ​		查看 mysqld.cnf是否有 max_allowd_packet=128M
+>
+> ​		没有的话则进行追加：echo "max_allowd_packet=128M" >> mysqld.cnf
+>
+> ​		这样是为了设置mysql可以执行文件的大小。
+>
+> ​		修改之后退出，进入ubuntu界面，然后重启mysql容器 docker restart mysql
+> ​	将容器里面的配置文件移到宿主机 mysql/conf 目录下: docker cp  mysql:/etc/mysql .
+> ​	将这些文件移动到conf目录下
+
 ​	注意：这里出现了错误并不能够去copy过去。。。。
 
 ## Docker构建oracle
 
 - 1.拉去oracle数据库镜像
   `docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g` 
+  
 - 2.启动oracle  自动启动镜像 --restart=always
   `docker run -p 1521:1521 --name oracle_11g -d --restart=always registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g`
+  
 - 3.启动服务：`docker start oracle_11g`
+
 - 4.进入控制台设置用户信息 ：`docker exec -it oracle_11g bash`
+
 - 5.切换到root用户模式下
   su root
   输入密码helowin
+  
 - 6.编辑profile文件配置ORACLE环境变量
-  export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2
-  export ORACLE_SID=helowin
-  export PATH=$ORACLE_HOME/bin:$PATH
+  
+  > export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2
+  > export ORACLE_SID=helowin
+  > export PATH=$ORACLE_HOME/bin:$PATH
+  
 - 7.重启配置文件服务
   source /etc/profile
+  
 - 8.建立sqlplus软连接
   ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
+  
 - 9.切换到oracle用户，修改oracle的相关账号密码
 
 >su oracle
 >//登录sqlplus并修改sys、system用户密码
 >sqlplus /nolog
+>
 >conn /as sysdba
+>
 >alter user system identified by oracle;  # 将system的密码改为oracle
+>
 >alter user sys identified by oracle; # 将sys的密码改为oracle
+>
 >ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED; # 更改配置文件默认限制密码
 
 - 10.使用navicat进行连接：
@@ -281,9 +315,8 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 - `【sys】所有 oracle 的数据字典的基表和视图都存放在 sys 用户中，这些基表和视图对于 oracle 的运行是至关重要的，由数据库自己维护，任何用户都不能手动更改。 sys 用户拥有 dba ， sysdba ， sysoper 等角色或权限，是 oracle 权限最高的用户。`
 - `【 system】 用户用于存放次一级的内部数据，如 oracle 的一些特性或工具的管理信息。 system 用户拥有普通 dba 角色权限。`
-
--  `【system】用户只能用 normal 身份登陆 em ，除非你对它授予了 sysdba 的系统权限(grant sysdba to system)或者 sysoper 系统权限。`
-  `【 sys 】用户具有 “SYSDBA” 或者 “SYSOPER” 系统权限，登陆 em 也只能用这两个身份，不能用 normal 。`
+- `【system】用户只能用 normal 身份登陆 em ，除非你对它授予了 sysdba 的系统权限(grant sysdba to system)或者 sysoper 系统权限。`
+- `【 sys 】用户具有 “SYSDBA” 或者 “SYSOPER” 系统权限，登陆 em 也只能用这两个身份，不能用 normal 。`
 
 
 
@@ -291,17 +324,26 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 ​	运行启动 ： docker run --name container-name -d image-name 
 
-​     eg : docker run –name myredis –d redis
-​		--name：自定义容器名 -d：后台运行 image-name:指定镜像模板 列表 docker ps（查看运行中的容器）；加上-a；可以查看所有容器 
-​		//docker image ls :查看镜像列表列出的是顶级的镜像
-​		//docker ps :查看容器列表
+eg : `docker run –name myredis –d redis`
+​		
+
+> ​		 --name：自定义容器名
+>
+> ​		 -d：后台运行 image-name:指定镜像模板 列表 docker ps（查看运行中的容器）；
+>
+> ​		加上-a；可以查看所有容器 
+> ​		//docker image ls :查看镜像列表列出的是顶级的镜像
+> ​		//docker ps :查看容器列表
 
 ### 虚悬镜像：
 
-镜像列表中，还可以看到一个特殊的镜像，这个镜像既没有仓库名，也没有标签，均为 <none>。：
+镜像列表中，还可以看到一个特殊的镜像，这个镜像既没有仓库名，也没有标签，均为 <none>。
+
 原因：
-	这个镜像原本是有镜像名和标签的，原来为 mongo:3.2，随着官方镜像维护，发布了新版本后，重新 docker pull mongo:3.2 时，mongo:3.2 这个镜像名被转移到了新下载的镜像身上，而旧的镜像上的这个名称则被取消，从而成为了 <none>。除了 docker pull 可能导致这种情况，docker build 也同样可以导致这种现象。
-	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
+
+​	这个镜像原本是有镜像名和标签的，原来为 mongo:3.2，随着官方镜像维护，发布了新版本后，重新 docker pull mongo:3.2 时，mongo:3.2 这个镜像名被转移到了新下载的镜像身上，而旧的镜像上的这个名称则被取消，从而成为了 <none>。除了 docker pull 可能导致这种情况，docker build 也同样可以导致这种现象。
+
+​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
 
 #### 删除虚悬镜像：
 
@@ -312,7 +354,9 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 `docker image ls -a` 
 
 ​     这些无标签的镜像很多都是中间层镜像，是其它镜像所依赖的镜像。这些无标签镜像不应该删除，否则会导致上层镜像因为依赖丢失而出错。
+
 ​	实际上，这些镜像也没必要删除，因为之前说过，相同的层只会存一遍，而这些镜像是别的镜像的依赖，因此并不会因为它们被列出来而多存了一份，无论如何你也会需要它们	
+
 ​	docker image ls 还支持强大的过滤器参数 --filter，或者简写 -f。之前我们已经看到了使用过滤器来列出虚悬镜像的用法，它还有更多的用法。比如，我们希望看到在 mongo:3.2 之后建立的镜像					
 
 ```
@@ -324,11 +368,13 @@ $ docker image ls -f since=mongo:3.2
 
 ​	docker image rm [选项] <镜像1> [<镜像2> ...] 其中，<镜像> 可以是 镜像短 ID、镜像长 ID、镜像名 或者 镜像摘要。
 
-	停止 docker stop container-name/container-id 停止当前你运行的容器 
-	启动 docker start container-name/container-id 启动容器
-	删除 docker rm container-id 删除指定容器 
-	端口映射 -p 6379:6379 eg:docker run -d -p 6379:6379 --name myredis docker.io/redis -p:主机端口(映射到)容器内部的端口
-	容器日志 docker logs container-name/container-id	
+```yml
+停止 docker stop container-name/container-id 停止当前你运行的容器 
+启动 docker start container-name/container-id 启动容器
+删除 docker rm container-id 删除指定容器 
+端口映射 -p 6379:6379 eg:docker run -d -p 6379:6379 --name myredis docker.io/redis -p:主机端口(映射到)容器内部的端口
+容器日志 docker logs container-name/container-id	
+```
 ## Docker Compose:
 
 - Docker Compose：是docker官方编排的快速，对于容器集群很有利
@@ -339,17 +385,23 @@ $ docker image ls -f since=mongo:3.2
 ### 安装docker compose:
 
 `如果你已经安装了docker那么就先把docker给删除了，`
+
 `先进行卸载：apt-get autoremove docker-cedocker`
+
 `然后删除dokcerlist文件：在/etc/apt/sources.list.d`
 
 #### 安装docker：
 
 安装docker :  `sudo curl -fsSL get.docker.com -o get-docker.sh`
-​因为有的aliyun上面没有具体的升级版本，所以把镜像给改写：`sh get-docker.sh --mirror AzureChinaCloudcd` 
-​这时只需等待即可。。。。。。
-​检查镜像加速文件是否存在：在/etc/docker/daemon.json中
+
+因为有的aliyun上面没有具体的升级版本，所以把镜像给改写：`sh get-docker.sh --mirror AzureChinaCloudcd` 
+
+这时只需等待即可。。。。。。
+
+检查镜像加速文件是否存在：在/etc/docker/daemon.json中
 ​	/etc/docker/daemon.json 在这里加入`{ "registry-mirrors":["https://registry.docker-cn.com"]}`
-​检查dockerversion:
+
+检查dockerversion:
 
 然后安装docker-compose看下面的就可以了
 
@@ -374,16 +426,21 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 
 在docker 文件夹中的tomcat中的创建 docker-compose.yml			
 
-	version: "3"
-	services:
-	  webapp:
-		image: examples/web
-	  ports:
-		- "80:80"
-	  volumes:
-		- "/data"
-	注意每个服务都必须通过 image 指令指定镜像或 build 指令（需要 Dockerfile）等来自动构建生成镜像。
-	运行 compose 项目： docker-compose up
+```yml
+version: "3"
+services:
+  webapp:
+	image: examples/web
+  ports:
+	- "80:80"
+  volumes:
+	- "/data"
+
+```
+注意每个服务都必须通过 image 指令指定镜像或 build 指令（需要 Dockerfile）等来自动构建生成镜像。
+
+运行 compose 项目： docker-compose up
+
 ### Docker compose的命令的使用：
 
 	基本的命令的格式的：docker-compose [-f=<arg>...] [options] [COMMAND] [ARGS...]
@@ -425,14 +482,18 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 					-T 不分配伪 tty，意味着依赖 tty 的指令将无法运行。
 					start,stop,top,pause,port 和docker中的使用的都一样
 `前台运行：docker-compose up`
+
 `后台运行：docker-compose up -d`
+
 `启动：docker-compose start`
+
 `停止：docker-compose stop`
+
 `停止并移除容器：docker-compose down`
 
 ### Docker compose实战tomcat:						
 
-```
+```yml
 version: '3.1'
 services:
 	tomcat:
@@ -448,7 +509,7 @@ services:
 ```
 
 ### Docker compose 实战mysql5：
-```
+```yml
 version: '3.1'
 services:
 	mysql:
@@ -474,7 +535,9 @@ services:
 ```
 
 就是为了简化docker的使用：
+
 直接运行 docker-compose.yml中的就可以使用。运行即可以
+
 `docker-compose up`
 
 ### DockerCompose 实战oracle
@@ -538,6 +601,7 @@ daemon.json中配置：
 之后重启就可以：
 
 `sudo systemctl daemon-reload`
+
 `sudo systemctl restart docker`
 
 ### 测试镜像上传：
