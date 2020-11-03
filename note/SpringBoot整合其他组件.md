@@ -4,14 +4,14 @@
 
 ```xml
 <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+</dependency>
 ```
 
 
@@ -135,11 +135,11 @@ public class DruidConfig {
 ## 3、Springboot整合MyBatis
 
 ```xml
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>1.3.1</version>
-		</dependency>
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>1.3.1</version>
+</dependency>
 ```
 显示log:
 
@@ -694,23 +694,23 @@ public class EmployeeService {
 
 4.点对点式：
 
-–消息发送者发送消息，消息代理将其放入一个队列中，消息接收者从队列中获取消息内容，消息读取后被移出队列
+消息发送者发送消息，消息代理将其放入一个队列中，消息接收者从队列中获取消息内容，消息读取后被移出队列
 
-–**消息只有唯一的发送者和接受者，但并不是说只能有一个接收者**
+**消息只有唯一的发送者和接受者，但并不是说只能有一个接收者**
 
 5.发布订阅式：
 
-–发送者（发布者）发送消息到主题，多个接收者（订阅者）监听（订阅）这个主题，那么就会在消息到达时同时收到消息
+发送者（发布者）发送消息到主题，多个接收者（订阅者）监听（订阅）这个主题，那么就会在消息到达时同时收到消息
 
 6.JMS（Java Message Service）JAVA消息服务：
 
-–基于JVM消息代理的规范。ActiveMQ、HornetMQ是JMS实现
+基于JVM消息代理的规范。ActiveMQ、HornetMQ是JMS实现
 
 7.AMQP（Advanced Message Queuing Protocol）
 
-–高级消息队列协议，也是一个消息代理的规范，兼容JMS
+高级消息队列协议，也是一个消息代理的规范，兼容JMS
 
-–RabbitMQ是AMQP的实现
+RabbitMQ是AMQP的实现
 
 |              | JMS                                                          | AMQP                                                         |
 | ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |

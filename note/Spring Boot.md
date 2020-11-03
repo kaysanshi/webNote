@@ -1,4 +1,4 @@
-# 一、Spring Boot 入门
+# 一、Spring Boot 入门​
 
 ## 1、Spring Boot 简介
 
@@ -7,6 +7,8 @@
 > 整个Spring技术栈的一个大整合；
 >
 > J2EE开发的一站式解决方案；
+>
+> Spring Boot的功能从细节到整体都是基于“约定优于配置”开发的，从基础框架的搭建、配置文件、中间件的集成、内置容器以及其生态中各种Starters，无不遵从此设计范式。Starter作为Spring Boot的核心功能之一，基于自动配置代码提供了自动配置模块及依赖，让软件集成变得简单、易用
 
 ## 2、微服务
 
@@ -427,11 +429,11 @@ public class Person {
 
 ```xml
 <!--导入配置文件处理器，配置文件进行绑定就会有提示-->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-configuration-processor</artifactId>
+    <optional>true</optional>
+</dependency>
 ```
 
 #### 1、properties配置文件在idea中默认utf-8可能会乱码
@@ -654,13 +656,13 @@ spring:
 
 springboot 启动会扫描以下位置的application.properties或者application.yml文件作为Spring boot的默认配置文件
 
-–file:./config/
-
-–file:./
-
-–classpath:/config/
-
-–classpath:/
+> –file:./config/
+>
+> –file:./
+>
+> –classpath:/config/
+>
+> –classpath:/
 
 优先级由高到底，高优先级的配置会覆盖低优先级的配置；
 
@@ -682,7 +684,7 @@ java -jar spring-boot-02-config-02-0.0.1-SNAPSHOT.jar --spring.config.location=G
 
 所有的配置都可以在命令行上进行指定
 
-java -jar spring-boot-02-config-02-0.0.1-SNAPSHOT.jar --server.port=8087  --server.context-path=/abc
+`java -jar spring-boot-02-config-02-0.0.1-SNAPSHOT.jar --server.port=8087  --server.context-path=/abc`
 
 多个配置用空格分开； --配置项=值
 
@@ -700,7 +702,7 @@ java -jar spring-boot-02-config-02-0.0.1-SNAPSHOT.jar --server.port=8087  --serv
 
 **由jar包外向jar包内进行寻找；**
 
-==**优先加载带profile**==
+<font color="yellow">**优先加载带profile**</font>
 
 **6.jar包外部的application-{profile}.properties或application.yml(带spring.profile)配置文件**
 
@@ -708,7 +710,7 @@ java -jar spring-boot-02-config-02-0.0.1-SNAPSHOT.jar --server.port=8087  --serv
 
 
 
-==**再来加载不带profile**==
+**再来加载不带profile**
 
 **8.jar包外部的application.properties或application.yml(不带spring.profile)配置文件**
 
@@ -1053,7 +1055,7 @@ public class HelloWorld {
 
 图示；
 
-![images/concrete-bindings.png](images/concrete-bindings.png)
+
 
 每一个日志的实现框架都有自己的配置文件。使用slf4j以后，**配置文件还是做成日志实现框架自己本身的配置文件；**
 
@@ -1063,7 +1065,7 @@ a（slf4j+logback）: Spring（commons-logging）、Hibernate（jboss-logging）
 
 统一日志记录，即使是别的框架和我一起统一使用slf4j进行输出？
 
-![](images/legacy.png)
+
 
 **如何让系统中所有的日志都统一到slf4j；**
 
@@ -1078,10 +1080,10 @@ a（slf4j+logback）: Spring（commons-logging）、Hibernate（jboss-logging）
 ## 3、SpringBoot日志关系
 
 ```xml
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+</dependency>
 ```
 
 
@@ -1089,10 +1091,10 @@ a（slf4j+logback）: Spring（commons-logging）、Hibernate（jboss-logging）
 SpringBoot使用它来做日志功能；
 
 ```xml
-	<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
-		</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-logging</artifactId>
+</dependency>
 ```
 
 底层依赖关系
@@ -1125,16 +1127,16 @@ public abstract class LogFactory {
 ​			Spring框架用的是commons-logging；
 
 ```xml
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
 ```
 
 **==SpringBoot能自动适配所有的日志，而且底层使用slf4j+logback的方式记录日志，引入其他框架的时候，只需要把这个框架依赖的日志框架排除掉即可；==**
@@ -1146,37 +1148,37 @@ public abstract class LogFactory {
 SpringBoot默认帮我们配置好了日志；
 
 ```java
-	//记录器
-	Logger logger = LoggerFactory.getLogger(getClass());
-	@Test
-	public void contextLoads() {
-		//System.out.println();
+//记录器
+Logger logger = LoggerFactory.getLogger(getClass());
+@Test
+public void contextLoads() {
+    //System.out.println();
 
-		//日志的级别；
-		//由低到高   trace<debug<info<warn<error
-		//可以调整输出的日志级别；日志就只会在这个级别以以后的高级别生效
-		logger.trace("这是trace日志...");
-		logger.debug("这是debug日志...");
-		//SpringBoot默认给我们使用的是info级别的，没有指定级别的就用SpringBoot默认规定的级别；root级别
-		logger.info("这是info日志...");
-		logger.warn("这是warn日志...");
-		logger.error("这是error日志...");
+    //日志的级别；
+    //由低到高   trace<debug<info<warn<error
+    //可以调整输出的日志级别；日志就只会在这个级别以以后的高级别生效
+    logger.trace("这是trace日志...");
+    logger.debug("这是debug日志...");
+    //SpringBoot默认给我们使用的是info级别的，没有指定级别的就用SpringBoot默认规定的级别；root级别
+    logger.info("这是info日志...");
+    logger.warn("这是warn日志...");
+    logger.error("这是error日志...");
 
 
-	}
+}
 ```
 
 
 
-        日志输出格式：
-    		%d表示日期时间，
-    		%thread表示线程名，
-    		%-5level：级别从左显示5个字符宽度
-    		%logger{50} 表示logger名字最长50个字符，否则按照句点分割。 
-    		%msg：日志消息，
-    		%n是换行符
-        -->
-        %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n
+    日志输出格式：
+    %d表示日期时间，
+    %thread表示线程名，
+    %-5level：级别从左显示5个字符宽度
+    %logger{50} 表示logger名字最长50个字符，否则按照句点分割。 
+    %msg：日志消息，
+    %n是换行符
+    -->
+    %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n
 SpringBoot修改日志的默认配置
 
 ```properties
@@ -1229,24 +1231,24 @@ logback.xml：直接就被日志框架识别了；
 
 ```xml
 <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-        <!--
-        日志输出格式：
-			%d表示日期时间，
-			%thread表示线程名，
-			%-5level：级别从左显示5个字符宽度
-			%logger{50} 表示logger名字最长50个字符，否则按照句点分割。 
-			%msg：日志消息，
-			%n是换行符
+    <!--
+   日志输出格式：
+   %d表示日期时间，
+   %thread表示线程名，
+   %-5level：级别从左显示5个字符宽度
+   %logger{50} 表示logger名字最长50个字符，否则按照句点分割。 
+   %msg：日志消息，
+   %n是换行符
         -->
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <springProfile name="dev">
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ----> [%thread] ---> %-5level %logger{50} - %msg%n</pattern>
-            </springProfile>
-            <springProfile name="!dev">
-                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ==== [%thread] ==== %-5level %logger{50} - %msg%n</pattern>
-            </springProfile>
-        </layout>
-    </appender>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <springProfile name="dev">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ----> [%thread] ---> %-5level %logger{50} - %msg%n</pattern>
+        </springProfile>
+        <springProfile name="!dev">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ==== [%thread] ==== %-5level %logger{50} - %msg%n</pattern>
+        </springProfile>
+    </layout>
+</appender>
 ```
 
 
@@ -1286,21 +1288,19 @@ slf4j+log4j的方式；
 
 
 
-
-
 切换为log4j2
 
 ```xml
-   <dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <artifactId>spring-boot-starter-logging</artifactId>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                    <groupId>org.springframework.boot</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        </exclusion>
+    </exclusions>
+</dependency>
 
 <dependency>
   <groupId>org.springframework.boot</groupId>
@@ -1350,69 +1350,69 @@ public class ResourceProperties implements ResourceLoaderAware {
 
 ```java
 	WebMvcAuotConfiguration：
-		@Override
-		public void addResourceHandlers(ResourceHandlerRegistry registry) {
-			if (!this.resourceProperties.isAddMappings()) {
-				logger.debug("Default resource handling disabled");
-				return;
-			}
-			Integer cachePeriod = this.resourceProperties.getCachePeriod();
-			if (!registry.hasMappingForPattern("/webjars/**")) {
-				customizeResourceHandlerRegistration(
-						registry.addResourceHandler("/webjars/**")
-								.addResourceLocations(
-										"classpath:/META-INF/resources/webjars/")
-						.setCachePeriod(cachePeriod));
-			}
-			String staticPathPattern = this.mvcProperties.getStaticPathPattern();
-          	//静态资源文件夹映射
-			if (!registry.hasMappingForPattern(staticPathPattern)) {
-				customizeResourceHandlerRegistration(
-						registry.addResourceHandler(staticPathPattern)
-								.addResourceLocations(
-										this.resourceProperties.getStaticLocations())
-						.setCachePeriod(cachePeriod));
-			}
-		}
+@Override
+public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        if (!this.resourceProperties.isAddMappings()) {
+            logger.debug("Default resource handling disabled");
+            return;
+        }
+        Integer cachePeriod = this.resourceProperties.getCachePeriod();
+        if (!registry.hasMappingForPattern("/webjars/**")) {
+            customizeResourceHandlerRegistration(
+                registry.addResourceHandler("/webjars/**")
+                .addResourceLocations(
+                    "classpath:/META-INF/resources/webjars/")
+                .setCachePeriod(cachePeriod));
+        }
+        String staticPathPattern = this.mvcProperties.getStaticPathPattern();
+        //静态资源文件夹映射
+        if (!registry.hasMappingForPattern(staticPathPattern)) {
+            customizeResourceHandlerRegistration(
+                registry.addResourceHandler(staticPathPattern)
+                .addResourceLocations(
+                    this.resourceProperties.getStaticLocations())
+                .setCachePeriod(cachePeriod));
+        }
+}
 
-        //配置欢迎页映射
-		@Bean
-		public WelcomePageHandlerMapping welcomePageHandlerMapping(
-				ResourceProperties resourceProperties) {
-			return new WelcomePageHandlerMapping(resourceProperties.getWelcomePage(),
-					this.mvcProperties.getStaticPathPattern());
-		}
+//配置欢迎页映射
+@Bean
+public WelcomePageHandlerMapping welcomePageHandlerMapping(
+    ResourceProperties resourceProperties) {
+    return new WelcomePageHandlerMapping(resourceProperties.getWelcomePage(),
+                                         this.mvcProperties.getStaticPathPattern());
+}
 
-       //配置喜欢的图标
-		@Configuration
-		@ConditionalOnProperty(value = "spring.mvc.favicon.enabled", matchIfMissing = true)
-		public static class FaviconConfiguration {
+//配置喜欢的图标
+@Configuration
+@ConditionalOnProperty(value = "spring.mvc.favicon.enabled", matchIfMissing = true)
+public static class FaviconConfiguration {
 
-			private final ResourceProperties resourceProperties;
+    private final ResourceProperties resourceProperties;
 
-			public FaviconConfiguration(ResourceProperties resourceProperties) {
-				this.resourceProperties = resourceProperties;
-			}
+    public FaviconConfiguration(ResourceProperties resourceProperties) {
+        this.resourceProperties = resourceProperties;
+    }
 
-			@Bean
-			public SimpleUrlHandlerMapping faviconHandlerMapping() {
-				SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
-				mapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
-              	//所有  **/favicon.ico 
-				mapping.setUrlMap(Collections.singletonMap("**/favicon.ico",
-						faviconRequestHandler()));
-				return mapping;
-			}
+    @Bean
+    public SimpleUrlHandlerMapping faviconHandlerMapping() {
+        SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
+        mapping.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+        //所有  **/favicon.ico 
+        mapping.setUrlMap(Collections.singletonMap("**/favicon.ico",
+                                                   faviconRequestHandler()));
+        return mapping;
+    }
 
-			@Bean
-			public ResourceHttpRequestHandler faviconRequestHandler() {
-				ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
-				requestHandler
-						.setLocations(this.resourceProperties.getFaviconLocations());
-				return requestHandler;
-			}
+    @Bean
+    public ResourceHttpRequestHandler faviconRequestHandler() {
+        ResourceHttpRequestHandler requestHandler = new ResourceHttpRequestHandler();
+        requestHandler
+            .setLocations(this.resourceProperties.getFaviconLocations());
+        return requestHandler;
+    }
 
-		}
+}
 
 ```
 
@@ -1424,17 +1424,17 @@ public class ResourceProperties implements ResourceLoaderAware {
 
 http://www.webjars.org/
 
-![](images/搜狗截图20180203181751.png)
+
 
 localhost:8080/webjars/jquery/3.3.1/jquery.js
 
 ```xml
 <!--引入jquery-webjar-->在访问的时候只需要写webjars下面资源的名称即可
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>3.3.1</version>
-		</dependency>
+<dependency>
+    <groupId>org.webjars</groupId>
+    <artifactId>jquery</artifactId>
+    <version>3.3.1</version>
+</dependency>
 ```
 
 
@@ -1476,18 +1476,18 @@ SpringBoot推荐的Thymeleaf；
 ### 1、引入thymeleaf；
 
 ```xml
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-          	2.1.6
-		</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    2.1.6
+</dependency>
 切换thymeleaf版本
 <properties>
-		<thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
-		<!-- 布局功能的支持程序  thymeleaf3主程序  layout2以上版本 -->
-		<!-- thymeleaf2   layout1-->
-		<thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
-  </properties>
+    <thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
+    <!-- 布局功能的支持程序  thymeleaf3主程序  layout2以上版本 -->
+    <!-- thymeleaf2   layout1-->
+    <thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
+</properties>
 ```
 
 
@@ -1550,18 +1550,18 @@ public class ThymeleafProperties {
 ```properties
 Simple expressions:（表达式语法）
     Variable Expressions: ${...}：获取变量值；OGNL；
-    		1）、获取对象的属性、调用方法
-    		2）、使用内置的基本对象：
-    			#ctx : the context object.
-    			#vars: the context variables.
-                #locale : the context locale.
-                #request : (only in Web Contexts) the HttpServletRequest object.
-                #response : (only in Web Contexts) the HttpServletResponse object.
-                #session : (only in Web Contexts) the HttpSession object.
-                #servletContext : (only in Web Contexts) the ServletContext object.
-                
-                ${session.foo}
-            3）、内置的一些工具对象：
+    1）、获取对象的属性、调用方法
+    2）、使用内置的基本对象：
+    #ctx : the context object.
+    #vars: the context variables.
+    #locale : the context locale.
+    #request : (only in Web Contexts) the HttpServletRequest object.
+    #response : (only in Web Contexts) the HttpServletResponse object.
+    #session : (only in Web Contexts) the HttpSession object.
+    #servletContext : (only in Web Contexts) the ServletContext object.
+
+${session.foo}
+3）、内置的一些工具对象：
 #execInfo : information about the template being processed.
 #messages : methods for obtaining externalized messages inside variables expressions, in the same way as they would be obtained using #{…} syntax.
 #uris : methods for escaping parts of URLs/URIs
@@ -1648,11 +1648,11 @@ Spring Boot 自动配置好了SpringMVC
   - `Formatter`  格式化器；  2017.12.17===Date；
 
 ```java
-		@Bean
-		@ConditionalOnProperty(prefix = "spring.mvc", name = "date-format")//在文件中配置日期格式化的规则
-		public Formatter<Date> dateFormatter() {
-			return new DateFormatter(this.mvcProperties.getDateFormat());//日期格式化组件
-		}
+@Bean
+@ConditionalOnProperty(prefix = "spring.mvc", name = "date-format")//在文件中配置日期格式化的规则
+public Formatter<Date> dateFormatter() {
+    return new DateFormatter(this.mvcProperties.getDateFormat());//日期格式化组件
+}
 ```
 
 ​	==自己添加的格式化器转换器，我们只需要放在容器中即可==
@@ -1687,13 +1687,13 @@ If you want to take complete control of Spring MVC, you can add your own `@Confi
 ### 2、扩展SpringMVC
 
 ```xml
-    <mvc:view-controller path="/hello" view-name="success"/>
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/hello"/>
-            <bean></bean>
-        </mvc:interceptor>
-    </mvc:interceptors>
+<mvc:view-controller path="/hello" view-name="success"/>
+<mvc:interceptors>
+    <mvc:interceptor>
+        <mvc:mapping path="/hello"/>
+        <bean></bean>
+    </mvc:interceptor>
+</mvc:interceptors>
 ```
 
 **==编写一个配置类（@Configuration），是WebMvcConfigurerAdapter类型；不能标注@EnableWebMvc==**;
@@ -1721,24 +1721,24 @@ public class MyMvcConfig extends WebMvcConfigurerAdapter {
 ​	2）、在做其他自动配置时会导入；@Import(**EnableWebMvcConfiguration**.class)
 
 ```java
-    @Configuration
-	public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration {
-      private final WebMvcConfigurerComposite configurers = new WebMvcConfigurerComposite();
+@Configuration
+public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration {
+    private final WebMvcConfigurerComposite configurers = new WebMvcConfigurerComposite();
 
-	 //从容器中获取所有的WebMvcConfigurer
-      @Autowired(required = false)
-      public void setConfigurers(List<WebMvcConfigurer> configurers) {
-          if (!CollectionUtils.isEmpty(configurers)) {
-              this.configurers.addWebMvcConfigurers(configurers);
-            	//一个参考实现；将所有的WebMvcConfigurer相关配置都来一起调用；  
-            	@Override
-             // public void addViewControllers(ViewControllerRegistry registry) {
-              //    for (WebMvcConfigurer delegate : this.delegates) {
-               //       delegate.addViewControllers(registry);
-               //   }
-              }
-          }
-	}
+    //从容器中获取所有的WebMvcConfigurer
+    @Autowired(required = false)
+    public void setConfigurers(List<WebMvcConfigurer> configurers) {
+        if (!CollectionUtils.isEmpty(configurers)) {
+            this.configurers.addWebMvcConfigurers(configurers);
+            //一个参考实现；将所有的WebMvcConfigurer相关配置都来一起调用；  
+            @Override
+            // public void addViewControllers(ViewControllerRegistry registry) {
+            //    for (WebMvcConfigurer delegate : this.delegates) {
+            //       delegate.addViewControllers(registry);
+            //   }
+        }
+    }
+}
 ```
 
 ​	3）、容器中所有的WebMvcConfigurer都会一起起作用；
@@ -1865,7 +1865,7 @@ public class MyMvcConfig extends WebMvcConfigurerAdapter {
 
 1）、编写国际化配置文件，抽取页面需要显示的国际化消息
 
-![](images/搜狗截图20180211130721.png)
+
 
 
 
@@ -1906,7 +1906,7 @@ public class MessageSourceAutoConfiguration {
 
 3）、去页面获取国际化的值；
 
-![](images/搜狗截图20180211134506.png)
+
 
 
 
@@ -1958,18 +1958,18 @@ public class MessageSourceAutoConfiguration {
 ​	国际化Locale（区域信息对象）；LocaleResolver（获取区域信息对象）；
 
 ```java
-		@Bean
-		@ConditionalOnMissingBean
-		@ConditionalOnProperty(prefix = "spring.mvc", name = "locale")
-		public LocaleResolver localeResolver() {
-			if (this.mvcProperties
-					.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) {
-				return new FixedLocaleResolver(this.mvcProperties.getLocale());
-			}
-			AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-			localeResolver.setDefaultLocale(this.mvcProperties.getLocale());
-			return localeResolver;
-		}
+@Bean
+@ConditionalOnMissingBean
+@ConditionalOnProperty(prefix = "spring.mvc", name = "locale")
+public LocaleResolver localeResolver() {
+    if (this.mvcProperties
+        .getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) {
+        return new FixedLocaleResolver(this.mvcProperties.getLocale());
+    }
+    AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+    localeResolver.setDefaultLocale(this.mvcProperties.getLocale());
+    return localeResolver;
+}
 默认的就是根据请求头带来的区域信息获取Locale进行国际化
 ```
 
@@ -2076,28 +2076,28 @@ public class LoginHandlerInterceptor implements HandlerInterceptor {
 
 ```java
   //所有的WebMvcConfigurerAdapter组件都会一起起作用
-    @Bean //将组件注册在容器
-    public WebMvcConfigurerAdapter webMvcConfigurerAdapter(){
-        WebMvcConfigurerAdapter adapter = new WebMvcConfigurerAdapter() {
-            @Override
-            public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/").setViewName("login");
-                registry.addViewController("/index.html").setViewName("login");
-                registry.addViewController("/main.html").setViewName("dashboard");
-            }
+@Bean //将组件注册在容器
+public WebMvcConfigurerAdapter webMvcConfigurerAdapter(){
+    WebMvcConfigurerAdapter adapter = new WebMvcConfigurerAdapter() {
+        @Override
+        public void addViewControllers(ViewControllerRegistry registry) {
+            registry.addViewController("/").setViewName("login");
+            registry.addViewController("/index.html").setViewName("login");
+            registry.addViewController("/main.html").setViewName("dashboard");
+        }
 
-            //注册拦截器
-            @Override
-            public void addInterceptors(InterceptorRegistry registry) {
-                //super.addInterceptors(registry);
-                //静态资源；  *.css , *.js
-                //SpringBoot已经做好了静态资源映射
-                registry.addInterceptor(new LoginHandlerInterceptor()).addPathPatterns("/**")
-                        .excludePathPatterns("/index.html","/","/user/login");
-            }
-        };
-        return adapter;
-    }
+        //注册拦截器
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            //super.addInterceptors(registry);
+            //静态资源；  *.css , *.js
+            //SpringBoot已经做好了静态资源映射
+            registry.addInterceptor(new LoginHandlerInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/index.html","/","/user/login");
+        }
+    };
+    return adapter;
+}
 ```
 
 ### 5）、CRUD-员工列表
@@ -2349,17 +2349,17 @@ insert的公共片段在div标签中
 
 ​		1）、浏览器，返回一个默认的错误页面
 
-![](images/搜狗截图20180226173408.png)
+
 
   浏览器发送请求的请求头：
 
-![](images/搜狗截图20180226180347.png)
+
 
 ​		2）、如果是其他客户端，默认响应一个json数据
 
-![](images/搜狗截图20180226173527.png)
 
-​		![](images/搜狗截图20180226180504.png)
+
+
 
 原理：
 
@@ -2372,15 +2372,14 @@ insert的公共片段在div标签中
 ```java
 帮我们在页面共享信息；
 @Override
-	public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes,
-			boolean includeStackTrace) {
-		Map<String, Object> errorAttributes = new LinkedHashMap<String, Object>();
-		errorAttributes.put("timestamp", new Date());
-		addStatus(errorAttributes, requestAttributes);
-		addErrorDetails(errorAttributes, requestAttributes, includeStackTrace);
-		addPath(errorAttributes, requestAttributes);
-		return errorAttributes;
-	}
+public Map<String, Object> getErrorAttributes(RequestAttributes requestAttributes, boolean includeStackTrace) {
+    Map<String, Object> errorAttributes = new LinkedHashMap<String, Object>();
+    errorAttributes.put("timestamp", new Date());
+    addStatus(errorAttributes, requestAttributes);
+    addErrorDetails(errorAttributes, requestAttributes, includeStackTrace);
+    addPath(errorAttributes, requestAttributes);
+    return errorAttributes;
+}
 ```
 
 
@@ -2420,8 +2419,8 @@ public class BasicErrorController extends AbstractErrorController {
 ​	3、ErrorPageCustomizer：
 
 ```java
-	@Value("${error.path:/error}")
-	private String path = "/error";  系统出现错误以后来到error请求进行处理；（web.xml注册的错误页面规则）
+@Value("${error.path:/error}")
+private String path = "/error";  系统出现错误以后来到error请求进行处理；（web.xml注册的错误页面规则）
 ```
 
 
@@ -2430,29 +2429,29 @@ public class BasicErrorController extends AbstractErrorController {
 
 ```java
 @Override
-	public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status,
-			Map<String, Object> model) {
-		ModelAndView modelAndView = resolve(String.valueOf(status), model);
-		if (modelAndView == null && SERIES_VIEWS.containsKey(status.series())) {
-			modelAndView = resolve(SERIES_VIEWS.get(status.series()), model);
-		}
-		return modelAndView;
-	}
+public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status,
+                                     Map<String, Object> model) {
+    ModelAndView modelAndView = resolve(String.valueOf(status), model);
+    if (modelAndView == null && SERIES_VIEWS.containsKey(status.series())) {
+        modelAndView = resolve(SERIES_VIEWS.get(status.series()), model);
+    }
+    return modelAndView;
+}
 
-	private ModelAndView resolve(String viewName, Map<String, Object> model) {
-        //默认SpringBoot可以去找到一个页面？  error/404
-		String errorViewName = "error/" + viewName;
-        
-        //模板引擎可以解析这个页面地址就用模板引擎解析
-		TemplateAvailabilityProvider provider = this.templateAvailabilityProviders
-				.getProvider(errorViewName, this.applicationContext);
-		if (provider != null) {
-            //模板引擎可用的情况下返回到errorViewName指定的视图地址
-			return new ModelAndView(errorViewName, model);
-		}
-        //模板引擎不可用，就在静态资源文件夹下找errorViewName对应的页面   error/404.html
-		return resolveResource(errorViewName, model);
-	}
+private ModelAndView resolve(String viewName, Map<String, Object> model) {
+    //默认SpringBoot可以去找到一个页面？  error/404
+    String errorViewName = "error/" + viewName;
+
+    //模板引擎可以解析这个页面地址就用模板引擎解析
+    TemplateAvailabilityProvider provider = this.templateAvailabilityProviders
+        .getProvider(errorViewName, this.applicationContext);
+    if (provider != null) {
+        //模板引擎可用的情况下返回到errorViewName指定的视图地址
+        return new ModelAndView(errorViewName, model);
+    }
+    //模板引擎不可用，就在静态资源文件夹下找errorViewName对应的页面   error/404.html
+    return resolveResource(errorViewName, model);
+}
 ```
 
 
@@ -2507,7 +2506,7 @@ protected ModelAndView resolveErrorView(HttpServletRequest request,
 
 #### 	2）、如何定制错误的json数据；
 
-​		1）、自定义异常处理&返回定制json数据；
+​	1）、自定义异常处理&返回定制json数据；
 
 ```java
 @ControllerAdvice
@@ -2531,19 +2530,19 @@ public class MyExceptionHandler {
 
 ```java
  @ExceptionHandler(UserNotExistException.class)
-    public String handleException(Exception e, HttpServletRequest request){
-        Map<String,Object> map = new HashMap<>();
-        //传入我们自己的错误状态码  4xx 5xx，否则就不会进入定制错误页面的解析流程
-        /**
+public String handleException(Exception e, HttpServletRequest request){
+    Map<String,Object> map = new HashMap<>();
+    //传入我们自己的错误状态码  4xx 5xx，否则就不会进入定制错误页面的解析流程
+    /**
          * Integer statusCode = (Integer) request
          .getAttribute("javax.servlet.error.status_code");
          */
-        request.setAttribute("javax.servlet.error.status_code",500);
-        map.put("code","user.notexist");
-        map.put("message",e.getMessage());
-        //转发到/error
-        return "forward:/error";
-    }
+    request.setAttribute("javax.servlet.error.status_code",500);
+    map.put("code","user.notexist");
+    map.put("message",e.getMessage());
+    //转发到/error
+    return "forward:/error";
+}
 ```
 
 #### 	3）、将我们的定制数据携带出去；
@@ -2924,7 +2923,7 @@ ServerProperties也是定制器
 
 
 
-###5）、嵌入式Servlet容器启动原理；
+### 5）、嵌入式Servlet容器启动原理；
 
 什么时候创建嵌入式的Servlet容器工厂？什么时候获取嵌入式的Servlet容器并启动Tomcat；
 
@@ -3585,4 +3584,3 @@ public class HelloServiceAutoConfiguration {
 
 ```
 
-# 
