@@ -111,72 +111,74 @@
 
 ​    设置 Job.only 后，只有当 develop 分支和 master 分支有提交的时候才会触发相关的 Jobs。
 
-    节点说明：
-    stages：定义构建阶段，这里只有一个阶段 deploy
-    deploy：构建阶段 deploy 的详细配置也就是任务配置
-    script：需要执行的 shell 脚本
-    only：这里的 master 指在提交到 master 时执行
-    tags：与注册 runner 时的 tag 匹配
-    
-        配置详情：
-        stages:
-            - install_deps
-            - test
-            - build
-            - deploy_test
-            - deploy_production
-    
-            cache:
-            key: ${CI_BUILD_REF_NAME}
-            paths:
-                - node_modules/
-                - dist/
-    
-            # 安装依赖
-            install_deps:
-            stage: install_deps
-            only:
-                - develop
-                - master
-            script:
-                - npm install
-    
-            # 运行测试用例
-            test:
-            stage: test
-            only:
-                - develop
-                - master
-            script:
-                - npm run test
-    
-            # 编译
-            build:
-            stage: build
-            only:
-                - develop
-                - master
-            script:
-                - npm run clean
-                - npm run build:client
-                - npm run build:server
-            
-            # 部署测试服务器
-            deploy_test:
-            stage: deploy_test
-            only:
-                - develop
-            script:
-                - pm2 delete app || true
-                - pm2 start app.js --name app
-    
-            # 部署生产服务器
-            deploy_production:
-            stage: deploy_production
-            only:
-                - master
-            script:
-                - bash scripts/deploy/deploy.sh   
+```yml
+节点说明：
+stages：定义构建阶段，这里只有一个阶段 deploy
+deploy：构建阶段 deploy 的详细配置也就是任务配置
+script：需要执行的 shell 脚本
+only：这里的 master 指在提交到 master 时执行
+tags：与注册 runner 时的 tag 匹配
+
+    配置详情：
+    stages:
+        - install_deps
+        - test
+        - build
+        - deploy_test
+        - deploy_production
+
+        cache:
+        key: ${CI_BUILD_REF_NAME}
+        paths:
+            - node_modules/
+            - dist/
+
+        # 安装依赖
+        install_deps:
+        stage: install_deps
+        only:
+            - develop
+            - master
+        script:
+            - npm install
+
+        # 运行测试用例
+        test:
+        stage: test
+        only:
+            - develop
+            - master
+        script:
+            - npm run test
+
+        # 编译
+        build:
+        stage: build
+        only:
+            - develop
+            - master
+        script:
+            - npm run clean
+            - npm run build:client
+            - npm run build:server
+        
+        # 部署测试服务器
+        deploy_test:
+        stage: deploy_test
+        only:
+            - develop
+        script:
+            - pm2 delete app || true
+            - pm2 start app.js --name app
+
+        # 部署生产服务器
+        deploy_production:
+        stage: deploy_production
+        only:
+            - master
+        script:
+            - bash scripts/deploy/deploy.sh   
+```
 
 ## druid:
 
@@ -382,52 +384,50 @@ version: '3.1'
 
 ​            在 /usr/local/docker/nginx/wwwroot 目录下创建 html80 和 html8080 两个目录，并分辨创建两个 index.html 文件
 
-```yml
+```xml
 # 配置虚拟主机
-    修改 /usr/local/docker/nginx/conf 目录下的 nginx.conf 配置文件：
+修改 /usr/local/docker/nginx/conf 目录下的 nginx.conf 配置文件：
+worker_processes  1;
 
-    worker_processes  1;
-
-    events {
-    worker_connections  1024;
-    }
-
-    http {
-    include       mime.types;
-    default_type  application/octet-stream;
-
-    sendfile        on;
-
-    keepalive_timeout  65;
-# 配置虚拟主机 192.168.75.145
-    server {
-# 监听的ip和端口，配置 192.168.75.145:80
-    listen       80;
-# 虚拟主机名称这里配置ip地址
-    server_name  192.168.75.145;
-# 所有的请求都以 / 开始，所有的请求都可以匹配此 location
-    location / {
-# 使用 root 指令指定虚拟主机目录即网页存放目录
-# 比如访问 http://ip/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/index.html
-# 比如访问 http://ip/item/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/item/index.html
-
-    root   /usr/share/nginx/wwwroot/html80;
-# 指定欢迎页面，按从左到右顺序查找
-    index  index.html index.htm;
-    }
-
+events {
+	worker_connections  1024;
 }
-# 配置虚拟主机 192.168.75.245
-server {
-    listen       8080;
-    server_name  192.168.75.145;
 
-      location / {
-        root   /usr/share/nginx/wwwroot/html8080;
-        index  index.html index.htm;
-        }
-      }
-    }
+http {
+	include       mime.types;
+	default_type  application/octet-stream;
+
+	sendfile        on;
+
+		keepalive_timeout  65;
+	# 配置虚拟主机 192.168.75.145
+    server {
+		# 监听的ip和端口，配置 192.168.75.145:80
+		listen       80;
+		# 虚拟主机名称这里配置ip地址
+		server_name  192.168.75.145;
+		# 所有的请求都以 / 开始，所有的请求都可以匹配此 location
+		location / {
+			# 使用 root 指令指定虚拟主机目录即网页存放目录
+			# 比如访问 http://ip/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/index.html
+			# 比如访问 http://ip/item/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/item/index.html
+
+			root   /usr/share/nginx/wwwroot/html80;
+				# 指定欢迎页面，按从左到右顺序查找
+			index  index.html index.htm;
+		}
+	}
+	# 配置虚拟主机 192.168.75.245
+	server {
+		listen       8080;
+		server_name  192.168.75.145;
+
+		  location / {
+			root   /usr/share/nginx/wwwroot/html8080;
+			index  index.html index.htm;
+		  }
+	}
+}
     说明：这里的启动的端口必须和dockercompose中的nginx的启动端口一一对应：
     例如：这里有两个分别为8080和80那么port应这样写
     ports:
@@ -449,243 +449,195 @@ server {
         修改 window 的 hosts 文件：（C:\Windows\System32\drivers\etc）
 
 ```
-	worker_processes  1;
-            events {
-                worker_connections  1024;
-            }
 
-            http {
-                include       mime.types;
-                default_type  application/octet-stream;
+worker_processes  1;
+events {
+	worker_connections  1024;
+}
 
-                sendfile        on;
-                
-                keepalive_timeout  65;
-
-# 配置虚拟主机 192.168.75.145
-
-​                server {
-
-# 监听的ip和端口，配置 192.168.75.145:80
-
-​                    listen       80;
-
-# 虚拟主机名称这里配置ip地址
-
-​                    server_name  www.kay.com;
-
-# 所有的请求都以 / 开始，所有的请求都可以匹配此 location
-
-​                    location / {
-
-# 使用 root 指令指定虚拟主机目录即网页存放目录
-
-# 比如访问 http://ip/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/index.html
-
-# 比如访问 http://ip/item/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/item/index.html
-
-​                        root   /usr/share/nginx/wwwroot/html80;
-
-# 指定欢迎页面，按从左到右顺序查找
-
-​                        index  index.html index.htm;
-​                    }
-
-​                }
-
-# 配置虚拟主机 192.168.75.245
-
-               server {
-                   listen       8080;
-                    server_name  192.168.75.145;
-
-                    location / {
-                        root   /usr/share/nginx/wwwroot/html8080;
-                        index  index.html index.htm;
-                    }
-                }
-            }
-            通过 host 文件指定 admin.service.itoken.funtl.com 和 admin.web.itoken.funtl.com 对应 192.168.75.145 虚拟机：
-            这样通过域名即可访问：
-
+http {
+	include       mime.types;
+	default_type  application/octet-stream;
+	sendfile        on;
+	keepalive_timeout  65;
+	# 配置虚拟主机 192.168.75.145
+​    server {
+		# 监听的ip和端口，配置 192.168.75.145:80
+		listen       80;
+		# 虚拟主机名称这里配置ip地址
+		server_name  www.kay.com;
+		# 所有的请求都以 / 开始，所有的请求都可以匹配此 location
+		location / {
+			# 使用 root 指令指定虚拟主机目录即网页存放目录
+			# 比如访问 http://ip/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/index.html
+			# 比如访问 http://ip/item/index.html 将找到 /usr/local/docker/nginx/wwwroot/html80/item/index.html
+			root   /usr/share/nginx/wwwroot/html80;
+			# 指定欢迎页面，按从左到右顺序查找
+​            index  index.html index.htm;
+​        }
+​    }
+	# 配置虚拟主机 192.168.75.245
+	server {
+	   listen       8080;
+	   server_name  192.168.75.145;
+		location / {
+			root   /usr/share/nginx/wwwroot/html8080;
+			index  index.html index.htm;
+		}
+	}
+}
+通过 host 文件指定 admin.service.itoken.funtl.com 和 admin.web.itoken.funtl.com 对应 192.168.75.145 虚拟机：
+这样通过域名即可访问：
 # 创建目录及文件
-
-           在 /usr/local/docker/nginx/wwwroot 目录下创建 htmlservice 和 htmlweb 两个目录，并分辨创建两个 index.html 文件
-
+在 /usr/local/docker/nginx/wwwroot 目录下创建 htmlservice 和 htmlweb 两个目录，并分辨创建两个 index.html 文件
 # 配置虚拟主机
 
-            user  nginx;
-            worker_processes  1;
+user  nginx;
+worker_processes  1;
 
-            events {
-                worker_connections  1024;
-            }
+events {
+	worker_connections  1024;
+}
 
-            http {
-                include       mime.types;
-​                default_type  application/octet-stream;
+http {
+	include   mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    server {
+    	listen       80;
+      	server_name  admin.service.itoken.funtl.com;
+      	location / {
+          	root   /usr/share/nginx/wwwroot/htmlservice;
+          	index  index.html index.htm;
+      	}
+	}
 
-​                sendfile        on;
+    server {
+		listen       80;
+        server_name  admin.web.itoken.funtl.com;
 
-​                keepalive_timeout  65;
-​                server {
-​                    listen       80;
-​                    server_name  admin.service.itoken.funtl.com;
-​                    location / {
-​                        root   /usr/share/nginx/wwwroot/htmlservice;
-​                        index  index.html index.htm;
-​                    }
-
-​                }
-
-​                server {
-​                    listen       80;
-​                    server_name  admin.web.itoken.funtl.com;
-
-​                    location / {
-​                        root   /usr/share/nginx/wwwroot/htmlweb;
-​                        index  index.html index.htm;
-​                    }
-​                }
-​            }
+       location / {
+             root   /usr/share/nginx/wwwroot/htmlweb;
+             index  index.html index.htm;
+         }
+    }                      
+}
 ```
 
 ​    3.使用nginx反向代理tomcat:
 
-```
-       （1） 启动两个tomcat：在dokcer-compose.yml 编辑：
-            version: '3'
-            services:
-              tomcat1:
-                image: tomcat
-                container_name: tomcat1
-                ports:
+```yml
+（1） 启动两个tomcat：在dokcer-compose.yml 编辑：
+version: '3'
+  services:
+    tomcat1:
+      image: tomcat
+      container_name: tomcat1
+      ports:
+        - 9090:8080
 
-- 9090:8080
+    tomcat2:
+      image: tomcat
+      container_name: tomcat2
+      ports:
+        - 9091:8080
 
-              tomcat2:
-                image: tomcat
-                container_name: tomcat2
-                ports:
+(2) local/docker/nginx/conf 目录下的 nginx.conf 配置文件：
+user  nginx;
+worker_processes  1;
 
-- 9091:8080
-ocal/docker/nginx/conf 目录下的 nginx.conf 配置文件：
+events {
+	worker_connections  1024;
+}
 
-            user  nginx;
-            worker_processes  1;
+http {
+	include       mime.types;
+	default_type  application/octet-stream;
 
-            events {
-                worker_connections  1024;
-            }
+	sendfile        on;
 
-            http {
-                include       mime.types;
-                default_type  application/octet-stream;
+	keepalive_timeout  65;
+	
 
-                sendfile        on;
+	# 配置一个代理即 tomcat1 服务器
 
-                keepalive_timeout  65;
-                
+	upstream tomcatServer1 {
+		server 192.168.75.145:9090;
+	}
 
-配置一个代理即 tomcat1 服务器
+    #配置一个代理即 tomcat2 服务器
 
-                upstream tomcatServer1 {
-                    server 192.168.75.145:9090;
-                }
+	upstream tomcatServer2 {
+		server 192.168.75.145:9091;
+	}
+    # 配置一个虚拟主机
+	server {
+		listen 80;
+		server_name admin.service.itoken.funtl.com;
+		location / {
+			#域名 admin.service.itoken.funtl.com 的请求全部转发到 tomcat_server1 即 tomcat1 服务上
+			#可以直接书写tomcat的路径即可
+			proxy_pass http://tomcatServer1;
+			#欢迎页面，按照从左到右的顺序查找页面
+			index index.jsp index.html index.htm;
+		}
+	}
 
-配置一个代理即 tomcat2 服务器
-
-                upstream tomcatServer2 {
-                    server 192.168.75.145:9091;
-                }
-
-配置一个虚拟主机
-
-                server {
-                    listen 80;
-                    server_name admin.service.itoken.funtl.com;
-                    location / {
-
-域名 admin.service.itoken.funtl.com 的请求全部转发到 tomcat_server1 即 tomcat1 服务上
-
-可以直接书写tomcat的路径即可
-
-                            proxy_pass http://tomcatServer1;
-
-欢迎页面，按照从左到右的顺序查找页面
-
-                            index index.jsp index.html index.htm;
-                    }
-                }
-
-                server {
-                    listen 80;
-                    server_name admin.web.itoken.funtl.com;
-
-                    location / {
-
-域名 admin.web.itoken.funtl.com 的请求全部转发到 tomcat_server2 即 tomcat2 服务上
-
-                        proxy_pass http://tomcatServer2;
-                        index index.jsp index.html index.htm;
-                    }
-                }
-            }
-        （3）启动nginx在docker-compose.yml中配置：
-                version: '3'
-                services:
-
-nexus:
-
-image: 'sonatype/nexus3'
-
-restart: always
-
-container_name: nexus
-
-ports:
-
-- '8081:8081'
-
-volumes:
-
-- '/usr/local/docker/nexus/data:/nexus-data'
-
-                nignx:
-                    restart: always
-                    image: nginx
-                    container_name: nginx
-                    ports:
-
-- '8088:8088'
-- '9000:9000'
-- '80:80'
-- '/usr/local/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf'
-- '/usr/local/docker/nginx/wwwroot:/usr/share/nginx/wwwroot'
-                             
+	server {
+		listen 80;
+		server_name admin.web.itoken.funtl.com;
+		location / {
+			#域名 admin.web.itoken.funtl.com 的请求全部转发到 tomcat_server2 即 tomcat2 服务上
+			proxy_pass http://tomcatServer2;
+			index index.jsp index.html index.htm;
+		}
+	}
+} 
+ 
+（3）启动nginx在docker-compose.yml中配置：
+version: '3'
+  services:
+    nexus:
+      image: 'sonatype/nexus3'
+      restart: always
+      container_name: nexus
+      ports:
+        - '8081:8081'
+      volumes:
+        - '/usr/local/docker/nexus/data:/nexus-data'
+    nignx:
+      restart: always
+      image: nginx
+      container_name: nginx
+      ports:
+        - '8088:8088'
+        - '9000:9000'
+        - '80:80'
+        - '/usr/local/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf'
+        - '/usr/local/docker/nginx/wwwroot:/usr/share/nginx/wwwroot'         
 ```
 
  4.实战：
 
-```
-    在一个虚拟主机配置两个tomcat:
-                1.vim /etc/profile
-                    export CATALINA1_BASE="tomcat路径"
-                    export CATALINA1_HOME="tomcat路径"
-                    export Tomcat1Home=CATALINA1_BASE
-                    export CATALINA2_BASE="tomcat2路径"
-                    export CATALINA2_HOME="tomcat2路径"
-                    export Tomcat2Home=CATALINA2_BASE
-                2.在bin文件中修改 catalina.sh
-                    在首行加入：
-                    export CATALINA1_BASE=CATALINA1_BASE
-                    export CATALINA1_HOME=CATALINA1_HOME
-                3.修改host：
-                    8005→9005
-                    8009→9009
-                    8080→9080
-                    8443→9443
-
+```xml
+ 在一个虚拟主机配置两个tomcat:
+1.vim /etc/profile
+    export CATALINA1_BASE="tomcat路径"
+    export CATALINA1_HOME="tomcat路径"
+    export Tomcat1Home=CATALINA1_BASE
+    export CATALINA2_BASE="tomcat2路径"
+    export CATALINA2_HOME="tomcat2路径"
+    export Tomcat2Home=CATALINA2_BASE
+2.在bin文件中修改 catalina.sh
+在首行加入：
+    export CATALINA1_BASE=CATALINA1_BASE
+    export CATALINA1_HOME=CATALINA1_HOME
+3.修改host：
+    8005→9005
+    8009→9009
+    8080→9080
+    8443→9443
 4. ./startup.sh启动即可
 ```
 
@@ -708,32 +660,28 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 
 #### 搭建一主两从环境创建docker-compose.yml
 
-```
- version: '3.1'
-        services:
-        master:
-            image: redis
-            container_name: redis-master
-            ports:
+```yml
+version: '3.1'
+  services:
+  master:
+    image: redis
+    container_name: redis-master
+    ports:
+      - 6379:6379
 
-- 6379:6379
+    slave1:
+      image: redis
+      container_name: redis-slave-1
+      ports:
+        - 6380:6379
+      command: redis-server --slaveof redis-master 6379
 
-        slave1:
-            image: redis
-            container_name: redis-slave-1
-            ports:
-
-- 6380:6379
- redis-server --slaveof redis-master 6379
-
-        slave2:
-            image: redis
-            container_name: redis-slave-2
-            ports:
-
-- 6381:6379
- redis-server --slaveof redis-master 6379  
-
+    slave2:
+      image: redis
+      container_name: redis-slave-2
+      ports:
+        - 6381:6379
+      command: redis-server --slaveof redis-master 6379
 ```
 
   启动redis:
@@ -744,52 +692,65 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 ​    创建sentinel文件在docker目录下：
 ​    创建docker-compose.yml文件：
 
-    version: '3.1'
-        services:
-               sentinel1:
-                        image: redis
-                        container_name: redis-sentinel-1
-                        ports:
-                        - 26379:26379
-                        command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-                        volumes:
-                        #数据卷
-                        - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
-               sentinel2:
-                       image: redis
-                       container_name: redis-sentinel-2
-                       ports:
-                       - 26380:26379
-                       command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-                       volumes:
-                       - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
-               sentinel3:
-                       image: redis
-                       container_name: redis-sentinel-3
-                       ports:
-                       - 26381:26379
-                       command: redis-sentinel /usr/local/etc/redis/sentinel.conf
-                       volumes:
-                       - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf     
-            修改Sentinel文件：分别为 sentinel1.conf，sentinel2.conf，sentinel3.conf，配置文件内容相同
-            配置内容如下：
-                port 26379
-                dir /tmp
-                # 自定义集群名，其中 127.0.0.1 为 redis-master 的 ip，6379 为 redis-master 的端口，2 为最小投票数（因为有 3 台 Sentinel 所以可以设置成 2）
-                sentinel monitor mymaster 192.168.147.132 6379 2
-                sentinel down-after-milliseconds mymaster 30000
-                sentinel parallel-syncs mymaster 1
-                sentinel failover-timeout mymaster 180000
-                sentinel deny-scripts-reconfig yes
-            启动集群：
-                    docker-compose up -d
-    
-            查看集群是否生效：进入 Sentinel 容器，使用 Sentinel API 查看监控情况：
-                docker exec -it redis-sentinel-1 /bin/bash
-                redis-cli -p 26379
-                sentinel master mymaster
-                sentinel slaves mymaster
-            生效后即可：
+```yml
+version: '3.1'
+  services:
+    sentinel1:
+      image: redis
+      container_name: redis-sentinel-1
+      ports:
+        - 26379:26379
+      command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+      volumes:
+        #数据卷
+        - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
+    sentinel2:
+      image: redis
+      container_name: redis-sentinel-2
+      ports:
+        - 26380:26379
+      command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+      volumes:
+        - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
+    sentinel3:
+      image: redis
+      container_name: redis-sentinel-3
+      ports:
+        - 26381:26379
+      command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+      volumes:
+        - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf
+```
+
+#####  修改Sentinel文件：
+
+分别为 sentinel1.conf，sentinel2.conf，sentinel3.conf，配置文件内容相同
+配置内容如下：
+
+```
+
+port 26379
+dir /tmp
+# 自定义集群名，其中 127.0.0.1 为 redis-master 的 ip，6379 为 redis-master 的端口，2 为最小投票数（因为有 3 台 Sentinel 所以可以设置成 2）
+sentinel monitor mymaster 192.168.147.132 6379 2
+sentinel down-after-milliseconds mymaster 30000
+sentinel parallel-syncs mymaster 1
+sentinel failover-timeout mymaster 180000
+sentinel deny-scripts-reconfig yes
+
+```
+
+##### 启动集群：
+docker-compose up -d
+
+##### 查看集群是否生效：
+
+> 进入 Sentinel 容器，使用 Sentinel API 查看监控情况：
+> docker exec -it redis-sentinel-1 /bin/bash
+> redis-cli -p 26379
+> sentinel master mymaster
+> sentinel slaves mymaster
+> 生效后即可：
 
 ### 创建redis服务：
 
@@ -798,47 +759,46 @@ Redis 一般以主/从方式部署（这里讨论的应用从实例主要用于�
 ​           
 
 ```yml
-  spring:
-            application:
-                name: itoken-service-redis
-            boot:
-                admin:
-                client:
-                    url: http://localhost:8084
-            zipkin:
-                base-url: http://localhost:9411
-            redis:
-                lettuce:
-                pool:
-                    max-active: 8
-                    max-idle: 8
-                    max-wait: -1ms
-                    min-idle: 0
-                sentinel:
-                master: mymaster
-                nodes: 192.168.147.132:6379      
-       server:
-        port: 8502
+spring:
+  application:
+    name: itoken-service-redis
+  boot:
+    admin:
+    client:
+      url: http://localhost:8084
+  zipkin:
+    base-url: http://localhost:9411
+  redis:
+    lettuce:
+    pool:
+      max-active: 8
+      max-idle: 8
+      max-wait: -1ms
+      min-idle: 0
+    sentinel:
+    master: mymaster
+    nodes: 192.168.147.132:6379
+  server:
+    port: 8502
 
-        eureka:
-        instance:
-            hostname: localhost
-        client:
-            registerWithEureka: false
-            fetchRegistry: false
-            serviceUrl:
-            defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    eureka:
+    instance:
+      hostname: localhost
+    client:
+      registerWithEureka: false
+      fetchRegistry: false
+      serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 
-        management:
-        endpoint:
-            health:
-            show-detail: always
-        endpoints:
-            web:
-            exposure:
-                include: health,info
-    依次创建pom.xml:和service服务，service用来注入
-        
+    management:
+    endpoint:
+      health:
+      show-detail: always
+    endpoints:
+      web:
+      exposure:
+        include: health,info
+  依次创建pom.xml:和service服务，service用来注入
 ```
 ```java
 @Autowired
@@ -936,8 +896,7 @@ System.out.println("***************"+template.opsForValue().get("key"));
 ```java
 getAndSet V getAndSet(K key, V value);
 设置键的字符串值并返回其旧值
-
-    使用：template.opsForValue().set("getSetTest","test");
+使用：template.opsForValue().set("getSetTest","test");
 System.out.println(template.opsForValue().getAndSet("getSetTest","test2"));
 结果：test
 ```
@@ -947,7 +906,7 @@ System.out.println(template.opsForValue().getAndSet("getSetTest","test2"));
 multiGet List<V> multiGet(Collection<K> keys);
 为多个键分别取出它们的值
 
-    使用：Map<String,String> maps = new HashMap<String, String>();
+使用：Map<String,String> maps = new HashMap<String, String>();
             maps.put("multi1","multi1");
             maps.put("multi2","multi2");
             maps.put("multi3","multi3");
@@ -965,7 +924,7 @@ System.out.println(template.opsForValue().multiGet(keys));
 increment Long increment(K key, long delta);
 支持整数
 
-    使用：template.opsForValue().increment("increlong",1);
+ 使用：template.opsForValue().increment("increlong",1);
 System.out.println("***************"+template.opsForValue().get("increlong"));
 结果：***************1
 ```
@@ -975,7 +934,7 @@ System.out.println("***************"+template.opsForValue().get("increlong"));
 increment Double increment(K key, double delta);
 也支持浮点数
 
-    使用：template.opsForValue().increment("increlong",1.2);
+使用：template.opsForValue().increment("increlong",1.2);
 System.out.println("***************"+template.opsForValue().get("increlong"));
 结果：***************2.2
 ```
@@ -985,7 +944,7 @@ System.out.println("***************"+template.opsForValue().get("increlong"));
 append Integer append(K key, String value);
 如果key已经存在并且是一个字符串，则该命令将该值追加到字符串的末尾。如果键不存在，则它被创建并设置为空字符串，因此APPEND在这种特殊情况下将类似于SET。
 
-    使用：template.opsForValue().append("appendTest","Hello");
+使用：template.opsForValue().append("appendTest","Hello");
 System.out.println(template.opsForValue().get("appendTest"));
 template.opsForValue().append("appendTest","world");
 System.out.println(template.opsForValue().get("appendTest"));
@@ -1096,13 +1055,13 @@ System.out.println(template.opsForValue().get("bitTest"));
 
  ### SSO Server
 
-1. ​            验证用户的登录信息
-   ​            创建全局会话
-   ​            创建授权令牌
-   ​            与 SSO Client 通信发送令牌
-   ​            校验 SSO Client 令牌有效性
-   ​            系统注册
-   ​            接收 SSO Client 注销请求，注销所有会话
+1. > ​            验证用户的登录信息
+   > ​            创建全局会话
+   > ​            创建授权令牌
+   > ​            与 SSO Client 通信发送令牌
+   > ​            校验 SSO Client 令牌有效性
+   > ​            系统注册
+   > ​            接收 SSO Client 注销请求，注销所有会话
 
 ### 实战SSO:
 
@@ -1155,84 +1114,83 @@ public String login(@RequestParam(required = true)String loginCode, @RequestPara
 
 ```java
 public class MyInterceptor implements HandlerInterceptor {
-@Override
-public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-	return false;
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+		return false;
+	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+
+	}
+
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+
+	}
 }
 
-@Override
-public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-
-}
-
-@Override
-public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-
-}
-}
 
 ###############################
 
-                 /**
-
-- 实现redis的服务取数据，是否登录
-- @Author kay三石
-- @date:2019/6/28
-                  public class LoginInterceptor implements HandlerInterceptor {
 /**
-  - 在这里需要用到一个redis服务
-*/
-@Autowired
-private RedisService redisService;
-  @Override
-public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-    return BaseInterceptorMethods.preHandleForLogin(request, response, handler, "http://localhost:8601/" + request.getServletPath());
+
+	 - 实现redis的服务取数据，是否登录
+	 - @Author kay三石
+	 - @date:2019/6/28
+	 public class LoginInterceptor implements HandlerInterceptor {
+	 /**
+	 - 在这里需要用到一个redis服务
+	 */
+	@Autowired
+	private RedisService redisService;
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+		return BaseInterceptorMethods.preHandleForLogin(request, response, handler, "http://localhost:8601/" + request.getServletPath());
+	}
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+		String token = CookieUtils.getCookieValue(request, WebConstants.SESSION_TOKEN);
+		if (StringUtils.isNotBlank(token)) {
+			String loginCode = redisService.get(token);
+			if (StringUtils.isNotBlank(loginCode)) {
+				BaseInterceptorMethods.postHandleForLogin(request, response, handler, modelAndView, redisService.get(loginCode), "http://localhost:8601/" + request.getServletPath());
+			}
+		}
+	}
+	@Override
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+	}
 }
-  @Override
-public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-    String token = CookieUtils.getCookieValue(request, WebConstants.SESSION_TOKEN);
-    if (StringUtils.isNotBlank(token)) {
-        String loginCode = redisService.get(token);
-        if (StringUtils.isNotBlank(loginCode)) {
-            BaseInterceptorMethods.postHandleForLogin(request, response, handler, modelAndView, redisService.get(loginCode), "http://localhost:8601/" + request.getServletPath());
-        }
-    }
+// 配置拦截器：
+@Configuration
+public class InterceptorConfig implements WebMvcConfigurer {
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new MyInterceptor()).addPathPatterns("/**");
+	}
 }
-  @Override
-public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-  }
-                }
-    配置拦截器：
-    @Configuration
-    public class InterceptorConfig implements WebMvcConfigurer {
-        @Override
-        public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new MyInterceptor()).addPathPatterns("/**");
-        }
-    }
 
 ###########################################################################
-
 /**
 
-- 配置拦截器
-- @Author kay三石
-- @date:2019/6/28
-**/
- public class InterceptorConfig  implements WebMvcConfigurer {
-@Bean
-public ConstantsInterceptor constantsInterceptor() {
-    return new ConstantsInterceptor();
-}
-  @Override
-public void addInterceptors(InterceptorRegistry registry) {
-    // 常量拦截器
-    registry.addInterceptor(constantsInterceptor())
-            .addPathPatterns("/")
-            .excludePathPatterns("/static/");
+ - 配置拦截器
+ - @Author kay三石
+ - @date:2019/6/28
+ **/
+public class InterceptorConfig  implements WebMvcConfigurer {
+	@Bean
+	public ConstantsInterceptor constantsInterceptor() {
+		return new ConstantsInterceptor();
 	}
- }
-
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		// 常量拦截器
+		registry.addInterceptor(constantsInterceptor())
+				.addPathPatterns("/")
+				.excludePathPatterns("/static/");
+	}
+}
 ```
 
 ## 使用tkmybatis进行对实体类和mapper的生成：
@@ -1275,58 +1233,47 @@ public void addInterceptors(InterceptorRegistry registry) {
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE generatorConfiguration
-PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
-"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-<!-- 引入数据库连接配置 -->
-<properties resource="jdbc.properties"/>
-
-<context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
-<property name="beginningDelimiter" value="`"/>
-<property name="endingDelimiter" value="`"/>
-
-<!-- 配置 tk.mybatis 插件 -->
-<plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-<property name="mappers" value="tk.mybatis.mapper.MyMapper"/>
-</plugin>
-
-<!-- 配置数据库连接 -->
-<jdbcConnection
-driverClass="${jdbc.driverClass}"
-connectionURL="${jdbc.connectionURL}"
-userId="${jdbc.username}"
-password="${jdbc.password}">
-</jdbcConnection>
-
-<!-- 配置实体类存放路径 -->
-<javaModelGenerator targetPackage="com.kayleoi.itoken.common.domain" targetProject="src/main/java"/>
-
-<!-- 配置 XML 存放路径 -->
-<sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
-
-<!-- 配置 DAO 存放路径 -->
-<javaClientGenerator
-targetPackage="com.kayleoi.itoken.common.mapper"
-targetProject="src/main/java"
-type="XMLMAPPER"/>
-
-<!-- 配置需要生成的表，% 代表所有 -->
-<!--itoken-service-admin-->
-
-<table catalog="itoken-service-admin" tableName="tb_sys_user">
-<!-- mysql 配置 -->
-<generatedKey column="user_code" sqlStatement="Mysql" identity="false"/>
-</table>
-
-<!--itoken-service-posts-->
-
-<table catalog="itoken-service-posts" tableName="tb_sys_user">
-<!-- mysql 配置 -->
-<generatedKey column="post_guid" sqlStatement="Mysql" identity="false"/>
-</table>
-
-</context>
+    <!-- 引入数据库连接配置 -->
+    <properties resource="jdbc.properties"/>
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <!-- 配置 tk.mybatis 插件 -->
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.MyMapper"/>
+        </plugin>
+        <!-- 配置数据库连接 -->
+        <jdbcConnection
+                driverClass="${jdbc.driverClass}"
+                connectionURL="${jdbc.connectionURL}"
+                userId="${jdbc.username}"
+                password="${jdbc.password}">
+        </jdbcConnection>
+        <!-- 配置实体类存放路径 -->
+        <javaModelGenerator targetPackage="com.kayleoi.itoken.common.domain" targetProject="src/main/java"/>
+        <!-- 配置 XML 存放路径 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
+        <!-- 配置 DAO 存放路径 -->
+        <javaClientGenerator
+                targetPackage="com.kayleoi.itoken.common.mapper"
+                targetProject="src/main/java"
+                type="XMLMAPPER"/>
+        <!-- 配置需要生成的表，% 代表所有 -->
+        <!--itoken-service-admin-->
+        <table catalog="itoken-service-admin" tableName="tb_sys_user">
+            <!-- mysql 配置 -->
+            <generatedKey column="user_code" sqlStatement="Mysql" identity="false"/>
+        </table>
+        <!--itoken-service-posts-->
+        <table catalog="itoken-service-posts" tableName="tb_sys_user">
+            <!-- mysql 配置 -->
+            <generatedKey column="post_guid" sqlStatement="Mysql" identity="false"/>
+        </table>
+    </context>
 </generatorConfiguration>
 
 ```
@@ -1459,7 +1406,7 @@ public class Swagger2Config {
 
 #### docker-compose.yml
 
-```
+```yml
 version: '3.1'
  services:
  fastdfs:
@@ -1467,9 +1414,8 @@ version: '3.1'
      restart: always
      container_name: fastdfs
      volumes:
-
-../storage:/fastdfs/storage
-etwork_mode: host
+		../storage:/fastdfs/storage
+	etwork_mode: host
 
 ```
 
@@ -1830,7 +1776,7 @@ Exchange 类似于数据通信网络中的交换机，提供消息路由策略�
 
 #### docker-compose.yml
 
-```text
+```yml
 version: '3.1'
 services:
   rabbitmq:
@@ -1862,7 +1808,7 @@ http://ip:15672
 
 ##### application.yml
 
-```text
+```yml
 spring:
   application:
     name: spring-boot-amqp
@@ -1875,7 +1821,7 @@ spring:
 
 ##### 创建队列配置
 
-```text
+```java
 package com.lusifer.spring.boot.amqp.config;
 
 import org.springframework.amqp.core.Queue;
@@ -2207,7 +2153,7 @@ public class HelloQuatrzApplication {
 
 我们创建一个每 5 秒钟打印当前时间的任务来测试 Quartz
 
-```text
+```java
 package com.funtl.hello.quatrz.tasks;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -2276,18 +2222,18 @@ com.sun.jersey.api.client.ClientHandlerException: java.net.ConnectException: Con
 ```xml
 <!--加入下面必须报错是Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured：这里其实加入
         这个必须配置其其他的druid的属性配置-->
-        <!--<dependency>-->
-            <!--<groupId>com.alibaba</groupId>-->
-            <!--<artifactId>druid-spring-boot-starter</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>tk.mybatis</groupId>-->
-            <!--<artifactId>mapper-spring-boot-starter</artifactId>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.github.pagehelper</groupId>-->
-            <!--<artifactId>pagehelper-spring-boot-starter</artifactId>-->
-        <!--</dependency>-->
+ <!--<dependency>-->
+     <!--<groupId>com.alibaba</groupId>-->
+     <!--<artifactId>dring-boot-starter</artifactId>-->
+ <!--</dependency>-->
+ <!--<dependency>-->
+     <!--<groupId>tk.mybatis</groupId>-->
+     <!--<artifactId>mapper-spring-boot-starter</artifactId>-->
+ <!--</dependency>-->
+ <!--<dependency>-->
+     <!--<groupId>com.github.pagehelper</groupId>-->
+     <!--<artifactId>pagehelper-spring-boot-starter</artifactId>-->
+ <!--</dependency>-->
 ```
 
 ### 6.com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '-service-admin..tb_sys_user' at line 1
