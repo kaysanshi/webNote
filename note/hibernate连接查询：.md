@@ -194,12 +194,18 @@ public class BusniessService {
 ### AOP把软件系统分为两个部分：核心关注点和横切关注点。核心关注点是业务处理的主要流程，而横切关注点是与核心业务无关的部分，它常常发生在核心关注点的周围并且代码类似或相同，如日志、权限等。
 
 横切关注点虽然与核心业务的实现无关，但却是一种更为通用的业务，各个横切关注点离散地穿插于核心业务之中，导致系统中的每一个模块都与这些业务具有很强的依赖性。横切关注点所代表的行为就是“切面”。
-总之，OOP提高了代码的重用，而AOP将分散在各个业务逻辑中的相同代码，通过横向切割的方式抽取成一个独立的模块，使得业务逻辑类更加简洁明了
-在AOP编程过程中，需要开发人员参与的有三个方面。
+
+总之，OOP提高了代码的重用，而AOP将分散在各个业务逻辑中的相同代码，通过横向切割的方式抽取成一个独立的模块，使得业务逻辑类更加简洁明了在AOP编程过程中，需要开发人员参与的有三个方面。
+
 定义普通业务类；
+
 定义切入点，一个切入点可能横切多个业务组件；
+
 定义增强，增强就是在AOP框架为普通业务组件织入的处理逻辑。
+
 对于AOP编程而言，最关键的就是定义切入点和增强，一旦定义了合适的切入点和增强，AOP框架会自动生成AOP代理。
+
+```xml
  <aop:config proxy-target-class="true">
         <aop:aspect id="adviceAspect" ref="aspectBean">
     <！-- 配置Before增强，以切面Bean中的checkAuth()方法作为增强处理方法 -->
@@ -226,15 +232,24 @@ public class BusniessService {
     <！-- 配置UserService类 -->
     <bean id="userService" class="com.haiersoft.ch08.service.UserServiceImpl" />
 ……省略
+```
+
 上述配置中，配置了Before增强、AfterReturning增强、AfterThrowing增强、Around增强和After增强。在每个增强元素中method属性值都设定为切面中的方法，例如，在Before增强中method属性值为“checkAuth”，对应切面AspectBean中的checkAuth()方法，表示当满足条件时会调用切面AspectBean的checkAuth()方法；pointcut属性的值为切入点表达式：
 
-execution(* com..*.*Service.*(..))
+execution(* com..*.*Service.*(..))*
+
 表示“com”包或其子孙包中，名称以“Service”结尾的接口/类中任意的方法，如果被调用的方法满足上述条件，则会被增强，即在调用的过程中首先会被检查是否具备调用该方法的权限。
+
 注意 当<aop:config…/>中proxy-target-class属性值设置为true时，表示其中声明的切面均使用CGLib动态代理技术；当设置为false时，使用JDK动态代理技术，一个配置文件可以同时定义多个<aop:config…/>，不同的<aop:config…/>可以采用不同的代理技术。
-切入点表达式：execution(* com.haiersoft..*(..))&&args(com.haiersoft.ch08.pojos.User)
+
+切入点表达式：`execution(* com.haiersoft..*(..))&&args(com.haiersoft.ch08.pojos.User)`
+
 可以使用“*”和“..”通配符来表示方法的形参，其中“*”表示任意类型的参数；
 而“..”表示任意类型参数且参数个数是0个或多个。
+
 使用注解配置通知：
+
+```java
 @Aspect
 public class AspectBean {
     /**
@@ -282,8 +297,10 @@ pointcut="execution(* com..*.*Service.*(..))",throwing="ex")
         System.out.println("提交事务...");
         }
 }
-需要在spring配置文件配置
-<！-- 启动AspectJ注解的支持 -->
-        <aop:aspectj-autoproxy/>
-        <！-- 配置切面Bean -->
-        <bean id="aspectBean" class="com.haiersoft.ch08.aspect.AspectBean" />
+```
+
+> 需要在spring配置文件配置
+> <！-- 启动AspectJ注解的支持 -->
+>         <aop:aspectj-autoproxy/>
+>         <！-- 配置切面Bean -->
+>         <bean id="aspectBean" class="com.haiersoft.ch08.aspect.AspectBean" />

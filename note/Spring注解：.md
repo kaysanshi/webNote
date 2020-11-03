@@ -22,20 +22,26 @@ AnnotationConfigApplicationContext:是一个用来管理注解bean的容器
 )
 ```
 
-//@ComponentScan  value:指定要扫描的包
-//excludeFilters = Filter[] ：指定扫描的时候按照什么规则排除那些组件
-//includeFilters = Filter[] ：指定扫描的时候只需要包含哪些组件
-//FilterType.ANNOTATION：按照注解
-//FilterType.ASSIGNABLE_TYPE：按照给定的类型；
-//FilterType.ASPECTJ：使用ASPECTJ表达式
-//FilterType.REGEX：使用正则指定
-//FilterType.CUSTOM：使用自定义规则
-		`@Bean：`给容器中注册一个Bean;类型为返回值的类型，id默认是用方法名作为id
-		`@Component:`默认加在ioc容器中的组件，容器启动会调用无参构造器创建对象，再进行初始化赋值等操作
-		`@Controller：`声明是一个控制层 名字默认是类名首字母小写
-		`@Service：`声明是service层 名字默认是类名首字母小写 其中自己可以改变这个实例名字：	@Service("userService");
-		`@Repository：`声明是dao层。名字默认是类名首字母小写 同样可以自己手动书写实例名称
-		`@Conditional`: 按照一定的条件进行判断，满足条件给容器中注册bean
+> //@ComponentScan  value:指定要扫描的包
+> //excludeFilters = Filter[] ：指定扫描的时候按照什么规则排除那些组件
+> //includeFilters = Filter[] ：指定扫描的时候只需要包含哪些组件
+> //FilterType.ANNOTATION：按照注解
+> //FilterType.ASSIGNABLE_TYPE：按照给定的类型；
+> //FilterType.ASPECTJ：使用ASPECTJ表达式
+> //FilterType.REGEX：使用正则指定
+> //FilterType.CUSTOM：使用自定义规则
+
+​		`@Bean：`给容器中注册一个Bean;类型为返回值的类型，id默认是用方法名作为id
+
+​		`@Component:`默认加在ioc容器中的组件，容器启动会调用无参构造器创建对象，再进行初始化赋值等操作
+
+​		`@Controller：`声明是一个控制层 名字默认是类名首字母小写
+
+​		`@Service：`声明是service层 名字默认是类名首字母小写 其中自己可以改变这个实例名字：	@Service("userService");
+
+​		`@Repository：`声明是dao层。名字默认是类名首字母小写 同样可以自己手动书写实例名称
+
+​		`@Conditional`: 按照一定的条件进行判断，满足条件给容器中注册bean
 
 ```java
 /**
@@ -57,8 +63,10 @@ return new Person("linus", 48);
 ```
 
  `@Primary:` 让Spring进行自动装配的时候，默认使用首选的bean；也可以继续使用 `@Qualifier`指定需要装配的bean的名字
+
 `@Lazy`：懒加载：
-	 		单实例bean：默认在容器启动的时候创建对象；懒加载：容器启动不创建对象。第一次使用(获取)Bean创建对象，并初始化；
+
+​	 		单实例bean：默认在容器启动的时候创建对象；懒加载：容器启动不创建对象。第一次使用(获取)Bean创建对象，并初始化；
 
 `@scope` 默认为单例模式
 
@@ -121,23 +129,37 @@ return new Person("linus", 48);
 ### 	自动装配bean: 
 
 `@Autowired`通过匹配数据类型自动装配:
+
 ​	//标注在方法，Spring容器创建当前对象，就会调用方法，完成赋值；
 ​	//方法使用的参数，自定义类型的值从ioc容器中获取
 ​	1）、默认优先按照类型去容器中找对应的组件:applicationContext.getBean(BookDao.class);找到就赋值
+
 ​	2）、如果找到多个相同类型的组件，再将属性的名称作为组件的id去容器中查找applicationContext.getBean("bookDao")
+
 ​	3）、`@Qualifier("bookDao")：`使用@Qualifier指定需要装配的组件的id，而不是使用属性名
+
 ​	4）、自动装配默认一定要将属性赋值好，没有就会报错；可以使用@Autowired(required=false);
+
 ​	5）、`@Primary：`让Spring进行自动装配的时候，默认使用首选的bean；也可以继续使用`@Qualifier`指定需要装配的bean的名字	@Qualifier：
+
 ​		`@Qualifier("bookDao")：`使用@Qualifier指定需要装配的组件的id，而不是使用属性名
+
 ​		`@Resources:`可以和@`Autowired`一样实现自动装配功能；默认是按照组件名称进行装配的； 没有能支持@Primary功能没有支持@Autowired（reqiured=false）;
-		`@Resource(name="userDao")` 注入userDao根据用户id指定的用户时用到
+
+​		`@Resource(name="userDao")` 注入userDao根据用户id指定的用户时用到
 
 ​		`@Inject：`需要导入javax.inject的包，和Autowired的功能一样。没有required=false的功能；
+
 ​		`@PropertySource：`读取外部配置文件中的k/v保存到运行的环境变量中;加载完外部的配置文件以后使用${}取出配置文件的值`@PropertySource(value{"classpath:/person.properties"})`
+
 ​		`@PropertySources`
+
 ​		`@Profile：`指定组件在哪个环境的情况下才能被注册到容器中，不指定，任何环境下都能注册这个组件
+
 ​		1）、加了环境标识的bean，只有这个环境被激活的时候才能注册到容器中。默认是default环境
+
 ​		2）、写在配置类上，只有是指定的环境的时候，整个配置类里面的所有配置才能开始生效
+
 ​		3）、没有标注环境标识的bean在，任何环境下都是加载的；
 
 ### 组件注入：
@@ -153,8 +175,11 @@ return new Person("linus", 48);
 ![](https://mmbiz.qpic.cn/mmbiz_png/B77kSvewKqXRz1TazsVnVfXHaEO0ETqVibfY9TS7UxDiad6krBJ6sHE7kH8CicALibrykUIPU4qFzcqscBp83Csd5g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
 ​		`@EnableAspectJAutoProxy：`开启AOP功能会给容器中注册一个组件 AnnotationAwareAspectJAutoProxyCreator
+
 ​		AnnotationAwareAspectJAutoProxyCreator是一个后置处理器；
+
 ​		`@Before/@Aftert/@AfterReturning/@AfterThrowing/@Around`
+
 ​		`@Pointcut`：切点
 
 ###  AOP：【动态代理】
@@ -196,8 +221,11 @@ return new Person("linus", 48);
 ### SpringMVC注解：
 
 ​		除了spring的基本注解你还可以使用下面的注解
+
 ​		`@EnableWebMvc:`  在配置类中开启Web MVC的配置支持，如一些ViewResolver或者MessageConverter等，若无此句，重写WebMvcConfigurerAdapter方法（用于对SpringMVC的配置）
+
 ​		`@RequestMapping("item/{id}")`  声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
+
 ​		`@PathVariable `获取url上的数据
 
 ```java
@@ -222,6 +250,7 @@ return item;
 `@RequestBody`  允许request的参数在request体中，而不是在直接连接在地址后面。（放在参数前）
 
 `@NumberFormat`    支持对数字类型的属性使用 @NumberFormat 注解
+
 `@DateTimeFormat` 		– JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类型的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式，
 
 如：”yyyy-MM-dd hh:mm:ss”等其他的

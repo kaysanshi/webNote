@@ -477,22 +477,24 @@ SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到�
 #### 创建服务提供者：
 
 当 Client 向 Server 注册时，它会提供一些元数据，例如主机和端口，URL，主页等。Eureka Server 从每个 Client 实例接收心跳消息。 如果心跳超时，则通常将该实例从注册 Server 中删除
-**​     引入pom.xm文件：**
-​     application中的yml
-​     
+**​  引入pom.xm文件：**
 
-```xml
+
+
+**application中的yml**
+
+```yaml
 spring:
-        application:
-            name: hello-spring-cloud-service-admin
+  application:
+    name: hello-spring-cloud-service-admin
 
-        server:
-        port: 8762
+server:
+  port: 8762
 
-        eureka:
-        client:
-            serviceUrl:
-            defaultZone: http://localhost:8761/eureka/   
+eureka:
+  client:
+     serviceUrl:
+        defaultZone: http://localhost:8761/eureka/   
 
 ```
 
@@ -500,97 +502,97 @@ spring:
 
 ```xml
  pom.xml：
-    <?xml version="1.0" encoding="UTF-8"?>
-    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-        <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-        <parent>
-            <groupId>com.funtl</groupId>
-            <artifactId>hello-spring-cloud-dependencies</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <relativePath>../hello-spring-cloud-dependencies/pom.xml</relativePath>
-        </parent>
+    <parent>
+        <groupId>com.funtl</groupId>
+        <artifactId>hello-spring-cloud-dependencies</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../hello-spring-cloud-dependencies/pom.xml</relativePath>
+    </parent>
 
-        <artifactId>hello-spring-cloud-web-admin-ribbon</artifactId>
-        <packaging>jar</packaging>
+    <artifactId>hello-spring-cloud-web-admin-ribbon</artifactId>
+    <packaging>jar</packaging>
 
-        <name>hello-spring-cloud-web-admin-ribbon</name>
-        <url>http://www.funtl.com</url>
-        <inceptionYear>2018-Now</inceptionYear>
+    <name>hello-spring-cloud-web-admin-ribbon</name>
+    <url>http://www.funtl.com</url>
+    <inceptionYear>2018-Now</inceptionYear>
 
-        <dependencies>
-            <!-- Spring Boot Begin -->
-            <dependency>
+    <dependencies>
+        <!-- Spring Boot Begin -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Spring Boot End -->
+
+        <!-- Spring Cloud Begin -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+        </dependency>
+        <!-- Spring Cloud End -->
+
+        <!-- 解决 thymeleaf 模板引擎一定要执行严格的 html5 格式校验问题 -->
+        <dependency>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-tomcat</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <scope>test</scope>
-            </dependency>
-            <!-- Spring Boot End -->
-
-            <!-- Spring Cloud Begin -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-            </dependency>
-            <!-- Spring Cloud End -->
-
-            <!-- 解决 thymeleaf 模板引擎一定要执行严格的 html5 格式校验问题 -->
-            <dependency>
-                <groupId>net.sourceforge.nekohtml</groupId>
-                <artifactId>nekohtml</artifactId>
-            </dependency>
-        </dependencies>
-
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <configuration>
-                        <mainClass>com.funtl.hello.spring.cloud.web.admin.ribbon.WebAdminRibbonApplication</mainClass>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
-    </project>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.funtl.hello.spring.cloud.web.admin.ribbon.WebAdminRibbonApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
 
 ```
 
 ##### 在application.yml中书写配置文件：
 
 ```
- spring:
-            application:
-                name: hello-spring-cloud-service-admin
+spring:
+  application:
+    name: hello-spring-cloud-service-admin
 
-            server:
-            port: 8763
+server:
+  port: 8762
 
-            eureka:
-            client:
-                serviceUrl:
-                defaultZone: http://localhost:8761/eureka/
+eureka:
+  client:
+     serviceUrl:
+        defaultZone: http://localhost:8761/eureka/   
 
 ```
 
@@ -604,75 +606,79 @@ spring:
 ##### 1.在feign中使用：        
 
 ```java
-  Feign中自带熔断器：feign:
-                     hystrix:
-                         enabled: true
-   service中指定fallback的类：
-                                                             @FeignClient(value = "hello-spring-cloud-service-admin", fallback = AdminServiceHystrix.class)
-  public interface AdminService {
-
-      @RequestMapping(value = "hi", method = RequestMethod.GET)
-       public String sayHi(@RequestParam(value = "message") String message);
-      }
-   创建这个借口的实现类：
-    @Component
-     public class AdminServiceHystrix implements AdminService {
-        @Override
-        public String sayHi(String message) {
-               return "Hi，your message is :"" + message + "" but request error.";
-       }
-    }
-            
-
+Feign中自带熔断器：
+    feign:
+        hystrix:
+            enabled: true
+=====
+service中指定fallback的类：
+ @FeignClient(value = "hello-spring-cloud-service-admin", fallback = AdminServiceHystrix.class)
+public interface AdminService {
+   @RequestMapping(value = "hi", method = RequestMethod.GET)
+   public String sayHi(@RequestParam(value = "message") String message);
+ }
+====
+创建这个借口的实现类：
+@Component
+ public class AdminServiceHystrix implements AdminService {
+ 	@Override
+ 	public String sayHi(String message) {
+   	 	return "Hi，your message is :"" + message + "" but request error.";
+   	}
+}     
 ```
 
 ##### 2.在ribbon中使用：
 
-​        `pom.xml中加入：`
-​            <dependency>
-​                <groupId>org.springframework.cloud</groupId>
-​                <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-​            </dependency>
+ **`pom.xml中加入：`**
+
+```XML
+<dependency>
+ <groupId>org.springframework.cloud</groupId>
+ <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+</dependency>
+```
+
 ​        主函数中加入注解@EnableHystrix
-​        在service中使用：
+**​在service中使用：**
 
 ```java
 @HystrixCommand(fallbackMethod = "hiError")
-            public String sayHi(String message) {
-                return restTemplate.getForObject("http://HELLO-SPRING-CLOUD-SERVICE-ADMIN/hi?message=" + message, String.class);
-            }
+public String sayHi(String message) {
+    return restTemplate.getForObject("http://HELLO-SPRING-CLOUD-SERVICE-ADMIN/hi?message=" + message, String.class);
+}
 
-            public String hiError(String message) {
-                return "Hi，your message is :"" + message + "" but request error.";
-            }
+public String hiError(String message) {
+    return "Hi，your message is :"" + message + "" but request error.";
+}
 
 ```
 
 ##### 使用熔断仪器监控hystrix：
 
-​        `pom.xml中加入：`
-​        <dependency>
-​            <groupId>org.springframework.cloud</groupId>
-​            <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
-​        </dependency>
-​    application中加入注解：@EnableHystrixDashboard
-​        创建配置文件：增加HystrixMetricsStreamServlet 的配置
-​       
+**`pom.xml中加入：`**
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+</dependency>
+```
 
 ```java
- @Configuration
-        public class HystrixDashboardConfiguration {
+@Configuration
+public class HystrixDashboardConfiguration {
 
-            @Bean
-            public ServletRegistrationBean getServlet() {
-                HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
-                ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
-                registrationBean.setLoadOnStartup(1);
-                registrationBean.addUrlMappings("/hystrix.stream");
-                registrationBean.setName("HystrixMetricsStreamServlet");
-                return registrationBean;
-            }
-        }
+    @Bean
+    public ServletRegistrationBean getServlet() {
+        HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
+        registrationBean.setLoadOnStartup(1);
+        registrationBean.addUrlMappings("/hystrix.stream");
+        registrationBean.setName("HystrixMetricsStreamServlet");
+        return registrationBean;
+    }
+}
 
 ```
 
@@ -690,52 +696,53 @@ spring:
 
  Zuul 的主要功能是路由转发和过滤器。路由功能是微服务的一部分，比如 /api/user 转发到到 User 服务，/api/shop 转发到到 Shop 服务。Zuul 默认和 Ribbon 结合实现了负载均衡的功能。
 
-######     pom.xml中加入： 
+######     **pom.xml中加入：** 
 
-​        <dependency>
-​            <groupId>org.springframework.cloud</groupId>
-​            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-​         </dependency>
+```XML
+<dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+ </dependency>
+```
 
 ######     application.yml中书写配置文件：
 
-```xml
+```yml
 spring:
-            application:
-                name: hello-spring-cloud-zuul
+  application:
+    name: hello-spring-cloud-zuul
 
-            server:
-            port: 8769
+  server:
+  port: 8769
 
-            eureka:
-            client:
-                serviceUrl:
-                defaultZone: http://localhost:8761/eureka/
-            ##以/api/a/请求全部转发到ribbon服务中，以/api/b/全部转发到feign服务##
-            zuul:
-            routes:
-                api-a:
-                path: /api/a/**
-                serviceId: hello-spring-cloud-web-admin-ribbon
-                api-b:
-                path: /api/b/**
-                serviceId: hello-spring-cloud-web-admin-feign
-
+  eureka:
+  client:
+    serviceUrl:
+    defaultZone: http://localhost:8761/eureka/
+  ##以/api/a/请求全部转发到ribbon服务中，以/api/b/全部转发到feign服务##
+  zuul:
+  routes:
+    api-a:
+    path: /api/a/**
+    serviceId: hello-spring-cloud-web-admin-ribbon
+    api-b:
+    path: /api/b/**
+    serviceId: hello-spring-cloud-web-admin-feign
 ```
 
 ​    创建回调的类：主要是创建对对其出现错误后的回调机制：
 
 ######     主函数：
 
-```xml
-  @SpringBootApplication
-            @EnableEurekaClient
-            @EnableZuulProxy
-            public class ZuulApplication {
-                public static void main(String[] args) {
-                    SpringApplication.run(ZuulApplication.class, args);
-                }
-            }  
+```java
+@SpringBootApplication
+@EnableEurekaClient
+@EnableZuulProxy
+public class ZuulApplication {
+    public static void main(String[] args) {
+    	SpringApplication.run(ZuulApplication.class, args);
+    }
+}  
 ```
 
 ​    其实就是聚合其他的服务：以上聚合了ribbon和feign两个服务。
@@ -752,69 +759,69 @@ spring:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-                    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-                    <parent>
-                        <groupId>com.funtl</groupId>
-                        <artifactId>hello-spring-cloud-dependencies</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
-                        <relativePath>../hello-spring-cloud-dependencies/pom.xml</relativePath>
-                    </parent>
+    <parent>
+        <groupId>com.funtl</groupId>
+        <artifactId>hello-spring-cloud-dependencies</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../hello-spring-cloud-dependencies/pom.xml</relativePath>
+    </parent>
 
-                    <artifactId>hello-spring-cloud-config</artifactId>
-                    <packaging>jar</packaging>
+    <artifactId>hello-spring-cloud-config</artifactId>
+    <packaging>jar</packaging>
 
-                    <name>hello-spring-cloud-config</name>
-                    <url>http://www.funtl.com</url>
-                    <inceptionYear>2018-Now</inceptionYear>
+    <name>hello-spring-cloud-config</name>
+    <url>http://www.funtl.com</url>
+    <inceptionYear>2018-Now</inceptionYear>
 
-                    <dependencies>
-                        <!-- Spring Boot Begin -->
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-web</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-tomcat</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-actuator</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-test</artifactId>
-                            <scope>test</scope>
-                        </dependency>
-                        <!-- Spring Boot End -->
+    <dependencies>
+        <!-- Spring Boot Begin -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Spring Boot End -->
 
-                        <!-- Spring Cloud Begin -->
-                        <dependency>
-                            <groupId>org.springframework.cloud</groupId>
-                            <artifactId>spring-cloud-config-server</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.cloud</groupId>
-                            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-                        </dependency>
-                        <!-- Spring Cloud End -->
-                    </dependencies>
+        <!-- Spring Cloud Begin -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+        <!-- Spring Cloud End -->
+    </dependencies>
 
-                    <build>
-                        <plugins>
-                            <plugin>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-maven-plugin</artifactId>
-                                <configuration>
-                                    <mainClass>com.funtl.hello.spring.cloud.config.ConfigApplication</mainClass>
-                                </configuration>
-                            </plugin>
-                        </plugins>
-                    </build>
-                </project> 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.funtl.hello.spring.cloud.config.ConfigApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project> 
 
 ```
 
@@ -834,109 +841,112 @@ public class ConfigApplication {
 
 ###### 在application.yml中书写配置文件：
 
+```yaml
+spring:
+  application:
+    name: hello-spring-cloud-config
+  cloud:
+    config:
+    label: master
+    server:
+      git:
+      uri: https://github.com/topsale/spring-cloud-config
+      search-paths: respo
+      username:
+      password:
+
+  server:
+  port: 8888
+
+  eureka:
+  client:
+    serviceUrl:
+    defaultZone: http://localhost:8761/eureka/
+
 ```
-              spring:
-                    application:
-                        name: hello-spring-cloud-config
-                    cloud:
-                        config:
-                        label: master
-                        server:
-                            git:
-                            uri: https://github.com/topsale/spring-cloud-config
-                            search-paths: respo
-                            username:
-                            password:
-
-                    server:
-                    port: 8888
-
-                    eureka:
-                    client:
-                        serviceUrl:
-                        defaultZone: http://localhost:8761/eureka/
-
-```
-
-​                
 
 ###### 配置说明：
 
-​           spring.cloud.config.label：配置仓库的分支
-​           spring.cloud.config.server.git.uri：配置 Git 仓库地址（GitHub、GitLab、码云 ...）
-​            spring.cloud.config.server.git.search-paths：配置仓库路径（存放配置文件的目录）
-​             spring.cloud.config.server.git.username：访问 Git 仓库的账号
-​              spring.cloud.config.server.git.password：访问 Git 仓库的密码
+​           `spring.cloud.config.label：配置仓库的分支`
+
+​           `spring.cloud.config.server.git.uri：配置 Git 仓库地址（GitHub、GitLab、码云 ...）
+`​  
+
+​          `spring.cloud.config.server.git.search-paths：配置仓库路径（存放配置文件的目录）`
+
+​           `spring.cloud.config.server.git.username：访问 Git 仓库的账号`
+
+​           `spring.cloud.config.server.git.password：访问 Git 仓库的密码`
 
 ##### 分布式配置中心客户端配置：
 
 ###### pom.xml中配置：
 
 ```xml
-    <?xml version="1.0" encoding="UTF-8"?>
-                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-                    <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-                    <parent>
-                        <groupId>com.funtl</groupId>
-                        <artifactId>hello-spring-cloud-dependencies</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
-                        <relativePath>../hello-spring-cloud-dependencies/pom.xml</relativePath>
-                    </parent>
+    <parent>
+        <groupId>com.funtl</groupId>
+        <artifactId>hello-spring-cloud-dependencies</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../hello-spring-cloud-dependencies/pom.xml</relativePath>
+    </parent>
 
-                    <artifactId>hello-spring-cloud-config-client</artifactId>
-                    <packaging>jar</packaging>
+    <artifactId>hello-spring-cloud-config-client</artifactId>
+    <packaging>jar</packaging>
 
-                    <name>hello-spring-cloud-config-client</name>
-                    <url>http://www.funtl.com</url>
-                    <inceptionYear>2018-Now</inceptionYear>
+    <name>hello-spring-cloud-config-client</name>
+    <url>http://www.funtl.com</url>
+    <inceptionYear>2018-Now</inceptionYear>
 
-                    <dependencies>
-                        <!-- Spring Boot Begin -->
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-web</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-tomcat</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-actuator</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-starter-test</artifactId>
-                            <scope>test</scope>
-                        </dependency>
-                        <!-- Spring Boot End -->
+    <dependencies>
+        <!-- Spring Boot Begin -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Spring Boot End -->
 
-                        <!-- Spring Cloud Begin -->
-                        <dependency>
-                            <groupId>org.springframework.cloud</groupId>
-                            <artifactId>spring-cloud-starter-config</artifactId>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.springframework.cloud</groupId>
-                            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-                        </dependency>
-                        <!-- Spring Cloud End -->
-                    </dependencies>
+        <!-- Spring Cloud Begin -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+        <!-- Spring Cloud End -->
+    </dependencies>
 
-                    <build>
-                        <plugins>
-                            <plugin>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-maven-plugin</artifactId>
-                                <configuration>
-                                    <mainClass>com.funtl.hello.spring.cloud.config.client.ConfigClientApplication</mainClass>
-                                </configuration>
-                            </plugin>
-                        </plugins>
-                    </build>
-                </project>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.funtl.hello.spring.cloud.config.client.ConfigClientApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
 
 ```
 
@@ -955,42 +965,44 @@ public class ConfigClientApplication {
 
 ###### application.yml中书写配置文件： 
 
-```xml
-              spring:
-                    application:
-                        name: hello-spring-cloud-config-client
-                    cloud:
-                        config:
-                        uri: http://localhost:8888
-                        name: config-client
-                        label: master
-                        profile: dev
+```yaml
+spring:
+  application:
+    name: hello-spring-cloud-config-client
+  cloud:
+    config:
+    uri: http://localhost:8888
+    name: config-client
+    label: master
+    profile: dev
 
-                    server:
-                    port: 8889
+  server:
+  port: 8889
 
-                    eureka:
-                    client:
-                        serviceUrl:
-                        defaultZone: http://localhost:8761/eureka/
+  eureka:
+  client:
+    serviceUrl:
+    defaultZone: http://localhost:8761/eureka/
 
 ```
 
   ###### 配置说明：  
 
-​                        spring.cloud.config.uri：配置服务中心的网址
-​                        spring.cloud.config.name：配置文件名称的前缀
-​                        spring.cloud.config.label：配置仓库的分支
-​                        spring.cloud.config.profile：配置文件的环境标识
-​                        dev：表示开发环境
-​                        test：表示测试环境
-​                        prod：表示生产环境  
+>    spring.cloud.config.uri：配置服务中心的网址
+> ​   spring.cloud.config.name：配置文件名称的前缀
+> ​   spring.cloud.config.label：配置仓库的分支
+> ​   spring.cloud.config.profile：配置文件的环境标识
+> ​        dev：表示开发环境
+> ​        test：表示测试环境
+> ​         prod：表示生产环境  
 
 #### 服务链路追踪：
 
- `这里主要使用ZipKin：`
-​         每个服务向 ZipKin 报告计时数据，ZipKin 会根据调用关系通过 ZipKin UI 生成依赖关系图，显示了多少跟踪请求通过每个服务，该系统让开发者可通过一个 Web 前端轻松的收集和分析数据，例如用户每次请求服务的处理时间等，可方便的监测系统中存在的瓶颈 。
-​    `说明：`
+ **`这里主要使用ZipKin：`
+**​         每个服务向 ZipKin 报告计时数据，ZipKin 会根据调用关系通过 ZipKin UI 生成依赖关系图，显示了多少跟踪请求通过每个服务，该系统让开发者可通过一个 Web 前端轻松的收集和分析数据，例如用户每次请求服务的处理时间等，可方便的监测系统中存在的瓶颈 。
+
+**​    `说明：`**
+
 ​         微服务架构是通过业务来划分服务的，使用 REST 调用。对外暴露的一个接口，可能需要很多个服务协同才能完成这个接口功能，如果链路上任何一个服务出现问题或者网络超时，都会形成导致接口调用失败。随着业务的不断扩张，服务之间互相调用会越来越复杂。
 
 #### 服务监控：
@@ -1030,7 +1042,7 @@ public interface AdminService  extends BaseClientService {
     public String get(
             @RequestParam(required = true, value = "userCode") String userCode
     );
-
+}
 ```
 
 如果需要访问制造回退触发器的原因，可以在@feignclient 中使用 fallbackFactory 属性。

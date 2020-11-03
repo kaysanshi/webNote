@@ -6,23 +6,31 @@
 
 1.拉去oracle数据库镜像
 `docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g` 
+
 2.启动oracle  自动启动镜像 --restart=always
 `docker run -p 1521:1521 --name oracle_11g -d --restart=always registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g`
+
 3.启动服务
 `docker start oracle_11g`
+
 4.进入控制台设置用户信息 
 `docker exec -it oracle_11g bash`
+
 5.切换到root用户模式下
 `su root`
 `输入密码helowin`
+
 6.编辑profile文件配置ORACLE环境变量
 `export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2`
 `export ORACLE_SID=helowin`
 `export PATH=$ORACLE_HOME/bin:$PATH`
+
 7.重启配置文件服务
 `source /etc/profile`
+
 8.建立sqlplus软连接
 `ln -s $ORACLE_HOME/bin/sqlplus /usr/bin`
+
 9.切换到oracle用户，修改oracle的相关账号密码
 
 > su oracle
@@ -196,7 +204,8 @@ public class JdbcController {
     @ResponseBody
     @GetMapping("/query")
     public List<Student> getForList(){
-        return  jdbcTemplate.query("select * FROM \"student\"", new RowMapper<Student>() {
+        return  jdbcTemplate.query("select * FROM \"student\"",
+                                   new RowMapper<Student>() {
             @Override
             public Student mapRow(ResultSet resultSet, int i) throws SQLException {
                 Student model = new Student();

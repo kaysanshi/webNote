@@ -6,9 +6,10 @@
 
 Spring Boot通过@EnableAutoConfiguration注解开启自动配置，加载spring.factories中注册的各种AutoConfiguration类，当某个AutoConfiguration类满足其注解@Conditional指定的生效条件（Starters提供的依赖、配置或Spring容器中是否存在某个Bean等）时，实例化该AutoConfiguration类中定义的Bean（组件等），并注入Spring容器，就可以完成依赖自动配置。
 
+[![BsCKw6.png](https://s1.ax1x.com/2020/11/03/BsCKw6.png)](https://imgchr.com/i/BsCKw6)
 
-
-```mermaid
+```
+github不支持 这个语法(本来用流程图给展示的，但是github语法不支持)
 graph TD
  A[EnableAutoConfiguration<br/><br/>注解开启配置:] -->|扫描加载| B(扫描加载 spring.factoties:<br/><br/>配置注册内容)
  B -->|指定类路径| C[xxxAutoConfiguration:<br/><br/>具体实例化配置]
