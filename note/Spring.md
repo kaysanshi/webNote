@@ -353,94 +353,92 @@ class User {
 
 ```java
 public class TextEditor {
-		   private SpellChecker spellChecker;
-		   public TextEditor(SpellChecker spellChecker) {
-		      System.out.println("Inside TextEditor constructor." );
-		      this.spellChecker = spellChecker;
-		   }
-		   public void spellCheck() {
-		      spellChecker.checkSpelling();
-		   }
-		}
-		public class SpellChecker {
-			   public SpellChecker(){
-			      System.out.println("Inside SpellChecker constructor." );
-			   }
-			   public void checkSpelling() {
-			      System.out.println("Inside checkSpelling." );
-			   } 
-			}
-		public static void main(String[] args) {
-		      ApplicationContext context = 
-			     new ClassPathXmlApplicationContext("Beans.xml");
-		      TextEditor te = (TextEditor) context.getBean("textEditor");
-		      te.spellCheck();
-		   }
-		   beans.xml文件：
-		   <!-- Definition for textEditor bean -->
-		   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
-		      <constructor-arg ref="spellChecker"/>
-		   </bean>
-
-		   <!-- Definition for spellChecker bean -->
-		   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
-		   </bean>
-		   这样的好处是实例化对象的同时完成属性的初始化。
-		   例如：
-			class User {
-				private  String name;
-				private  String  sex;
-				private  int age;
-				//setter();
-				User(String name,int age,string sex){
-					this.name=name;
-					this.age=age;
-					this.sex=sex;
-				}
-			}
-			在applicationContext.xml为其赋值
-				<bean name="user" class="com.xxx.User">
-				<constructor-arg>
-					<value>小强</value>
-				</contructor-arg>
-				<constructor-arg>
-					<value>12</value>
-				</contructor-arg>
-				<constructor-arg>
-					<value>男</value>
-				</contructor-arg>
-			构造函数注入设置执行哪一个构造函数，主要用 index属性进行测试：
-				<!-- 构造函数注入
-					constructor-age 用于设置属性的 
-					name 用于设置构造函数的参数名
-					index 用于设置参数的索引
-					type 用于设置参数类型
-					ref 用于引入其他对象，也需要先把其他对象给实例出来
-				 -->
-					<bean name="user4" class="com.leo.demo.User">
-					<constructor-arg name="name" index="0" type="String" value="黑市"></constructor-arg>
-					<constructor-arg name="car" index="1" ref="car"></constructor-arg>
-					</bean>
-					<bean name="user5" class="com.leo.demo.User">
-					<constructor-arg name="name" index="1" type="String" value="黑市"></constructor-arg>
-					<constructor-arg name="car" index="0" ref="car"></constructor-arg>
-					</bean>
-				构造函数如下：
+    private SpellChecker spellChecker;
+    public TextEditor(SpellChecker spellChecker) {
+        System.out.println("Inside TextEditor constructor." );
+        this.spellChecker = spellChecker;
+    }
+    public void spellCheck() {
+        spellChecker.checkSpelling();
+    }
+}
+public class SpellChecker {
+    public SpellChecker(){
+        System.out.println("Inside SpellChecker constructor." );
+    }
+    public void checkSpelling() {
+        System.out.println("Inside checkSpelling." );
+    } 
+}
+public static void main(String[] args) {
+    ApplicationContext context = 
+        new ClassPathXmlApplicationContext("Beans.xml");
+    TextEditor te = (TextEditor) context.getBean("textEditor");
+    te.spellCheck();
+}
+beans.xml文件：
+<!-- Definition for textEditor bean -->
+<bean id="textEditor" class="com.tutorialspoint.TextEditor">
+   <constructor-arg ref="spellChecker"/>
+</bean>
+<!-- Definition for spellChecker bean -->
+<bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
+</bean>
+这样的好处是实例化对象的同时完成属性的初始化
+class User {
+	private  String name;
+	private  String  sex;
+	private  int age;
+	//setter();
+	User(String name,int age,string sex){
+		this.name=name;
+		this.age=age;
+		this.sex=sex;
+	}
+}
+在applicationContext.xml为其赋值
+    <bean name="user" class="com.xxx.User">
+        <constructor-arg>
+        	<value>小强</value>
+        </contructor-arg>
+        <constructor-arg>
+        	<value>12</value>
+        </contructor-arg>
+        <constructor-arg>
+        <value>男</value>
+        </contructor-arg>
+        构造函数注入设置执行哪一个构造函数，主要用 index属性进行测试：
+        <!-- 构造函数注入
+        constructor-age 用于设置属性的 
+        name 用于设置构造函数的参数名
+        index 用于设置参数的索引
+        type 用于设置参数类型
+        ref 用于引入其他对象，也需要先把其他对象给实例出来
+        -->
+        <bean name="user4" class="com.leo.demo.User">
+            <constructor-arg name="name" index="0" type="String" value="黑市"></constructor-arg>
+            <constructor-arg name="car" index="1" ref="car"></constructor-arg>
+        </bean>
+        <bean name="user5" class="com.leo.demo.User">
+             <constructor-arg name="name" index="1" type="String" value="黑市"></constructor-arg>
+             <constructor-arg name="car" index="0" ref="car"></constructor-arg>
+          </bean>
+构造函数如下：
 /**
-					 * 指定到这个构造：
-					 * @param car
-					 * @param name
-					 */
-                        public User(Car car,String name) {
-                        this.car=car;
-                        this.name=name;
-                        System.out.println("car,name,");
-                    }
+ * 指定到这个构造：
+ * @param car
+ * @param name
+ */
+public User(Car car,String name) {
+     this.car=car;
+     this.name=name;
+     System.out.println("car,name,");
+}
 /**
-					 * 
-					 * @param name
-					 * @param car
-					 */
+ * 
+ * @param name
+ * @param car
+*/
 public User(String name,Car car) {
     this.car=car;
     this.name=name;
@@ -455,8 +453,7 @@ public void test5() {
     context.close();
 }
 /**
-					 * 构造函数注入指定走哪一个构造函数配置走car name
-					 */
+ * 构造函数注入指定走哪一个构造函数配置走car nam
 @Test
 public void test6() {
     ClassPathXmlApplicationContext context =new ClassPathXmlApplicationContext("Beans.xml");
@@ -470,25 +467,27 @@ public void test6() {
 
 当容器调用一个无参的构造函数或一个无参的静态 factory 方法来初始化你的 bean 后，通过容器在你的 bean 上调用设值函数，基于设值函数的 DI 就完成了。
 
-			<?xml version="1.0" encoding="UTF-8"?>
-			<beans xmlns="http://www.springframework.org/schema/beans"
-			    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			    xsi:schemaLocation="http://www.springframework.org/schema/beans
-			    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	
-			   <!-- Definition for textEditor bean -->
-			   <bean id="textEditor" class="com.tutorialspoint.TextEditor">
-			      <property name="spellChecker" ref="spellChecker"/>
-			   </bean>
-	
-			   <!-- Definition for spellChecker bean -->
-			   <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
-			   </bean>
-	
-			</beans>
-			应该注意定义在基于构造函数注入和基于设值函数注入中的 Beans.xml 文件的区别。
-			唯一的区别就是在基于构造函数注入中，我们使用的是〈bean〉标签中的〈constructor-arg〉元素，而在基于设值函数的注入中，我们使用的是〈bean〉标签中的〈property〉元素。
-			如果你要把一个引用传递给一个对象，那么你需要使用 标签的 ref 属性，而如果你要直接传递一个值，那么你应该使用 value 属性。
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Definition for textEditor bean -->
+    <bean id="textEditor" class="com.tutorialspoint.TextEditor">
+    <property name="spellChecker" ref="spellChecker"/>
+    </bean>
+
+    <!-- Definition for spellChecker bean -->
+    <bean id="spellChecker" class="com.tutorialspoint.SpellChecker">
+    </bean>
+
+</beans>
+应该注意定义在基于构造函数注入和基于设值函数注入中的 Beans.xml 文件的区别。
+唯一的区别就是在基于构造函数注入中，我们使用的是〈bean〉标签中的〈constructor-arg〉元素，而在基于设值函数的注入中，我们使用的是〈bean〉标签中的〈property〉元素。
+如果你要把一个引用传递给一个对象，那么你需要使用 标签的 ref 属性，而如果你要直接传递一个值，那么你应该使用 value 属性。
+```
 #### 注入其他
 
 
@@ -496,9 +495,9 @@ public void test6() {
 注入内部beans:
 匿名内部类的与xml
 <bean id="outerBean" class="...">
-<property name="target">
-<bean id="innerBean" class="..."/>
-</property>
+	<property name="target">
+		<bean id="innerBean" class="..."/>
+	</property>
 </bean>
 注入集合：
 Java Collection 类型 List、Set、Map 和 Properties，为了处理这种情况，Spring提供了四种类型的集合：
