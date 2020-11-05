@@ -128,10 +128,11 @@ return new Person("linus", 48);
 
 ### 	自动装配bean: 
 
-`@Autowired`通过匹配数据类型自动装配:
+`@Autowired`通过匹配`数据类型`自动装配  `byType`方式:
 
 ​	//标注在方法，Spring容器创建当前对象，就会调用方法，完成赋值；
 ​	//方法使用的参数，自定义类型的值从ioc容器中获取
+
 ​	1）、默认优先按照类型去容器中找对应的组件:applicationContext.getBean(BookDao.class);找到就赋值
 
 ​	2）、如果找到多个相同类型的组件，再将属性的名称作为组件的id去容器中查找applicationContext.getBean("bookDao")
@@ -144,7 +145,7 @@ return new Person("linus", 48);
 
 ​		`@Qualifier("bookDao")：`使用@Qualifier指定需要装配的组件的id，而不是使用属性名
 
-​		`@Resources:`可以和@`Autowired`一样实现自动装配功能；默认是按照组件名称进行装配的； 没有能支持@Primary功能没有支持@Autowired（reqiured=false）;
+​		`@Resources:`可以和@`Autowired`一样实现自动装配功能；默认是按照`组件名称`进行装配的 `byName`； 没有能支持@Primary功能没有支持@Autowired（reqiured=false）;
 
 ​		`@Resource(name="userDao")` 注入userDao根据用户id指定的用户时用到
 
