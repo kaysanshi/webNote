@@ -4,7 +4,7 @@
 
 ### 核心运行原理
 
-Spring Boot通过@EnableAutoConfiguration注解开启自动配置，加载spring.factories中注册的各种AutoConfiguration类，当某个AutoConfiguration类满足其注解@Conditional指定的生效条件（Starters提供的依赖、配置或Spring容器中是否存在某个Bean等）时，实例化该AutoConfiguration类中定义的Bean（组件等），并注入Spring容器，就可以完成依赖自动配置。
+​		Spring Boot通过@EnableAutoConfiguration注解开启自动配置，加载spring.factories中注册的各种AutoConfiguration类，当某个AutoConfiguration类满足其注解@Conditional指定的生效条件（Starters提供的依赖、配置或Spring容器中是否存在某个Bean等）时，实例化该AutoConfiguration类中定义的Bean（组件等），并注入Spring容器，就可以完成依赖自动配置。
 
 [![BsCKw6.png](https://s1.ax1x.com/2020/11/03/BsCKw6.png)](https://imgchr.com/i/BsCKw6)
 
@@ -46,7 +46,7 @@ graph TD
 
 ### @SpringBootApplication注解
 
-@SpringBootApplication注是SpringBoot的核心注解，用于开启自动配置，其实是结合内部的@EnableAutoConfiguration注解开启配置
+​		@SpringBootApplication注是SpringBoot的核心注解，用于开启自动配置，其实是结合内部的@EnableAutoConfiguration注解开启配置
 
 ```java
 @Target(ElementType.TYPE)
@@ -87,9 +87,9 @@ public @interface SpringBootApplication {
 
 ###  **@EnableAutoConfiguration注解**
 
-Spring Boot的核心功能之一就是根据约定自动管理该注解标注的类。用来实现该功能的组件之一便是@EnableAutoConfiguration注解。
+​		Spring Boot的核心功能之一就是根据约定自动管理该注解标注的类。用来实现该功能的组件之一便是@EnableAutoConfiguration注解。
 
-@EnableAutoConfiguration位于spring-boot-autoconfigure包内，当使用@SpringBootApplication注解时，@EnableAutoConfiguration注解会自动生效。@EnableAutoConfiguration的主要功能是启动Spring应用程序上下文时进行自动配置，它会尝试猜测并配置项目可能需要的Bean。自动配置通常是基于项目classpath中引入的类和已定义的Bean来实现的。在此过程中，被自动配置的组件来自项目自身和项目依赖的jar包中。
+​		@EnableAutoConfiguration位于spring-boot-autoconfigure包内，当使用@SpringBootApplication注解时，@EnableAutoConfiguration注解会自动生效。@EnableAutoConfiguration的主要功能是启动Spring应用程序上下文时进行自动配置，它会尝试猜测并配置项目可能需要的Bean。自动配置通常是基于项目classpath中引入的类和已定义的Bean来实现的。在此过程中，被自动配置的组件来自项目自身和项目依赖的jar包中。
 
 ```java
 @Target(ElementType.TYPE)
@@ -111,7 +111,7 @@ public @interface EnableAutoConfiguration {
 }
 ```
 
-<font color="green">@EnableAutoConfiguration会猜测你需要使用的Bean，但如果在实战中你并不需要它预置初始化的Bean，可通过该注解的exclude或excludeName参数进行有针对性的排除。比如，当不需要数据库的自动配置时，可通过以下两种方式让其自动配置失效</font>
+<font color="green">		@EnableAutoConfiguration会猜测你需要使用的Bean，但如果在实战中你并不需要它预置初始化的Bean，可通过该注解的exclude或excludeName参数进行有针对性的排除。比如，当不需要数据库的自动配置时，可通过以下两种方式让其自动配置失效</font>
 
 ```java
 // 排除DataSourceAutoConfiguration
@@ -141,11 +141,11 @@ public class Application {
 public @interface EnableAutoConfiguration {}
 ```
 
-从源代码得知@Import(AutoConfigurationImportSelector.class)是@EnableAutoConfiguration注解的组成部分，也是自动配置功能的核心实现者。@Import(AutoConfigurationImportSelector.class)又可以分为两部分：@Import和对应的ImportSelector。我们先看下这个引入的注解
+​		从源代码得知@Import(AutoConfigurationImportSelector.class)是@EnableAutoConfiguration注解的组成部分，也是自动配置功能的核心实现者。@Import(AutoConfigurationImportSelector.class)又可以分为两部分：@Import和对应的ImportSelector。我们先看下这个引入的注解
 
 #### @Import注解
 
-@Import的作用和xml配置中`<import/>`标签的作用一样，我们可以通过@Import引入@Configuration注解的类，也可以导入实现了ImportSelector或ImportBeanDefinitionRegistrar的类，还可以通过@Import导入普通的POJO（将其注册成Spring Bean，导入POJO需要Spring 4.2以上版本） 
+​		@Import的作用和xml配置中`<import/>`标签的作用一样，我们可以通过@Import引入@Configuration注解的类，也可以导入实现了ImportSelector或ImportBeanDefinitionRegistrar的类，还可以通过@Import导入普通的POJO（将其注册成Spring Bean，导入POJO需要Spring 4.2以上版本） 
 
 *可以在类级别声明或作为元注释声明*。*如需要引入XML或其他类型的文件，使用@ImportResource注解*
 
@@ -194,9 +194,9 @@ public interface ImportSelector {
 }
 ```
 
-ImportSelector 接口提供了一个参数为AnnotationMetadata的方法，返回一个字符串数组。其中参数AnnotationMetadata内包含了被`@Import`注解的类的注解信息。在selectImports方法内可根据具体实现决定返回哪些配置类的全限定名，将结果以字符串数组的形式返回。
+​		ImportSelector 接口提供了一个参数为AnnotationMetadata的方法，返回一个字符串数组。其中参数AnnotationMetadata内包含了被`@Import`注解的类的注解信息。在selectImports方法内可根据具体实现决定返回哪些配置类的全限定名，将结果以字符串数组的形式返回。
 
-如果实现了接口ImportSelector的类的同时又实现了以下4个Aware接口，那么Spring保证在调用ImportSelector之前会先调用Aware接口的方法。这4个接口为：`EnvironmentAware`、`BeanFactoryAware`、`BeanClassLoaderAware`和 `ResourceLoaderAware。`
+​		如果实现了接口ImportSelector的类的同时又实现了以下4个Aware接口，那么Spring保证在调用ImportSelector之前会先调用Aware接口的方法。这4个接口为：`EnvironmentAware`、`BeanFactoryAware`、`BeanClassLoaderAware`和 `ResourceLoaderAware。`
 
 **ImportSelector接口子接口DeferredImportSelector：**
 
@@ -219,7 +219,7 @@ public interface DeferredImportSelector extends ImportSelector {
 
 #### AutoCongfigurationImportSelector
 
-在@EnableAutoConfiguration注解中包含了@Import注解，在@import注解中传入了AutoConfigurationimportSelector类。先看下AutoConfigurationImportSelector类的实现。
+​		在@EnableAutoConfiguration注解中包含了@Import注解，在@import注解中传入了AutoConfigurationimportSelector类。先看下AutoConfigurationImportSelector类的实现。
 
 ```java
 public class AutoConfigurationImportSelector implements DeferredImportSelector, BeanClassLoaderAware, ResourceLoaderAware, BeanFactoryAware, EnvironmentAware, Ordered {
@@ -238,19 +238,19 @@ public class AutoConfigurationImportSelector implements DeferredImportSelector, 
 }
 ```
 
-<font color="red">再看AutoConfigurationImportSelector接口可以看到它实现了一个 DeferredImportSelector 这个接口。而在往DeferredImportSelector接口中进入发现他是ImportSelector的子接口</font>
+<font color="red">		再看AutoConfigurationImportSelector接口可以看到它实现了一个 DeferredImportSelector 这个接口。而在往DeferredImportSelector接口中进入发现他是ImportSelector的子接口</font>
 
 [![Bym21P.png](https://s1.ax1x.com/2020/11/03/Bym21P.png)](https://imgchr.com/i/Bym21P)
 
-**AutoConfigurationImportSelector并没有直接实现ImportSelector接口，而是实现了它的子接口DeferredImportSelector。DeferredImportSelector接口与ImportSelector的区别是，前者会在所有的@Configuration类加载完成之后再加载返回的配置类，而ImportSelector是在加载完@Configuration类之前先去加载返回的配置类。**
+​		**AutoConfigurationImportSelector并没有直接实现ImportSelector接口，而是实现了它的子接口DeferredImportSelector。DeferredImportSelector接口与ImportSelector的区别是，前者会在所有的@Configuration类加载完成之后再加载返回的配置类，而ImportSelector是在加载完@Configuration类之前先去加载返回的配置类。**
 
-DeferredImportSelector的加载顺序可以通过@Order注解或实现Ordered接口来指定。同时，DeferredImportSelector提供了新的方法getImportGroup()来跨DeferredImportSelector实现自定义Configuration的加载顺序。
+​		DeferredImportSelector的加载顺序可以通过@Order注解或实现Ordered接口来指定。同时，DeferredImportSelector提供了新的方法getImportGroup()来跨DeferredImportSelector实现自定义Configuration的加载顺序。
 
 ##### AutoConfigurationImportSelector类深入解析
 
 [![BcyEND.png](https://s1.ax1x.com/2020/11/04/BcyEND.png)](https://imgchr.com/i/BcyEND)
 
-当AutoConfigurationImportSelector被@Import注解引入之后，它的selectImports方法会被调用并执行其实现的自动装配逻辑。selectImports(AnnotationMetadata annotationMetadata) 方法 几乎涵盖了组件自动装配的所有处理逻辑
+​		当AutoConfigurationImportSelector被@Import注解引入之后，它的selectImports方法会被调用并执行其实现的自动装配逻辑。selectImports(AnnotationMetadata annotationMetadata) 方法 几乎涵盖了组件自动装配的所有处理逻辑
 
 ```java
 @Override
@@ -315,7 +315,7 @@ protected AutoConfigurationEntry getAutoConfigurationEntry(AnnotationMetadata an
 
 #### @EnableAutoConfiguration 自动配置开关
 
-位于selectImports方法中第一段代码进行判断了是否开启自动配置功能，如果开启了自动配置就进行后续功能；如果未开启就返回空数组。
+​		位于selectImports方法中第一段代码进行判断了是否开启自动配置功能，如果开启了自动配置就进行后续功能；如果未开启就返回空数组。
 
 ```java
 public String[] selectImports(AnnotationMetadata annotationMetadata) {
@@ -334,7 +334,7 @@ protected boolean isEnabled(AnnotationMetadata metadata) {
 }
 ```
 
-通过isEnabled方法可以看出，如果当前类为AutoConfigurationImportSelector，程序会从环境中获取key为EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY的配置，该常量的值为spring.boot.enableautoconfiguration。如果获取不到该属性的配置，isEnabled默认为true，也就是默认会使用自动配置。如果当前类为其他类，直接返回true。
+​		通过isEnabled方法可以看出，如果当前类为AutoConfigurationImportSelector，程序会从环境中获取key为EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY的配置，该常量的值为spring.boot.enableautoconfiguration。如果获取不到该属性的配置，isEnabled默认为true，也就是默认会使用自动配置。如果当前类为其他类，直接返回true。
 
 如果我们想覆盖或重置EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY的配置可以在application.propertie或application.yml进行配置。<font color="blue">比如关闭自动配置：</font>
 
@@ -350,7 +350,7 @@ spring.boot.enableautoconfiguration=false
 
 #### @EnableAutoConfiguration 排除指定组件
 
-AutoConfigurationImportSelector中通过调用getExclusions方法来获取被排除类的集合。它会收集@EnableAutoConfiguration注解中配置的exclude属性值、excludeName属性值，并通过方法getExcludeAutoConfigurationsProperty获取在配置文件中key为spring.autoconfigure.exclude的配置值。以排除自动配置DataSourceAutoConfiguration为例，配置文件中的配置形式如下。<font color="blue" >比如在application.properties进行配置</font>
+​			AutoConfigurationImportSelector中通过调用getExclusions方法来获取被排除类的集合。它会收集@EnableAutoConfiguration注解中配置的exclude属性值、excludeName属性值，并通过方法getExcludeAutoConfigurationsProperty获取在配置文件中key为spring.autoconfigure.exclude的配置值。以排除自动配置DataSourceAutoConfiguration为例，配置文件中的配置形式如下。<font color="blue" >比如在application.properties进行配置</font>
 
 ```properties
 spring.autoconfigure.exclude=org.springframework.boot.autoconfiguration.jdbc.DataSourceAutoConfiguration
@@ -358,11 +358,11 @@ spring.autoconfigure.exclude=org.springframework.boot.autoconfiguration.jdbc.Dat
 
 #### @EnableAutoConfiguration 过滤自动配置组件
 
-当完成初步的自动配置组件排除工作之后，AutoConfigurationImportSelector会结合在此之前获取的AutoConfigurationMetadata对象，对组件进行再次过滤
+​		当完成初步的自动配置组件排除工作之后，AutoConfigurationImportSelector会结合在此之前获取的AutoConfigurationMetadata对象，对组件进行再次过滤
 
 #### @EnableAutoConfiguration 事件注册
 
-通过SpringFactoriesLoader类提供的loadFactories方法将spring.factories中配置的接口AutoConfigurationImportListener的实现类加载出来。然后，将筛选出的自动配置类集合和被排除的自动配置类集合封装成AutoConfigurationImportEvent事件对象，并传入该事件对象通过监听器提供的onAutoConfigurationImportEvent方法，最后进行事件广播
+​		通过SpringFactoriesLoader类提供的loadFactories方法将spring.factories中配置的接口AutoConfigurationImportListener的实现类加载出来。然后，将筛选出的自动配置类集合和被排除的自动配置类集合封装成AutoConfigurationImportEvent事件对象，并传入该事件对象通过监听器提供的onAutoConfigurationImportEvent方法，最后进行事件广播
 
 spring.factories中自动配置监听器相关配置代码如下:
 
@@ -375,9 +375,9 @@ org.springframework.boot.autoconfigure.condition.ConditionEvaluationReportAutoCo
 
 ### @Conditional条件注解
 
-前面自动配置类的读取和筛选，在这个过程中已经涉及了像@Conditional-OnClass这样的条件注解。打开每一个自动配置类，都会看到@Conditional或其衍生的条件注解。下面就先认识一下@Conditional注解。
+​		前面自动配置类的读取和筛选，在这个过程中已经涉及了像@Conditional-OnClass这样的条件注解。打开每一个自动配置类，都会看到@Conditional或其衍生的条件注解。下面就先认识一下@Conditional注解。
 
-@Conditional注解是由Spring 4.0版本引入的新特性，可根据是否满足指定的条件来决定是否进行Bean的实例化及装配，比如，设定当类路径下包含某个jar包的时候才会对注解的类进行实例化操作。总之，就是根据一些特定条件来控制Bean实例化的行为，@Conditional注解代码如下。
+​		@Conditional注解是由Spring 4.0版本引入的新特性，可根据是否满足指定的条件来决定是否进行Bean的实例化及装配，比如，设定当类路径下包含某个jar包的时候才会对注解的类进行实例化操作。总之，就是根据一些特定条件来控制Bean实例化的行为，@Conditional注解代码如下。
 
 
 
