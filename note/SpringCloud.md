@@ -190,7 +190,7 @@
 >   		后台服务贯彻 Single Responsibility Principle（单一职责原则）
 >   		VM -> Docker
 >   		DevOps
->
+>	
 >   		springCloud 基于springboot的技术技术框架；
 >   		java原生云开发=springCloud+spring boot
 
@@ -1088,7 +1088,11 @@ Eureka Client是一个Java客户端， 用于简化Eureka Server的交互，客�
 
 Eureka在设计时就优先保证可用性。Eureka各个节点都是平等的，几个节点挂掉不会影响正常节点的工作，剩余的节点依然可以提供注册和查询服务。而Eureka的客户端在向某个Eureka注册或时如果发现连接失败，则会自动切换至其它节点，只要有一台Eureka还在，就能保证注册服务可用（保证可用性），只不过查到的信息可能不是最新的（不保证强一致性）。
 
+参考：https://www.jianshu.com/p/6a3db6939fb0
+
 ### 各组件深入之Spring Cloud openFeign
+
+​			在微服务架构中，业务都会被拆分成一个独立的服务，服务与服务的通讯是基于HTTP RESTful的。Spring Cloud有两种服务调用方式，一种是Ribbon+RestTemplate，另一种是Feign。
 
 ​			Feign是声明性Web服务客户端。 它使编写Web服务客户端更加容易。 要使用Feign，请创建一个接口并对其进行注释。 它具有可插入注释支持，包括Feign注释和JAX-RS注释。 Feign还支持可插拔编码器和解码器。 Spring Cloud添加了对Spring MVC注释的支持，并支持使用Spring Web中默认使用的相同HttpMessageConverters。 Spring Cloud集成了Eureka和Spring Cloud LoadBalancer，以在使用Feign时提供负载平衡的http客户端。 就是通过把http请求封装到了注解中。
 

@@ -125,20 +125,6 @@ public class Application {
 
 ```
 
-#### @EnableAutoConfiguration 自动配置开关
-
-
-
-#### @EnableAutoConfiguration 加载元数据配置
-
-#### @EnableAutoConfiguration 加载自动配置组件
-
-#### @EnableAutoConfiguration 排除指定组件
-
-#### @EnableAutoConfiguration 过滤自动配置组件
-
-#### @EnableAutoConfiguration 事件注册
-
 
 
 ###  AutoCongfigurationImportSelector源码解析
@@ -280,7 +266,7 @@ public String[] selectImports(AnnotationMetadata annotationMetadata) {
 }
 ```
 
-
+<font color="green">接下来看这个封装的AutoConfigurationEntry对象是如何封装的。</font>
 
 ```java
 /**
@@ -293,7 +279,7 @@ protected AutoConfigurationEntry getAutoConfigurationEntry(AnnotationMetadata an
     if (!isEnabled(annotationMetadata)) {
         return EMPTY_ENTRY;
     }
-    // 获取所有的注解属性同时会合并一些注解
+    // 加载类路径下metadata配置
     AnnotationAttributes attributes = getAttributes(annotationMetadata);
     // 通过SpringFactoriesloader类提供的方法加载类路径中MeTA——INF目录下的 Spring.factories文件中针对EnableAutoConfigurationtion的注册配置类
     List<String> configurations = getCandidateConfigurations(annotationMetadata, attributes);
@@ -313,7 +299,83 @@ protected AutoConfigurationEntry getAutoConfigurationEntry(AnnotationMetadata an
 }
 ```
 
+下面看下全部的过程的代码解析
+
+[![B2X58g.png](https://s1.ax1x.com/2020/11/05/B2X58g.png)](https://imgchr.com/i/B2X58g)
+
+[![BRP4PI.png](https://s1.ax1x.com/2020/11/05/BRP4PI.png)](https://imgchr.com/i/BRP4PI)
+
+[![BRPIRP.png](https://s1.ax1x.com/2020/11/05/BRPIRP.png)](https://imgchr.com/i/BRPIRP)
+
+[![BRPXIs.png](https://s1.ax1x.com/2020/11/05/BRPXIs.png)](https://imgchr.com/i/BRPXIs)
+
+
+
+<font color="blue">**看过AutoConfigurationImportSelector源码后我们继续看@EnableAutoConfiguration注解**</font>
+
+#### @EnableAutoConfiguration 自动配置开关
+
+位于selectImports方法中第一段代码进行判断了是否开启自动配置功能，如果开启了自动配置就进行后续功能；如果未开启就返回空数组。
+
+```java
+public String[] selectImports(AnnotationMetadata annotationMetadata) {
+		if (!isEnabled(annotationMetadata)) {
+			return NO_IMPORTS;
+		}
+    ...
+        ...
+}
+// 在EnableAutoConfiguration的类中 有配置 String ENABLED_OVERRIDE_PROPERTY = "spring.boot.enableautoconfiguration";
+protected boolean isEnabled(AnnotationMetadata metadata) {
+		if (getClass() == AutoConfigurationImportSelector.class) {
+			return getEnvironment().getProperty(EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY, Boolean.class, true);
+		}
+		return true;
+}
+```
+
+通过isEnabled方法可以看出，如果当前类为AutoConfigurationImportSelector，程序会从环境中获取key为EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY的配置，该常量的值为spring.boot.enableautoconfiguration。如果获取不到该属性的配置，isEnabled默认为true，也就是默认会使用自动配置。如果当前类为其他类，直接返回true。
+
+如果我们想覆盖或重置EnableAutoConfiguration.ENABLED_OVERRIDE_PROPERTY的配置可以在application.propertie或application.yml进行配置。<font color="blue">比如关闭自动配置：</font>
+
+```properties
+spring.boot.enableautoconfiguration=false
+```
+
+#### @EnableAutoConfiguration 加载元数据配置
+
+
+
+#### @EnableAutoConfiguration 加载自动配置组件
+
+#### @EnableAutoConfiguration 排除指定组件
+
+AutoConfigurationImportSelector中通过调用getExclusions方法来获取被排除类的集合。它会收集@EnableAutoConfiguration注解中配置的exclude属性值、excludeName属性值，并通过方法getExcludeAutoConfigurationsProperty获取在配置文件中key为spring.autoconfigure.exclude的配置值。以排除自动配置DataSourceAutoConfiguration为例，配置文件中的配置形式如下。<font color="blue" >比如在application.properties进行配置</font>
+
+```properties
+spring.autoconfigure.exclude=org.springframework.boot.autoconfiguration.jdbc.DataSourceAutoConfiguration
+```
+
+#### @EnableAutoConfiguration 过滤自动配置组件
+
+当完成初步的自动配置组件排除工作之后，AutoConfigurationImportSelector会结合在此之前获取的AutoConfigurationMetadata对象，对组件进行再次过滤
+
+#### @EnableAutoConfiguration 事件注册
+
+通过SpringFactoriesLoader类提供的loadFactories方法将spring.factories中配置的接口AutoConfigurationImportListener的实现类加载出来。然后，将筛选出的自动配置类集合和被排除的自动配置类集合封装成AutoConfigurationImportEvent事件对象，并传入该事件对象通过监听器提供的onAutoConfigurationImportEvent方法，最后进行事件广播
+
+spring.factories中自动配置监听器相关配置代码如下:
+
+```properties
+# Auto Configuration Import Listeners
+org.springframework.boot.autoconfigure.AutoConfigurationImportListener=\
+org.springframework.boot.autoconfigure.condition.ConditionEvaluationReportAutoConfigurationImportListener
+
+```
+
 ### @Conditional条件注解
+
+前面自动配置类的读取和筛选，在这个过程中已经涉及了像@Conditional-OnClass这样的条件注解。打开每一个自动配置类，都会看到@Conditional或其衍生的条件注解。下面就先认识一下@Conditional注解。
 
 @Conditional注解是由Spring 4.0版本引入的新特性，可根据是否满足指定的条件来决定是否进行Bean的实例化及装配，比如，设定当类路径下包含某个jar包的时候才会对注解的类进行实例化操作。总之，就是根据一些特定条件来控制Bean实例化的行为，@Conditional注解代码如下。
 
