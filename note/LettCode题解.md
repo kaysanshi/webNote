@@ -21,27 +21,33 @@
 
 ```java
 class Solution {
-    public int[] twoSum(int[] nums, int target) {
+        @Test
+    public void test(){
+        int[] a=new int[]{1,2,3,4,5};
+        int[] tosum = twoSum(a,3);
+        System.out.println(Arrays.toString(tosum));
+    }
+    public int[] twoSum (int[] nums, int target){
         // 解题思路》
         /*
-        * 1.定义一个map，让 target-nums[i],然后查看 map中是否包含了这个值
-        * 2.检查是否包含如果包含则，将值和小标返回，
-        *3.如果没有的话进行把nums[i]当做key放入，i值当做value放入。
-        */
-       Map map=new HashMap();
-        int[] array =new int[2];
-        for(var i=0;i<nums.length;i++){
-            var templeate =target-nums[i];
-            if(map.containsKey(templeate)){
+         * 1.定义一个map，让 target-nums[i],然后查看 map中是否包含了这个值
+         * 2.检查是否包含如果包含则，将值和小标返回，
+         *3.如果没有的话进行把nums[i]当做key放入，i值当做value放入。
+         */
+        Map map = new HashMap();
+        int[] array = new int[2];
+        for (int i = 0; i < nums.length; i++) {
+            int temp = target - nums[i];
+            if (map.containsKey(temp)) {
                 //return array[map.get(templeate),i];
-                array[0]=(int)map.get(templeate);
-                array[1]=i;
+                array[0] = (int) map.get(temp);
+                array[1] = i;
                 return array;
-            }else {
-                map.put(nums[i],i);
+            } else {
+                map.put(nums[i], i);
             }
         }
-       return array;
+        return array;
     }
 }
 ```
