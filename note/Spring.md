@@ -570,7 +570,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     </bean>
 </beans>
 ```
-### 自动装配
+### 自动装配Bean
 
 **自动装配：**
 
@@ -586,26 +586,45 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 ​			你可以使用<bean>元素的 autowire 属性为一个 bean 定义指定自动装配模式;
 
+**`<bean id="customer" class="com.yiibai.common.Customer" autowire="byName" />`**
+
 **autowire属性有以下取值：**
 
-​					`no`	这是默认的设置，它意味着没有自动装配，你应该使用显式的bean引用来连线。你不用为了连线做特殊的事。在依赖注入章节你已经看到这个了。
+- `no`	这是默认的设置，它意味着没有自动装配，你应该使用显式的bean引用来连线。你不用为了连线做特殊的事。在依赖注入章节你已经看到这个了。
+- `byName`	由属性名自动装配。Spring 容器看到在 XML 配置文件中 bean 的自动装配的属性设置为 byName。然后尝试匹配，并且将它的属性与在配置文件中被定义为相同名称的 beans 的属性进行连接。
+- `byType`	由属性数据类型自动装配。Spring 容器看到在 XML 配置文件中 bean 的自动装配的属性设置为 byType。然后如果它的类型匹配配置文件中的一个确切的 bean 名称，它将尝试匹配和连接属性的类型。如果存在不止一个这样的 bean，则一个致命的异常将会被抛出。
+- `constructor`	类似于 `byType`，但该类型适用于构造函数参数类型。如果在容器中没有一个构造函数参数类型的 bean，则一个致命错误将会发生。
+- `autodetect`	Spring首先尝试通过 constructor 使用自动装配来连接，如果它不执行，Spring 尝试通过 byType 来自动装配。
 
-​					`byName`	由属性名自动装配。Spring 容器看到在 XML 配置文件中 bean 的自动装配的属性设置为 byName。然后尝试匹配，并且将它的属性与在配置文件中被定义为相同名称的 beans 的属性进行连接。
-
-​					`byType`	由属性数据类型自动装配。Spring 容器看到在 XML 配置文件中 bean 的自动装配的属性设置为 byType。然后如果它的类型匹配配置文件中的一个确切的 bean 名称，它将尝试匹配和连接属性的类型。如果存在不止一个这样的 bean，则一个致命的异常将会被抛出。
-
-​					`constructor`	类似于 `byType`，但该类型适用于构造函数参数类型。如果在容器中没有一个构造函数参数类型的 bean，则一个致命错误将会发生。
-
-​					`autodetect`	Spring首先尝试通过 constructor 使用自动装配来连接，如果它不执行，Spring 尝试通过 byType 来自动装配。
-
-> ​			<bean>元素byname装配：
+> ​	<bean>元素byname装配：
 > ​					<bean id="textEditor" class="com.tutorialspoint.TextEditor" 
 > ​					autowire="byName">
-> ​					它尝试将它的属性与配置文件中定义为相同名称的 beans 进行匹配和连接。如果找到匹配项，它将注入这些 beans，否则，它将抛出异常
-> ​			<bean>元素bytype装配：
-> ​					<bean id="textEditor" class="com.tutorialspoint.TextEditor" 
-> ​					autowire="byType">
+> ​				它尝试将它的属性与配置文件中定义为相同名称的 beans 进行匹配和连接。如果找到匹配项，它将注入这些 beans，否则，它将抛出异常
+> ​	<bean>元素bytype装配：
+> ​					<bean id="textEditor" class="com.tutorialspoint.TextEditor" autowire="byType">
 > ​					如果它的 type 恰好与配置文件中 beans 名称中的一个相匹配，它将尝试匹配和连接它的属性。如果找到匹配项，它将注入这些 beans，否则，它将抛出异常
+
+#### 使用注解进行装配
+
+##### @Autowired注解
+
+​	@Autowired注解是通过匹配数据类型自动装配Bean。默认byType
+
+##### @Qualifier注解
+
+​	@Qualifier注解我们用来控制bean应在字段上自动装配,使用 @Quanlifier 告诉Spring哪些bean应当自动装配。
+
+```java
+public class Customer {
+
+	@Autowired
+	@Qualifier("personA")
+	private Person person;
+	//...
+}
+```
+
+
 
 ### 注解代替xml
 
