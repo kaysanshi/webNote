@@ -5,14 +5,16 @@
 ## learning-note
 
 ### java 基础 
+
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/%E7%96%AF%E7%8B%82java%E7%9F%A5%E8%AF%86%E7%82%B9.md" target="_blank">疯狂java以及面试题 </a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Java8%E6%96%B0%E7%89%B9%E6%80%A7.md" target="_blank">java8</a>
 
-### 容器化&持续集成
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/Docker.md" target="_blank">Docker </a>
 
-[Git](https://github.com/kaysanshi/webNote/blob/master/note/Git.md)  
+
+### 计算机基础进阶
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.md" target="_blank">数据结构与算法实践</a>
 
 
 
@@ -23,11 +25,21 @@
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%E6%B3%A8%E8%A7%A3%EF%BC%9A.md" target="_blank">Spring 注解</a>
 
+
+
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Boot.md" target="_blank">SpringBoot入门</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E4%BB%8B%E7%BB%8D.md" target="_blank">SpringBoote介绍</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E6%95%B4%E5%90%88%E5%85%B6%E4%BB%96%E7%BB%84%E4%BB%B6.md" target="_blank">SpringBoot整合其组件</a>
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Spring%20Boot%20%E5%8E%9F%E7%90%86%E6%8E%A2%E7%B4%A2.md" target="_blank">SpringBoot 原理探索</a>
+
+
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Spring%20Security.md" target="_blank">Spring Security</a>
+
+
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringCloud.md" target="_blank">SpringCloud</a>
 
@@ -35,16 +47,34 @@
 
 
 
-### 数据库访问
+
+
+### 数据库
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Mysql%E6%AF%94%E7%9F%A5%E5%BF%85%E4%BC%9A%20%EF%BC%9A.md" target="_blank">Mysql比知必会</a>
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/MySQL%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96.md" target="_blank">Mysql查询优化</a>
+
+
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Oracle.md" target="_blank">Oracle</a>
+
+### 数据库访问ORM
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/JDBCTemplate.md" target="_blank">JdbcTemplate</a>
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/JPA.md" target="_blank">JPA</a>
+
+
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Data.md" target="_blank">SpringData</a>
+
+
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Hibernate.md" target="_blank">Hibernate</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/hibernate%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%EF%BC%9A.md" target="_blank">Hibernate 连接查询</a>
 
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Data.md" target="_blank">SpringData</a>
 
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/JPA.md" target="_blank">JPA</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Mybatis.md" target="_blank">Mybatis</a>
 
@@ -57,12 +87,21 @@
 
 [Jedis](https://github.com/kaysanshi/webNote/blob/master/note/Redis%E4%BD%BF%E7%94%A8lettuce%E5%92%8Cjedis.md)
 
-<a href="#" target="_blank">redis</a>
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Apache%20Dubbo%20Zookeeper.md" target="_blank">redis</a>
 
-### MySQL
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/Mysql%E6%AF%94%E7%9F%A5%E5%BF%85%E4%BC%9A%20%EF%BC%9A.md" target="_blank">Mysql比知必会</a>
 
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/MySQL%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96.md" target="_blank">Mysql查询优化</a>
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Apache%20Dubbo%20Zookeeper.md" target="_blank">Apache Dubbo Zookepeer</a>
+
+
+
+### 容器化&持续集成
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Docker.md" target="_blank">Docker </a>
+
+[Git](https://github.com/kaysanshi/webNote/blob/master/note/Git.md)  
+
+
 
 ### 前端
 
