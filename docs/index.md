@@ -7,6 +7,8 @@
 ### java 基础 
 [疯狂java以及面试题](https://github.com/kaysanshi/webNote/blob/master/note/%E7%96%AF%E7%8B%82java%E7%9F%A5%E8%AF%86%E7%82%B9.md) 
 
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/%E7%96%AF%E7%8B%82java%E7%9F%A5%E8%AF%86%E7%82%B9.md" target="_blank">疯狂java以及面试题 </a>
+
 ### 容器化&持续集成
 [Docker](https://github.com/kaysanshi/webNote/blob/master/note/Docker.md)
 
