@@ -5,69 +5,76 @@
 ## learning-note
 
 ### java 基础 
-[疯狂java以及面试题](https://github.com/kaysanshi/webNote/blob/master/note/%E7%96%AF%E7%8B%82java%E7%9F%A5%E8%AF%86%E7%82%B9.md) 
-
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/%E7%96%AF%E7%8B%82java%E7%9F%A5%E8%AF%86%E7%82%B9.md" target="_blank">疯狂java以及面试题 </a>
 
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Java8%E6%96%B0%E7%89%B9%E6%80%A7.md" target="_blank">java8</a>
+
 ### 容器化&持续集成
-[Docker](https://github.com/kaysanshi/webNote/blob/master/note/Docker.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Docker.md" target="_blank">Docker </a>
 
 [Git](https://github.com/kaysanshi/webNote/blob/master/note/Git.md)  
 
+
+
 ### 框架
-[Spring](https://github.com/kaysanshi/webNote/blob/master/note/Spring.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring.md" target="_blank">Spring</a>
 
-[SpringMVC](https://github.com/kaysanshi/webNote/blob/master/note/springmvc%EF%BC%9A.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/springmvc%EF%BC%9A.md" target="_blank">SpringMVC</a>
 
-[SptingData&JPA](https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Data.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%E6%B3%A8%E8%A7%A3%EF%BC%9A.md" target="_blank">Spring 注解</a>
 
-[Spring 注解](https://github.com/kaysanshi/webNote/blob/master/note/Spring%E6%B3%A8%E8%A7%A3%EF%BC%9A.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Boot.md" target="_blank">SpringBoot入门</a>
 
-[SpringBoot入门](https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Boot.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E4%BB%8B%E7%BB%8D.md" target="_blank">SpringBoote介绍</a>
 
-[SpringBoot介绍](https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E4%BB%8B%E7%BB%8D.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E6%95%B4%E5%90%88%E5%85%B6%E4%BB%96%E7%BB%84%E4%BB%B6.md" target="_blank">SpringBoot整合其组件</a>
 
-[SpringBoot整合组件](https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E6%95%B4%E5%90%88%E5%85%B6%E4%BB%96%E7%BB%84%E4%BB%B6.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringCloud.md" target="_blank">SpringCloud</a>
 
-[SpringCloud](https://github.com/kaysanshi/webNote/blob/master/note/SpringCloud.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/itoken.md" target="_blank">SpringCloud itoken 项目</a>
 
-[itoken](https://github.com/kaysanshi/webNote/blob/master/note/itoken.md)
 
-[java8](https://github.com/kaysanshi/webNote/blob/master/note/Java8%E6%96%B0%E7%89%B9%E6%80%A7.md)
 
 ### 数据库访问
-[Hibernate](https://github.com/kaysanshi/webNote/blob/master/note/Hibernate.md)
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/JDBCTemplate.md" target="_blank">JdbcTemplate</a>
 
-[Hibernate连接查询](https://github.com/kaysanshi/webNote/blob/master/note/hibernate%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%EF%BC%9A.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Hibernate.md" target="_blank">Hibernate</a>
 
-[JPA](https://github.com/kaysanshi/webNote/blob/master/note/JPA.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/hibernate%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%EF%BC%9A.md" target="_blank">Hibernate 连接查询</a>
 
-[Mybatis](https://github.com/kaysanshi/webNote/blob/master/note/Mybatis.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Data.md" target="_blank">SpringData</a>
 
-[TkMybatis](https://github.com/kaysanshi/webNote/blob/master/note/tkmybatis.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/JPA.md" target="_blank">JPA</a>
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Mybatis.md" target="_blank">Mybatis</a>
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/tkmybatis.md" target="_blank">TkMybatis</a>
+
+
 
 
 ### 中间件
 
 [Jedis](https://github.com/kaysanshi/webNote/blob/master/note/Redis%E4%BD%BF%E7%94%A8lettuce%E5%92%8Cjedis.md)
 
-### MySQL
-[Mysql查询优化](https://github.com/kaysanshi/webNote/blob/master/note/MySQL%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96.md)
+<a href="#" target="_blank">redis</a>
 
-[Mysq必知必會](https://github.com/kaysanshi/webNote/blob/master/note/Mysql%E6%AF%94%E7%9F%A5%E5%BF%85%E4%BC%9A%20%EF%BC%9A.md)
+### MySQL
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Mysql%E6%AF%94%E7%9F%A5%E5%BF%85%E4%BC%9A%20%EF%BC%9A.md" target="_blank">Mysql比知必会</a>
+
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/MySQL%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96.md" target="_blank">Mysql查询优化</a>
 
 ### 前端
 
-[Vue](https://github.com/kaysanshi/webNote/blob/master/note/VUE.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/VUE.md" target="_blank">Vue</a>
 
-[Vue&Angular](https://github.com/kaysanshi/webNote/blob/master/note/Vue%E5%92%8Cangular%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Vue%E5%92%8Cangular%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0.md" target="_blank">Vue&angular</a>
 
-[微信小程序](https://github.com/kaysanshi/webNote/blob/master/note/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F.md" target="_blank">微信小程序</a>
 
 
 ### python
 
-[Python](https://github.com/kaysanshi/webNote/blob/master/note/python.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/python.md" target="_blank">Python基础</a>
 
-
-[Python+Appium自动化测试](https://github.com/kaysanshi/webNote/blob/master/note/python%2Bappium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95.md)
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/python%2Bappium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95.md" target="_blank">Python+appium自动化测试教程</a>
