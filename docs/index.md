@@ -1,37 +1,71 @@
-## Welcome to GitHub Pages
+# 欢迎来到learning-note
 
-You can use the [editor on GitHub](https://github.com/kaysanshi/learning-note/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+你可以根据你想要学习的内容，看我的学习笔记系统的学习你想要学习的内容，同样有什么改进之处也欢迎你的指正.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## learning-note
 
-### learning-note
+### java 基础 
+[疯狂java以及面试题](https://github.com/kaysanshi/webNote/blob/master/note/%E7%96%AF%E7%8B%82java%E7%9F%A5%E8%AF%86%E7%82%B9.md) 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### 容器化&持续集成
+[Docker](https://github.com/kaysanshi/webNote/blob/master/note/Docker.md)
 
-```markdown
-Syntax highlighted code block
+[Git](https://github.com/kaysanshi/webNote/blob/master/note/Git.md)  
 
-# Header 1
-## Header 2
-### Header 3
+### 框架
+[Spring](https://github.com/kaysanshi/webNote/blob/master/note/Spring.md)
 
-- Bulleted
-- List
+[SpringMVC](https://github.com/kaysanshi/webNote/blob/master/note/springmvc%EF%BC%9A.md)
 
-1. Numbered
-2. List
+[SptingData&JPA](https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Data.md)
 
-**Bold** and _Italic_ and `Code` text
+[Spring 注解](https://github.com/kaysanshi/webNote/blob/master/note/Spring%E6%B3%A8%E8%A7%A3%EF%BC%9A.md)
 
-[Link](url) and ![Image](src)
-```
+[SpringBoot入门](https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Boot.md)
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+[SpringBoot介绍](https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E4%BB%8B%E7%BB%8D.md)
 
-### Jekyll Themes
+[SpringBoot整合组件](https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E6%95%B4%E5%90%88%E5%85%B6%E4%BB%96%E7%BB%84%E4%BB%B6.md)
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/kaysanshi/learning-note/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+[SpringCloud](https://github.com/kaysanshi/webNote/blob/master/note/SpringCloud.md)
 
-### Support or Contact
+[itoken](https://github.com/kaysanshi/webNote/blob/master/note/itoken.md)
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+[java8](https://github.com/kaysanshi/webNote/blob/master/note/Java8%E6%96%B0%E7%89%B9%E6%80%A7.md)
+
+### 数据库访问
+[Hibernate](https://github.com/kaysanshi/webNote/blob/master/note/Hibernate.md)
+
+[Hibernate连接查询](https://github.com/kaysanshi/webNote/blob/master/note/hibernate%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%EF%BC%9A.md)
+
+[JPA](https://github.com/kaysanshi/webNote/blob/master/note/JPA.md)
+
+[Mybatis](https://github.com/kaysanshi/webNote/blob/master/note/Mybatis.md)
+
+[TkMybatis](https://github.com/kaysanshi/webNote/blob/master/note/tkmybatis.md)
+
+
+### 中间件
+
+[Jedis](https://github.com/kaysanshi/webNote/blob/master/note/Redis%E4%BD%BF%E7%94%A8lettuce%E5%92%8Cjedis.md)
+
+### MySQL
+[Mysql查询优化](https://github.com/kaysanshi/webNote/blob/master/note/MySQL%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96.md)
+
+[Mysq必知必會](https://github.com/kaysanshi/webNote/blob/master/note/Mysql%E6%AF%94%E7%9F%A5%E5%BF%85%E4%BC%9A%20%EF%BC%9A.md)
+
+### 前端
+
+[Vue](https://github.com/kaysanshi/webNote/blob/master/note/VUE.md)
+
+[Vue&Angular](https://github.com/kaysanshi/webNote/blob/master/note/Vue%E5%92%8Cangular%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0.md)
+
+[微信小程序](https://github.com/kaysanshi/webNote/blob/master/note/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F.md)
+
+
+### python
+
+[Python](https://github.com/kaysanshi/webNote/blob/master/note/python.md)
+
+
+[Python+Appium自动化测试](https://github.com/kaysanshi/webNote/blob/master/note/python%2Bappium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95.md)
