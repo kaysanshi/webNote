@@ -87,7 +87,7 @@
 
 [Jedis](https://github.com/kaysanshi/webNote/blob/master/note/Redis%E4%BD%BF%E7%94%A8lettuce%E5%92%8Cjedis.md)
 
-<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Apache%20Dubbo%20Zookeeper.md" target="_blank">redis</a>
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Redis.md" target="_blank">redis</a>
 
 
 
