@@ -344,8 +344,6 @@ spring.boot.enableautoconfiguration=false
 
 #### @EnableAutoConfiguration 加载元数据配置
 
-
-
 #### @EnableAutoConfiguration 加载自动配置组件
 
 #### @EnableAutoConfiguration 排除指定组件
@@ -379,6 +377,159 @@ org.springframework.boot.autoconfigure.condition.ConditionEvaluationReportAutoCo
 
 ​		@Conditional注解是由Spring 4.0版本引入的新特性，可根据是否满足指定的条件来决定是否进行Bean的实例化及装配，比如，设定当类路径下包含某个jar包的时候才会对注解的类进行实例化操作。总之，就是根据一些特定条件来控制Bean实例化的行为，@Conditional注解代码如下。
 
+```java
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Conditional {
+
+	/**
+	 * All {@link Condition} classes that must {@linkplain Condition#matches match}
+	 * in order for the component to be registered.
+	 */
+	Class<? extends Condition>[] value();
+
+}
+// 注解的唯一元素就是Condition的数组，只有在数组指定的所有的Condition的matches方法都返回true的时候被注解的类才会被加载。
+@FunctionalInterface
+public interface Condition {
+	// 决定条件是否匹配
+	boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
+
+}
+```
+
+matches方法的第一个参数为ConditionContext,可通过该接口提供的方法来获取得到spring应用的上下文信息。第二个参数 AnnotatedTypeMetadata 该接口提供了访问特定类或方法的注解功能，并且不需要加载类，可以用来检查带有@Bean注解的方法上是否还有其他注解。
+
+#### ConditionContext接口
+
+matches方法的第一个参数为ConditionContext，可通过该接口提供的方法来获得Spring应用的上下文信息
+
+```java
+public interface ConditionContext {
+
+	// 返回BeanDefintionRegistry注册表，可以检查Bean的定义
+	BeanDefinitionRegistry getRegistry();
+
+	// 返回ConfigurableBeanFactory,可以检查Bean是否已经存在，进一步检查Bean
+	@Nullable
+	ConfigurableListableBeanFactory getBeanFactory();
+    
+	// 返回Environment 可获取当前应用环境的变量。检查当前环境变量是否存在
+	Environment getEnvironment();
+
+	// 返回ResourceLoader 用于读取或检查所加载的资源。
+	ResourceLoader getResourceLoader();
+
+	// 返回classLoader 用于检查类是否存在。
+	@Nullable
+	ClassLoader getClassLoader();
+
+}
+```
+
+#### AnnotatedTypeMetadata接口
+
+该接口提供了访问特定类或方法的注解功能，并且不需要加载类，可以用来检查带有@Bean注解的方法上是否还有其他注解，AnnotatedTypeMetadata接口定义如下
+
+```java
+public interface AnnotatedTypeMetadata {
+    MergedAnnotations getAnnotations();
+	// 判断带有@Bean的注解的方法是否还有其他注解的功能
+    default boolean isAnnotated(String annotationName) {
+        return this.getAnnotations().isPresent(annotationName);
+    }
+
+    @Nullable
+    default Map<String, Object> getAnnotationAttributes(String annotationName) {
+        return this.getAnnotationAttributes(annotationName, false);
+    }
+
+    @Nullable
+    default Map<String, Object> getAnnotationAttributes(String annotationName, boolean classValuesAsString) {
+        MergedAnnotation<Annotation> annotation = this.getAnnotations().get(annotationName, (Predicate)null, MergedAnnotationSelectors.firstDirectlyDeclared());
+        return !annotation.isPresent() ? null : annotation.asAnnotationAttributes(Adapt.values(classValuesAsString, true));
+    }
+
+    @Nullable
+    default MultiValueMap<String, Object> getAllAnnotationAttributes(String annotationName) {
+        return this.getAllAnnotationAttributes(annotationName, false);
+    }
+
+    @Nullable
+    default MultiValueMap<String, Object> getAllAnnotationAttributes(String annotationName, boolean classValuesAsString) {
+        Adapt[] adaptations = Adapt.values(classValuesAsString, true);
+        return (MultiValueMap)this.getAnnotations().stream(annotationName).filter(MergedAnnotationPredicates.unique(MergedAnnotation::getMetaTypes)).map(MergedAnnotation::withNonMergedAttributes).collect(MergedAnnotationCollectors.toMultiValueMap((map) -> {
+            return map.isEmpty() ? null : map;
+        }, adaptations));
+    }
+}
+```
+
+#### 条件注解衍生注解
+
+在Spring Boot的autoconfigure项目中提供了各类基于@Conditional注解的衍生注解，它们适用不同的场景并提供了不同的功能。以下相关注解均位于spring-boot-autoconfigure项目的org.springframework.boot.autoconfigure.condition包下。
+
+·@ConditionalOnBean：在容器中有指定Bean的条件下。
+
+·@ConditionalOnClass：在classpath类路径下有指定类的条件下。
+
+·@ConditionalOnCloudPlatform：当指定的云平台处于active状态时。
+
+·@ConditionalOnExpression：基于SpEL表达式的条件判断。
+
+·@ConditionalOnJava：基于JVM版本作为判断条件。
+
+·@ConditionalOnJndi：在JNDI存在的条件下查找指定的位置。
+
+·@ConditionalOnMissingBean：当容器里没有指定Bean的条件时。
+
+·@ConditionalOnMissingClass：当类路径下没有指定类的条件时。
+
+·@ConditionalOnNotWebApplication：在项目不是一个Web项目的条件下。
+
+·@ConditionalOnProperty：在指定的属性有指定值的条件下。
+
+·@ConditionalOnResource：类路径是否有指定的值
+
+·@ConditionalOnSingleCandidate：当指定的Bean在容器中只有一个或者有多个但是指定了首选的Bean时。
+
+·@ConditionalOnWebApplication：在项目是一个Web项目的条件下。如果仔细观察这些注解的源码，你会发现它们其实都组合了@Conditional注解，不同之处是它们在注解中指定的条件（Condition）不同。下面我们以@ConditionalOnWebApplication为例来对衍生条件注解进行一个简单的分析
+
+condition接口相关的功能及实现类
+
+[![B7jJTU.png](https://s1.ax1x.com/2020/11/09/B7jJTU.png)](https://imgchr.com/i/B7jJTU)
+
+在抽象类SpringBootCondition中实现了matches方法，而该方法中最核心的部分是通过调用新定义的抽象方法getMatchOutcome并交由子类来实现，在matches方法中根据子类返回的结果判断是否匹配
+
+```java
+public abstract class SpringBootCondition implements Condition {
+
+	private final Log logger = LogFactory.getLog(getClass());
+
+	@Override
+	public final boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		String classOrMethodName = getClassOrMethodName(metadata);
+		try {
+			ConditionOutcome outcome = getMatchOutcome(context, metadata);
+			logOutcome(classOrMethodName, outcome);
+			recordEvaluation(context, classOrMethodName, outcome);
+			return outcome.isMatch();
+		}
+		catch (NoClassDefFoundError ex) {
+			throw new IllegalStateException("Could not evaluate condition on " + classOrMethodName + " due to "
+					+ ex.getMessage() + " not found. Make sure your own configuration does not rely on "
+					+ "that class. This can also happen if you are "
+					+ "@ComponentScanning a springframework package (e.g. if you "
+					+ "put a @ComponentScan in the default package by mistake)", ex);
+		}
+		catch (RuntimeException ex) {
+			throw new IllegalStateException("Error processing condition on " + getName(metadata), ex);
+		}
+	}
+}
+```
+
 
 
 **综合以上可以得到@SpringBootApplication注解的图解**
@@ -387,3 +538,315 @@ org.springframework.boot.autoconfigure.condition.ConditionEvaluationReportAutoCo
 
 
 
+## SpringBoot构造流程分析
+
+主要围绕的是SpringApplication这个类的静态方法run()进行初始化类的SpringApplication的自身的说明与进入。
+
+### SpringApplication类
+
+在入口类中主要通过SpringApplication的静态方法——run方法进行SpringApplication类的实例化操作，然后再针对实例化对象调用另外一个run方法来完成整个项目的初始化和启动。可以看到SpringApplication的实例化只是在它提供的静态run方法中新建了一个SpringApplication对象。其中参数primarySources为加载的主要资源类，通常就是Spring Boot的入口类，args为传递给应用程序的参数信息
+
+#### SpringApplication实例化流程
+
+```java
+/**
+** 
+**/
+public SpringApplication(Class<?>... primarySources) {
+   this((ResourceLoader)null, primarySources);
+}
+
+/**
+** 主要做了一下几个功能：参数赋值给成员变量、应用类型及方法推断和ApplicationContext相关内容加载及实例化
+**/
+public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
+        this.resourceLoader = resourceLoader;
+        Assert.notNull(primarySources, "PrimarySources must not be null");
+        this.primarySources = new LinkedHashSet(Arrays.asList(primarySources));
+    	// 推断web应用类型
+        this.webApplicationType = WebApplicationType.deduceFromClasspath();
+  		 // 加载并初始化ApplicationContextInitializer及其相关类
+		setInitializers((Collection)getSpringFactoriesInstances(ApplicationContextInitializer.class));
+   		// 加载并初始化ApplicationListener及相关实现类     			
+		setListeners((Collection)getSpringFactoriesInstances(ApplicationListener.class));    
+    	// 推断main方法Class类
+        this.mainApplicationClass = this.deduceMainApplicationClass();
+    }
+```
+
+通过源码的查看可得到springApplication的实例化的核心流程
+
+[![BHPmzF.png](https://s1.ax1x.com/2020/11/09/BHPmzF.png)](https://imgchr.com/i/BHPmzF)
+
+##### 1.Web类型的推断WebAppliationType
+
+在实例化流程中有这样的一段代码是对web应用类型的推断。
+
+`this.webApplicationType = WebApplicationType.deduceFromClasspath();`
+
+该行代码调用了WebApplicationType的deduceFromClasspath方法，并将获得的Web应用类型赋值给私有成员变量webApplicationType。
+
+WebApplicationType为枚举类，它定义了可能的Web应用类型，该枚举类提供了三类定义：枚举类型、推断类型的方法和用于推断的常量。枚举类型包括非Web应用、基于SERVLET的Web应用和基于REACTIVE的Web应用
+
+```java
+public enum WebApplicationType {
+    NONE, // 非web应用类型
+    SERVLET, // 基于servlet的web应用类型
+    REACTIVE; // 基于reactive的web应用类型
+}
+```
+
+方法deduceFromClasspath是基于classpath中类是否存在来进行类型推断的，就是判断指定的类是否存在于classpath下，并根据判断的结果来进行组合推断该应用属于什么类型。
+
+deduceFromClasspath在判断的过程中用到了ClassUtils的isPresent方法。isPresent方法的核心机制就是通过反射创建指定的类，根据在创建过程中是否抛出异常来判断该类是否存在
+
+```java
+/**
+**	deduceFromClasspath是基于classpath中类是否存在来进行类型推断的
+**/
+static WebApplicationType deduceFromClasspath() {
+        if (ClassUtils.isPresent("org.springframework.web.reactive.DispatcherHandler", (ClassLoader)null) && !ClassUtils.isPresent("org.springframework.web.servlet.DispatcherServlet", (ClassLoader)null) && !ClassUtils.isPresent("org.glassfish.jersey.servlet.ServletContainer", (ClassLoader)null)) {
+            return REACTIVE;
+        } else {
+            String[] var0 = SERVLET_INDICATOR_CLASSES;
+            int var1 = var0.length;
+
+            for(int var2 = 0; var2 < var1; ++var2) {
+                String className = var0[var2];
+                if (!ClassUtils.isPresent(className, (ClassLoader)null)) {
+                    return NONE;
+                }
+            }
+
+            return SERVLET;
+        }
+    }
+```
+
+通过源代码`deduceFromClasspath()`可以看出执行流程
+
+- 当DispatcherHandler存在，并且DispatcherServlet和ServletContainer都不存在，则返回类型为WebApplicationType.REACTIVE。
+- 当SERVLET或ConfigurableWebApplicationContext任何一个不存在时，说明当前应用为非Web应用，返回WebApplicationType.NONE。
+- 当应用不为REACTIVE Web应用，并且SERVLET和ConfigurableWebApplicationContext都存在的情况下，则为SERVLET的Web应用，返回WebApplicationType.SERVLET。
+
+##### 2.ApplicationContextInitializer加载
+
+​	ApplicationContextInitializer是Spring IOC容器提供的一个接口，它是一个回调接口，主要目的是允许用户在ConfigurableApplicationContext类型（或其子类型）的ApplicationContext做refresh方法调用刷新之前，对ConfigurableApplicationContext实例做进一步的设置或处理。通常用于应用程序上下文进行编程初始化的Web应用程序中
+
+```java
+public interface ApplicationContextInitializer<C extends ConfigurableApplicationContext> {
+
+	/**
+	 * Initialize the given application context.
+	 * @param applicationContext the application to configure
+	 */
+	void initialize(C applicationContext);
+
+}
+```
+
+ApplicationContextInitializer接口只定义了一个initialize方法主要是为了初始化指定的应用上下文。而对应的上下文由参数传入，参数为ConfigurableApplicationContext的子类。
+
+在完成了Web应用类型推断之后，ApplicationContextInitializer便开始进行加载工作，该过程可分两步骤：获得相关实例和设置实例。对应的方法分别为getSpringFactoriesInstances和setInitializers。
+
+###### **getSpringFactoriesInstances方法**
+
+```java
+private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
+		return getSpringFactoriesInstances(type, new Class<?>[] {});
+	}
+
+private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
+		ClassLoader classLoader = getClassLoader();
+		// 加载对应配置，这里采用LinkedHashSet和名称来确保加载的唯一性。
+		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
+    	// 创建实例
+		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
+    	// 排序操作
+		AnnotationAwareOrderComparator.sort(instances);
+		return instances;
+	}
+```
+
+getSpringFactoriesInstances方法依然是通过SpringFactoriesLoader类的loadFactoryNames方法来获得META-INF/spring.factories文件中注册的对应配置
+
+**createSpringFactoriesInstances方法**
+
+```java
+private <T> List<T> createSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes,
+			ClassLoader classLoader, Object[] args, Set<String> names) {
+		List<T> instances = new ArrayList<>(names.size());
+    // 遍历加载到类名（全限定名）
+		for (String name : names) {
+			try {
+                // 获取class
+				Class<?> instanceClass = ClassUtils.forName(name, classLoader);
+				Assert.isAssignable(type, instanceClass);
+                // 获取有参构造器
+				Constructor<?> constructor = instanceClass.getDeclaredConstructor(parameterTypes);
+                // 创建对象
+				T instance = (T) BeanUtils.instantiateClass(constructor, args);
+				instances.add(instance);
+			}
+			catch (Throwable ex) {
+				throw new IllegalArgumentException("Cannot instantiate " + type + " : " + name, ex);
+			}
+		}
+		return instances;
+	}
+```
+
+###### **setInitializers**
+
+完成获取配置类集合和实例化操作之后，调用setInitializers方法将实例化的集合添加到SpringApplication的成员变量initializers中，类型为List<ApplicationContextInitiali-zer<?>>，代码如下
+
+```java
+public void setInitializers(Collection<? extends ApplicationContextInitializer<?>> initializers) {
+	this.initializers = new ArrayList<>(initializers);
+}
+```
+
+setInitializers方法将接收到的initializers作为参数创建了一个新的List，并将其赋值给SpringApplication的initializers成员变量。由于是创建了新的List，并且直接赋值，因此该方法一旦被调用，便会导致数据覆盖，使用时需注意
+
+****
+
+##### 3.ApplicationListener加载
+
+​       完成了ApplicationContextInitializer的加载之后，便会进行ApplicationListener的加载。它的常见应用场景为：当容器初始化完成之后，需要处理一些如数据的加载、初始化缓存、特定任务的注册等操作。而在此阶段，更多的是用于ApplicationContext管理Bean过程的场景。
+
+​       Spring事件传播机制是基于观察者模式（Observer）实现的。比如，在ApplicationContext管理Bean生命周期的过程中，会将一些改变定义为事件（ApplicationEvent）。ApplicationContext通过ApplicationListener监听ApplicationEvent，当事件被发布之后，ApplicationListener用来对事件做出具体的操作。
+
+​        ApplicationListener的整个配置和加载流程与ApplicationContextInitializer完全一致，也是先通过SpringFactoriesLoader的loadFactoryNames方法获得META-INF/spring.factories中对应配置，然后再进行实例化，最后将获得的结果集合添加到SpringApplication的成员变量listeners中，
+
+```java
+public void setListeners(Collection<? extends ApplicationListener<?>> listeners) {
+		this.listeners = new ArrayList<>(listeners);
+}
+```
+
+在调用setListeners方法时也会进行覆盖赋值的操作，之前加载的内容会被清除
+
+ApplicationListener接口和ApplicationEvent类配合使用，可实现ApplicationContext的事件处理。如果容器中存在ApplicationListener的Bean，当ApplicationContext调用publishEvent方法时，对应的Bean会被触发。这就是观察者模式的实现
+
+```java
+@FunctionalInterface
+public interface ApplicationListener<E extends ApplicationEvent> extends EventListener {
+
+	/**
+	 * Handle an application event.
+	 * @param event the event to respond to
+	 */
+	void onApplicationEvent(E event);
+
+}
+```
+
+onApplicationEvent方法一般用于处理应用程序事件，参数event为ApplicationEvent的子类，是具体响应（接收到）的事件。当ApplicationContext被初始化或刷新时，会触发ContextRefreshedEvent事件。
+
+##### 4.入口类的推断
+
+创建SpringApplication的最后一步便是推断入口类，我们通过调用自身的deduceMainApplicationClass方法来进行入口类的推断。这个方法或进行获取栈数组，遍历栈数组，判断类方法是否包含main方法。第一个被匹配的类会通过Class.forName方法创建对象，并将其返回，最后在上层方法中将对象赋值给SpringApplication的成员变量mainApplicationClass。在遍历过程中如果发生异常，会忽略掉该异常并继续执行遍历操作。
+
+```java
+private Class<?> deduceMainApplicationClass() {
+		try {
+            // 获取栈元素数组
+			StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
+            // 遍历栈元素数组
+			for (StackTraceElement stackTraceElement : stackTrace) {
+                // 匹配第一个main方法并返回
+				if ("main".equals(stackTraceElement.getMethodName())) {
+					return Class.forName(stackTraceElement.getClassName());
+				}
+			}
+		}
+		catch (ClassNotFoundException ex) {
+			// Swallow and continue
+		}
+		return null;
+	}
+```
+
+
+
+#### SpringApplication构造方法参数
+
+由上面可以看到SpringApplicaiton的构造函数的参数有 `ResourceLoader resourceLoader, Class<?>... primarySources`
+
+`ResourceLoader`为资源加载的接口，在Spring Boot启动时打印对应的banner信息，默认采用的就是 DefaultResourceLoader。实战过程中，如果程序未按照Spring Boot的 “约定” 将banner的内容放置于classpath下，或者文件名不是 `banner.*` 格式，默认资源加载器是无法加载到对应的banner信息的，此时可通过 ResourceLoader 来指定需要加载的文件路径。
+
+第二个参数`Class<?>...primarySources`，为可变参数，默认传入Spring Boot入口类。如果作为项目的引导类，此参数传入的类需要满足一个条件，就是被注解`@EnableAutoConfiguration`或其组合注解标注。由于`@SpringBootApplication`注解中包含了`@EnableAutoConfiguration`注解，因此被`@SpringBootApplication`注解标注的类也可作为参数传入。当然，该参数也可传入其他普通类。但只有传入被`@EnableAutoConfiguration`标注的类才能够开启Spring Boot的自动配置。
+
+
+
+## SpringBoot运行流程分析
+
+#### **SpringApplication中的run方法**
+
+```java
+public ConfigurableApplicationContext run(String... args) {
+    	// 创建StopWatch对象，用于统计run方法启动时长
+        StopWatch stopWatch = new StopWatch();
+    	// 启动统计
+        stopWatch.start();
+        ConfigurableApplicationContext context = null;
+        Collection<SpringBootExceptionReporter> exceptionReporters = new ArrayList();
+    	// 配置handless属性
+        this.configureHeadlessProperty();
+    	// 获得SpringApplicationRunLister数组，该数组封装于SpringApplicationRunListeners中的listeners中
+        SpringApplicationRunListeners listeners = this.getRunListeners(args);
+    	// 启动监听，遍历SpringApplicationRunLister数组，并执行
+        listeners.starting();
+
+        Collection exceptionReporters;
+        try {
+            // 创建ApplicationArguments对象
+            ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+            // 加载属性配置，包括所有的属性配置，如application.properties中和外部属性
+            ConfigurableEnvironment environment = this.prepareEnvironment(listeners, applicationArguments);
+            this.configureIgnoreBeanInfo(environment);
+            // 打印 banner
+            Banner printedBanner = this.printBanner(environment);
+            // 创建容器
+            context = this.createApplicationContext();
+            // 异常报告器
+            exceptionReporters = this.getSpringFactoriesInstances(SpringBootExceptionReporter.class, new Class[]{ConfigurableApplicationContext.class}, context);
+            // 准备容器，组件对象间的关系
+             //1.将environment保存到容器中
+            // 2.触发监听事件——调用每个SpringApplicationRunListeners的contextPrepared方法
+            // 3.调用ConfigurableListableBeanFactory的registerSingleton方法向容器中注入applicationArguments与printedBanner
+            // 4.触发监听事件——调用每个SpringApplicationRunListeners的contextLoaded方法
+            this.prepareContext(context, environment, listeners, applicationArguments, printedBanner);
+            // 初始化容器
+            this.refreshContext(context);
+            // 初始化操作后的统计，默认实现为空
+            this.afterRefresh(context, applicationArguments);
+            // 停止计数器
+            stopWatch.stop();
+            // 打印启动日志
+            if (this.logStartupInfo) {
+                (new StartupInfoLogger(this.mainApplicationClass)).logStarted(this.getApplicationLog(), stopWatch);
+            }
+			// 通知监听器，启动完成
+            listeners.started(context);
+            // 调用ApplicationRunner和CommandLineRunner的运行方法
+            this.callRunners(context, applicationArguments);
+        } catch (Throwable var10) {
+            // 异常处理
+            this.handleRunFailure(context, var10, exceptionReporters, listeners);
+            throw new IllegalStateException(var10);
+        }
+
+        try {
+            // 通知监听器：容器正在运行
+            listeners.running(context);
+            return context;
+        } catch (Throwable var9) {
+            // 异常处理
+            this.handleRunFailure(context, var9, exceptionReporters, (SpringApplicationRunListeners)null);
+            throw new IllegalStateException(var9);
+        }
+    }
+```
+
+#### 

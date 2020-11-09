@@ -1,10 +1,27 @@
 ## Apache Shiro
 
-​	Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。
+​	Apache Shiro是一个强大且易用的Java安全框架,执行身份验证、授权、密码和会话管理。使用Shiro的易于理解的API,您可以快速、轻松地获得任何应用程序,从最小的移动应用程序到最大的网络和企业应用程序。使用 Apache Shiro 的人越来越多，因为它相当简单，对比 Spring Security，可能没有 Spring Security 做的功能强大，但是在实际工作时可能并不需要那么复杂的东西，所以使用小而简单的 Shiro 就足够了。对于它俩到底哪个好，这个不必纠结，能更简单的解决项目问题就好了。
+
+![img](https://atts.w3cschool.cn/attachments/image/wk/shiro/1.png)
 
 ### 单点登录：
 
 ​	如果两个网站上通用一个账号来登录，那么就会把这认证操作去保存到一个中央服务器中去操作，这个中央服务器就是为了实现认证权限设计的，当你访问到一个网站时，这个网站回去中央服务器中去核对数据是否正确如果正确就会发送一个cookie 令牌给客户端，客户端保存了cookie然后再去访问天猫网时，这时你就有了cookie天猫会用这个cookie去对比中央服务其中的如果匹配就可以进行登录，然后就实现了单点登录。
+
+### Shiro架构
+
+![img](https://atts.w3cschool.cn/attachments/image/wk/shiro/3.png)
+
+- `Subject`：主体，可以看到主体可以是任何可以与应用交互的 “用户”；
+- `Authenticator:` 认证器，负责主体认证的，这是一个扩展点，如果用户觉得Shiro默认的不好，可以自定义实现；其需要认证策略（Authentication Strategy），即什么情况下算用户认证通过了；
+- `Authorizer`: 授权器，或者访问控制器，用来决定主体是否有权限进行相应的操作；即控制着用户能访问应用中的哪些功能
+- `Realm`：可以有 1 个或多个 Realm，可以认为是安全实体数据源，即用于获取安全实体的；可以是 JDBC 实现，也可以是 LDAP 实现，或者内存实现等等；由用户提供；注意：Shiro 不知道你的用户 / 权限存储在哪及以何种格式存储；所以我们一般在应用中都需要实现自己的 Realm；
+- `sessionManager`: 会话管理，会话管理，即用户登录后就是一次会话，在没有退出之前，它的所有信息都在会话中；会话可以是普通JavaSE环境的，也可以是如Web环境的
+- `cacheManager` : 缓存控制器，来管理如用户、角色、权限等的缓存的；因为这些数据基本上很少去改变，放到缓存中后可以提高访问的性能
+- `sessionDao`: 比如我们想把Session保存到数据库，那么可以实现自己的SessionDAO，通过如JDBC写到数据库；比如想把Session放到Memcached中，可以实现自己的Memcached SessionDAO；另外SessionDAO中可以使用Cache进行缓存，以提高性能；
+- `Pluggable Realms(1...more)`：就是提供连接各种数据库的操作
+- `CacheManager：`缓存控制器，来管理如用户、角色、权限等的缓存的；因为这些数据基本上很少去改变，放到缓存中后可以提高访问的性能
+- `Cryptography`：密码模块，Shiro 提高了一些常见的加密组件用于如密码加密 / 解密的。
 
 ### 三个核心组件：
 
@@ -19,22 +36,6 @@
 #### SecurityManager
 
 ​    SecurityManager：它是Shiro框架的核心，典型的Facade模式，Shiro通过SecurityManager来管理内部组件实例，并通过它来提供安全管理的各种服务。
-
-SecurityManager包括以下几个过滤器。
-
-- `Authenticator:` 认证器，负责主体认证的，这是一个扩展点，如果用户觉得Shiro默认的不好，可以自定义实现；其需要认证策略（Authentication Strategy），即什么情况下算用户认证通过了；
-
-- `Authorizer`: 授权器，或者访问控制器，用来决定主体是否有权限进行相应的操作；即控制着用户能访问应用中的哪些功能
-
-- `sessionManager`: 会话管理，会话管理，即用户登录后就是一次会话，在没有退出之前，它的所有信息都在会话中；会话可以是普通JavaSE环境的，也可以是如Web环境的
-
-- `cacheManager` : 缓存控制器，来管理如用户、角色、权限等的缓存的；因为这些数据基本上很少去改变，放到缓存中后可以提高访问的性能
-
-- `sessionDao`: 比如我们想把Session保存到数据库，那么可以实现自己的SessionDAO，通过如JDBC写到数据库；比如想把Session放到Memcached中，可以实现自己的Memcached SessionDAO；另外SessionDAO中可以使用Cache进行缓存，以提高性能；
-
-- `Pluggable Realms(1...more)`：就是提供连接各种数据库的操作
-
-  
 
 #### Realms
 
@@ -73,7 +74,13 @@ SecurityManager包括以下几个过滤器。
 
 ​	allipcation --->subject(当前用户对象)--------->SecurityManager(安全管理器)--->Realm(其实就是一个dao层，可以直接编写，也可以用框架提供的形式)
 
+![img](https://atts.w3cschool.cn/attachments/image/wk/shiro/4.png)
 
+1. 首先调用 `Subject.login(token)` 进行登录，其会自动委托给 `Security Manager`，调用之前必须通过 `SecurityUtils.setSecurityManager()` 设置；
+2. `SecurityManager` 负责真正的身份验证逻辑；它会委托给 `Authenticator` 进行身份验证；
+3. `Authenticator` 才是真正的身份验证者，`Shiro API` 中核心的身份认证入口点，此处可以自定义插入自己的实现；
+4. `Authenticator` 可能会委托给相应的 `AuthenticationStrategy` 进行多 `Realm` 身份验证，默认 `ModularRealmAuthenticator` 会调用 `AuthenticationStrategy` 进行多 `Realm` 身份验证；
+5. `Authenticator `会把相应的 `token` 传入 `Realm`，从 `Realm` 获取身份验证信息，如果没有返回 / 抛出异常表示身份验证失败了。此处可以配置多个 `Realm`，将按照相应的顺序及策略进行访问。
 
 ### spring整合shiro：
 
