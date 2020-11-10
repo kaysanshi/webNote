@@ -77,7 +77,7 @@ services:
 
 http://ip:15672
 
-
+[![BbiNPx.png](https://s1.ax1x.com/2020/11/09/BbiNPx.png)](https://imgchr.com/i/BbiNPx)
 
 ### RabbitMQ 使用
 
