@@ -93,7 +93,11 @@
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/Apache%20Dubbo%20Zookeeper.md" target="_blank">Apache Dubbo Zookepeer</a>
 
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/MQ.md" target="_blank">MQ</a>
 
+
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Lucene%26Solr.md" target="_blank">Lucene&Solr</a>
 
 ### 容器化&持续集成
 
