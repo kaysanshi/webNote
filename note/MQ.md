@@ -241,22 +241,35 @@ JMS定义了五种不同的消息正文格式，以及调用的消息类型，�
 
 > 1、需要jdk
 > 2、安装Linux系统。生产环境都是Linux系统。
-> 			第一步： 把ActiveMQ 的压缩包上传到Linux系统。<br/>
-> 			第二步：解压缩。<br/>
-> 			第三步：启动。<br/>
-> 			使用bin目录下的activemq命令启动：<br/>
-> 			[root@localhost bin]# ./activemq start
-> 			关闭：<br/>
-> 			[root@localhost bin]# ./activemq stop
-> 			查看状态：<br/>
-> 			[root@localhost bin]# ./activemq status
+> 			第一步： 把ActiveMQ 的压缩包上传到Linux系统。
+>
+> ​			第二步：解压缩。
+>
+> ​			第三步：启动。
+>
+> ​			使用bin目录下的activemq命令启动：
+>
+> ​			[root@localhost bin]# ./activemq start
+>
+> ​			关闭：
+>
+> ​			[root@localhost bin]# ./activemq stop
+>
+> ​			查看状态：
+>
+> ​			[root@localhost bin]# ./activemq status
 >
 > ​			注意：如果ActiveMQ整合spring使用不要使用activemq-all-5.12.0.jar包。建议使用5.11.2
 >
-> ​			进入管理后台：<br/>
-> ​			http://192.168.25.168:8161/admin<br/>
-> ​			用户名：admin <br/>
-> ​			密码：admin<br/>
+> 
+>
+> ​			进入管理后台：
+>
+> ​			http://192.168.25.168:8161/admin
+>
+> ​			用户名：admin 
+>
+> ​			密码：admin
 
 #### 使用方法：
 
@@ -269,13 +282,21 @@ JMS定义了五种不同的消息正文格式，以及调用的消息类型，�
 ​		把jar包添加到工程中。使用5.11.2版本的jar包。
 
 > ​	第一步：创建ConnectionFactory对象，需要指定服务端ip及端口号。
+>
 > ​	第二步：使用ConnectionFactory对象创建一个Connection对象。
+>
 > ​	第三步：开启连接，调用Connection对象的start方法。
+>
 > ​	第四步：使用Connection对象创建一个Session对象。
+>
 > ​	第五步：使用Session对象创建一个Destination对象（topic、queue），此处创建一个Queue对象。
+>
 > ​	第六步：使用Session对象创建一个Producer对象。
+>
 > ​	第七步：创建一个Message对象，创建一个TextMessage对象。
+>
 > ​	第八步：使用Producer对象发送消息。
+>
 > ​	第九步：关闭资源。
 
 ```java
