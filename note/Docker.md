@@ -110,6 +110,20 @@ ubuntu安装：
 
 ​			--rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 --rm 可以避免浪费空间。ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash运行一个容器等于运行一个对象，	
 
+## Centos安装Docker
+
+### centos命令安装
+
+安装命令：`yum install docker`
+
+检查是否安装成功: `docker version`
+
+启动docker server: `systemctl start docker.service`
+
+设置docker开机自启：`systemctl enable docker.service`
+
+安装wget命令 ：`yum -y install wget`
+
 ## DockerFile：
 
 镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建
