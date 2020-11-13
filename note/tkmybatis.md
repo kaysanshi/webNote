@@ -254,6 +254,14 @@ sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 
 
 
+#### 配置打印sql
+
+```properties
+logging.level.com.kaysanshi.dao=debug
+```
+
+
+
 ### 主要的方法
 
 **select**

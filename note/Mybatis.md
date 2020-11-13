@@ -645,6 +645,12 @@ public  void test3_1() throws IOException {
 ```
 ### Spring 整合Mybatis
 
+#### 配置日志打印SQl:
+
+**logging.level.com.hw.dao=debug**
+
+
+
 ```java
 1.导包：spring核心包+mybatis核心包+mybatis-spring.jar+c3p0.jar+数据库驱包
 2.配置核心多的配置文件：
