@@ -44,9 +44,9 @@
 
 
 
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringCloud.md" target="_blank">SpringCloud</a>
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringCloud.md" target="_blank">SpringCloud(Eurake,Config,Feign(Ribbon),hystrix熔断,Zuul)</a>
 
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/itoken.md" target="_blank">SpringCloud itoken 项目</a>
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/itoken.md" target="_blank">SpringCloud itoken 项目 (docker, nginx,fastDFS,MQ,Quarz)</a>
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/Spring%20Cloud%20Alibaba.md" target="_blank">SpringCloud Alibaba</a>
 
