@@ -116,7 +116,7 @@
 
 
 
-<a href="https://github.com/kaysanshi/learning-note/blob/master/note/POI%26pinyin4j.md" target="_blank"> Apache CXF(webService)</a>
+<a href="#" target="_blank"> Apache CXF(webService)</a>
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/MQ.md" target="_blank">MQ</a>
 
@@ -138,7 +138,7 @@
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Git.md" target="_blank">Git</a>
 
-<a href="(https://github.com/kaysanshi/learning-note/blob/master/note/Linux%20%E6%93%8D%E4%BD%9C.md" target="_blank">Linux操作</a>
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Linux%20%E6%93%8D%E4%BD%9C.md" target="_blank">Linux操作</a>
 
 <a href="https://www.kubernetes.org.cn/k8s" target="_blank">Kubernetes（还未进行学习)</a>
 
