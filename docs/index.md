@@ -94,7 +94,7 @@
 
 ### 中间件
 
-<a href="#" target="_blank">nginx</a>
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Nginx.md" target="_blank">nginx</a>
 
 
 
