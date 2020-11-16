@@ -636,7 +636,13 @@ finalize()方法具有如下4个特点：
 
 由于finalize()方法并不一定会被执行，因此如果想清理某个类里打开的资源，则不要放在finalize()方法中进行清理，后面会介绍专门用于清理资源的方法。
 
-### java操作系统底层：
+### 几个常用的核心类：
+
+
+
+#### java操作系统底层Sytem类：
+
+System类代表当前Java程序的运行平台，程序不能创建System类的对象，System类提供了一些类Field和类方法，允许直接通过System类来调用这些Field和方法。System类提供了代表标准输入、标准输出和错误输出的类Field，并提供了一些静态方法用于访问环境变量、系统属性的方法，还提供了加载文件和动态链接库的方法。下面程序通过System类来访问操作的环境变量和系统属性
 
 加载文件和动态链接库主要对native方法有用，对于一些特殊的功能（如访问操作系统底层硬件设备等）Java程序无法实现，必须借助C语言来完成，此时需要使用C语言为Java方法提供实现。其实现步骤如下：
 
@@ -645,6 +651,69 @@ finalize()方法具有如下4个特点：
 3. 写一个.cpp文件实现native方法，其中需要包含第2步产生的.h文件（.h文件中又包含了JDK带的jni.h文件）。
 4. 将第3步的.cpp文件编译成动态链接库文件。
 5. 在Java中用System类的loadLibrary..()方法或Runtime类的loadLibrary()方法加载第4步产生的动态链接库文件，Java程序中就可以调用这个native()方法了。
+
+System类提供了通知系统进行垃圾回收的gc()方法，以及通知系统进行资源清理的runFinalization()方法。System类还有两个获取系统当前时间的方法：currentTimeMillis()和nanoTime()，它们都返回一个long型整数。实际上它们都返回当前时间与UTC1970年1月1日午夜的时间差，前者以毫秒作为测量单位，后者以纳秒作为测量单位。必须指出的是，这两个方法的返回值的粒度取决于底层操作系统，可能所在的操作系统根本不支持以毫秒、纳秒作为计时单位。
+
+例如，许多操作系统以几十毫秒为单位测量时间，currentTimeMillis()方法不可能返回精确的毫秒数；而nanoTime()方法很少用，因为大部分操作系统都不支持使用纳秒作为计时单位。
+
+除此之外，System类的in、out和err分别代表系统的标准输入（通常是键盘）、标准输出（通常是显示器）和错误输出流，并提供了setIn、setOut和setErr方法来改变系统的标准输入、标准输出和标准错误输出流。
+
+```java
+public static void main(String[] args) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
+		Map<String, String> env = System.getenv();
+		for(String name: env.keySet()){
+			System.out.println(name+"-->"+env.get(name));
+		}
+		// 获取指定的环境变量的值
+		System.out.println(System.getenv("JAVA_HOME"));
+		// 获取所有的系统属性
+		Properties properties =System.getProperties();
+		// 将所有的properties保持到prop.txt文件
+		properties.store(new FileOutputStream("props.txt"),"System Porpertis");
+		//输出特定的系统属性
+		System.out.println(System.getProperties());
+	}
+//输出
+USERDOMAIN_ROAMINGPROFILE-->DESKTOP-KJ16LKS
+LOCALAPPDATA-->C:\Users\BlueEarth\AppData\Local
+ChocolateyLastPathUpdate-->132478206462499485
+PROCESSOR_LEVEL-->23
+USERDOMAIN-->DESKTOP-KJ16LKS
+FPS_BROWSER_APP_PROFILE_STRING-->Internet Explorer
+LOGONSERVER-->\\DESKTOP-KJ16LKS
+JAVA_HOME-->D:\jdk-8u91-windows-x64
+SESSIONNAME-->Console
+ALLUSERSPROFILE-->C:\ProgramData
+PROCESSOR_ARCHITECTURE-->AMD64
+PSModulePath-->C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules
+SystemDrive-->C:
+MAVEN_HOME-->D:\Program Files\apache-maven-3.5.2
+OneDrive-->C:\Users\BlueEarth\OneDrive
+APPDATA-->C:\Users\BlueEarth\AppData\Roaming
+USERNAME-->BlueEarth
+
+```
+
+
+
+System类还提供了一个identityHashCode(Object x)方法，该方法返回指定对象的精确hashCode值，也就是根据该对象的地址计算得到的hashCode值。当某个类的hashCode()方法被重写后，该类实例的hashCode()方法就不能唯一地标识该对象；但通过identityHashCode()方法返回的hashCode值，依然是根据该对象的地址计算得到的hashCode值。所以，如果两个对象的identityHashCode值相同，则两个对象绝对是同一个对象。如下程序所示
+
+```java
+public void test(){
+		String s1=new String("Hello");
+		String s2= new String("Hello");
+		// String 重写了hashcode方法，因为s1和s2的字符序列相同，所以他们的hashCode()方法返回值相同。
+		System.out.println(s1.hashCode()+"______"+ s2.hashCode());
+
+		// s1和s2是不同的字符串对象，所以他们的identityHashCode值相同
+		System.out.println(System.identityHashCode(s1)+"------" + 	System.identityHashCode(s2));
+}
+// 输出：
+69609650______69609650
+792791759------1191747167
+```
+
+
 
 java中获取当地时间：
 
@@ -669,6 +738,121 @@ public class LocaleList {
 
 }
 ```
+
+#### Object类：
+
+Object类是所有类、数组、枚举类的父类，也就是说，Java允许把任何类型的对象赋给Object类型的变量。当定义一个类时没有使用extends关键字为它显式指定父类，则该类默认继承Object父类。
+
+因为所有的Java类都是Object类的子类，所以任何Java对象都可以调用Object类的方法。Object类提供了如下几个常用方法。
+
+- boolean equals(Object obj)：判断指定对象与该对象是否相等。此处相等的标准是，两个对象是同一个对象，因此该equals()方法通常没有太大的实用价值。
+- protected void finalize()：当系统中没有引用变量引用到该对象时，垃圾回收器调用此方法来清理该对象的资源。
+- Class<?> getClass()：返回该对象的运行时类，该方法在本书第18章还有更详细的介绍。
+-  int hashCode()：返回该对象的hashCode值。在默认情况下，Object类的hashCode()方法根据该对象的地址来计算（即与System.identityHashCode(Object x)方法的计算结果相同）。但很多类都重写了Object类的hashCode()方法，不再根据地址来计算其hashCode()方法值
+- String toString()：返回该对象的字符串表示，当我们使用System.out.println()方法输出一个对象，或者把某个对象和字符串进行连接运算时，系统会自动调用该对象的toString()方法返回该对象的字符串表示。Object类的toString()方法返回“运行时类名@十六进制hashCode值”格式的字符串，但很多类都重写了Object类的toString()方法，用于返回可以表述该对象信息的字符串。
+
+​      Java还提供了一个protected修饰的clone()方法，该方法用于帮助其他对象来实现“自我克隆”，所谓“自我克隆”就是得到一个当前对象的副本，而且二者之间完全隔离。由于Object类提供的clone()方法使用了protected修饰，因此该方法只能被子类重写或调用。自定义类实现“克隆”的步骤如下。
+
+（1）自定义类实现Cloneable接口。这是一个标记性的接口，实现该接口的对象可以实现“自我克隆”，接口里没有定义任何方法。
+
+（2）自定义类实现自己的clone()方法。
+
+（3）实现clone()方法时通过super.clone()；调用Object实现的clone()方法来得到该对象的副本，并返回该副本。
+
+#### String,StringBuffer和StringBuilder类
+
+字符串就是一连串的字符序列，Java提供了String和StringBuffer两个类来封装字符串，并提供了一系列方法来操作字符串对象。
+
+String类是不可变类，即一旦一个String对象被创建以后，包含在这个对象中的字符序列是不可改变的，直至这个对象被销毁。
+
+StringBuffer对象则代表一个字符序列可变的字符串，当一个StringBuffer被创建以后，通过StringBuffer提供的append()、insert()、reverse()、setCharAt()、setLength()等方法可以改变这个字符串对象的字符序列。一旦通过StringBuffer生成了最终想要的字符串，就可以调用它的toString()方法将其转换为一个String对象。
+
+从JDK 1.5开始出现的StringBuilder类，也代表字符串对象。实际上，StringBuilder和StringBuffer基本相似，两个类的构造器和方法也基本相同。不同的是，StringBuffer是线程安全的，而StringBuilder则没有实现线程安全功能，所以性能略高。因此在通常情况下，如果需要创建一个内容可变的字符串对象，则应该优先考虑使用StringBuilder类。
+
+**String常用方法：**
+
+-  String substring(int beginIndex)：获取从beginIndex位置开始到结束的子字符串。
+- String substring(int beginIndex, int endIndex)：获取从beginIndex位置开始到endIndex位置的子字符串。
+- char[] toCharArray()：将该String对象转换成char数组。
+- String toLowerCase()：将字符串转换成小写。
+- String toUpperCase()：将字符串转换成大写。
+- char charAt(int index)：获取字符串中指定位置的字符。其中，参数index指的是字符串的序数，字符串的序数从0开始到length()-1
+- int compareTo(String anotherString)：比较两个字符串的大小。如果两个字符串的字符序列相等，则返回 0；不相等时，从两个字符串第 0个字符开始比较，返回第一个不相等的字符差。另一种情况，较长字符串的前面部分恰巧是较短的字符串，则返回它们的长度差
+- String concat(String str)：将该String对象与str连接在一起。与Java提供的字符串连接运算符“+”的功能相同
+- boolean matches(String regex)：判断该字符串是否匹配指定的正则表达式。
+- String replaceAll(String regex, String replacement)：将该字符串中所有匹配regex的子串替换成replacement。
+- String replaceFirst(String regex, String replacement)：将该字符串中第一个匹配regex的子串替换成replacement。
+- String[] split(String regex)：以regex作为分隔符，把该字符串分割成多个子串。
+
+因为String是不可变的，所以会额外产生很多临时变量，使用StringBuffer或StringBuilder就可以避免这个问题。StringBuilder提供了一系列插入、追加、改变该字符串里包含的字符序列的方法。而StringBuffer与其用法完全相同，只是StringBuffer是线程安全的。
+
+StringBuilder、StringBuffer有两个属性：length和capacity，其中length属性表示其包含的字符序列的长度。与String对象的length不同的是，StringBuilder、StringBuffer的length是可以改变的，可以通过length()、setLength(int len)方法来访问和修改其字符序列的长度。capacity属性表示StringBuilder的容量，capacity通常比length大，程序通常无须关心capacity属性.
+
+#### Math类：
+
+Java提供了基本的+、-、*、/、%等基本算术运算的运算符。Java提供了Math工具类来完成这些复杂的运算，Math类是一个工具类，它的构造器被定义成private的，因此无法创建Math类的对象；Math类中的所有方法都是类方法，可以直接通过类名来调用它们。Math类除了提供了大量静态方法之外，还提供了两个静态Field：PI和E，正如它们名字所暗示的，它们的值分别等于π和e
+
+#### Random类：
+
+Random类专门用于生成一个伪随机数，它有两个构造器：一个构造器使用默认的种子（以当前时间作为种子），另一个构造器需要程序员显式传入一个long型整数的种子。ThreadLocalRandom类是Java 7新增的一个类，它是Random的增强版。
+
+在并发访问的环境下，使用ThreadLocalRandom来代替Random可以减少多线程资源竞争，最终保证系统具有较好的性能。提示：关于多线程编程的知识，
+
+ThreadLocalRandom类的用法与Random类的用法基本相似，它提供了一个静态的current()方法来获取ThreadLocalRandom对象，获取该对象之后即可调用各种nextXxx()方法来获取伪随机数了。ThreadLocalRandom与Random都比Math的random()方法提供了更多的方式来生成各种伪随机数，可以生成浮点类型的伪随机数，也可以生成整数类型的伪随机数，还可以指定生成随机数的范围
+
+#### BigDecimal类
+
+BigDecimal(double val)构造器的详细说明时，可以看到不推荐使用该构造器的说明，主要是因为使用该构造器时有一定的不可预知性。当程序使用new BigDecimal(0.1)来创建一个BigDecimal对象时，它的值并不是0.1，它实际上等于0.1000000000000000055511151231257827021181583404541015625。这是因为0.1无法准确地表示为double浮点数，所以传入BigDecimal构造器的值不会正好等于0.1（虽然表面上等于该值）。
+
+如果使用BigDecimal(String val)构造器的结果是可预知的——写入newBigDecimal("0.1")将创建一个BigDecimal，它正好等于预期的0.1。因此通常建议优先使用基于String的构造器。
+
+如果必须使用double浮点数作为BigDecimal构造器的参数时，不要直接将该double浮点数作为构造器参数创建BigDecimal对象，而是应该通过BigDecimal.valueOf(double value)静态方法来创建BigDecimal对象。
+
+BigDecimal类提供了add()、subtract()、multiply()、divide()、pow()等方法对精确浮点数进行常规算术运算
+
+<font color="red">创建BigDecimal对象时，不要直接使用double浮点数作为参数来调用BigDecimal构造器，否则同样会发生精度丢失的问题。</font>
+
+#### Date类与DateFormat类
+
+Java提供了Date类来处理日期、时间（此处的Date是指java.util包下的Date类，而不是java.sql包下的Date类），Date对象既包含日期，也包含时间。Date类从JDK 1.0起就开始存在了。但正因为它历史悠久，所以它的大部分构造器、方法都已经过时，不再推荐使用了。Date类提供了6个构造器，其中4个已经Deprecated（Java不再推荐使用，使用不再推荐的构造器时编译器会提出警告信息，并导致程序性能、安全性等方面的问题），剩下的两个构造器如下所示。
+
+- Date()：生成一个代表当前日期时间的Date对象。该构造器在底层调用System.currentTimeMillis()获得long整数作为日期参数。
+- Date(long date)：根据指定的long型整数来生成一个Date对象。该构造器的参数表示创建的Date对象和GMT 1970年1月1日00:00:00之间的时间差，以毫秒作为计时单位。
+
+方法：
+
+- boolean after(Date when)：测试该日期是否在指定日期when之后。
+- boolean before(Date when)：测试该日期是否在指定日期when之前。
+- int compareTo(Date anotherDate)：比较两个日期的大小，后面的时间大于前面的时间时返回-1，否则返回1。
+- boolean equals(Object obj)：当两个时间表示同一时刻时返回true。
+-  long getTime()：返回该时间对应的long型整数，即从GMT 1970-01-0100:00:00 到该Date对象之间的时间差，以毫秒作为计时单位。
+- void setTime(long time)：设置该Date对象的时间
+
+**DateFormat：**
+
+-  getDateInstance()：返回一个日期格式器，它格式化后的字符串只有日期，没有时间。该方法可以传入多个参数，用于指定日期样式和Locale等参数；如果不指定这些参数，则使用默认参数。[插图] 
+
+- getTimeInstance()：返回一个时间格式器，它格式化后的字符串只有时间，没有日期。该方法可以传入多个参数，用于指定时间样式和Locale等参数；如果不指定这些参数，则使用默认参数。[插图]
+
+-  getDateTimeInstance()：返回一个日期、时间格式器，它格式化后的字符串既有日期，也有时间。该方法可以传入多个参数，用于指定日期样式、时间样式和Locale等参数；如果不指定这些参数，则使用默认参数
+
+**DateFormat的parse()方法可以把一个字符串解析成Date对象，但它要求被解析的字符串必须符合日期字符串的要求，否则可能抛出ParseException异常**
+
+
+
+#### Pattern与Matcher类
+
+Pattern对象是正则表达式编译后在内存中的表示形式，因此，正则表达式字符串必须先被编译为Pattern对象，然后再利用该Pattern对象创建对应的Matcher对象。执行匹配所涉及的状态保留在Matcher对象中，多个Matcher对象可共享同一个Pattern对象
+
+Matcher类提供了如下几个常用方法。[插图]
+
+-  find()：返回目标字符串中是否包含与Pattern匹配的子串。
+- group()：返回上一次与Pattern匹配的子串。
+- start()：返回上一次与Pattern匹配的子串在目标字符串中的开始位置。
+- end()：返回上一次与Pattern匹配的子串在目标字符串中的结束位置加1。
+- lookingAt()：返回目标字符串前面部分与Pattern是否匹配。
+- matches()：返回整个目标字符串与Pattern`是否匹配`。
+- reset()，将现有的Matcher对象应用于一个新的字符序列。
 
 ### 初始化与清理：
 
@@ -1093,7 +1277,7 @@ public class ListIterator {
 
 对于通常的编程场景，程序员无须关心ArrayList或Vector的initialCapacity。但如果向ArrayList或Vector集合中添加大量元素时，可使用ensureCapacity(int minCapacity)方法一次性地增加initialCapacity。这可以减少重分配的次数，从而提高性能。
 
-如果开始就知道ArrayList或Vector集合需要保存多少个元素，则可以在创建它们时就指定initialCapacity大小。如果创建空的ArrayList或Vector集合时不指定initialCapacity参数，则Object[]数组的长度默认为10。
+<font color="red">如果开始就知道ArrayList或Vector集合需要保存多少个元素，则可以在创建它们时就指定initialCapacity大小。如果创建空的ArrayList或Vector集合时不指定initialCapacity参数，则Object[]数组的长度默认为10。</font>
 
 除此之外，ArrayList和Vector还提供了如下两个方法来重新分配Object[]数组。
 
@@ -1115,6 +1299,8 @@ Vector还提供了一个Stack子类，它用于模拟“栈”这种数据结构
 - Object pop()：返回“栈”的第一个元素，并将该元素“pop”出
 
   
+
+<font color="red">这里有一个Arrays.asList()；可以转为ArrayList但是Arrays.ArrayList是一个固定长度的List集合，程序只能遍历访问该集合里的元素，不可增加、删除该集合里的元素</font>
 
 ##### ArrayList与LinkedList
 
@@ -1762,6 +1948,22 @@ java.util.ConcurrentModificationException
 
 **ConcurrentHashMap** ， **CopyOnWriteArrayList** 和 **CopyOnWriteArraySet** 使用了特定的技术来避免产生 **ConcurrentModificationException** 异常。
 
+##### 归纳起来简单地说HashMap：
+
+- HashMap在底层将key-value对当成一个整体进行处理，这个整体就是一个Entry对象。
+
+- HashMap底层采用一个Entry[]数组来保存所有的key-value对，当需要存储一个Entry对象时，会根据Hash算法来决定其存储位置；当需要取出一个Entry时，也会根据Hash算法找到其存储位置，直接取出该Entry。由此可见，HashMap之所以能快速存、取它所包含的Entry，完全类似于现实生活中的：不同的东西要放在不同的位置，需要时才能快速找到它。
+
+- 当创建HashMap时，有一个默认的负载因子（load factor），其默认值为0.75。这是时间和空间成本上的一种折衷：增大负载因子可以减少Hash表（就是那个Entry数组）所占用的内存空间，但会增加查询数据的时间开销，而查询是最频繁的的操作（HashMap的get()与put()方法都要用到查询）；减小负载因子会提高数据查询的性能，但会增加Hash表所占用的内存空间
+
+- HashMap时根据实际需要适当地调整load factor的值。如果程序比较关心空间开销，内存比较紧张，可以适当地增加负载因子；如果程序比较关心时间开销，内存比较宽裕，则可以适当减少负载因子。通常情况下，程序员无需改变负载因子的值。
+
+- 如果开始就知道HashMap会保存多个key-value对，可以在创建时就使用较大的初始化容量，如果HashMap中Entry的数量一直不会超过极限容量（capacity ＊ load factor），HashMap就无需调用resize()方法重新分配table数组，从而保证较好的性能。当然，开始就将初始容量设置太高可能会浪费空间（系统需要创建一个长度为capacity的Entry数组），因此创建HashMap时初始化容量设置也需要小心对待
+
+  ​	
+
+#### Map与Set
+
 ##### Set与Map之间的关系非常密切:
 
 Set集合和Map集合的对应关系如下。
@@ -1804,19 +2006,26 @@ public class LinkedHashMapTest {
 }
 ```
 
-##### 归纳起来简单地说HashMap：
+##### HashSet与HashMap的性能：
 
-- HashMap在底层将key-value对当成一个整体进行处理，这个整体就是一个Entry对象。
+对于HashSet及其子类而言，它们采用hash算法来决定集合中元素的存储位置，并通过hash算法来控制集合的大小；对于HashMap、Hashtable及其子类而言，它们采用hash算法来决定Map中key的存储，并通过hash算法来增加key集合的大小。
 
-- HashMap底层采用一个Entry[]数组来保存所有的key-value对，当需要存储一个Entry对象时，会根据Hash算法来决定其存储位置；当需要取出一个Entry时，也会根据Hash算法找到其存储位置，直接取出该Entry。由此可见，HashMap之所以能快速存、取它所包含的Entry，完全类似于现实生活中的：不同的东西要放在不同的位置，需要时才能快速找到它。
+hash表里可以存储元素的位置被称为“桶（bucket）”，在通常情况下，单个“桶”里存储一个元素，此时有最好的性能：hash算法可以根据hashCode值计算出“桶”的存储位置，接着从“桶”中取出元素。但hash表的状态为open：在发生“hash冲突”的情况下，单个桶会存储多个元素，这些元素以链表形式存储，必须按顺序搜索。如图8.8所示是hash表保存各元素，且发生“hash冲突”的示意图
 
-- 当创建HashMap时，有一个默认的负载因子（load factor），其默认值为0.75。这是时间和空间成本上的一种折衷：增大负载因子可以减少Hash表（就是那个Entry数组）所占用的内存空间，但会增加查询数据的时间开销，而查询是最频繁的的操作（HashMap的get()与put()方法都要用到查询）；减小负载因子会提高数据查询的性能，但会增加Hash表所占用的内存空间
+因为HashSet和HashMap、Hashtable都使用hash算法来决定其元素（HashMap则只考虑key）的存储，因此HashSet、HashMap的hash表包含如下属性：
 
-- HashMap时根据实际需要适当地调整load factor的值。如果程序比较关心空间开销，内存比较紧张，可以适当地增加负载因子；如果程序比较关心时间开销，内存比较宽裕，则可以适当减少负载因子。通常情况下，程序员无需改变负载因子的值。
+- 容量(capacity) :hash中桶的数量
+- 初始化容量(initial capacity) :创建hash表时桶的数量，HashMap和HashSet都允许在构造器中指定初始化容量
+- 尺寸(size) :当前hash表中记录的数量。
+- 负载因子(load factor):负载因子等于“size/capacity”。负载因子为0，表示空的hash表，0.5表示半满的散列表，依此类推。轻负载的散列表具有冲突少、适宜插入与查询的特点（但是使用Iterator迭代元素时比较慢
 
-- 如果开始就知道HashMap会保存多个key-value对，可以在创建时就使用较大的初始化容量，如果HashMap中Entry的数量一直不会超过极限容量（capacity ＊ load factor），HashMap就无需调用resize()方法重新分配table数组，从而保证较好的性能。当然，开始就将初始容量设置太高可能会浪费空间（系统需要创建一个长度为capacity的Entry数组），因此创建HashMap时初始化容量设置也需要小心对待
+hash表里还有一个“负载极限”，“负载极限”是一个0~1的数值，“负载极限”决定了hash表的最大填满程度。当hash表中的负载因子达到指定的“负载极限”时，hash表会自动成倍地增加容量（桶的数量），并将原有的对象重新分配，放入新的桶内，这称为rehashing。HashSet和HashMap、Hashtable的构造器允许指定一个负载极限，HashSet和HashMap、Hashtable默认的“负载极限”为0.75，这表明当该hash表的3/4已经被填满时，hash表会发生rehashing。
 
-  ​	
+“负载极限”的默认值（0.75）是时间和空间成本上的一种折中：较高的“负载极限”可以降低hash表所占用的内存空间，但会增加查询数据的时间开销，而查询是最频繁的操作（HashMap的get()与put()方法都要用到查询）；较低的“负载极限”会提高查询数据的性能，但会增加hash表所占用的内存开销。程序员可以根据实际情况来调整HashSet和HashMap的“负载极限”值。
+
+如果开始就知道HashSet和HashMap、Hashtable会保存很多记录，则可以在创建时就使用较大的初始化容量，如果初始化容量始终大于HashSet和HashMap、Hashtable所包含的最大记录数除以负载极限，就不会发生rehashing。使用足够大的初始化容量创建HashSet和HashMap、Hashtable时，可以更高效地增加记录，但将初始化容量设置太高可能会浪费空间，因此通常不要将初始化容量设置得太高
+
+
 
 [Set与Map更多参看对hashset和Map有一个比较好的认知：](https://blog.csdn.net/qq_37256896/article/details/103325204)
 
@@ -2829,72 +3038,38 @@ Java的IO流的40多个类都是从如下4个抽象基类派生的：
 ```java
 public class FileTest {
 
-    public static void main(String[] args)
-
-            throws IOException {
-
-// 以当前路径来创建一个File对象
-
+    public static void main(String[] args) throws IOException {
+        // 以当前路径来创建一个File对象
         File file = new File(".");
-
-// 直接获取文件名，输出一点
-
+        // 直接获取文件名，输出一点
         System.out.println(file.getName());
-
-// 获取相对路径的父路径可能出错，下面代码输出nullSystem.out.println(file.getParent());
-
-// 获取绝对路径
-
+        // 获取相对路径的父路径可能出错，下面代码输出nullSystem.out.println(file.getParent());
+        // 获取绝对路径
         System.out.println(file.getAbsoluteFile());
-
-// 获取上一级路径
-
+        // 获取上一级路径
         System.out.println(file.getAbsoluteFile().getParent());
-
-// 在当前路径下创建一个临时文件
-
+        // 在当前路径下创建一个临时文件
         File tmpFile = File.createTempFile("aaa", ".txt", file);
-
-// 指定当JVM退出时删除该文件
-
+        // 指定当JVM退出时删除该文件
         tmpFile.deleteOnExit();
-
-// 以系统当前时间作为新文件名来创建新文件
-
+        // 以系统当前时间作为新文件名来创建新文件
         File newFile = new File(System.currentTimeMillis() + "");
-
         System.out.println("newFile对象是否存在：" + newFile.exists());
-
-// 以指定newFile对象来创建一个文件
-
+        // 以指定newFile对象来创建一个文件
         newFile.createNewFile();
-
-// 以newFile对象来创建一个目录，因为newFile已经存在
-
-// 所以下面方法返回false，即无法创建该目录
-
+        // 以newFile对象来创建一个目录，因为newFile已经存在
+        // 所以下面方法返回false，即无法创建该目录
         newFile.mkdir();
-
-// 使用list()方法列出当前路径下的所有文件和路径
-
+        // 使用list()方法列出当前路径下的所有文件和路径
         String[] fileList = file.list();
-
         System.out.println("====当前路径下所有文件和路径如下====");
-
         for (String fileName : fileList) {
-
             System.out.println(fileName);
-
         }
-
-// listRoots()静态方法列出所有的磁盘根路径
-
+        // listRoots()静态方法列出所有的磁盘根路径
         File[] roots = File.listRoots();
-
         System.out.println("====系统所有根路径如下====");
-
         for (File root : roots) {
-
             System.out.println(root);
 
         }
@@ -3269,6 +3444,14 @@ public class FilesTest {
 
 多线程则扩展了多进程的概念，使得同一个进程可以同时并发处理多个任务。线程（Thread）也被称作轻量级进程（Lightweight Process），线程是进程的执行单元。就像进程在操作系统中的地位一样，线程在程序中是独立的、并发的执行流。当进程被初始化后，主线程就被创建了。对于绝大多数的应用程序来说，通常仅要求有一个主线程，但也可以在该进程内创建多条顺序执行流，这些顺序执行流就是线程，每个线程也是互相独立的。
 
+#### 线程和进程
+
+##### 进程特征
+
+-  独立性：进程是系统中独立存在的实体，它可以拥有自己独立的资源，每一个进程都拥有自己私有的地址空间。在没有经过进程本身允许的情况下，一个用户进程不可以直接访问其他进程的地址空间。
+- 动态性：进程与程序的区别在于，程序只是一个静态的指令集合，而进程是一个正在系统中活动的指令集合。在进程中加入了时间的概念。进程具有自己的生命周期和各种不同的状态，这些概念在程序中都是不具备的。
+- 并发性：多个进程可以在单个处理器上并发执行，多个进程之间不会互相影响。
+
 线程是进程的组成部分，一个进程可以拥有多个线程，一个线程必须有一个父进程。线程可以拥有自己的堆栈、自己的程序计数器和自己的局部变量，但不拥有系统资源，它与父进程的其他线程共享该进程所拥有的全部资源。因为多个线程共享父进程里的全部资源，因此编程更加方便；但必须更加小心，我们必须确保线程不会妨碍同一进程里的其他线程。
 
 线程可以完成一定的任务，可以与其他线程共享父进程中的共享变量及部分环境，相互之间协同来完成进程所要完成的任务。
@@ -3285,15 +3468,28 @@ public class FilesTest {
 
 当操作系统创建一个进程时，必须为该进程分配独立的内存空间，并分配大量的相关资源；但创建一个线程则简单得多，因此使用多线程来实现并发比使用多进程实现并发的性能要高得多。
 
-总结起来，使用多线程编程具有如下几个优点。
+**总结起来，使用多线程编程具有如下几个优点。**
 
-进程之间不能共享内存，但线程之间共享内存非常容易。
+- 进程之间不能共享内存，但线程之间共享内存非常容易。
 
-系统创建进程时需要为该进程重新分配系统资源，但创建线程则代价小得多，因此使用多线程来实现多任务并发比多进程的效率高。
 
-Java语言内置了多线程功能支持，而不是单纯地作为底层操作系统的调度方式，从而简化了Java的多线程编程。
+- 系统创建进程时需要为该进程重新分配系统资源，但创建线程则代价小得多，因此使用多线程来实现多任务并发比多进程的效率高。
 
-当发生如下情况时，线程将会进入阻塞状态。
+
+- Java语言内置了多线程功能支持，而不是单纯地作为底层操作系统的调度方式，从而简化了Java的多线程编程。
+
+
+##### 线程的生命周期
+
+当线程被创建并启动以后，它既不是一启动就进入了执行状态，也不是一直处于执行状态，在线程的生命周期中，它要经过新建（New）、就绪（Runnable）、运行（Running）、阻塞（Blocked）和死亡（Dead） 5种状态。尤其是当线程启动以后，它不可能一直“霸占”着CPU独自运行，所以CPU需要在多条线程之间切换，于是线程状态也会多次在运行、阻塞之间切换
+
+**当发生如下情况，线程会进入就绪状态：**
+
+- 当程序new的时候线程处于新建状态。该线程就处于新建状态，此时它和其他的Java对象一样，仅仅由Java虚拟机为其分配内存，并初始化其成员变量的值。此时的线程对象没有表现出任何线程的动态特征，程序也不会执行线程的线程执行体
+
+- 当调用start()方法之后，该线程处于就绪状态，Java虚拟机会为其创建方法调用栈和程序计数器，处于这个状态中的线程并没有开始运行，只是表示该线程可以运行了。至于该线程何时开始运行，取决于JVM里线程调度器的调度。
+
+**当发生如下情况时，线程将会进入阻塞状态。**
 
 - 线程调用sleep()方法主动放弃所占用的处理器资源。
 - 线程调用了一个阻塞式IO方法，在该方法返回之前，该线程被阻塞。
@@ -3302,7 +3498,7 @@ Java语言内置了多线程功能支持，而不是单纯地作为底层操作�
 - 程序调用了线程的suspend()方法将该线程挂起。但这个方法容易导致死锁，所以应该尽量避免使用该方法。
 - 当前正在执行的线程被阻塞之后，其他线程就可以获得执行的机会。被阻塞的线程会在合适的时候重新进入就绪状态，注意是就绪状态而不是运行状态。也就是说，被阻塞线程的阻塞解除后，必须重新等待线程调度器再次调度它。
 
-针对上面几种情况，当发生如下特定的情况时可以解除上面的阻塞，让该线程重新进入就绪状态。
+**当发生如下特定的情况时可以解除上面的阻塞，让该线程重新进入就绪状态。**
 
 - 调用sleep()方法的线程经过了指定时间。
 - 线程调用的阻塞式IO方法已经返回。
