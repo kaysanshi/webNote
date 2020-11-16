@@ -16,12 +16,17 @@
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.md" target="_blank">数据结构与算法实践</a>
 
+[常见的列表实现原理](https://github.com/kaysanshi/learning-note/blob/master/note/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%88%97%E8%A1%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
+
+### java Web基础
+
 
 
 ### 框架
+
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring.md" target="_blank">Spring</a>
 
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/springmvc%EF%BC%9A.md" target="_blank">SpringMVC</a>
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringMVC.md" target="_blank">SpringMVC</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%E6%B3%A8%E8%A7%A3%EF%BC%9A.md" target="_blank">Spring 注解</a>
 
@@ -45,6 +50,8 @@
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/itoken.md" target="_blank">SpringCloud itoken 项目</a>
 
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Spring%20Cloud%20Alibaba.md" target="_blank">SpringCloud Alibaba</a>
+
 
 
 
@@ -57,16 +64,20 @@
 
 
 
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8.md" target="_blank">分库分表</a>
+
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/Oracle.md" target="_blank">Oracle</a>
+
+
 
 ### 数据库访问ORM
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/JDBCTemplate.md" target="_blank">JdbcTemplate</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/JPA.md" target="_blank">JPA</a>
 
-
-
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Data.md" target="_blank">SpringData</a>
+
+
 
 
 
@@ -85,27 +96,51 @@
 
 ### 中间件
 
+<a href="#" target="_blank">nginx</a>
+
+
+
 [Jedis](https://github.com/kaysanshi/webNote/blob/master/note/Redis%E4%BD%BF%E7%94%A8lettuce%E5%92%8Cjedis.md)
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/Redis.md" target="_blank">redis</a>
+
+<a href="##" target="_blank">ehcache</a>
 
 
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/Apache%20Dubbo%20Zookeeper.md" target="_blank">Apache Dubbo Zookepeer</a>
 
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/Apache%20Shiro.md" target="_blank">Apache Shiro</a>
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/POI%26pinyin4j.md" target="_blank"> Apache POI</a>
+
+
+
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/POI%26pinyin4j.md" target="_blank"> Apache CXF(webService)</a>
+
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/MQ.md" target="_blank">MQ</a>
+
+
 
 
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/Lucene%26Solr.md" target="_blank">Lucene&Solr</a>
 
+
+
+<a href="#" target="_blank">Quartz</a>
+
+
+
 ### 容器化&持续集成
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Docker.md" target="_blank">Docker </a>
 
-[Git](https://github.com/kaysanshi/webNote/blob/master/note/Git.md)  
+<a href="https://github.com/kaysanshi/webNote/blob/master/note/Git.md" target="_blank">Git</a>
 
+<a href="(https://github.com/kaysanshi/learning-note/blob/master/note/Linux%20%E6%93%8D%E4%BD%9C.md" target="_blank">Linux操作</a>
 
+<a href="https://www.kubernetes.org.cn/k8s" target="_blank">Kubernetes（还未进行学习)</a>
 
 ### 前端
 
@@ -121,3 +156,16 @@
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/python.md" target="_blank">Python基础</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/python%2Bappium%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95.md" target="_blank">Python+appium自动化测试教程</a>
+
+
+
+### 开发记录问题
+
+[开发记录问题（learning-genie）](https://github.com/kaysanshi/learning-note/blob/master/note/%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95%E9%97%AE%E9%A2%98%EF%BC%9A.md)
+
+
+
+### LeetCode
+
+<a hreft="https://github.com/kaysanshi/learning-note/blob/master/note/LettCode%E9%A2%98%E8%A7%A3.md" target="_blank">LeetCode题解</a>
+
