@@ -31,8 +31,12 @@
   ####  Nginx 的应用场景
 
 - HTTP 服务器：Nginx 是一个 HTTP 服务可以独立提供 HTTP 服务。可以做网页静态服务器。
+
 - 虚拟主机：可以实现在一台服务器虚拟出多个网站。例如个人网站使用的虚拟主机。
-- 反向代理，负载均衡：当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用 Nginx 做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况
+
+- 反向代理，负载均衡：当网站的访问量达到一定程度后，单台服务器不能满足用户的请求时，需要用多台服务器集群可以使用 Nginx 做反向代理。并且多台服务器可以平均分担负载，不会因为某台服务器负载高宕机而某台服务器闲置的情况 .
+
+  负载均衡，英文名称为 Load Balance，其意思就是分摊到多个操作单元上进行执行，例如 Web 服务器、FTP 服务器、企业关键应用服务器和其它关键任务服务器等，从而共同完成工作任务
 
 ##### 1.docker-compose.yml来使用nginx:
 
@@ -320,11 +324,20 @@ upstream myServer {
 ```
 
 - `upstream`：每个设备的状态:
+
 - `down`：表示当前的 `server` 暂时不参与负载
+
 - `weight`：默认为 1 `weight` 越大，负载的权重就越大。
+
 - `max_fails`：允许请求失败的次数默认为 1 当超过最大次数时，返回 `proxy_next_upstream` 模块定义的错误
+
 - `fail_timeout`:`max_fails` 次失败后，暂停的时间。
+
 - `backup`：其它所有的非 `backup` 机器 `down` 或者忙的时候，请求 `backup` 机器。所以这台机器压力会最轻
+
+  ![img](https://img-blog.csdnimg.cn/20190624193234777.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2,size_16,color_FFFFFF,t_70)
+
+![img](https://img-blog.csdnimg.cn/2019062419304284.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2,size_16,color_FFFFFF,t_70)
 
  ##### 4.实战：
 
