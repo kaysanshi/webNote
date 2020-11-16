@@ -16,7 +16,7 @@
 
 <a href="https://github.com/kaysanshi/learning-note/blob/master/note/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E5%AE%9E%E6%88%98.md" target="_blank">数据结构与算法实践</a>
 
-[常见的列表实现原理](https://github.com/kaysanshi/learning-note/blob/master/note/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%88%97%E8%A1%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
+<a href="https://github.com/kaysanshi/learning-note/blob/master/note/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%88%97%E8%A1%A8%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md">常见列表实现原理</a>
 
 ### java Web基础
 
@@ -33,8 +33,6 @@
 
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Spring%20Boot.md" target="_blank">SpringBoot入门</a>
-
-<a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E4%BB%8B%E7%BB%8D.md" target="_blank">SpringBoote介绍</a>
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/SpringBoot%E6%95%B4%E5%90%88%E5%85%B6%E4%BB%96%E7%BB%84%E4%BB%B6.md" target="_blank">SpringBoot整合其组件</a>
 
