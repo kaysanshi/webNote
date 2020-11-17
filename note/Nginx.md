@@ -560,12 +560,60 @@ cmd 进入Nginx解压目录 执行以下命令
 
 直接使用./nginx 进行启动。
 
-**关闭：**
+​    **关闭：**
 
 ```
 ps -aux|grep nginx
 kill -9 nginx主进程号
 ```
+
+**设置开机自启**
+
+1.进入`/lib/systemd/system`
+
+2.编辑nginx.service 文件 `vim nginx .service`
+
+```
+[Unit]
+Description=nginx service
+After=network.target 
+   
+[Service] 
+Type=forking 
+ExecStart=/usr/local/nginx/sbin/nginx
+ExecReload=/usr/local/nginx/sbin/nginx -s reload
+ExecStop=/usr/local/nginx/sbin/nginx -s quit
+PrivateTmp=true 
+   
+[Install] 
+WantedBy=multi-user.target
+```
+
+3.加入开机自启
+
+```
+systemctl enable nginx
+```
+
+4.服务状态：
+
+```
+# systemctl start nginx.service　         启动nginx服务
+
+# systemctl stop nginx.service　          停止服务
+
+# systemctl restart nginx.service　       重新启动服务
+
+# systemctl list-units --type=service     查看所有已启动的服务
+
+# systemctl status nginx.service          查看服务当前状态
+
+# systemctl enable nginx.service          设置开机自启动
+
+# systemctl disable nginx.service         停止开机自启动
+```
+
+
 
 #### Nginx配置：
 
