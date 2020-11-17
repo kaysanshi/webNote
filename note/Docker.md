@@ -41,10 +41,10 @@ Docker容器是docker运行的实体，容器可以被创建，启动，停止�
 
 ##	ubuntu安装docker:
 
-- 命令:	wget -q0- http://get.docker.com/ |sh
-- 启动：sudo service docker start
-- 测试运行:docker run hello-world
-- 镜像加速:	 /etc/docker/daemon.json 在这里加入{ "registry-mirrors":["http://hub-mirror.c.163.com"]}
+- 命令:	`wget -q0- http://get.docker.com/ |sh`
+- 启动：`sudo service docker start`
+- 测试运行:  `docker run hello-world`
+- 镜像加速:	 /etc/docker/daemon.json 在这里加入`{ "registry-mirrors":["http://hub-mirror.c.163.com"]}`
 
 ```xml
 ubuntu安装：		
@@ -74,27 +74,27 @@ ubuntu安装：
 
 ### ubuntu脚本自动安装：
 
-- 1.curl -fsSL get.docker.com -o get-docker.sh
-- 2.sh get-docker.sh --mirror Aliyun
-  ​			或者第二步使用：sudo sh get-docker.sh --mirror AzureChinaCloud
+- 1`.curl -fsSL get.docker.com -o get-docker.sh`
+- 2.`sh get-docker.sh --mirror Aliyun`
+  ​			或者第二步使用：`sudo sh get-docker.sh --mirror AzureChinaCloud`
 - 3.测试是否安装成功：
-  ​			docker version
+  ​			`docker version`
 
 ### ubuntu安装加速器：
 
 镜像加速: 如果没有则创建这个文件：
-​		/etc/docker/daemon.json 在这里加入{ "registry-mirrors":["https://registry.docker-cn.com"]}
+​		/etc/docker/daemon.json 在这里加入`{ "registry-mirrors":["https://registry.docker-cn.com"]}`
 重启服务：
-​		systemctl restart docker
+`​systemctl restart docker`
 
 ### docker中安装tomcat：
 
-- 1.命令：docker pull tomcat
-  		下载tomcat 9： docker pull tomcat:9-jre8
+- 1.命令：`docker pull tomcat`
+  		下载tomcat 9： `docker pull tomcat:9-jre8`
 - 2.docker中运行tomcat：需要制定端口
-   		docker run -p 8080:8080 tomcat
+   		`docker run -p 8080:8080 tomcat`
 
-### docker下载镜像：
+###  docker下载镜像：
 
 `1.docker pull ubuntu:16.04`
 		`//docker image ls :查看镜像列表列出的是顶级的镜像`
@@ -135,7 +135,9 @@ ubuntu安装：
 在 /usr/local:
 
 ​		创建docker目录，然后创建一个tomcat的dockerfile目录，
+
 ​			from:必须是第一条指令，用于指定基础的镜像
+
 ​			run ：用于执行命令行命令，由于命令行的强大，
 
 命令有两种格式：shell格式:    exec格式：
@@ -146,22 +148,22 @@ ubuntu安装：
 
 ### 使用上下文环境构建：				
 
-		创建一个html文件：
-			创建一个Dockerfile 里面书写：from tomcat	copy /usr/local/tomcat/webapps/root
-			然后执行一个为：docker build -t myshop .
-			里会自动的寻找到Dockerfile
-			可以看到打印的执行的语句然后进入 tomcat中会发现已经创建了个index.html
-			在Dockerfile 中的使用	构建时
-			    先声明
-				Rrom tomcat
-				workdir /usr/local/tomcat/webapps/root/
-				run rm -fr *
-				copy spring-boot-institute.jar .
-				Run  unzip spring-boot-institute.jar
-				run rm -fr spring-boot-institute.jar
-				workdir /usr/local/tomcat
-				
-				运行：docker build -t institute	 这里会自动的寻找到Dockerfile
+	创建一个html文件：
+		创建一个Dockerfile 里面书写：from tomcat	copy /usr/local/tomcat/webapps/root
+		然后执行一个为：docker build -t myshop .
+		里会自动的寻找到Dockerfile
+		可以看到打印的执行的语句然后进入 tomcat中会发现已经创建了个index.html
+		
+		在Dockerfile 中的使用	构建时先声明
+	    from tomcat
+	    workdir /usr/local/tomcat/webapps/root/
+	    run rm -fr *
+	    copy spring-boot-institute.jar .
+	    Run  unzip spring-boot-institute.jar
+	    run rm -fr spring-boot-institute.jar
+	    workdir /usr/local/tomcat
+	
+	运行：docker build -t institute	 这里会自动的寻找到Dockerfile
 ## Docker数据卷：
 
 数据卷 是一个可供一个或多个容器使用的特殊目录，它绕过 UFS，可以提供很多有用的特性：
@@ -340,7 +342,7 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 ## docker命令：
 
-​	运行启动 ： docker run --name container-name -d image-name 
+​	运行启动 ： `docker run --name container-name -d image-name` 
 
 eg : `docker run –name myredis –d redis`
 ​		
@@ -608,10 +610,10 @@ services:
 daemon.json中配置：
 {
 	"registry-mirrors": [
-				"https://registry.docker-cn.com"
+		"https://registry.docker-cn.com"
 	],
 	"insecure-registries": [
-				"ip:5000"
+		"ip:5000"
 	]
 }	
 ```

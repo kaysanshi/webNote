@@ -22,7 +22,7 @@
 
 SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到的问题，想要使用Spring Cloud必须基于Spring Boot
 
-1.Spring Cloud Netflix
+**1.Spring Cloud Netflix**
 
 ​	API网关，zuul组件
 
@@ -32,7 +32,7 @@ SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到�
 
 ​    熔断机制 Hystrix
 
-2.Apache Dubbo Zookeeper
+**2.Apache Dubbo Zookeeper**
 
    Dubbo是一个高效性能的 Java RPC 通信框架，2.6.x
 
@@ -40,9 +40,9 @@ SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到�
 
    API网关 没有  找第三方或自己实现。
 
-  服务挂了，Hystrix
+   服务挂了，Hystrix
 
-3.Spring Cloud Alibaba
+**3.Spring Cloud Alibaba**
 
  Spring Cloud Alibaba致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
 
@@ -76,13 +76,15 @@ SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到�
 ​	当服务越来越多，容量的评估，小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心基于访问压力实时管理集群容量，提高集群利用率。
 ​		此时，用于提高机器利用率的 资源调度和治理中心(SOA) 是关键。
 
-​	Dubbo就是资源调度和治理中心的管理工具。
+**Dubbo就是资源调度和治理中心的管理工具。**
 
 ## Dubbo和Zookpper
 
 ### Dubbo
 
-Dubbo是阿里巴巴B2B平台技术部开发的一款Java服务平台框架以及SOA治理方案。其功能主要包括：高性能NIO通信及多协议集成、服务动态寻址与路由、软负载均衡与容错、依赖分析与降级等。Dubbo简单的底层框架如图16-4所示。Registry是服务注册与发现的注册中心， Provider是暴露服务的服务提供方，Consumer是调用远程服务的服务消费方，Monitor是统计服务的调用次数和调用时间的监控中心，Container是服务运行容器。Dubbo简单的调用关系如下：（1）服务容器Container负责启动、加载、运行服务提供者Provider。
+Dubbo是阿里巴巴B2B平台技术部开发的一款Java服务平台框架以及SOA治理方案。其功能主要包括：高性能NIO通信及多协议集成、服务动态寻址与路由、软负载均衡与容错、依赖分析与降级等。Dubbo简单的底层框架如图16-4所示。Registry是服务注册与发现的注册中心， Provider是暴露服务的服务提供方，Consumer是调用远程服务的服务消费方，Monitor是统计服务的调用次数和调用时间的监控中心，Container是服务运行容器。Dubbo简单的调用关系如下：
+
+（1）服务容器Container负责启动、加载、运行服务提供者Provider。
 
 （2）服务提供者Provider在启动时，向注册中心Registry注册自己提供的服务。
 
@@ -124,7 +126,9 @@ Dubbo是阿里巴巴B2B平台技术部开发的一款Java服务平台框架以�
 
 ·        5. 服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。
 
-Dubbo将注册Registry中心进行抽象，使得它可以外接不同的存储媒介给注册中心Registry提供服务，可以作为存储媒介的有ZooKeeper、Memcached、Redis等。引入ZooKeeper作为存储媒介，也就是把ZooKeeper的特性引进来。首先是负载均衡，单注册中心的承载能力是有限的，在流量达到一定程度的时候就需要分流，负载均衡就是为了分流而存在的。一个ZooKeeper群配合相应的Web应用就可以很容易达到负载均衡；然后是资源同步，单单有负载均衡还不够，节点之间的数据和资源需要同步，ZooKeeper集群就天然具备这样的功能；最后是命名服务，将树状结构用于维护全局的服务地址列表，服务提供者在启动的时候，向ZooKeeper的指定节点目录写入自己的URL地址，这个操作就完成了服务的发布。ZooKeeper其他特性还有Mast选举、分布式锁等
+Dubbo将注册Registry中心进行抽象，使得它可以外接不同的存储媒介给注册中心Registry提供服务，可以作为存储媒介的有**ZooKeeper**、**Memcached**、**Redis**等。引入ZooKeeper作为存储媒介，也就是把ZooKeeper的特性引进来。
+
+首先是负载均衡，单注册中心的承载能力是有限的，在流量达到一定程度的时候就需要分流，负载均衡就是为了分流而存在的。一个**ZooKeeper**群配合相应的Web应用就可以很容易达到负载均衡；然后是资源同步，单单有负载均衡还不够，节点之间的数据和资源需要同步，ZooKeeper集群就天然具备这样的功能；最后是命名服务，将树状结构用于维护全局的服务地址列表，服务提供者在启动的时候，向ZooKeeper的指定节点目录写入自己的URL地址，这个操作就完成了服务的发布。ZooKeeper其他特性还有**Mast选举、分布式锁**等
 
 **使用注解进行服务的远程调用：**
 
@@ -325,9 +329,9 @@ ZAB 协议既不是强一致性，也不是弱一致性，而是处于两者之�
 
 ##### 共享配置和状态信息
 
-Redis 的分布式解决方案 Codis，就利用了 Zookeeper 来存放数据路由表和 codis-proxy 节点的元信息。同时 codis-config 发起的命令都会通过 ZooKeeper 同步到各个存活的 codis-proxy。
+Redis 的分布式解决方案 `Codis`，就利用了 Zookeeper 来存放数据路由表和 `codis-proxy` 节点的元信息。同时 `codis-config` 发起的命令都会通过 ZooKeeper 同步到各个存活的 `codis-proxy`。
 
-此外，Kafka、HBase、Hadoop，也都依靠Zookeeper同步节点信息，实现高可用。
+此外，`Kafka`、`HBase`、`Hadoop`，也都依靠Zookeeper同步节点信息，实现高可用。
 
 #### Zookeeper 如何实现分布式锁
 
@@ -335,9 +339,10 @@ Redis 的分布式解决方案 Codis，就利用了 Zookeeper 来存放数据路
 
 ##### Zookeeper和Redis分布式锁的比较
 
-#### Dubbo和Zookpper安装	
+#### Dubbo和Zookpper安装
 
 ##### dubbo如何使用：
+
 ​		先要在注册中心注册(注册中心)：ZooKeeper使用
 
 ```
@@ -370,6 +375,7 @@ dubbo.admin.guest.password=guest
 
 ##### ZooKeeper使用：
 ​				注册中心负责服务地址的注册与查找，相当于目录服务，服务提供者和消费者只在启动时与注册中心交互，注册中心不转发请求，压力较小。使用dubbo-2.3.3以上版本，建议使用zookeeper注册中心。
+
 ​				Zookeeper是Apacahe Hadoop的子项目，是一个树型的目录服务，支持变更推送，适合作为Dubbo服务的注册中心，工业强度较高，可用于生产环境，并推荐使用
 
 Zookeeper安装：

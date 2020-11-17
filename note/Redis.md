@@ -29,9 +29,9 @@
 ### linux下安装redis:
 
 ```
-$ wget http://download.redis.io/releases/redis-2.8.17.tar.gz
-$ tar xzf redis-2.8.17.tar.gz
-$ cd redis-2.8.17
+$ wget http://download.redis.io/releases/redis-3.0.0.tar.gz
+$ tar xzf redis-3.0.0.tar.gz
+$ cd redis-3.0.0
 $ make
 ```
 
@@ -40,7 +40,7 @@ make完后 redis-2.8.17目录下会出现编译后的redis服务程序redis-serv
 **启动redis服务：**
 
 ```
-下面启动redis服务.
+下面启动redis服务.进入redis的安装目录
 方式一：
 $ cd src
 $ ./redis-server
@@ -113,6 +113,39 @@ redis> get foo
 **查看redis的配置项**
 
 获取全部的配置项`CONFIG get *`
+
+**redis 后台启动**
+
+复制一份redis.conf 文件到 `usr/local/bin`中。然后修改其中的：**daemonize yes**  这个
+
+然后到redis目录下进行启动
+
+```
+[root@localhost src]# ./redis-server /usr/local/bin/redis.conf
+[root@localhost src]# ps aux|grep redis
+root 97629  0.0  0.7 140912 7396 ? Ssl  11:13   0:00 ./redis-server *:6379
+root  97915  0.0  0.0 112824 976 pts/0  R+ 11:13 0:00 grep --color=auto redis
+[root@localhost src]# 
+```
+
+**redis 开机自启**
+
+1.编写脚本 `vim /etc/init.d/redis`
+
+[参考](https://www.cnblogs.com/-zhuang/articles/10599276.html)
+
+2.设置redis权限  `chmod 755 /etc/init.d/redis`
+
+3.启动redis   `/etc/init.d/redis start`
+
+4.设置开机自启：
+
+```
+cd /etc/init.d/
+chkconfig redis on
+```
+
+
 
 ### Linux下删除Redis
 
