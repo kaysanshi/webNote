@@ -75,40 +75,17 @@ ubuntu安装：
 ### ubuntu脚本自动安装：
 
 - 1`.curl -fsSL get.docker.com -o get-docker.sh`
-- 2.`sh get-docker.sh --mirror Aliyun`
+- 2.`sh get-docker.sh --mirror Aliyun` 
   ​			或者第二步使用：`sudo sh get-docker.sh --mirror AzureChinaCloud`
 - 3.测试是否安装成功：
   ​			`docker version`
 
-### ubuntu安装加速器：
+### ubuntu安装镜像加速器：
 
 镜像加速: 如果没有则创建这个文件：
 ​		/etc/docker/daemon.json 在这里加入`{ "registry-mirrors":["https://registry.docker-cn.com"]}`
 重启服务：
 `​systemctl restart docker`
-
-### docker中安装tomcat：
-
-- 1.命令：`docker pull tomcat`
-  		下载tomcat 9： `docker pull tomcat:9-jre8`
-- 2.docker中运行tomcat：需要制定端口
-   		`docker run -p 8080:8080 tomcat`
-
-###  docker下载镜像：
-
-`1.docker pull ubuntu:16.04`
-		`//docker image ls :查看镜像列表列出的是顶级的镜像`
-		`// docker ps :查看容器列表`
-
-`2.运行这个ubuntu容器：`
-			`docker run  -it --rm \`
-			`ubuntu:16.04 \`
-			`bash`
-			`其实上面的一串命令等于：docker run  -it --rm ubuntu:16.04 bash`
-`3.说明：`
-			it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。
-
-​			--rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 --rm 可以避免浪费空间。ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash运行一个容器等于运行一个对象，	
 
 ## Centos安装Docker
 
@@ -130,31 +107,48 @@ ubuntu安装：
 
 ## DockerFile：
 
-镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建
+镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建.
 
 在 /usr/local:
 
 ​		创建docker目录，然后创建一个tomcat的dockerfile目录，
 
-​			from:必须是第一条指令，用于指定基础的镜像
+​			`from:` 必须是第一条指令，用于指定基础的镜像
 
-​			run ：用于执行命令行命令，由于命令行的强大，
+​			`run` ：用于执行命令行命令，由于命令行的强大，
 
 命令有两种格式：shell格式:    exec格式：
 
 这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
 
-​	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件
+​	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件.
 
-### 使用上下文环境构建：				
+**比如构建一个nginx** :
 
-	创建一个html文件：
-		创建一个Dockerfile 里面书写：from tomcat	copy /usr/local/tomcat/webapps/root
-		然后执行一个为：docker build -t myshop .
-		里会自动的寻找到Dockerfile
-		可以看到打印的执行的语句然后进入 tomcat中会发现已经创建了个index.html
-		
-		在Dockerfile 中的使用	构建时先声明
+在一个空白目录中，建立一个文本文件，并命名为 `Dockerfile`： `vim Dockerfile`
+
+```dockerfile
+From nginx
+Run echo '</h1>Hello, Docker!</h1>' /usr/share/nginx/html/index.html
+```
+
+**Dokerfile比较庞大具体的其他的构建可以去看 [docker file list](https://github.com/docker-library)**
+
+### DokerFile指令
+
+指令相对比较庞大 自行学习把，比较常用的有 `FROM，RUN，还提及了COPY,ADD`
+
+
+
+### 使用上下文环境构建：
+
+创建一个html文件：
+
+​	创建一个Dockerfile 里面书写：`from tomcat	copy /usr/local/tomcat/webapps/root`
+​	然后执行一个为：`docker build -t myshop` .
+​	里会自动的寻找到 Dockerfile可以看到打印的执行的语句然后进入 tomcat中会发现已经创建了个index.html
+
+	在Dockerfile 中的使用	构建时先声明
 	    from tomcat
 	    workdir /usr/local/tomcat/webapps/root/
 	    run rm -fr *
@@ -162,8 +156,59 @@ ubuntu安装：
 	    Run  unzip spring-boot-institute.jar
 	    run rm -fr spring-boot-institute.jar
 	    workdir /usr/local/tomcat
-	
-	运行：docker build -t institute	 这里会自动的寻找到Dockerfile
+运行这个docker容器：`docker build -t institute`	 这里会自动的寻找到Dockerfile
+
+**比如一个项目中这样使用：**
+
+```dockerfile
+FROM php:apache
+#Install git
+RUN apt-get update 
+RUN apt-get install -y git
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+RUN a2enmod rewrite
+#Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php --install-dir=. --filename=composer
+RUN mv composer /usr/local/bin/
+COPY ./html/ /var/www/html/
+EXPOSE 80
+```
+
+**执行命令启动** ： `docker build -f dockerfile -t myapp:0.1` 
+
+
+
+**比如一个maven项目 ：**
+
+创建一个DockerFile   `vim dockerfile`
+
+```dockerfile
+# First stage: complete build environment
+FROM maven:3.5.0-jdk-8-alpine AS builder
+
+# add pom.xml and source code
+ADD ./pom.xml pom.xml
+ADD ./src src/
+
+# package jar
+RUN mvn clean package
+
+# Second stage: minimal runtime environment
+From openjdk:8-jre-alpine
+
+# copy jar from the first stage
+COPY --from=builder target/my-app-1.0-SNAPSHOT.jar my-app-1.0-SNAPSHOT.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "my-app-1.0-SNAPSHOT.jar"]
+```
+
+**执行命令启动** ： `docker build -f dockerfile -t myapp:0.1` 
+
+
+
 ## Docker数据卷：
 
 数据卷 是一个可供一个或多个容器使用的特殊目录，它绕过 UFS，可以提供很多有用的特性：
@@ -220,17 +265,108 @@ $ docker run -d -P \
 4. `然后在启动一个tomcat:docker run -p 8081:8080 --name tomcat1 -d -v /usr/local/docker/tomcat/ROOT:/usr/local/tomcat/webapps/ROOT tomcat`
    `这时访问就可以看到两个同时访问了一个数据卷了，这时就可以共享到数据卷了`
 
+## Docker镜像：
+
+###  docker下载镜像：
+
+`1.docker pull ubuntu:16.04`
+		`//docker image ls :查看镜像列表列出的是顶级的镜像`
+		`// docker ps :查看容器列表`
+
+`2.运行这个ubuntu容器：`
+			`docker run  -it --rm \`
+			`ubuntu:16.04 \`
+			`bash`
+			`其实上面的一串命令等于：docker run  -it --rm ubuntu:16.04 bash`
+`3.说明：`
+			it：这是两个参数，一个是 -i：交互式操作，一个是 -t 终端。我们这里打算进入 bash 执行一些命令并查看返回结果，因此我们需要交互式终端。
+
+​			--rm：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 docker rm。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 --rm 可以避免浪费空间。ubuntu:16.04：这是指用 ubuntu:16.04 镜像为基础来启动容器。bash：放在镜像名后的是命令，这里我们希望有个交互式 Shell，因此用的是 bash运行一个容器等于运行一个对象，	
+
+### Docker镜像操作
+
+**列出镜像**：`docker image ls`
+
+**运行启动** ： `docker run --name container-name -d image-name` 
+
+eg : `docker run –name myredis –d redis`
+​		
+
+> ​		 --name：自定义容器名
+>
+> ​		 -d：后台运行 image-name:指定镜像模板 列表 docker ps（查看运行中的容器）；
+>
+> ​		加上-a；可以查看所有容器 
+> ​		//docker image ls :查看镜像列表列出的是顶级的镜像
+> ​		//docker ps :查看容器列表
+
+**删除镜像**： `docker image rm [选项] <镜像1> [镜像2，...]`    其中，`<镜像>` 可以是 `镜像短 ID`、`镜像长 ID`、`镜像名` 或者 `镜像摘要`。
+
+
+
+### 虚悬镜像：
+
+镜像列表中，还可以看到一个特殊的镜像，这个镜像既没有仓库名，也没有标签，均为 <none>。
+
+原因：
+
+​	这个镜像原本是有镜像名和标签的，原来为 mongo:3.2，随着官方镜像维护，发布了新版本后，重新 docker pull mongo:3.2 时，mongo:3.2 这个镜像名被转移到了新下载的镜像身上，而旧的镜像上的这个名称则被取消，从而成为了 <none>。除了 docker pull 可能导致这种情况，docker build 也同样可以导致这种现象。
+
+​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
+
+#### 删除虚悬镜像：
+
+`$ docker image prune`	
+
+#### 查看中间层镜像：
+
+`docker image ls -a` 
+
+​     这些无标签的镜像很多都是中间层镜像，是其它镜像所依赖的镜像。这些无标签镜像不应该删除，否则会导致上层镜像因为依赖丢失而出错。
+
+​	实际上，这些镜像也没必要删除，因为之前说过，相同的层只会存一遍，而这些镜像是别的镜像的依赖，因此并不会因为它们被列出来而多存了一份，无论如何你也会需要它们	
+
+​	docker image ls 还支持强大的过滤器参数 --filter，或者简写 -f。之前我们已经看到了使用过滤器来列出虚悬镜像的用法，它还有更多的用法。比如，我们希望看到在 mongo:3.2 之后建立的镜像					
+
+```
+$ docker image ls -f since=mongo:3.2  
+想看某个位置之前的镜像 ：只需要把 since 换成 before
+```
+
+#### 删除指定的镜像：
+
+​	docker image rm [选项] <镜像1> [<镜像2> ...] 其中，<镜像> 可以是 镜像短 ID、镜像长 ID、镜像名 或者 镜像摘要。
+
+```yml
+停止 docker stop container-name/container-id 停止当前你运行的容器 
+启动 docker start container-name/container-id 启动容器
+删除 docker rm container-id 删除指定容器 
+端口映射 -p 6379:6379 eg:docker run -d -p 6379:6379 --name myredis docker.io/redis -p:主机端口(映射到)容器内部的端口
+容器日志 docker logs container-name/container-id	
+```
+
+
 ## Docker构建tomact:
 
 ​	进入docker目录：`docker pull tomcat`
+
 ​	启动：
 
 ```
 docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/test -d tomcat
-说明：-p 8080:8080：将容器的8080端口映射到主机的8080端口-v $PWD/test:/usr/local/tomcat/webapps/test：将主机中当前目录下的test挂载到容器的/test 
+说明：
+-p 8080:8080：将容器的8080端口映射到主机的8080端口
+-v $PWD/test:/usr/local/tomcat/webapps/test：将主机中当前目录下的test挂载到容器的/test 
 ```
 
 ​	查看容器启动情况：docker ps
+
+**备注：**
+
+- 1.命令：`docker pull tomcat`
+  下载tomcat 9： `docker pull tomcat:9-jre8`
+- 2.docker中运行tomcat：需要制定端口
+  `docker run -p 8080:8080 tomcat`
 
 ## Docker构建mysql:
 
@@ -287,10 +423,10 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 - 1.拉去oracle数据库镜像
   `docker pull registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g` 
-  
+
 - 2.启动oracle  自动启动镜像 --restart=always
   `docker run -p 1521:1521 --name oracle_11g -d --restart=always registry.cn-hangzhou.aliyuncs.com/helowin/oracle_11g`
-  
+
 - 3.启动服务：`docker start oracle_11g`
 
 - 4.进入控制台设置用户信息 ：`docker exec -it oracle_11g bash`
@@ -298,19 +434,19 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 - 5.切换到root用户模式下
   su root
   输入密码helowin
-  
+
 - 6.编辑profile文件配置ORACLE环境变量
-  
+
   > export ORACLE_HOME=/home/oracle/app/oracle/product/11.2.0/dbhome_2
   > export ORACLE_SID=helowin
   > export PATH=$ORACLE_HOME/bin:$PATH
-  
+
 - 7.重启配置文件服务
   source /etc/profile
-  
+
 - 8.建立sqlplus软连接
   ln -s $ORACLE_HOME/bin/sqlplus /usr/bin
-  
+
 - 9.切换到oracle用户，修改oracle的相关账号密码
 
 >su oracle
@@ -340,61 +476,26 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 
 
-## docker命令：
+## Docker 容器命令操作
 
-​	运行启动 ： `docker run --name container-name -d image-name` 
+新建启动  `docker run` 
 
-eg : `docker run –name myredis –d redis`
-​		
+查看日志 ： `docker container logs [container ID or NAMES]`
 
-> ​		 --name：自定义容器名
->
-> ​		 -d：后台运行 image-name:指定镜像模板 列表 docker ps（查看运行中的容器）；
->
-> ​		加上-a；可以查看所有容器 
-> ​		//docker image ls :查看镜像列表列出的是顶级的镜像
-> ​		//docker ps :查看容器列表
+查看容器列表 ： `docker container ls`
 
-### 虚悬镜像：
+守护态运行 ： `docker run -d ubuntu:17.10 /bin/sh -c "while true; do echo hello world; sleep 1; done"`
 
-镜像列表中，还可以看到一个特殊的镜像，这个镜像既没有仓库名，也没有标签，均为 <none>。
+查看容器 ： `docker container ls -a`
 
-原因：
+停止容器运行 ： `docker container stop`
 
-​	这个镜像原本是有镜像名和标签的，原来为 mongo:3.2，随着官方镜像维护，发布了新版本后，重新 docker pull mongo:3.2 时，mongo:3.2 这个镜像名被转移到了新下载的镜像身上，而旧的镜像上的这个名称则被取消，从而成为了 <none>。除了 docker pull 可能导致这种情况，docker build 也同样可以导致这种现象。
+进入容器： `docker exec  ubuntu`
 
-​	由于新旧镜像同名，旧镜像名称被取消，从而出现仓库名、标签均为 <none> 的镜像。
+删除容器 ： `docker container rm  container-name`
 
-#### 删除虚悬镜像：
+清理所有处于终止的容器 ： `docker container prune`
 
-`$ docker image prune`	
-
-#### 查看中间层镜像：
-
-`docker image ls -a` 
-
-​     这些无标签的镜像很多都是中间层镜像，是其它镜像所依赖的镜像。这些无标签镜像不应该删除，否则会导致上层镜像因为依赖丢失而出错。
-
-​	实际上，这些镜像也没必要删除，因为之前说过，相同的层只会存一遍，而这些镜像是别的镜像的依赖，因此并不会因为它们被列出来而多存了一份，无论如何你也会需要它们	
-
-​	docker image ls 还支持强大的过滤器参数 --filter，或者简写 -f。之前我们已经看到了使用过滤器来列出虚悬镜像的用法，它还有更多的用法。比如，我们希望看到在 mongo:3.2 之后建立的镜像					
-
-```
-$ docker image ls -f since=mongo:3.2  
-想看某个位置之前的镜像 ：只需要把 since 换成 before
-```
-
-#### 删除指定的镜像：
-
-​	docker image rm [选项] <镜像1> [<镜像2> ...] 其中，<镜像> 可以是 镜像短 ID、镜像长 ID、镜像名 或者 镜像摘要。
-
-```yml
-停止 docker stop container-name/container-id 停止当前你运行的容器 
-启动 docker start container-name/container-id 启动容器
-删除 docker rm container-id 删除指定容器 
-端口映射 -p 6379:6379 eg:docker run -d -p 6379:6379 --name myredis docker.io/redis -p:主机端口(映射到)容器内部的端口
-容器日志 docker logs container-name/container-id	
-```
 ## Docker Compose:
 
 - Docker Compose：是docker官方编排的快速，对于容器集群很有利
