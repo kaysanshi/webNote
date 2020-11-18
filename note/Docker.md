@@ -109,6 +109,8 @@ ubuntu安装：
 
 镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建.
 
+**注意：Dockerfile 的指令每执行一次都会在 docker 上新建一层。所以过多无意义的层，会造成镜像膨胀过大**
+
 在 /usr/local:
 
 ​		创建docker目录，然后创建一个tomcat的dockerfile目录，
@@ -121,7 +123,19 @@ ubuntu安装：
 
 这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
 
-​	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件.
+​	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件.那就是使用&&进行链接：
+
+```dockerfile
+FROM centos
+RUN yum install wget
+RUN wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz"
+RUN tar -xvf redis.tar.gz
+以上执行会创建 3 层镜像。可简化为以下格式：
+FROM centos
+RUN yum install wget \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
+    && tar -xvf redis.tar.gz
+```
 
 **比如构建一个nginx** :
 
@@ -148,14 +162,16 @@ Run echo '</h1>Hello, Docker!</h1>' /usr/share/nginx/html/index.html
 ​	然后执行一个为：`docker build -t myshop` .
 ​	里会自动的寻找到 Dockerfile可以看到打印的执行的语句然后进入 tomcat中会发现已经创建了个index.html
 
-	在Dockerfile 中的使用	构建时先声明
-	    from tomcat
-	    workdir /usr/local/tomcat/webapps/root/
-	    run rm -fr *
-	    copy spring-boot-institute.jar .
-	    Run  unzip spring-boot-institute.jar
-	    run rm -fr spring-boot-institute.jar
-	    workdir /usr/local/tomcat
+```dockerfile
+在Dockerfile 中的使用	构建时先声明
+    from tomcat
+    workdir /usr/local/tomcat/webapps/root/
+    run rm -fr *
+    copy spring-boot-institute.jar .
+    Run  unzip spring-boot-institute.jar
+    run rm -fr spring-boot-institute.jar
+    workdir /usr/local/tomcat
+```
 运行这个docker容器：`docker build -t institute`	 这里会自动的寻找到Dockerfile
 
 **比如一个项目中这样使用：**

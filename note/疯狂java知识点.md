@@ -759,7 +759,7 @@ Object类是所有类、数组、枚举类的父类，也就是说，Java允许�
 
 （3）实现clone()方法时通过super.clone()；调用Object实现的clone()方法来得到该对象的副本，并返回该副本。
 
-#### String,StringBuffer和StringBuilder类
+####  String,StringBuffer和StringBuilder类
 
 字符串就是一连串的字符序列，Java提供了String和StringBuffer两个类来封装字符串，并提供了一系列方法来操作字符串对象。
 
@@ -854,19 +854,65 @@ Matcher类提供了如下几个常用方法。[插图]
 - matches()：返回整个目标字符串与Pattern`是否匹配`。
 - reset()，将现有的Matcher对象应用于一个新的字符序列。
 
+#### Properties类:
+
+Properties 继承于 Hashtable。表示一个持久的属性集，属性列表以key-value的形式存在，key和value都是字符串。
+
+[![03KBlR.png](https://s1.ax1x.com/2020/10/03/03KBlR.png)](https://imgchr.com/i/03KBlR)Properties 类被许多Java类使用。例如，在获取环境变量时它就作为System.getProperties()方法的返回值。
+我们在很多**需要避免硬编码的应用场景**下需要使用properties文件来加载程序需要的配置信息，比如JDBC、MyBatis框架等。Properties类则是properties文件和程序的中间桥梁，不论是从properties文件读取信息还是写入信息到properties文件都要经由Properties类。
+
+```java
+    public static void main(String[] args) throws Exception {
+
+        Properties props = new Properties();
+
+		//向Properties中添加属性
+        props.setProperty("username", "yeeku");
+        props.setProperty("password", "123456");
+		//将Properties中的key-value对保存到a.ini文件中
+        props.store(new FileOutputStream("a.ini"), "comment line");
+		//①//新建一个Properties对象
+        Properties props2 = new Properties();
+		//向Properties中添加属性
+        props2.setProperty("gender", "male");
+		//将a.ini文件中的key-value对追加到props2中
+        props2.load(new FileInputStream("a.ini"));
+		//②
+        System.out.println(props2);
+
+    }
+// 加载获取Connection 
+public Connection getConnection() throws Exception{
+      Properties info=new Properties();
+      info.load(this.getClass().getClassLoader().getResourceAsStream("jdbc.properties"));
+             String  driver=info.getProperty("driver");
+             String jdbcUrl=info.getProperty("jdbcUrl");
+             String user=info.getProperty("user");
+             String password=info .getProperty("password");
+             Class.forName(driver);
+             Connection connection=DriverManager.getConnection(jdbcUrl,user,password);
+             return connection;
+       }
+
+```
+
+可以把Map对象和属性文件关联起来，从而可以把Map对象中的key-value对写入属性文件中，也可以把属性文件中的“属性名=属性值”加载到Map对象中。由于属性文件里的属性名、属性值只能是字符串类型，所以Properties里的key、value都是字符串类型。该类提供了如下三个方法来修改Properties里的key、value值。
+
+更多参看Properties类的使用：https://www.cnblogs.com/leeego-123/p/11535967.html
+
 ### 初始化与清理：
 
 [![dnQtJS.png](https://s1.ax1x.com/2020/08/17/dnQtJS.png)](https://imgchr.com/i/dnQtJS)
 
 #### 垃圾清理的方式：
 
-**标记清除法：**这是垃圾收集算法中最基础的，它的思想是标记哪些要被回收的对象，然后统一回收。这种方法很简单，但是效率不高，标记和清除的效率都很低；此外会产生大量不连续的内存碎片，从而导致以后程序在分配较大对象时由于没有充足的连续内存而提前触发一次 GC 操作。
+**标记清除法：** 这是垃圾收集算法中最基础的，它的思想是标记哪些要被回收的对象，然后统一回收。这种方法很简单，但是效率不高，标记和清除的效率都很低；此外会产生大量不连续的内存碎片，从而导致以后程序在分配较大对象时由于没有充足的连续内存而提前触发一次 GC 操作。
 
-**复制算法：**为了解决效率问题，复制算法将可用内存按容量划分为相等的两部分，然后每次只使用其中的一块，当一块内存用完后就将还存活的对象复制到第二块内存上，然后一次性清楚完第一块内存，再将第二块上的对象复制到第一块。**但是这种方式内存的代价太高，每次基本上都要浪费一半的内存；于是将该算法进行了改进，内存区域不再是按照 1：1 去划分，而是将内存划分为 8：1：1 三部分，较大那份内存是 Eden 区，其余是两块较小的内存区叫 Survior 区，每次都会优先使用 Eden 区，若 Eden 区满则将对象复制到第二块内存区上，然后清除 Eden 区，如果此时存活的对象太多，以至于 Survivor 不够时，会将这些对象通过分配担保机制复制到老年代中。**
+**复制算法：** 为了解决效率问题，复制算法将可用内存按容量划分为相等的两部分，然后每次只使用其中的一块，当一块内存用完后就将还存活的对象复制到第二块内存上，然后一次性清楚完第一块内存，再将第二块上的对象复制到第一块。**但是这种方式内存的代价太高，每次基本上都要浪费一半的内存；于是将该算法进行了改进，内存区域不再是按照 1：1 去划分，而是将内存划分为 8：1：1 三部分，较大那份内存是 Eden 区，其余是两块较小的内存区叫 Survior 区，每次都会优先使用 Eden 区，若 Eden 区满则将对象复制到第二块内存区上，然后清除 Eden 区，如果此时存活的对象太多，以至于 Survivor 不够时，会将这些对象通过分配担保机制复制到老年代中。**
 
-**标记整理法：**这种方法主要是为了解决标记清除法产生大量内存碎片的问题；当对象存活率较高时，也解决了复制算法的效率问题。它的不同之处就是在清除对象的时候现将可回收对象移动到一端，然后清除掉端边界以外的对象，这样就不会产生内存碎片了。
+**标记整理法：** 这种方法主要是为了解决标记清除法产生大量内存碎片的问题；当对象存活率较高时，也解决了复制算法的效率问题。它的不同之处就是在清除对象的时候现将可回收对象移动到一端，然后清除掉端边界以外的对象，这样就不会产生内存碎片了。
 
-**分代收集法：**现在的虚拟机垃圾收集大多采用这种方式，它根据对象的生存周期，将堆分为新生代和老年代。**在新生代中，由于对象生存期短，每次回收都会有大量对象死去，那么这时就采用复制算法。老年代里的对象存活率较高，没有额外的空间进行分配担保，所以可以使用标记整理法或标记清除法。**
+**分代收集法：** 现在的虚拟机垃圾收集大多采用这种方式，它根据对象的生存周期，将堆分为新生代和老年代。**在新生代中，由于对象生存期短，每次回收都会有大量对象死去，那么这时就采用复制算法。老年代里的对象存活率较高，没有额外的空间进行分配担保，所以可以使用标记整理法或标记清除法。**
 
 #### 构造器初始化：
 
@@ -1074,25 +1120,26 @@ UUIDUtil 构造函数
 
 #### 数组的常用功能
 
-**数组** 是一个效率高的存储和随机访问对象引用序列的方式。
+**数组**  是一个效率高的存储和随机访问对象引用序列的方式。
 
 常用方法：
 
-equals():比较两个数组是否相等。
+- equals():比较两个数组是否相等。
 
-deepEquals():用于多维数组比较是否相等。
+- deepEquals():用于多维数组比较是否相等。
 
-fill():填充数组。
+- fill():填充数组。
 
-sort():数组排序
+- sort():数组排序
 
-binarySearch():用于已经排序的数组中查找元素。
+- binarySearch():用于已经排序的数组中查找元素。
 
-toString():产生数组的toSting()表示
+- toString():产生数组的toSting()表示
 
-hashCode()：产生数组的散列码。
+- hashCode()：产生数组的散列码。
 
-System.arrayCopy();复制数组比用for循环速度快了许多。
+- System.arrayCopy();复制数组比用for循环速度快了许多。
+
 
 **数组元素的比较：** 1.实现java.lang.Comparable接口，
 
@@ -2371,52 +2418,7 @@ Arraylist是采用数组实现的，arraylist是可以自动扩容的。比array
 
 常用的迭代器设计模式，iterator 方法返回一个父类实现的迭代器。 1、迭代器的 hasNext 方法的作用是判断当前位置是否是数组最后一个位置，相等为 false， 否则为 true。 2、迭代器 next 方法用于返回当前的元素，并把指针指向下一个元素，值得注意的是，每次 使用 next 方法的时候，都会判断创建迭代器获取的这个容器的计数器 modCount 是否与此 时 的 不 相 等 ， 不 相 等 说 明 集 合 的 大 小 被 修 改 过 ， 如 果 是 会 抛 出 ConcurrentModificationException 异常，如果相等调用 get 方法返回元素即可
 
-#### Properties类:
 
-Properties 继承于 Hashtable。表示一个持久的属性集，属性列表以key-value的形式存在，key和value都是字符串。
-
-[![03KBlR.png](https://s1.ax1x.com/2020/10/03/03KBlR.png)](https://imgchr.com/i/03KBlR)Properties 类被许多Java类使用。例如，在获取环境变量时它就作为System.getProperties()方法的返回值。
-我们在很多**需要避免硬编码的应用场景**下需要使用properties文件来加载程序需要的配置信息，比如JDBC、MyBatis框架等。Properties类则是properties文件和程序的中间桥梁，不论是从properties文件读取信息还是写入信息到properties文件都要经由Properties类。
-
-```java
-
-    public static void main(String[] args) throws Exception {
-
-        Properties props = new Properties();
-
-		//向Properties中添加属性
-        props.setProperty("username", "yeeku");
-        props.setProperty("password", "123456");
-		//将Properties中的key-value对保存到a.ini文件中
-        props.store(new FileOutputStream("a.ini"), "comment line");
-		//①//新建一个Properties对象
-        Properties props2 = new Properties();
-		//向Properties中添加属性
-        props2.setProperty("gender", "male");
-		//将a.ini文件中的key-value对追加到props2中
-        props2.load(new FileInputStream("a.ini"));
-		//②
-        System.out.println(props2);
-
-    }
-// 加载获取Connection 
-public Connection getConnection() throws Exception{
-      Properties info=new Properties();
-      info.load(this.getClass().getClassLoader().getResourceAsStream("jdbc.properties"));
-             String  driver=info.getProperty("driver");
-             String jdbcUrl=info.getProperty("jdbcUrl");
-             String user=info.getProperty("user");
-             String password=info .getProperty("password");
-             Class.forName(driver);
-             Connection connection=DriverManager.getConnection(jdbcUrl,user,password);
-             return connection;
-       }
-
-```
-
-可以把Map对象和属性文件关联起来，从而可以把Map对象中的key-value对写入属性文件中，也可以把属性文件中的“属性名=属性值”加载到Map对象中。由于属性文件里的属性名、属性值只能是字符串类型，所以Properties里的key、value都是字符串类型。该类提供了如下三个方法来修改Properties里的key、value值。
-
-更多参看Properties类的使用：https://www.cnblogs.com/leeego-123/p/11535967.html
 
 ### 泛型：
 
