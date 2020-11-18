@@ -2,6 +2,8 @@
 
 ## 面向对象
 
+[![Dnckb8.png](https://s3.ax1x.com/2020/11/18/Dnckb8.png)](https://imgchr.com/i/Dnckb8)
+
 ### 面向对象概念
 
 ●面向对象的方式实际上由OOA（面向对象分析）、OOD （面向对象设计）和OOP（面向对象编程）三个部分有机组成。其中，OOA和OOD的结构需要使用一种方式来描述并记录，目前业界统一采用UML（统一建模语言）来描述并记录OOA和OOD的结果。
