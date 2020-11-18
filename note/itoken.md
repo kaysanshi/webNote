@@ -1453,93 +1453,81 @@ version: '3.1'
 
 #### Dockerfile
 
-​        FROM ubuntu:xenial
-​        MAINTAINER topsale@vip.qq.com
+```dockerfile
+FROM ubuntu:xenial
 
- ###  更新数据源
+# 更新数据源
+WORKDIR /etc/apt
+RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse' > sources.list
+RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse' >> sources.list
+RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse' >> sources.list
+RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse' >> sources.list
+RUN apt-get update
 
-> ​        WORKDIR /etc/apt
-> ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse' > sources.list
-> ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse' >> sources.list
-> ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse' >> sources.list
-> ​        RUN echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse' >> sources.list
-> ​        RUN apt-get update
+# 安装依赖
+RUN apt-get install make gcc libpcre3-dev zlib1g-dev --assume-yes
 
-####  安装依赖
+# 复制工具包
+ADD fastdfs-5.11.tar.gz /usr/local/src
+ADD fastdfs-nginx-module_v1.16.tar.gz /usr/local/src
+ADD libfastcommon.tar.gz /usr/local/src
+ADD nginx-1.13.6.tar.gz /usr/local/src
 
-> ​        RUN apt-get install make gcc libpcre3-dev zlib1g-dev --assume-yes
->
+# 安装 libfastcommon
+WORKDIR /usr/local/src/libfastcommon
+RUN ./make.sh && ./make.sh install
 
- #### 复制工具包
+# 安装 FastDFS
+WORKDIR /usr/local/src/fastdfs-5.11
+RUN ./make.sh && ./make.sh install
 
-> ​        ADD fastdfs-5.11.tar.gz /usr/local/src
-> ​        ADD fastdfs-nginx-module_v1.16.tar.gz /usr/local/src
-> ​        ADD libfastcommon.tar.gz /usr/local/src
-> ​        ADD nginx-1.13.6.tar.gz /usr/local/src
+# 配置 FastDFS 跟踪器
+ADD tracker.conf /etc/fdfs
+RUN mkdir -p /fastdfs/tracker
 
-#### 安装 libfastcommon
+# 配置 FastDFS 存储
+ADD storage.conf /etc/fdfs
+RUN mkdir -p /fastdfs/storage
 
-> ​        WORKDIR /usr/local/src/libfastcommon
-> ​        RUN ./make.sh && ./make.sh install
+# 配置 FastDFS 客户端
+ADD client.conf /etc/fdfs
 
-#### 安装 FastDFS
+# 配置 fastdfs-nginx-module
+ADD config /usr/local/src/fastdfs-nginx-module/src
 
-> ​        WORKDIR /usr/local/src/fastdfs-5.11
-> ​        RUN ./make.sh && ./make.sh install
-
-#### 配置 FastDFS 跟踪器
-
-> ​        ADD tracker.conf /etc/fdfs
-> ​        RUN mkdir -p /fastdfs/tracker
-
-#### 配置 FastDFS 存储
-
-> ​        ADD storage.conf /etc/fdfs
-> ​        RUN mkdir -p /fastdfs/storage
-
-#### 配置 FastDFS 客户端
-
-> ​        ADD client.conf /etc/fdfs
->
-
-#### 配置 fastdfs-nginx-module
-
-> ​        ADD config /usr/local/src/fastdfs-nginx-module/src
->
-
-### FastDFS 与 Nginx 集成 
-
-```xml
-  WORKDIR /usr/local/src/nginx-1.13.6
-  RUN ./configure --add-module=/usr/local/src/fastdfs-nginx-module/src
-  RUN make && make install
-  ADD mod_fastdfs.conf /etc/fdfs
+# FastDFS 与 Nginx 集成
+WORKDIR /usr/local/src/nginx-1.13.6
+RUN ./configure --add-module=/usr/local/src/fastdfs-nginx-module/src
+RUN make && make install
+ADD mod_fastdfs.conf /etc/fdfs
 
 WORKDIR /usr/local/src/fastdfs-5.11/conf
 RUN cp http.conf mime.types /etc/fdfs/
 
-```
-
-#### 配置 Nginx
-
-```xml
+# 配置 Nginx
 ADD nginx.conf /usr/local/nginx/conf
+
 COPY entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 WORKDIR /
 EXPOSE 8888
 CMD ["/bin/bash"]
-entrypoint.sh
-# !/bin/sh
+```
+
+#####  entrypoint.sh
+
+```text
+#!/bin/sh
 /etc/init.d/fdfs_trackerd start
 /etc/init.d/fdfs_storaged start
 /usr/local/nginx/sbin/nginx -g 'daemon off;'
- 注：Shell 创建后是无法直接使用的，需要赋予执行的权限，使用 chmod +x entrypoint.sh 命令
 ```
 
-
+注：Shell 创建后是无法直接使用的，需要赋予执行的权限，使用 `chmod +x entrypoint.sh` 命令
 
 #### 各种配置文件说明
+
 ##### tracker.conf
 
 FastDFS 跟踪器配置，容器中路径为：/etc/fdfs，修改为： `base_path=/fastdfs/tracker`

@@ -95,7 +95,7 @@ ubuntu安装：
 
 检查是否安装成功: `docker version`
 
-启动docker server: `systemctl start docker.service`
+启动docker server: `systemctl start docker.service` 或者 `systemctl start docker`
 
 设置docker开机自启：`systemctl enable docker.service`
 
@@ -104,6 +104,31 @@ ubuntu安装：
 搜索一些包：`yum search java|grep jdk`
 
 安装vim编辑器：`yum - y install vim*`
+
+检查docker状态：`systemctl status docker`
+
+停止docker:  `systemctl stop docker`
+
+[![Dmy2E4.png](https://s3.ax1x.com/2020/11/18/Dmy2E4.png)](https://imgchr.com/i/Dmy2E4)
+
+**idea链接：**
+
+`vim /usr/lib/systemd/system/docker.service` 找到 `ExecStart=/usr/bin/dockerd-current` 然后直接加入如下
+
+```
+## ExecStart=/usr/bin/dockerd-current -H tcp://0.0.0.0:2375 -H unix://var/run/docker.sock \
+
+```
+
+[![Dm6UsK.png](https://s3.ax1x.com/2020/11/18/Dm6UsK.png)](https://imgchr.com/i/Dm6UsK)
+
+然后进行重启：
+
+```
+systemctl daemon-reload && systemctl restart docker
+```
+
+
 
 ## DockerFile：
 
@@ -628,7 +653,33 @@ services:
 
 `停止并移除容器：docker-compose down`
 
-### Docker compose实战tomcat:						
+### Docker compose实战Nginx
+
+```yaml
+version: '3.1'
+  services:
+  nginx:
+    restart: always
+    image: nginx
+    container_name: nginx
+    ports:
+      - 81:80
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./wwwroot:/usr/share/nginx/wwwroot
+```
+
+配置nginx的数据卷：
+  在dokcer文件下创建：nginx的目录下创建：nginx.conf文件：
+  在当前目录创建wwwroot目录
+  这里直接书写为
+  /usr/local/dokcer/nginx/conf/nginx.conf
+  /usr/local/dokcer/nginx/wwwroot
+  在nginx.conf目录配置nginx的虚拟主机：
+
+然后去配置nginx
+
+### Docker compose实战tomcat:
 
 ```yml
 version: '3.1'
@@ -666,9 +717,9 @@ services:
     		--max_allowed_packet=128M
     		--sql-mode="STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"
     	volumes:
-    			- mysql-data:/var/lib/mysq
-    	volumes:
-				mysql-data:
+    			- mysql-data:/var/lib/mysql
+volumes:
+		mysql-data:
 ```
 
 就是为了简化docker的使用：
@@ -698,6 +749,202 @@ services:
 -  `启动服务：docker-compose -f oracle.yml up -d`
 
 - `查看运行的组件：docker ps -a` 
+
+### DockerCompose 实战RabbitMQ
+
+```yaml
+version: '3.1'
+services:
+  rabbitmq:
+    restart: always
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: rabbit
+      RABBITMQ_DEFAULT_PASS: 123456
+    volumes:
+      - ./data:/var/lib/rabbitmq
+```
+
+### Docker compose实战Redis:
+
+```yaml
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
+    networks:
+      - mynetwork
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:rw
+      - ./data:/data:rw
+    command:
+      /bin/bash -c "redis-server /usr/local/etc/redis/redis.conf "
+networks:
+  mynetwork:
+    external: true
+```
+
+### Docker compose实战Redis集群:
+
+```yaml
+version: '3.1'
+  services:
+  master:
+    image: redis
+    container_name: redis-master
+    ports:
+      - 6379:6379
+
+    slave1:
+      image: redis
+      container_name: redis-slave-1
+      ports:
+        - 6380:6379
+      command: redis-server --slaveof redis-master 6379
+
+    slave2:
+      image: redis
+      container_name: redis-slave-2
+      ports:
+        - 6381:6379
+      command: redis-server --slaveof redis-master 6379
+```
+
+**使用sentinel实现高可用：**
+
+```yaml
+version: '3.1'
+  services:
+    sentinel1:
+      image: redis
+      container_name: redis-sentinel-1
+      ports:
+        - 26379:26379
+      command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+      volumes:
+        #数据卷
+        - ./sentinel1.conf:/usr/local/etc/redis/sentinel.conf
+    sentinel2:
+      image: redis
+      container_name: redis-sentinel-2
+      ports:
+        - 26380:26379
+      command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+      volumes:
+        - ./sentinel2.conf:/usr/local/etc/redis/sentinel.conf
+    sentinel3:
+      image: redis
+      container_name: redis-sentinel-3
+      ports:
+        - 26381:26379
+      command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+      volumes:
+        - ./sentinel3.conf:/usr/local/etc/redis/sentinel.conf
+```
+
+#####  修改Sentinel文件：
+
+分别为 sentinel1.conf，sentinel2.conf，sentinel3.conf，配置文件内容相同
+配置内容如下：
+
+```
+port 26379
+dir /tmp
+# 自定义集群名，其中 127.0.0.1 为 redis-master 的 ip，6379 为 redis-master 的端口，2 为最小投票数（因为有 3 台 Sentinel 所以可以设置成 2）
+sentinel monitor mymaster 192.168.147.132 6379 2
+sentinel down-after-milliseconds mymaster 30000
+sentinel parallel-syncs mymaster 1
+sentinel failover-timeout mymaster 180000
+sentinel deny-scripts-reconfig yes
+
+```
+
+##### 启动集群：
+
+docker-compose up -d
+
+##### 查看集群是否生效：
+
+> 进入 Sentinel 容器，使用 Sentinel API 查看监控情况：
+> docker exec -it redis-sentinel-1 /bin/bash
+> redis-cli -p 26379
+> sentinel master mymaster
+> sentinel slaves mymaster
+> 生效后即可：
+
+### Docker compose实战FastDFS
+
+参考下的 SpringClouditoken 项目下的FastDFS一节：http://www.kaysanshi.top/learning-note/
+
+### Docker compose实战Dubbo zookeeper
+
+
+
+### Docker compose实战zookeeper
+
+**伪集群模式：**
+
+```yaml
+version: '3.1'
+services:
+    zoo1:
+        image: zookeeper
+        restart: always
+        hostname: zoo1
+        ports:
+            - 2181:2181
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+    zoo2:
+        image: zookeeper
+        restart: always
+        hostname: zoo2
+        ports:
+            - 2182:2181
+        environment:
+            ZOO_MY_ID: 2
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+
+    zoo3:
+        image: zookeeper
+        restart: always
+        hostname: zoo3
+        ports:
+            - 2183:2181
+        environment:
+            ZOO_MY_ID: 3
+            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+```
+
+- 分别以交互方式进入容器查看 
+
+```text
+docker exec -it zookeeper_zoo1_1 /bin/bash
+docker exec -it zookeeper_zoo1_2 /bin/bash
+docker exec -it zookeeper_zoo1_3 /bin/bash
+```
+
+###  Docker compose編排容器
+
+一般使用先进行安装环境然后通过docker-compose.yml进行编排启动各个服务。这里的编排一般都是
+
+
+
+
+
+
 
 ## Docker-Registry:
 
@@ -771,3 +1018,4 @@ daemon.json中配置：
 			environment:
 				- ENV_DOCKER_REGISTRY_HOST=192.168.75.133
 				- ENV_DOCKER_REGISTRY_PORT=5000
+

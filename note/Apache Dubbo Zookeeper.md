@@ -471,9 +471,9 @@ Mode: leader
 
 第二台主机
 
-docker-compose.yml
+**docker-compose.yml**
 
-```text
+```yaml
 version: '3.1'
 services:
     zoo2:
@@ -499,7 +499,7 @@ Mode: follower
 
 **docker-compose.yml**
 
-```text
+```yaml
 version: '3.1'
 services:
     zoo3:
