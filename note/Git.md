@@ -167,7 +167,6 @@ version: '3'
         - /usr/local/docker/gitlab/config:/etc/gitlab
         - /usr/local/docker/gitlab/data:/var/opt/gitlab
         - /usr/local/docker/gitlab/logs:/var/log/gitlab
-如果有mysql的话最好把mysql放到文件末位：
 ```
 
 
