@@ -463,19 +463,16 @@ services:
   zoo1:
     image: zookeeper
     restart: always
-    hostname: zoo1   # hostname 应该为zookeeper
+    hostname: zookeeper
     ports:
-      - 2181:2181
-    environment:
-      ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=zoo1:2888:3888
+      - 2181:2181  
 ```
 
 进入容器。
 
-`docker exec -it zookeeper_zoo1_1 /bin/bash`
+`docker exec -it zookeeper_zool_1 /bin/bash`
 
-检查是否安装成功：
+检查是否安装成功：l
 
 `./bin/zkServer.sh status`
 
@@ -525,13 +522,36 @@ WATCHER::
 
 WatchedEvent state:SyncConnected type:None path:null
 
+[zk: 127.0.0.1:2181(CONNECTED) 0] create /hello-zone 'world'
+Created /hello-zone
+[zk: 127.0.0.1:2181(CONNECTED) 1] ls /
+[dubbo, hello-zone, zookeeper]
+[zk: 127.0.0.1:2181(CONNECTED) 2] 
+
+
 ```
 
-这个时候启动dubbo jar是有问题的。
+去git 的dubbo 源码 ，然后打jar包，上传到服务器。
 
-[![Du8vv9.png](https://s3.ax1x.com/2020/11/19/Du8vv9.png)](https://imgchr.com/i/Du8vv9)
+这个时候直接启动jar 就能访问到了。 `java -jar  dubbo-admin-0.2.0-SNAPSHOT.jar`
 
-解决方式：
+注意这个地方我的那个application.properties并未改动。
+
+```
+admin.registry.address=zookeeper://127.0.0.1:2181
+admin.config-center=zookeeper://127.0.0.1:2181
+admin.metadata-report.address=zookeeper://127.0.0.1:2181
+```
+
+请看页面效果：
+
+[![DMvbnI.png](https://s3.ax1x.com/2020/11/20/DMvbnI.png)](https://imgchr.com/i/DMvbnI)
+
+
+
+**通过构建镜像方式让其启动(失败)：**
+
+将dubbo构建成一个jar包：
 
 <font color="red">**将打包时的admin-server中的application.properties配置文件修该 将127.0.0.1修改为zookeeper**</font>
 
@@ -730,17 +750,6 @@ services:
     environment:
       ZOO_MY_ID: 3
       ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=0.0.0.0:2888:3888
-  #dubbo-admin容器编排
-  dubbo-admin:
-    image: dubbo-admin:1.0
-    links:
-      - zoo1:zookeeper
-      #注意 上面这个zookeeper 就是便是编译方式2所修改的文件的内容或是创建镜像是EVN设置的名称
-    ports:
-      - 3003:3003
-    # dubbo-admin访问端口自定
-    restart: always
-
 ```
 
 前台启动： `docker-compose up` 

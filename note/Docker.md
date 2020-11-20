@@ -148,7 +148,7 @@ systemctl daemon-reload && systemctl restart docker
 
 这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
 
-​	dockerfile支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件.那就是使用&&进行链接：
+​	dockerfile 支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件. **那就是使用&&进行链接**：
 
 ```dockerfile
 FROM centos
@@ -205,13 +205,13 @@ Run echo '</h1>Hello, Docker!</h1>' /usr/share/nginx/html/index.html
 FROM php:apache
 #Install git
 RUN apt-get update 
-RUN apt-get install -y git
-RUN docker-php-ext-install pdo pdo_mysql mysqli
-RUN a2enmod rewrite
+	&& apt-get install -y git
+    && docker-php-ext-install pdo pdo_mysql mysqli
+    && a2enmod rewrite
 #Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=. --filename=composer
-RUN mv composer /usr/local/bin/
+&& php composer-setup.php --install-dir=. --filename=composer
+&& mv composer /usr/local/bin/
 COPY ./html/ /var/www/html/
 EXPOSE 80
 ```
@@ -912,13 +912,111 @@ docker-compose up -d
 
 ### Docker compose实战Dubbo zookeeper
 
-查看 Apache Dubbo  http://www.kaysanshi.top/learning-note/
+单节点：
 
-### Docker compose实战zookeeper
+###### 单机模式
+
+<font color="red">**新建zookeeper文件夹。在zookeeper文件夹中新建dokcer-compose.yml**</font>
+
+```yaml
+version: '3.1'
+services:
+  zoo1:
+    image: zookeeper
+    restart: always
+    hostname: zookeeper
+    ports:
+      - 2181:2181  
+```
+
+进入容器。
+
+`docker exec -it zookeeper_zool_1 /bin/bash`
+
+检查是否安装成功：l
+
+`./bin/zkServer.sh status`
+
+[![DugkjI.png](https://s3.ax1x.com/2020/11/19/DugkjI.png)](https://imgchr.com/i/DugkjI)
+
+进入bin目录后查看bin目录下的文件：
+
+```bash
+root@zookeeper:/apache-zookeeper-3.6.2-bin# ls -l bin
+total 64
+-rwxr-xr-x. 1 zookeeper zookeeper   232 Sep  4 12:43 README.txt
+-rwxr-xr-x. 1 zookeeper zookeeper  2066 Sep  4 12:43 zkCleanup.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  1158 Sep  4 12:43 zkCli.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  1620 Sep  4 12:43 zkCli.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  1843 Sep  4 12:43 zkEnv.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  3690 Sep  4 12:43 zkEnv.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  4559 Sep  4 12:43 zkServer-initialize.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  1286 Sep  4 12:43 zkServer.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper 11116 Sep  4 12:43 zkServer.sh
+-rwxr-xr-x. 1 zookeeper zookeeper   988 Sep  4 12:43 zkSnapShotToolkit.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  1377 Sep  4 12:43 zkSnapShotToolkit.sh
+-rwxr-xr-x. 1 zookeeper zookeeper   996 Sep  4 12:43 zkTxnLogToolkit.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  1385 Sep  4 12:43 zkTxnLogToolkit.sh
+root@zookeeper:/apache-zookeeper-3.6.2-bin# 
+```
+
+通过 `zkCli` 来访问 Zookeeper 的控制台来进行管理。
+
+```bash
+root@zookeeper:/apache-zookeeper-3.6.2-bin# zkCli.sh -server 127.0.0.1:2181
+Connecting to 127.0.0.1:2181
+2020-11-20 02:26:42,393 [myid:] - INFO  [main:Environment@98] - Client environment:zookeeper.version=3.6.2--803c7f1a12f85978cb049af5e4ef23bd8b688715, built on 09/04/2020 12:44 GMT
+2020-11-20 02:26:42,397 [myid:] - INFO  [main:Environment@98] - Client environment:host.name=zookeeper
+2020-11-20 02:26:42,397 [myid:] - INFO  [main:Environment@98] - Client environment:java.version=11.0.9.1
+2020-11-20 02:26:42,398 [myid:] - INFO  [main:Environment@98] - Client environment:java.vendor=Oracle Corporation
+2020-11-20 02:26:42,398 [myid:] - INFO  [main:Environment@98] - Client environment:java.home=/usr/local/openjdk-11
+...
+...
+Welcome to ZooKeeper!
+2020-11-20 02:26:42,475 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1167] - Opening socket connection to server localhost/127.0.0.1:2181.
+2020-11-20 02:26:42,475 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1169] - SASL config status: Will not attempt to authenticate using SASL (unknown error)
+JLine support is enabled
+2020-11-20 02:26:42,491 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@999] - Socket connection established, initiating session, client: /127.0.0.1:40896, server: localhost/127.0.0.1:2181
+2020-11-20 02:26:42,511 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1433] - Session establishment complete on server localhost/127.0.0.1:2181, session id = 0x10013cdbf990003, negotiated timeout = 30000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:None path:null
+
+[zk: 127.0.0.1:2181(CONNECTED) 0] create /hello-zone 'world'
+Created /hello-zone
+[zk: 127.0.0.1:2181(CONNECTED) 1] ls /
+[dubbo, hello-zone, zookeeper]
+[zk: 127.0.0.1:2181(CONNECTED) 2] 
+
+
+```
+
+去git 的dubbo 源码 ，然后打jar包，上传到服务器。
+
+这个时候直接启动jar 就能访问到了。 `java -jar  dubbo-admin-0.2.0-SNAPSHOT.jar`
+
+注意这个地方我的那个application.properties并未改动。
+
+```
+admin.registry.address=zookeeper://127.0.0.1:2181
+admin.config-center=zookeeper://127.0.0.1:2181
+admin.metadata-report.address=zookeeper://127.0.0.1:2181
+```
+
+请看页面效果：
+
+[![DMvbnI.png](https://s3.ax1x.com/2020/11/20/DMvbnI.png)](https://imgchr.com/i/DMvbnI)
+
+
+
+
+
+### Docker compose实战zookeeper集群 （有问题 -未解决）
 
 **伪集群模式：**
 
-在原来的使用是server zool:3888 总是出现问题。新版本推荐使用以下
+在原来的使用是`server zool:3888` 总是出现问题。新版本推荐使用以下
 
 ```yaml
 version: '3.1'
@@ -1011,9 +1109,9 @@ version: '3.1'
 
 ###  Docker compose編排容器
 
-一般使用先进行安装环境然后通过docker-compose.yml进行编排启动各个服务。这里的编排一般都是
+一般使用先进行安装环境然后通过docker-compose.yml进行编排启动各个服务。
 
-
+比如我们有一个 spring cloud项目
 
 
 
