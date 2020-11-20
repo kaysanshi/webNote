@@ -139,6 +139,41 @@ public UserDubboService userDubboService;
 
 @Reference注解也是Dubbo框架提供的，在com.alibaba.dubbo.config.annotation. Reference包下。version是@Reference注解的属性，version的版本需要和@Service注解的version版本保持一致，否则服务将无法注入，这一点是需要特别注意的
 
+#### Dubbo安装：
+
+1. 下载代码: `git@github.com:apache/dubbo-admin.git`  **这个要到master分支一定要否者会出问题**
+
+2. 在 `dubbo-admin-server/src/main/resources/application.properties`中指定注册中心地址
+
+3. 构建
+
+   > - `mvn clean package`
+
+如果你使用的是Windows的Powershell，执行上面的命令可能会报错：Unknown lifecycle phase ".test.skip=true".
+
+`mvn clean package '-Dmaven.test.skip=true'`
+
+命令执行完后，会在dubbo-admin/dubbo-admin/target目录下生成一个jar包：dubbo-admin-0.0.2-SNAPSHOT.jar。
+
+启动它： `java -jar dubbo-admin-0.2.0-SNAPSHOT.jar`
+
+**构建dockerfile:**
+
+```dockerfile
+From openjdk:8
+VOLUME /tmp
+add dubbo-admin-0.2.0-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+```
+
+执行命令：
+
+```
+docker build -t dubbo-admin:1.0 .
+```
+
+[![Dums0g.png](https://s3.ax1x.com/2020/11/19/Dums0g.png)](https://imgchr.com/i/Dums0g)
+
 
 
 ### Apache Zookeeper
@@ -420,28 +455,133 @@ Zookeeper 部署有三种方式，单机模式、集群模式、伪集群模式�
 
 ###### 单机模式
 
+<font color="red">**新建zookeeper文件夹。在zookeeper文件夹中新建dokcer-compose.yml**</font>
+
 ```yaml
 version: '3.1'
-
 services:
-    zoo1:
-        image: zookeeper
-        restart: always
-        hostname: zoo1
-        ports:
-            - 2181:2181
-        environment:
-            ZOO_MY_ID: 1
-            ZOO_SERVERS: server.1=zoo1:2888:3888
+  zoo1:
+    image: zookeeper
+    restart: always
+    hostname: zoo1   # hostname 应该为zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zoo1:2888:3888
 ```
+
+进入容器。
+
+`docker exec -it zookeeper_zoo1_1 /bin/bash`
+
+检查是否安装成功：
+
+`./bin/zkServer.sh status`
+
+[![DugkjI.png](https://s3.ax1x.com/2020/11/19/DugkjI.png)](https://imgchr.com/i/DugkjI)
+
+进入bin目录后查看bin目录下的文件：
+
+```bash
+root@zookeeper:/apache-zookeeper-3.6.2-bin# ls -l bin
+total 64
+-rwxr-xr-x. 1 zookeeper zookeeper   232 Sep  4 12:43 README.txt
+-rwxr-xr-x. 1 zookeeper zookeeper  2066 Sep  4 12:43 zkCleanup.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  1158 Sep  4 12:43 zkCli.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  1620 Sep  4 12:43 zkCli.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  1843 Sep  4 12:43 zkEnv.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  3690 Sep  4 12:43 zkEnv.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  4559 Sep  4 12:43 zkServer-initialize.sh
+-rwxr-xr-x. 1 zookeeper zookeeper  1286 Sep  4 12:43 zkServer.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper 11116 Sep  4 12:43 zkServer.sh
+-rwxr-xr-x. 1 zookeeper zookeeper   988 Sep  4 12:43 zkSnapShotToolkit.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  1377 Sep  4 12:43 zkSnapShotToolkit.sh
+-rwxr-xr-x. 1 zookeeper zookeeper   996 Sep  4 12:43 zkTxnLogToolkit.cmd
+-rwxr-xr-x. 1 zookeeper zookeeper  1385 Sep  4 12:43 zkTxnLogToolkit.sh
+root@zookeeper:/apache-zookeeper-3.6.2-bin# 
+```
+
+通过 `zkCli` 来访问 Zookeeper 的控制台来进行管理。
+
+```bash
+root@zookeeper:/apache-zookeeper-3.6.2-bin# zkCli.sh -server 127.0.0.1:2181
+Connecting to 127.0.0.1:2181
+2020-11-20 02:26:42,393 [myid:] - INFO  [main:Environment@98] - Client environment:zookeeper.version=3.6.2--803c7f1a12f85978cb049af5e4ef23bd8b688715, built on 09/04/2020 12:44 GMT
+2020-11-20 02:26:42,397 [myid:] - INFO  [main:Environment@98] - Client environment:host.name=zookeeper
+2020-11-20 02:26:42,397 [myid:] - INFO  [main:Environment@98] - Client environment:java.version=11.0.9.1
+2020-11-20 02:26:42,398 [myid:] - INFO  [main:Environment@98] - Client environment:java.vendor=Oracle Corporation
+2020-11-20 02:26:42,398 [myid:] - INFO  [main:Environment@98] - Client environment:java.home=/usr/local/openjdk-11
+...
+...
+Welcome to ZooKeeper!
+2020-11-20 02:26:42,475 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1167] - Opening socket connection to server localhost/127.0.0.1:2181.
+2020-11-20 02:26:42,475 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1169] - SASL config status: Will not attempt to authenticate using SASL (unknown error)
+JLine support is enabled
+2020-11-20 02:26:42,491 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@999] - Socket connection established, initiating session, client: /127.0.0.1:40896, server: localhost/127.0.0.1:2181
+2020-11-20 02:26:42,511 [myid:127.0.0.1:2181] - INFO  [main-SendThread(127.0.0.1:2181):ClientCnxn$SendThread@1433] - Session establishment complete on server localhost/127.0.0.1:2181, session id = 0x10013cdbf990003, negotiated timeout = 30000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:None path:null
+
+```
+
+这个时候启动dubbo jar是有问题的。
+
+[![Du8vv9.png](https://s3.ax1x.com/2020/11/19/Du8vv9.png)](https://imgchr.com/i/Du8vv9)
+
+解决方式：
+
+<font color="red">**将打包时的admin-server中的application.properties配置文件修该 将127.0.0.1修改为zookeeper**</font>
+
+```properties
+# centers in dubbo2.7
+admin.registry.address=zookeeper://zookeeper:2181
+admin.config-center=zookeeper://zookeeper:2181
+admin.metadata-report.address=zookeeper://zookeeper:2181
+```
+
+<font color="red">**仍然出错：说找不到 zokeeper:2181**</font>
+
+**发现原来时hotname这个属性导致的：**
+
+**修改成以下的yml**
 
 ```yaml
-// 检查是否安装成功
-bash-4.3# ./bin/zkServer.sh status
-ZooKeeper JMX enabled by default
-Using config: /conf/zoo.cfg
-Mode: standalone
+version: '3.1'
+services:
+  zool:
+    image: zookeeper
+    restart: always
+    hostname: zookeeper
+    ports:
+      - 2181:2181
+  dubbo_admin:
+    image: dubbo_admin:1.0
+    links:
+      - zool:zookeeper
+    depends_on:
+      - zool
+    ports:
+      - 3003:3003   
+    
 ```
+
+**修改后就可以启动了  但是如果单独运行 dubbo jar包还是不能找到 zookeeper:2181**：
+
+[![Du5MdI.png](https://s3.ax1x.com/2020/11/19/Du5MdI.png)](https://imgchr.com/i/Du5MdI)
+
+按道理说这样是不应该的，所以查看了网络端口：
+
+`netstat -anp`
+
+因为前几天装的nginx可以访问而这个不可以访问。我发限localIp和Foreign Adress与nginx不一致》
+[![Du5IfK.png](https://s3.ax1x.com/2020/11/19/Du5IfK.png)](https://imgchr.com/i/Du5IfK)
+
+
+
+
 
 ###### 集群模式
 
@@ -450,13 +590,13 @@ Mode: standalone
 ```yaml
 version: '3.1'
 services:
-    zoo1:
-        image: zookeeper
-        restart: always
-        environment:
-            ZOO_MY_ID: 1
-            ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
-        network_mode: host
+  zoo1:
+    image: zookeeper
+    restart: always
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
+    network_mode: host
 ```
 
 **验证测试**
@@ -476,13 +616,13 @@ Mode: leader
 ```yaml
 version: '3.1'
 services:
-    zoo2:
-        image: zookeeper
-        restart: always
-        environment:
-            ZOO_MY_ID: 2
-            ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
-        network_mode: host
+  zoo2:
+    image: zookeeper
+    restart: always
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
+    network_mode: host
 ```
 
 验证测试
@@ -502,13 +642,13 @@ Mode: follower
 ```yaml
 version: '3.1'
 services:
-    zoo3:
-        image: zookeeper
-        restart: always
-        environment:
-            ZOO_MY_ID: 3
-            ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
-        network_mode: host
+  zoo3:
+    image: zookeeper
+    restart: always
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=192.168.75.130:2888:3888 server.2=192.168.75.134:2888:3888 server.3=192.168.75.135:2888:3888
+    network_mode: host
 ```
 
 验证测试
@@ -523,39 +663,89 @@ Mode: follower
 
 ###### 伪集群模式
 
+**需要配合dubbo:**
+
+1. 下载代码: `git clone https://github.com/apache/dubbo-admin.git`
+
+2. 在 `dubbo-admin-server/src/main/resources/application.properties`中指定注册中心地址
+
+3. 构建
+
+   > - `mvn clean package`
+
+如果你使用的是Windows的Powershell，执行上面的命令可能会报错：Unknown lifecycle phase ".test.skip=true".
+
+`mvn clean package '-Dmaven.test.skip=true'`
+
+命令执行完后，会在dubbo-admin/dubbo-admin/target目录下生成一个jar包：dubbo-admin-0.0.2-SNAPSHOT.jar。
+
+**构建dockerfile:**
+
+```dockerfile
+From openjdk:8
+VOLUME /tmp
+add dubbo-admin-0.2.0-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+```
+
+执行命令：
+
+```
+docker build -t dubbo-admin:1.0 .
+```
+
+[![Dums0g.png](https://s3.ax1x.com/2020/11/19/Dums0g.png)](https://imgchr.com/i/Dums0g)
+
+编排docker-compose.yml
+
 ```yaml
 version: '3.1'
 services:
-    zoo1:
-        image: zookeeper
-        restart: always
-        hostname: zoo1
-        ports:
-            - 2181:2181
-        environment:
-            ZOO_MY_ID: 1
-            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+  zoo1:
+    image: zookeeper
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
 
-    zoo2:
-        image: zookeeper
-        restart: always
-        hostname: zoo2
-        ports:
-            - 2182:2181
-        environment:
-            ZOO_MY_ID: 2
-            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+  zoo2:
+    image: zookeeper
+    restart: always
+    hostname: zoo2
+    ports:
+      - 2182:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=zoo3:2888:3888
 
-    zoo3:
-        image: zookeeper
-        restart: always
-        hostname: zoo3
-        ports:
-            - 2183:2181
-        environment:
-            ZOO_MY_ID: 3
-            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+  zoo3:
+    image: zookeeper
+    restart: always
+    hostname: zoo3
+    ports:
+      - 2183:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=0.0.0.0:2888:3888
+  #dubbo-admin容器编排
+  dubbo-admin:
+    image: dubbo-admin:1.0
+    links:
+      - zoo1:zookeeper
+      #注意 上面这个zookeeper 就是便是编译方式2所修改的文件的内容或是创建镜像是EVN设置的名称
+    ports:
+      - 3003:3003
+    # dubbo-admin访问端口自定
+    restart: always
+
 ```
+
+前台启动： `docker-compose up` 
+
+后台启动： `docker-compose up -d`
 
 - 分别以交互方式进入容器查看 
 

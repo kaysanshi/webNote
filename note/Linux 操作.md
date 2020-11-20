@@ -284,8 +284,8 @@ Loading mirror speeds from cached hostfile
  * base: mirrors.163.com
  * extras: mirrors.163.com
  * updates: mirrors.163.com
-  没有可用软件包 mysql-server。
-  错误：无须任何处
+    没有可用软件包 mysql-server。
+    错误：无须任何处
 
 处理方式 
 
@@ -422,6 +422,37 @@ echo  CATALINA_HOME
 	卸载：sudo apt-get autoremove  apache-tomcat-9.0.12 
 ```
 
+#### 安装 maven
+
+```bash
+wget https://mirrors.cnnic.cn/apache/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz --no-check-certificate
+```
+
+解压： tar -zxvf   apache-maven-3.5.4-bin.tar.gz
+
+建立软连接： ln -s /usr/local/maven/bin/mvn  /usr/bin/mvn
+
+配置环境变量：**vim /etc/profile**
+
+```bash
+export MAVEN_HOME=/usr/local/src/java/apache-maven-3.5.4
+export PATH=$MAVEN_HOME/bin:$PATH
+```
+
+保存生效： **source /etc/profile**
+
+查看 **mvn -version**
+
+```bash
+[root@localhost java]# mvn -version
+Apache Maven 3.5.4 (1edded0938998edf8bf061f1ceb3cfdeccf443fe; 2018-06-18T02:33:14+08:00)
+Maven home: /usr/local/src/java/apache-maven-3.5.4
+Java version: 1.8.0_181, vendor: Oracle Corporation, runtime: /usr/local/src/java/jdk1.8.0_181/jre
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: "linux", version: "3.10.0-1127.el7.x86_64", arch: "amd64", family: "unix"
+[root@localhost java]# 
+```
+
 
 
 ### 利用putty来链接服务器传输文件和操作：
@@ -430,7 +461,7 @@ echo  CATALINA_HOME
 
 ​    下载后：点击putty.exe 然后把你的实例的公网IP地址输入就可以直接连上去操作了：
 
-	#### 打开psftp:
+#### 打开psftp:
 
 ​	首先需要登陆远程服务器：open hostname  然后输入用户名和密码login，进入之后就是类似于 linux的shell命令 比如 `pwd ls cd put get`
 

@@ -328,7 +328,11 @@ $ docker run -d -P \
 
 **列出镜像**：`docker image ls`
 
-**运行启动** ： `docker run --name container-name -d image-name` 
+**拉取镜像**：`docker pull [ubuntu:13.10]`
+
+**查找镜像**：`docker search [httpd]`  
+
+**镜像是不能够单独启动的他是依靠容器的**  根据镜像运行一个容器： `docker run --name container-name -d image-name` 
 
 eg : `docker run –name myredis –d redis`
 ​		
@@ -341,9 +345,16 @@ eg : `docker run –name myredis –d redis`
 > ​		//docker image ls :查看镜像列表列出的是顶级的镜像
 > ​		//docker ps :查看容器列表
 
-**删除镜像**： `docker image rm [选项] <镜像1> [镜像2，...]`    其中，`<镜像>` 可以是 `镜像短 ID`、`镜像长 ID`、`镜像名` 或者 `镜像摘要`。
+**删除镜像**： `docker image rm [选项] <镜像1> [镜像2，...]`    其中，`<镜像>` 可以是 `镜像短 ID`、`镜像长 ID`、`镜像名` 或者 `镜像摘要`。或者： `docker rmi [镜像name]`
 
+**构建镜像**：`docker build -t runoob/centos:6.7 .`    
 
+参数说明：
+
+- **-t** ：指定要创建的目标镜像名
+- **.** ：Dockerfile 文件所在目录，可以指定Dockerfile 的绝对路径
+
+❤*注*：[]内均为参数，也就是必选的
 
 ### 虚悬镜像：
 
@@ -504,9 +515,11 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 - 10.使用navicat进行连接：
 
-  [![0wqRa9.png](https://s1.ax1x.com/2020/10/08/0wqRa9.png)](https://imgchr.com/i/0wqRa9)
-
-![0wq9E9.png](https://s1.ax1x.com/2020/10/08/0wq9E9.png)
+  <img src="https://s1.ax1x.com/2020/10/08/0wqRa9.png" alt="0wq9E9.png" style="zoom:80%;" />
+  
+  
+  
+  <img src="https://s1.ax1x.com/2020/10/08/0wq9E9.png" alt="0wq9E9.png" style="zoom:80%;" />
 
 #### oracle中的sys用户和system用户的区别：
 
@@ -519,9 +532,9 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 ## Docker 容器命令操作
 
-新建启动  `docker run` 
+新建启动  `docker run [container ID or NAMES]` 
 
-查看日志 ： `docker container logs [container ID or NAMES]`
+查看日志 ： `docker container logs [container ID or NAMES]`    **例：docker container logs 635c90c02f22**
 
 查看容器列表 ： `docker container ls`
 
@@ -529,13 +542,21 @@ docker run --name tomcat -p 8080:8080 -v $PWD/test:/usr/local/tomcat/webapps/tes
 
 查看容器 ： `docker container ls -a`
 
-停止容器运行 ： `docker container stop`
+停止容器运行 ： `docker container stop [id]` 等价于---> `docker stop [id]`  例如：**docker container stop 635c90c02f22**
 
-进入容器： `docker exec  ubuntu`
+进入容器： `docker exec -t [ubuntu]` 
 
-删除容器 ： `docker container rm  container-name`
+删除容器 ： `docker container rm  [container-name]`  或者 ：`docker rm  -f  [continer Id 或者name]`  
 
 清理所有处于终止的容器 ： `docker container prune`
+
+查看当前运行的容器 ：`docker ps`
+
+启动容器：`docker start [container ID or NAMES]`       **docker start 26c7868e652f**
+
+❤*注*：[]内均为参数，也就是必选的，
+
+
 
 ## Docker Compose:
 
@@ -592,11 +613,11 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 version: "3"
 services:
   webapp:
-	image: examples/web
-  ports:
-	- "80:80"
-  volumes:
-	- "/data"
+  image: examples/web
+    ports:
+    - "80:80"
+      volumes:
+    - "/data"
 
 ```
 注意每个服务都必须通过 image 指令指定镜像或 build 指令（需要 Dockerfile）等来自动构建生成镜像。
@@ -670,56 +691,60 @@ version: '3.1'
 ```
 
 配置nginx的数据卷：
+
   在dokcer文件下创建：nginx的目录下创建：nginx.conf文件：
+
   在当前目录创建wwwroot目录
+
   这里直接书写为
   /usr/local/dokcer/nginx/conf/nginx.conf
   /usr/local/dokcer/nginx/wwwroot
-  在nginx.conf目录配置nginx的虚拟主机：
 
-然后去配置nginx
+  在nginx.conf目录配置nginx的虚拟主机：然后去配置nginx即可
+
+
 
 ### Docker compose实战tomcat:
 
 ```yml
 version: '3.1'
 services:
-	tomcat:
-		restart: always
-		image: tomcat
-		container_name: tomcat
-		ports:
-			- 8080:8080
-		volumes:
-			- /usr/local/docker/tomcat/webapps/test:/usr/local/tomcat/webapps/test
-		environment:
-  			TZ: Asia/Shanghai
+  tomcat:
+    restart: always
+    image: tomcat
+    container_name: tomcat
+    ports:
+      - 8080:8080
+    volumes:
+      - /usr/local/docker/tomcat/webapps/test:/usr/local/tomcat/webapps/test
+    environment:
+      TZ: Asia/Shanghai
 ```
 
 ### Docker compose 实战mysql5：
 ```yml
 version: '3.1'
 services:
-	mysql:
-		restart: always
-		image: mysql:5.7.22
-		container_name: mysql
-		ports:
-			- - 3306:3306
-   		environment:
-    		TZ: Asia/Shanghai
-    		MYSQL_ROOT_PASSWORD: 123456
-    	command:
-    		--character-set-server=utf8mb4
-    		--collation-server=utf8mb4_general_ci
-    		--explicit_defaults_for_timestamp=true
-    		--lower_case_table_names=1
-    		--max_allowed_packet=128M
-    		--sql-mode="STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"
-    	volumes:
-    			- mysql-data:/var/lib/mysql
+  mysql:
+    restart: always
+    image: mysql:5.7.22
+    container_name: mysql
+    ports:
+      - - 3306:3306
+        environment:
+          TZ: Asia/Shanghai
+          MYSQL_ROOT_PASSWORD: 123456
+        command:
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_general_ci
+          --explicit_defaults_for_timestamp=true
+          --lower_case_table_names=1
+          --max_allowed_packet=128M
+          --sql-mode="STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO"
+        volumes:
+          - mysql-data:/var/lib/mysql
 volumes:
-		mysql-data:
+  mysql-data:
 ```
 
 就是为了简化docker的使用：
@@ -730,8 +755,8 @@ volumes:
 
 ### DockerCompose 实战oracle
 
-```java
-version: '2'
+```yaml
+version: '3.1'
 services:
   oracle:
     # sid: xe
@@ -773,8 +798,7 @@ services:
 ### Docker compose实战Redis:
 
 ```yaml
-version: '3'
-
+version: '3.1'
 services:
   redis:
     image: redis:latest
@@ -888,44 +912,46 @@ docker-compose up -d
 
 ### Docker compose实战Dubbo zookeeper
 
-
+查看 Apache Dubbo  http://www.kaysanshi.top/learning-note/
 
 ### Docker compose实战zookeeper
 
 **伪集群模式：**
 
+在原来的使用是server zool:3888 总是出现问题。新版本推荐使用以下
+
 ```yaml
 version: '3.1'
 services:
-    zoo1:
-        image: zookeeper
-        restart: always
-        hostname: zoo1
-        ports:
-            - 2181:2181
-        environment:
-            ZOO_MY_ID: 1
-            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+  zoo1:
+    image: zookeeper
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
 
-    zoo2:
-        image: zookeeper
-        restart: always
-        hostname: zoo2
-        ports:
-            - 2182:2181
-        environment:
-            ZOO_MY_ID: 2
-            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+  zoo2:
+    image: zookeeper
+    restart: always
+    hostname: zoo2
+    ports:
+      - 2182:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=0.0.0.0:2888:3888 server.3=zoo3:2888:3888
 
-    zoo3:
-        image: zookeeper
-        restart: always
-        hostname: zoo3
-        ports:
-            - 2183:2181
-        environment:
-            ZOO_MY_ID: 3
-            ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=zoo3:2888:3888
+  zoo3:
+    image: zookeeper
+    restart: always
+    hostname: zoo3
+    ports:
+      - 2183:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888 server.2=zoo2:2888:3888 server.3=0.0.0.0:2888:3888
 ```
 
 - 分别以交互方式进入容器查看 
@@ -935,6 +961,53 @@ docker exec -it zookeeper_zoo1_1 /bin/bash
 docker exec -it zookeeper_zoo1_2 /bin/bash
 docker exec -it zookeeper_zoo1_3 /bin/bash
 ```
+
+### Docker compose实战 gitlab
+
+**docker-compose.yml**
+
+```yaml
+version: '3'
+  services:
+    gitlab:
+    restart: always
+    image: twang2218/gitlab-ce-zh
+    hostname: '192.168.147.132'
+    environment:
+      TZ: 'Asia/Shanghai'
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://192.168.147.132:8080'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        unicorn['port'] = 8888
+        nginx['listen_port'] = 8080
+    ports:
+      - '8080:8080'
+      - '8443:443'
+      - '2222:22'
+      volumes:
+        - /usr/local/docker/gitlab/config:/etc/gitlab
+        - /usr/local/docker/gitlab/data:/var/opt/gitlab
+        - /usr/local/docker/gitlab/logs:/var/log/gitlab
+```
+
+### Docker compose实战 nexus
+
+```yaml
+version: '3.1'
+  services:
+    nexus:
+      restart: always
+      image: sonatype/nexus3
+      container_name: nexus
+      ports:
+        - 8081:8081
+        volumes:
+          - /usr/local/docker/nexus/data:/nexus-data
+```
+
+通过：http://ip:port/用户名：密码：验证
+
+
 
 ###  Docker compose編排容器
 
@@ -954,7 +1027,7 @@ docker exec -it zookeeper_zoo1_3 /bin/bash
 ​		创建 registry目录
 ​		使用docker compose命令直接使用：
 
-```
+```yaml
 version: '3.1'
 services:
 	registry:
@@ -968,10 +1041,9 @@ services:
 ```
 
 只要安装之后就可以了，这里只是服务端，同样我们需要客户端测试：http://ip:5000/v2/
-我们在开发时构建服务端之后，在客户端构建一个服务之后上传到这个docker私服中有其他人使用的话直接在这个地方拉取：同时需要在客户端配置：/etc/docker/daemon.json
+我们在开发时构建服务端之后，在客户端构建一个服务之后上传到这个docker私服中有其他人使用的话直接在这个地方拉取：同时需要在客户端配置：/etc/docker/daemon.json   `daemon.json中配置：`
 
-```
-daemon.json中配置：
+```json
 {
 	"registry-mirrors": [
 		"https://registry.docker-cn.com"
@@ -1006,16 +1078,18 @@ daemon.json中配置：
 		docker-registry-web		
 ### 在客户端中docker-compose中使用这个：
 
-	version: '3.1'
-	services:
-		frontend:
-			image: konradkleine/docker-registry-frontend:v2
-			ports:
-				- 8080:80
-			volumes:
-				- ./certs/frontend.crt:/etc/apache2/server.crt:ro
-				- ./certs/frontend.key:/etc/apache2/server.key:ro
-			environment:
-				- ENV_DOCKER_REGISTRY_HOST=192.168.75.133
-				- ENV_DOCKER_REGISTRY_PORT=5000
+```yaml
+version: '3.1'
+services:
+  frontend:
+    image: konradkleine/docker-registry-frontend:v2
+    ports:
+      - 8080:80
+    volumes:
+      - ./certs/frontend.crt:/etc/apache2/server.crt:ro
+      - ./certs/frontend.key:/etc/apache2/server.key:ro
+    environment:
+      - ENV_DOCKER_REGISTRY_HOST=192.168.75.133
+      - ENV_DOCKER_REGISTRY_PORT=5000
+```
 
