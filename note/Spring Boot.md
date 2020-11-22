@@ -736,7 +736,7 @@ java -jar spring-boot-02-config-02-0.0.1-SNAPSHOT.jar --spring.config.location=G
 
 ### 1、**自动配置原理：**
 
-1）、SpringBoot启动的时候加载主配置类，开启了自动配置功能 ==@EnableAutoConfiguration==
+1）、SpringBoot启动的时候加载主配置类，开启了自动配置功能  @EnableAutoConfiguration
 
 **2）、@EnableAutoConfiguration 作用：**
 
@@ -3231,11 +3231,9 @@ private void initialize(Object[] sources) {
 }
 ```
 
-![](F:/Java/web%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MarkDownFile/images/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306145727.png)
 
-![](F:/Java/web%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MarkDownFile/images/%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20180306145855.png)
 
-## 2、运行run方法
+## 2、SpringApplication运行run方法
 
 ```java
 public ConfigurableApplicationContext run(String... args) {
@@ -3294,6 +3292,48 @@ public ConfigurableApplicationContext run(String... args) {
    }
 }
 ```
+
+1）如果我们使用的是SpringApplication的静态run方法，那么，这个方法里面首先需要创建一个SpringApplication对象实例，然后调用这个创建好的SpringApplication的实例run方法。在SpringApplication实例初始化的时候，它会提前做几件事情：
+					根据classpath里面是否存在某个特征类（org.springframework.web. context.ConfigurableWebApplicationContext）来决定是否应该创建一个为Web应用使用的ApplicationContext类型，还是应该创建一个标准Standalone应用使用的ApplicationContext类型。
+					使用Spring Factories Loader在应用的classpath中查找并加载所有可用的Application Context Initializer。
+					使用Spring Factories Loader在应用的classpath中查找并加载所有可用的Application Listener。
+					推断并设置main方法的定义类。
+2）SpringApplication实例初始化完成并且完成设置后，就开始执行run方法的逻辑了，方法执行伊始，首先遍历执行所有通过SpringFactoriesLoader可以查找到并加载的SpringApplicationRunListener，调用它们的started()方法，告诉这些SpringApplicationRunListener, “嘿，SpringBoot应用要开始执行咯！”。
+
+3）创建并配置当前SpringBoot应用将要使用的Environment（包括配置要使用的PropertySource以及Profile）。
+				
+
+4）遍历调用所有SpringApplicationRunListener的environmentPrepared()的方法，告诉它们：“当前SpringBoot应用使用的Environment准备好咯！”。
+				
+
+5）如果SpringApplication的showBanner属性被设置为true，则打印banner（SpringBoot 1.3.x版本，这里应该是基于Banner.Mode决定banner的打印行为）。这一步的逻辑其实可以不关心，我认为唯一的用途就是“好玩”（Just For Fun）。
+				
+
+6）根据用户是否明确设置了applicationContextClass类型以及初始化阶段的推断结果，决定该为当前SpringBoot应用创建什么类型的ApplicationContext并创建完成，然后根据条件决定是否添加ShutdownHook，决定是否使用自定义的BeanNameGenerator，决定是否使用自定义的ResourceLoader，当然，最重要的，将之前准备好的Environment设置给创建好的ApplicationContext使用。
+				
+
+7）ApplicationContext创建好之后，SpringApplication会再次借助Spring-FactoriesLoader，查找并加载classpath中所有可用的ApplicationContext-Initializer，然后遍历调用这些ApplicationContextInitializer的initialize (applicationContext)方法来对已经创建好的ApplicationContext进行进一步的处理。
+
+8）遍历调用所有SpringApplicationRunListener的contextPrepared()方法，通知它们：“SpringBoot应用使用的ApplicationContext准备好啦！”
+				
+
+9 ）最核心的一步，将之前通过@EnableAutoConfiguration获取的所有配置以及其他形式的IoC容器配置加载到已经准备完毕的ApplicationContext。
+				
+
+10）遍历调用所有SpringApplicationRunListener的contextLoaded()方法，告知所有SpringApplicationRunListener, ApplicationContext"装填完毕"！
+				
+
+11）调用ApplicationContext的refresh()方法，完成IoC容器可用的最后一道工序。
+				
+
+12）查找当前ApplicationContext中是否注入CommandlineRunner,如果有，则遍历执行他们，
+				
+
+13）正常情况下遍历执行SpringApplicationRunListener的finished()方法然，只不过这种情况会将异常信息一并处理，至此一个springboot应用启动完毕。
+				
+
+开始---》收集各种条件和回调接口（Application Context Initializer，ApplicatioListener）----->通知 started()；创建并准备Environment---->通告environmentPrepared()
+						-----》创建并初始化ApplicationContext----->通告contextPrepared(),通告contextLoaded(),----->refresh,applicationContent完成启动程序，执行CommanadLineRunner,通告finished();
 
 ## 3、事件监听机制
 
