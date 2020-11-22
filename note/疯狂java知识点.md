@@ -1238,7 +1238,7 @@ GC就是垃圾收集的意思（Gabage Collection）。我们在开发中会创�
 ### 集合：
 
 简单的集合大家庭先看一下：
-[![dqmlY4.png](https://s1.ax1x.com/2020/08/30/dqmlY4.png)](https://imgchr.com/i/dqmlY4)
+![D19owj.png](https://s3.ax1x.com/2020/11/21/D19owj.png)
 
 #### Collection
 
@@ -1356,6 +1356,14 @@ Vector还提供了一个Stack子类，它用于模拟“栈”这种数据结构
 ArrayList擅长于随机访问，但是在List的中间插入和移除元素时比较慢。
 
 LinkedList 他插入删除操作比较廉价，随机访问方面相对比较慢的。LinkedList还添加了可以使用栈，队列或双端队列的方法。
+
+**LinkedList 还添加了一些方法，使其可以被用作栈、队列或双端队列（deque）** 。在这些方法中，有些彼此之间可能只是名称有些差异，或者只存在些许差异，以使得这些名字在特定用法的上下文环境中更加适用（特别是在 **Queue** 中）。例如：
+
+- `getFirst()` 和 `element()` 是相同的，它们都返回列表的头部（第一个元素）而并不删除它，如果 **List** 为空，则抛出 **NoSuchElementException** 异常。 `peek()` 方法与这两个方法只是稍有差异，它在列表为空时返回 **null** 。
+- `removeFirst()` 和 `remove()` 也是相同的，它们删除并返回列表的头部元素，并在列表为空时抛出 **NoSuchElementException** 异常。 `poll()` 稍有差异，它在列表为空时返回 **null** 。
+- `addFirst()` 在列表的开头插入一个元素。
+- `offer()` 与 `add()` 和 `addLast()` 相同。 它们都在列表的尾部（末尾）添加一个元素。
+- `removeLast()` 删除并返回列表的最后一个元素。
 
 使用LinkedList实现一个栈的功能：
 
@@ -2121,9 +2129,11 @@ B r o n t o s a u r u s
 
 当使用PriorityQueue上调用offer()方法来插入一个对象时，这个对象会在对列中被排序。默认的排揎将使用对象在对列中的自然排序、PriorityQueue可以确保当你调用peek(),poll()和remove()方法时，获取的元素将是对列中优先级最高的元素。
 
-#### [集合工具类]()
+#### 集合工具类Collections
 
 集合有许多独立的实用工具程序，在 **java.util.Collections** 中表示为静态方法。之前已经见过其中一些，例如 `addAll()` ， `reverseOrder()` 和 `binarySearch()` 。以下是其他内容（同步和不可修改的实用工具程序将在后面的章节中介绍）。在此表中，在需要的时候使用了泛型：
+
+##### Collectiions操作的方法
 
 | 方法                                                         | 描述                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -2242,6 +2252,46 @@ arrayList: [snap, snap, snap]
 ```
 
 输出解释了每种实用方法的行为。请注意由于大小写的缘故，普通版本的 `min()` 和 `max()` 与带有 **String.CASE_INSENSITIVE_ORDER** 比较器参数的版本的区别。
+
+**上面展示了混杂的，下面进行分类一下：**
+
+```php
+1、排序操作（主要针对List接口相关）
+reverse(List list):反转指定List集合中元素的顺序
+shuffle(List list):对List中的元素进行随机排序(洗牌)
+sort(List list):对List里的元素根据自然升序排序
+sort(List list,Comparator c):自定义比较器进行排序
+swap(List list,int i,int j):将指定List集合中i 处元素和j 处元素进行交换
+rotate(List list,int distance):将所有元素向右移位指定长度，如果distance等于size那么结果不变
+
+2、查找和替换（主要针对Collection接口相关）
+binarySearch(List list,Object key):使用二分法查找，以获得指定对象在List中的索引，前提是集合已经排序
+max(Collection coll):返回最大元素
+max(Collection coll,Comparator comp):根据自定义比较器，返回最大元素
+min(Collection] coll):返回最小元素
+min(Collection coll,Comparator comp):根据自定义比较器，返回最小元素
+fill(List list,Object obj):使用指定对象填充
+frequency(Collection Object obj):返回指定集合中指定对象出现的次数
+replaceAll(List list,Object old,Object new):替换
+
+
+3、同步控制
+Collections工具类提供了多个synchronizedXxx方法，该方法返回指定集合对象对应的同步对象，从而解决多线程并发访问集合时
+线程的安全问题。HashSet、ArrayList、HashMap都是线程不安全的，如果需要考虑同步，则使用这些方法。这些方法主要有：synchronizedSet、synchronizedSortedSet、synchronizedList、synchronizedMap、synchronizedSortedMap
+特别需要注意：在使用迭代方法遍历集合时需要手工同步返回的集合。{否则会有线程安全的问题}
+
+4、设置不可变得结合
+Collections工具类有三种方法返回一个不可变集合
+emptyXxx():        返回一个空的不可变的集合对象
+singletonXxx():    返回一个只包含指定对象的，不可变的集合对象
+unmodifiableXxx(): 返回指定集合对象的不可变视图
+
+5、其它
+disjoint(Collections<?>c1,Collections<?>c2) 如果两个指定collection中没有相同的元素，则返回true
+addAll(Collection<?super T>c,T...a) 一种方便的方式，将所有指定元素添加到指定collection中
+Comparator<T>reverseOrder(Comparator<T>cmp)返回一个比较器，它强行反转指定比较器的顺序。如果指定比较器为null，则
+此方法等同于reverseOrder(){返回一个比较器，它对实现 Comparable接口的对象集合施加了 自然排序的相反}
+```
 
 ##### [排序和搜索列表]()
 
@@ -2598,6 +2648,8 @@ public class Sets {
 ### 异常：
 
 Java的异常机制主要依赖于try、catch、finally、throw和throws五个关键字，其中try关键字后紧跟一个花括号扩起来的代码块（花括号不可省略），简称try块，它里面放置可能引发异常的代码。catch后对应异常类型和一个代码块，用于表明该catch块用于处理这种类型的代码块。多个catch块后还可以跟一个finally块，finally块用于回收在try块里打开的物理资源，异常机制会保证finally块总被执行。throws关键字主要在方法签名中使用，用于声明该方法可能抛出的异常；而throw用于抛出一个实际的异常，throw可以单独作为语句使用，抛出一个具体的异常对象。
+
+[![D1SMt0.png](https://s3.ax1x.com/2020/11/21/D1SMt0.png)
 
 #### Checked异常和Runtime异常
 
