@@ -156,31 +156,44 @@
 ####  微服务架构需要考虑的问题：
 
 -   API Gateway
-
 -   服务间调用
-
 -   服务发现
-
 -   服务容错
-
 -   服务部署
-
 -   数据调用 
 
+[![DGOg4P.png](https://s3.ax1x.com/2020/11/23/DGOg4P.png)](https://imgchr.com/i/DGOg4P)
 
-#### 模式：
+#### 微服务设计模式：
 
-​            聚合器微服务形式：:由api网关进行对其聚合
+- ​            聚合器微服务形式：:由api网关进行对其聚合
 
-​            代理微服务设计模式:代理委派请求
 
-​            链式微服务设计模式：链式同步调用，
+  [![DGOR9f.png](https://s3.ax1x.com/2020/11/23/DGOR9f.png)](https://imgchr.com/i/DGOR9f)
 
-​            分支微服务设计模式：同时允许两个微服务链，
 
-​            数据共享微服务设计模式：SQL数据库反规范化可能会导致数据重复和不一致。
+  
+  
 
-​            异步消息传递微服务设计模式：使用消息队列
+- ​            代理微服务设计模式:代理委派请求，在这种情况下，客户端并不聚合数据，但会根据业务需求的差别调用不同的微服务。代理可以仅仅委派请求，也可以进行数据转换工作
+
+  [![DGOW38.png](https://s3.ax1x.com/2020/11/23/DGOW38.png)](https://imgchr.com/i/DGOW38)
+
+- ​            链式微服务设计模式：链式同步调用，这种模式在接收到请求后会产生一个经过合并的响应
+
+  [![DGO6AI.png](https://s3.ax1x.com/2020/11/23/DGO6AI.png)](https://imgchr.com/i/DGO6AI)
+
+- ​            分支微服务设计模式：同时允许两个微服务链，这种模式是聚合器模式的扩展，允许同时调用两个微服务链
+
+  [![DGOcNt.png](https://s3.ax1x.com/2020/11/23/DGOcNt.png)](https://imgchr.com/i/DGOcNt)
+
+- ​            数据共享微服务设计模式：SQL数据库反规范化可能会导致数据重复和不一致。自治是微服务的设计原则之一，就是说微服务是全栈式服务。但在重构现有的“单体应用（Monolithic Application）”时，SQL 数据库反规范化可能会导致数据重复和不一致。因此，在单体应用到微服务架构的过渡阶段，可以使用这种设计模式
+
+  [![DGO5uQ.png](https://s3.ax1x.com/2020/11/23/DGO5uQ.png)](https://imgchr.com/i/DGO5uQ)
+
+- ​            异步消息传递微服务设计模式：使用消息队列，虽然 REST 设计模式非常流行，但它是同步的，会造成阻塞。因此部分基于微服务的架构可能会选择使用消息队列代替 REST 请求/响应
+
+  [![DGOhjg.png](https://s3.ax1x.com/2020/11/23/DGOhjg.png)](https://imgchr.com/i/DGOhjg)
 
 #### 微服务架构开发建议：
 
@@ -218,7 +231,7 @@
 
 ​		SpringCloud,spring Cloud是一套生态，是为了解决微服务架构遇到的问题，想要使用Spring Cloud必须基于Spring Boot
 
-1.Spring Cloud Netflix
+**1.Spring Cloud Netflix**
 
 ​		API网关，zuul组件
 
@@ -228,7 +241,7 @@
 
    	 熔断机制 Hystrix
 
-2.Apache Dubbo Zookeeper
+**2.Apache Dubbo Zookeeper**
 
    	Dubbo是一个高效性能的 Java RPC 通信框架，2.6.x
 
@@ -238,7 +251,7 @@
 
   	服务挂了，Hystrix
 
-3.Spring Cloud Alibaba
+**3.Spring Cloud Alibaba**
 
  		Spring Cloud Alibaba致力于提供微服务开发的一站式解决方案。此项目包含开发分布式应用微服务的必需组件，方便开发者通过 Spring Cloud 编程模型轻松使用这些组件来开发分布式应用服务。
 

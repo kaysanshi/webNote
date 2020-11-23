@@ -339,6 +339,8 @@ Durid在spring中的配置：
 
 
 
+[![D8rIbR.png](https://s3.ax1x.com/2020/11/22/D8rIbR.png)](https://imgchr.com/i/D8rIbR)
+
 ## nginx:
 
  ### 代理： 

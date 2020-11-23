@@ -2,6 +2,8 @@
 
 ## Spring Boot核心运行原理
 
+内容涉及自动配置的运作原理、核心功能模块、核心注解以及使用到的核心源代码分析。主要讲解各个配置是如何加载的，spring的启动的准备的流程。
+
 ### 核心运行原理
 
 ​		Spring Boot通过@EnableAutoConfiguration注解开启自动配置，加载spring.factories中注册的各种AutoConfiguration类，当某个AutoConfiguration类满足其注解@Conditional指定的生效条件（Starters提供的依赖、配置或Spring容器中是否存在某个Bean等）时，实例化该AutoConfiguration类中定义的Bean（组件等），并注入Spring容器，就可以完成依赖自动配置。
@@ -84,6 +86,8 @@ public @interface SpringBootApplication {
 	boolean proxyBeanMethods() default true;
 }
 ```
+
+[![DJRRFH.png](https://s3.ax1x.com/2020/11/23/DJRRFH.png)](https://imgchr.com/i/DJRRFH)
 
 ###  **@EnableAutoConfiguration注解**
 
@@ -344,7 +348,136 @@ spring.boot.enableautoconfiguration=false
 
 #### @EnableAutoConfiguration 加载元数据配置
 
+
+
 #### @EnableAutoConfiguration 加载自动配置组件
+
+加载自动配置组件是自动配置的核心组件之一，这些自动配置组件在类路径中META-INF目录下的spring.factories文件中进行注册。Spring Boot预置了一部分常用组件，如果我们需要创建自己的组件，可参考Spring Boot预置组件在自己的Starters中进行配置通过Spring Core提供的SpringFactoriesLoader类可以读取spring.factories文件中注册的类。下面我们通过源代码来看一下如何在AutoConfigurationImportSelector类中通过getCandidateConfigurations方法来读取spring.factories文件中注册的类
+
+```java
+protected List<String> getCandidateConfigurations(AnnotationMetadata metadata, AnnotationAttributes attributes) {
+		List<String> configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),
+				getBeanClassLoader());
+		Assert.notEmpty(configurations, "No auto configuration classes found in META-INF/spring.factories. If you "
+				+ "are using a custom packaging, make sure that file is correct.");
+		return configurations;
+	}
+```
+
+在上面的getCandidateConfigurations方法中使用的是SpringFactoriesLoader类提供的loadFactoryNames方法读取 META-INF/spring.factories 中的配置。如果程序未读取到任何配置内容，会抛出异常信息。而loadFactoryNames方法的第一个参数为getSpringFactoriesLoaderFactoryClass方法返回的EnableAutoConfiguration.class，也就是说loadFactoryNames只会读取配置文件中针对自动配置的注册类
+
+##### SpringFactoriesLoader类
+
+SpringFactoriesLoader 工厂加载机制是 Spring 内部提供的一个约定俗成的加载方式，与 java spi 类似，只需要在模块的 META-INF/spring.factories 文件中，以 Properties 类型(即 key-value 形式)配置，就可以将相应的实现类注入 Spirng 容器中。**这个也就就是为了引入所需要的类，比如这个类对其他包下的依赖类**。
+
+```java
+public final class SpringFactoriesLoader {
+    // 类加载文件的路径，可能存在多个
+	public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
+    private static final Log logger = LogFactory.getLog(SpringFactoriesLoader.class);
+    private static final Map<ClassLoader, MultiValueMap<String, String>> cache = new ConcurrentReferenceHashMap();
+
+    private SpringFactoriesLoader() {
+    }
+}    
+```
+
+###### loadFactories方法与loadFactoryNames方法
+
+loadFactories方法：读取 classpath 上所有的jar包中的所有 META-INF/spring.factories 属性文件，找出其中定义的匹配类型 factoryClass 的工厂类，然后创建每个工厂类的对象/实例，并返回这些工厂类对象/实例的列表
+
+```java
+ public static <T> List<T> loadFactories(Class<T> factoryType, @Nullable ClassLoader classLoader) {
+        Assert.notNull(factoryType, "'factoryType' must not be null");
+    	 // 如果未指定类加载器，则使用默认的
+        ClassLoader classLoaderToUse = classLoader;
+        if (classLoader == null) {
+            classLoaderToUse = SpringFactoriesLoader.class.getClassLoader();
+        }
+		// 加载加载所有的META-INF/spring.factories文件封装成map并从中获取指定类名列表 
+        List<String> factoryImplementationNames = loadFactoryNames(factoryType, classLoaderToUse);
+     	// 如果记录器Trace跟踪激活的话,将工厂名称列表输出
+        if (logger.isTraceEnabled()) {
+            logger.trace("Loaded [" + factoryType.getName() + "] names: " + factoryImplementationNames);
+        }
+		// 创建结果集
+        List<T> result = new ArrayList(factoryImplementationNames.size());
+        Iterator var5 = factoryImplementationNames.iterator();
+
+        while(var5.hasNext()) {
+            String factoryImplementationName = (String)var5.next();
+            // 实例化工厂类,并添加到结果集中
+            result.add(instantiateFactory(factoryImplementationName, factoryType, classLoaderToUse));
+        }
+		// 对结果进行排序
+        AnnotationAwareOrderComparator.sort(result);
+        return result;
+    }
+```
+
+SpringFactoriesLoader加载器加载指定ClassLoader下面的所有META-INF/spring.factories文件，并将文件解析内容存于Map<String,List<String>>内。然后，通过loadFactoryNames传递过来的class的名称从Map中获得该类的配置列表
+
+具体流程如下图所示：
+
+[![DJTze1.png](https://s3.ax1x.com/2020/11/23/DJTze1.png)](https://imgchr.com/i/DJTze1)
+
+loadFactoryNames方法：读取 classpath上 所有的 jar 包中的所有 META-INF/spring.factories属 性文件，找出其中定义的匹配类型 factoryClass 的工厂类，然后并返回这些工厂类的名字列表，注意是包含包名的全限定名
+
+```java
+ // 加载加载所有的META-INF/spring.factories文件封装成map并从中获取指定类名列表 
+public static List<String> loadFactoryNames(Class<?> factoryType, @Nullable ClassLoader classLoader) {
+       // 获取包含包名的工厂类名称
+        String factoryTypeName = factoryType.getName();
+     	 // 获取所有配置在 META-INF/spring.factories 文件的值
+  		// 然后获取指定类的实现类名列表
+        return (List)loadSpringFactories(classLoader).getOrDefault(factoryTypeName, Collections.emptyList());
+    }
+	// 加载所有的META-INF/spring.factories文件封装成map并从中获取指定类名列表 key为接口的全类名，Value为对应配置值的List集合
+    private static Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader) {
+        // 判断是否有缓存结果，如果有直接返回
+        MultiValueMap<String, String> result = (MultiValueMap)cache.get(classLoader);
+        if (result != null) {
+            return result;
+        } else {
+            try {
+                // 扫描 classpath 上所有 JAR 中的文件 META-INF/spring.factories
+                Enumeration<URL> urls = classLoader != null ? classLoader.getResources("META-INF/spring.factories") : ClassLoader.getSystemResources("META-INF/spring.factories");
+                LinkedMultiValueMap result = new LinkedMultiValueMap();
+
+                while(urls.hasMoreElements()) {
+                    // 找到的每个 META-INF/spring.factories 文件都是一个 Properties 文件，将其内容加载到一个 Properties 对象然后处理其中的每个属性
+                    URL url = (URL)urls.nextElement();
+                    // 根据路径创建一个UrlReaource对象
+                    UrlResource resource = new UrlResource(url);
+                    // 通过PropertiesLoaderUtil获取.properties文件
+                    Properties properties = PropertiesLoaderUtils.loadProperties(resource);
+                    // Properties是一个hash表 是hashtable的子类
+                    Iterator var6 = properties.entrySet().iterator();
+                    while(var6.hasNext()) {
+                        // 获取工厂类名称（接口或者抽象类的全限定名）
+                        Entry<?, ?> entry = (Entry)var6.next();
+                        String factoryTypeName = ((String)entry.getKey()).trim();
+                        // 将其转为数组
+                        String[] var9 = StringUtils.commaDelimitedListToStringArray((String)entry.getValue());
+                        int var10 = var9.length;
+						// 将逗号分割的属性值逐个取出，然后放到 结果result 中去
+                        for(int var11 = 0; var11 < var10; ++var11) {
+                            String factoryImplementationName = var9[var11];
+                            result.add(factoryTypeName, factoryImplementationName.trim());
+                        }
+                    }
+                }
+				// 将结果存放到缓存中
+                cache.put(classLoader, result);
+                return result;
+            } catch (IOException var13) {
+                throw new IllegalArgumentException("Unable to load factories from location [META-INF/spring.factories]", var13);
+            }
+        }
+    }
+```
+
+
 
 #### @EnableAutoConfiguration 排除指定组件
 
@@ -540,13 +673,13 @@ public abstract class SpringBootCondition implements Condition {
 
 ## SpringBoot构造流程分析
 
-主要围绕的是SpringApplication这个类的静态方法run()进行初始化类的SpringApplication的自身的说明与进入。
+主要围绕的是SpringApplication这个类的静态方法run()进行初始化类的SpringApplication的自身的说明与进入。**在此过程中完成了基本配置文件的加载和实例化。当SpringApplication对象被创建之后，通过调用其run方法来进行Spring Boot的启动和运行，至此正式开启了SpringApplication的生命周期**
 
 ### SpringApplication类
 
 在入口类中主要通过SpringApplication的静态方法——run方法进行SpringApplication类的实例化操作，然后再针对实例化对象调用另外一个run方法来完成整个项目的初始化和启动。可以看到SpringApplication的实例化只是在它提供的静态run方法中新建了一个SpringApplication对象。其中参数primarySources为加载的主要资源类，通常就是Spring Boot的入口类，args为传递给应用程序的参数信息
 
-#### SpringApplication实例化流程
+#### SpringApplication实例化流程（就是构造函数初始化流程阶段深入分析）
 
 ```java
 /**
@@ -574,9 +707,11 @@ public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySourc
     }
 ```
 
-通过源码的查看可得到springApplication的实例化的核心流程
+**通过源码的查看可得到springApplication的实例化（构造函数初始化）的核心流程**
 
 [![BHPmzF.png](https://s1.ax1x.com/2020/11/09/BHPmzF.png)](https://imgchr.com/i/BHPmzF)
+
+**下面根据上面的流程图我们将深入的进行对每个阶段进行深入学习**
 
 ##### 1.Web类型的推断WebAppliationType
 
@@ -781,7 +916,9 @@ private Class<?> deduceMainApplicationClass() {
 
 ## SpringBoot运行流程分析
 
-#### **SpringApplication中的run方法**
+主要围绕了SpringApplaictionRunlisteners, ApplicationArguments,ConfigurableEnvironment以及应用上下文的部分信息。
+
+#### **SpringApplication中的run方法（run方法运行流程分析）**
 
 ```java
 public ConfigurableApplicationContext run(String... args) {
@@ -849,5 +986,149 @@ public ConfigurableApplicationContext run(String... args) {
     }
 ```
 
+**从上面的源代码我们忽略Spring Boot计时和统计的功能可以将其转化为下面的流程图表示。** spring run方法运行流程
+
+[![DYP6nx.png](https://s3.ax1x.com/2020/11/23/DYP6nx.png)](https://imgchr.com/i/DYP6nx)
+
+下面将对其具体的过程进行深入了解
+
 ####  SpringApplicationRunListener监听器
+
+通过this.getRunListeners(args)；方法 我们可以得到SpringApplicationRunListeners对象。
+
+在this.getRunListeners(args) 方法中可以看到
+
+##### getRunListeners(args)方法：
+
+```java
+	private SpringApplicationRunListeners getRunListeners(String[] args) {
+		// 构造CLass数组
+		Class<?>[] types = new Class<?>[] { SpringApplication.class, String[].class };
+        // 调用SpringApplicationRunListeners构造方法，第二个参数是一个集合
+		return new SpringApplicationRunListeners(logger,
+				getSpringFactoriesInstances(SpringApplicationRunListener.class, types, this, args));
+	}
+	// 
+	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type) {
+		return getSpringFactoriesInstances(type, new Class<?>[] {});
+	}
+	// 获取集合 获取到factories配置文件中的注册类，并进行实例化操作
+	private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] parameterTypes, Object... args) {
+        // 通过获取类加载器
+		ClassLoader classLoader = getClassLoader();
+		// Use names and ensure unique to protect against duplicates
+        // 加载META-INF/spring.factories中对应监听器的配置，并将结果存放于Set中（去重）
+		Set<String> names = new LinkedHashSet<>(SpringFactoriesLoader.loadFactoryNames(type, classLoader));
+        // 实例化监听器
+		List<T> instances = createSpringFactoriesInstances(type, parameterTypes, classLoader, args, names);
+        // 排序
+		AnnotationAwareOrderComparator.sort(instances);
+		return instances;
+	}
+```
+
+##### SpringApplicationRunListener解析
+
+接口SpringApplicationRunListener是SpringApplication的run方法监听器。上节提到了SpringApplicationRunListener通过SpringFactoriesLoader加载，并且必须声明一个公共构造函数，该函数接收SpringApplication实例和String[ ]的参数，而且每次运行都会创建一个新的实例。
+
+SpringApplicationRunListener提供了一系列的方法，用户可以通过回调这些方法，在启动各个流程时加入指定的逻辑处理
+
+```java
+public interface SpringApplicationRunListener {
+	// 当run方法第一次被执行时会被立即调用，可用于非常早期的初始化工作
+	default void starting() {
+	}
+	// 当environment准备完成后，在ApplicationContext创建之前，该方法被调用
+	default void environmentPrepared(ConfigurableEnvironment environment) {
+	}
+	// 当ApplicationContext构建完成，资源未被加载时该方法被调用
+	default void contextPrepared(ConfigurableApplicationContext context) {
+	}
+	// 当ApplicationContext加载完成，未被刷新之前，该方法被调用
+	default void contextLoaded(ConfigurableApplicationContext context) {
+	}
+	// 当ApplicationContext刷新并启动后，CommandLineRunner和ApplicationRunner未被调用之前，该方法被调用
+	default void started(ConfigurableApplicationContext context) {
+	}
+	// 当所有准备工作就绪，run方法执行完成之前，方法被调用
+	default void running(ConfigurableApplicationContext context) {
+	}
+	// 当程序出现错误时方法被调用
+	default void failed(ConfigurableApplicationContext context, Throwable exception) {
+	}
+}
+```
+
+SpringApplicationRunListener作为一个监听器它在spring启动run()方法时被调用的过程如下图。
+
+[![DYP7ut.png](https://s3.ax1x.com/2020/11/23/DYP7ut.png)](https://imgchr.com/i/DYP7ut)
+
+
+
+##### SpringApplicationRunListener实现类EventPublishingRunListener
+
+![](https://s3.ax1x.com/2020/11/23/DYiart.png)
+
+**从类图可以看到EventPublishRunListener类是SpringApplicationRunListener接口的唯一的内建的实现类。EventPublishingRunListener使用内置的SimpleApplicationEventMulticaster来广播在上下文刷新之前触发的事件。默认情况下，Spring Boot在初始化过程中触发的事件也是交由EventPublishingRunListener来代理实现的**
+
+**构造方法**
+
+```java
+public class EventPublishingRunListener implements SpringApplicationRunListener, Ordered {
+
+	private final SpringApplication application; // 类型为springApplication
+
+	private final String[] args;// 启动程序时的命令参数。
+
+	private final SimpleApplicationEventMulticaster initialMulticaster; // 事件广播器
+	// 有参构造函数
+	public EventPublishingRunListener(SpringApplication application, String[] args) {
+        // 
+		this.application = application;
+		this.args = args;
+        // 创建SimpleApplicationEventMulticaster 广播器
+		this.initialMulticaster = new SimpleApplicationEventMulticaster();
+        // 遍历applicationListener并关联SimpleApplicationEventMulticaster
+		for (ApplicationListener<?> listener : application.getListeners()) {
+			this.initialMulticaster.addApplicationListener(listener);
+		}
+	}
+}
+```
+
+EventPublishingRunListener 对于不同的事件有不同的处理方法，但是他们的流程基本相同，都是  某个事件被调用 ，封装application和args到事件内，通过multiEvent或publishEvent发布事件。
+
+```java
+// 使用的是initialMulticaster.multicastEvent()
+@Override
+public void contextPrepared(ConfigurableApplicationContext context) {
+    this.initialMulticaster
+        .multicastEvent(new ApplicationContextInitializedEvent(this.application, this.args, context));
+}
+
+@Override
+public void contextLoaded(ConfigurableApplicationContext context) {
+    for (ApplicationListener<?> listener : this.application.getListeners()) {
+        if (listener instanceof ApplicationContextAware) {
+            ((ApplicationContextAware) listener).setApplicationContext(context);
+        }
+        context.addApplicationListener(listener);
+    }
+    this.initialMulticaster.multicastEvent(new ApplicationPreparedEvent(this.application, this.args, context));
+}
+//使用的是publishEvent
+@Override
+public void started(ConfigurableApplicationContext context) {
+    context.publishEvent(new ApplicationStartedEvent(this.application, this.args, context));
+    AvailabilityChangeEvent.publish(context, LivenessState.CORRECT);
+}
+```
+
+**某些方法是通过initialMulticaster的multicastEvent进行事件的广播，某些方法是通过context参数的publishEvent方法来进行发布的**
+
+> contextLoaded方法在发布事件之前做了两件事：第一，遍历application的所有监听器实现类，如果该实现类还实现了ApplicationContextAware接口，则将上下文信息设置到该监听器内；第二，将application中的监听器实现类全部添加到上下文中。最后一步才是调用事件广播
+
+> 在此方法之前执行的事件广播都是通过multicastEvent来进行的，而该方法之后的方法则均采用publishEvent来执行。这是因为只有到了contextLoaded方法之后，上下文才算初始化完成，才可通过它的publishEvent方法来进行事件的发布
+
+
 
