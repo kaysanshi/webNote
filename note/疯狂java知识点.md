@@ -749,7 +749,7 @@ Object类是所有类、数组、枚举类的父类，也就是说，Java允许�
 
 - boolean equals(Object obj)：判断指定对象与该对象是否相等。此处相等的标准是，两个对象是同一个对象，因此该equals()方法通常没有太大的实用价值。
 - protected void finalize()：当系统中没有引用变量引用到该对象时，垃圾回收器调用此方法来清理该对象的资源。
-- Class<?> getClass()：返回该对象的运行时类，该方法在本书第18章还有更详细的介绍。
+- Class<?> getClass()：返回该对象的运行时类。
 -  int hashCode()：返回该对象的hashCode值。在默认情况下，Object类的hashCode()方法根据该对象的地址来计算（即与System.identityHashCode(Object x)方法的计算结果相同）。但很多类都重写了Object类的hashCode()方法，不再根据地址来计算其hashCode()方法值
 - String toString()：返回该对象的字符串表示，当我们使用System.out.println()方法输出一个对象，或者把某个对象和字符串进行连接运算时，系统会自动调用该对象的toString()方法返回该对象的字符串表示。Object类的toString()方法返回“运行时类名@十六进制hashCode值”格式的字符串，但很多类都重写了Object类的toString()方法，用于返回可以表述该对象信息的字符串。
 
@@ -2076,9 +2076,9 @@ hash表里可以存储元素的位置被称为“桶（bucket）”，在通常�
 - 尺寸(size) :当前hash表中记录的数量。
 - 负载因子(load factor):负载因子等于“size/capacity”。负载因子为0，表示空的hash表，0.5表示半满的散列表，依此类推。轻负载的散列表具有冲突少、适宜插入与查询的特点（但是使用Iterator迭代元素时比较慢
 
-hash表里还有一个“负载极限”，“负载极限”是一个0~1的数值，“负载极限”决定了hash表的最大填满程度。当hash表中的负载因子达到指定的“负载极限”时，hash表会自动成倍地增加容量（桶的数量），并将原有的对象重新分配，放入新的桶内，这称为rehashing。HashSet和HashMap、Hashtable的构造器允许指定一个负载极限，HashSet和HashMap、Hashtable默认的“负载极限”为0.75，这表明当该hash表的3/4已经被填满时，hash表会发生rehashing。
+**hash表里还有一个“负载极限”，“负载极限”是一个0~1的数值，“负载极限”决定了hash表的最大填满程度。当hash表中的负载因子达到指定的“负载极限”时，hash表会自动成倍地增加容量（桶的数量），并将原有的对象重新分配，放入新的桶内，这称为rehashing。HashSet和HashMap、Hashtable的构造器允许指定一个负载极限，HashSet和HashMap、Hashtable默认的“负载极限”为0.75，这表明当该hash表的3/4已经被填满时，hash表会发生rehashing。**
 
-“负载极限”的默认值（0.75）是时间和空间成本上的一种折中：较高的“负载极限”可以降低hash表所占用的内存空间，但会增加查询数据的时间开销，而查询是最频繁的操作（HashMap的get()与put()方法都要用到查询）；较低的“负载极限”会提高查询数据的性能，但会增加hash表所占用的内存开销。程序员可以根据实际情况来调整HashSet和HashMap的“负载极限”值。
+**“负载极限”的默认值（0.75）是时间和空间成本上的一种折中：较高的“负载极限”可以降低hash表所占用的内存空间，但会增加查询数据的时间开销，而查询是最频繁的操作（HashMap的get()与put()方法都要用到查询）；较低的“负载极限”会提高查询数据的性能，但会增加hash表所占用的内存开销。程序员可以根据实际情况来调整HashSet和HashMap的“负载极限”值。**
 
 如果开始就知道HashSet和HashMap、Hashtable会保存很多记录，则可以在创建时就使用较大的初始化容量，如果初始化容量始终大于HashSet和HashMap、Hashtable所包含的最大记录数除以负载极限，就不会发生rehashing。使用足够大的初始化容量创建HashSet和HashMap、Hashtable时，可以更高效地增加记录，但将初始化容量设置太高可能会浪费空间，因此通常不要将初始化容量设置得太高
 

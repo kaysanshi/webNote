@@ -134,7 +134,9 @@ systemctl daemon-reload && systemctl restart docker
 
 ## DockerFile：
 
-镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决	dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建.
+镜像的定制实际上就是定制每一层所添加的配置、文件。如果我们可以把每一层修改、安装、构建、操作的命令都写入一个脚本，用这个脚本来构建、定制镜像，那么之前提及的无法重复的问题、镜像构建透明性的问题、体积的问题就都会解决
+
+dockerfile是一个文本文件，其内包含了一条条指令，每条指令构建一层，因此每条指令都应该描述如何构建.
 
 **注意：Dockerfile 的指令每执行一次都会在 docker 上新建一层。所以过多无意义的层，会造成镜像膨胀过大**
 
@@ -148,21 +150,86 @@ systemctl daemon-reload && systemctl restart docker
 
 命令有两种格式：shell格式:    exec格式：
 
-这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建
+### DokerFile指令
 
-​	dockerfile 支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人初学 Docker 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件. **那就是使用&&进行链接**：
+指令相对比较庞大 自行学习把，比较常用的有 `FROM，RUN，还提及了COPY,ADD`
+
+[参考：dockfile定制镜像](https://blog.csdn.net/wo18237095579/article/details/80540571?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.control#%E4%BD%BF%E7%94%A8-dockerfile-%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F)
+
+
+
+### DockerFile轻量化方式
+
+**下面的这个的dockerfile 是从 Debian "jessie"系统下构建一个编译、安装 redis 可执行文件。**
+
+```dockerfile
+FROM debian:jessie
+
+RUN apt-get update
+RUN apt-get install -y gcc libc6-dev make
+RUN wget -O redis.tar.gz "http://download.redis.io/releases/redis-3.2.5.tar.gz"
+RUN mkdir -p /usr/src/redis
+RUN tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1
+RUN make -C /usr/src/redis
+RUN make -C /usr/src/redis install
+```
+
+Dockerfile 中每一个指令都会建立一层，`RUN` 也不例外。每一个 `RUN` 的行为，就和刚才我们手工建立镜像的过程一样：新建立一层，在其上执行这些命令，执行结束后，`commit` 这一层的修改，构成新的镜像。
+
+
+
+而上面的这种写法，创建了 7 层镜像。这是完全没有意义的，而且很多运行时不需要的东西，都被装进了镜像里，比如编译环境、更新的软件包等等。结果就是产生非常臃肿、非常多层的镜像，不仅仅增加了构建部署的时间，也很容易出错
+
+```dockerfile
+FROM debian:jessie
+
+RUN buildDeps='gcc libc6-dev make' \
+    && apt-get update \
+    && apt-get install -y $buildDeps \
+    && wget -O redis.tar.gz "http://download.redis.io/releases/redis-3.2.5.tar.gz" \
+    && mkdir -p /usr/src/redis \
+    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+    && make -C /usr/src/redis \
+    && make -C /usr/src/redis install \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm redis.tar.gz \
+    && rm -r /usr/src/redis \
+    && apt-get purge -y --auto-remove $buildDeps
+```
+
+**这里没有使用很多个 RUN 对一一对应不同的命令，而是仅仅使用一个 RUN 指令，并使用 && 将各个所需命令串联起来。将之前的 7 层，简化为了 1 层。这并不是在写 Shell 脚本，而是在定义每一层该如何构建.并且，这里为了格式化还进行了换行。Dockerfile 支持 Shell 类的行尾添加 `\` 的命令换行方式，以及行首 `#` 进行注释的格式。良好的格式，比如换行、缩进、注释等，会让维护、排障更为容易，这是一个比较好的习惯。**
+
+**此外，还可以看到这一组命令的最后添加了清理工作的命令，删除了为了编译构建所需要的软件，清理了所有下载、展开的文件，并且还清理了 `apt` 缓存文件。这是很重要的一步，我们之前说过，镜像是多层存储，每一层的东西并不会在下一层被删除，会一直跟随着镜像。因此镜像构建时，一定要确保每一层只添加真正需要添加的东西，任何无关的东西都应该清理掉**
+
+​	
+
+**关于层的图片请看：**
+
+一个docker镜像由多个可读的镜像层组成，然后运行的容器会在这个docker的镜像上面多加一层可写的容器层，任何的对文件的更改都只存在此容器层。因此任何对容器的操作均不会影响到镜像
+
+![img](https://images2018.cnblogs.com/blog/799055/201803/799055-20180309154723871-127136242.png)
+
+
+
+dockerfile 支持shell类后面添加\命令方式换行，以及首行#号进行注释格式，很多人 制作出了很臃肿的镜像的原因之一，就是忘记了每一层构建的最后一定要清理掉无关文件. **那就是使用&&进行链接**：
 
 ```dockerfile
 FROM centos
 RUN yum install wget
 RUN wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz"
 RUN tar -xvf redis.tar.gz
+
+```
+
+```
 以上执行会创建 3 层镜像。可简化为以下格式：
 FROM centos
 RUN yum install wget \
     && wget -O redis.tar.gz "http://download.redis.io/releases/redis-5.0.3.tar.gz" \
     && tar -xvf redis.tar.gz
 ```
+
+`docker bulid -t centos:1.0` 进行构建
 
 **比如构建一个nginx** :
 
@@ -173,15 +240,37 @@ From nginx
 Run echo '</h1>Hello, Docker!</h1>' /usr/share/nginx/html/index.html
 ```
 
+使用以下命令进行构建：
+
+```bash
+docker build [选项] <上下文路径/URL/->
+```
+
+在这里我们指定了最终镜像的名称 `-t nginx:v3`，构建成功后，运行这个镜像
+
 **Dokerfile比较庞大具体的其他的构建可以去看 [docker file list](https://github.com/docker-library)**
 
-### DokerFile指令
+更多关于docker层的概念请看：
 
-指令相对比较庞大 自行学习把，比较常用的有 `FROM，RUN，还提及了COPY,ADD`
+[Docker分层原理与内部结构](https://blog.csdn.net/runner668/article/details/80955381?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4.control)
 
+[Dockerfile实践指南之层数与大小的控制](https://blog.csdn.net/liumiaocn/article/details/100922774)
 
+[Docker多阶段构建最佳实践](http://dockone.io/article/8179)
+
+[docker镜像的优化](https://blog.csdn.net/weixin_46119868/article/details/106337273)
 
 ### 使用上下文环境构建：
+
+会看到 `docker build` 命令最后有一个 `.`。`.` 表示当前目录，而 `Dockerfile` 就在当前目录，`这个路径不能认为是在指定 Dockerfile 所在的路径`，这么理解其实是不准确的。如果对应上面的命令格式，你可能会发现，这是在指定**上下文路径**。
+
+一般来说，应该会将 `Dockerfile` 置于一个空目录下，或者项目根目录下。如果该目录下没有所需文件，那么应该把所需文件复制一份过来。如果目录下有些东西确实不希望构建时传给 Docker 引擎，那么可以用 `.gitignore` 一样的语法写一个 `.dockerignore`，该文件是用于剔除不需要作为上下文传递给 Docker 引擎的。
+
+那么为什么会有人误以为 `.` 是指定 `Dockerfile` 所在目录呢？这是因为在默认情况下，如果不额外指定 `Dockerfile` 的话，会将上下文目录下的名为 `Dockerfile` 的文件作为 Dockerfile。
+
+这只是默认行为，实际上 `Dockerfile` 的文件名并不要求必须为 `Dockerfile`，而且并不要求必须位于上下文目录中，比如可以用 `-f ../Dockerfile.php` 参数指定某个文件作为 `Dockerfile`。
+
+当然，一般大家习惯性的会使用默认的文件名 `Dockerfile`，以及会将其置于镜像构建上下文目录中。
 
 创建一个html文件：
 
@@ -796,6 +885,10 @@ services:
     volumes:
       - ./data:/var/lib/rabbitmq
 ```
+
+centos用上面的会出现 `chown: changing ownership of '/var/lib/rabbitmq': Permission denied`
+
+解决方案：https://jingyan.baidu.com/article/9c69d48f7821b853c9024ef8.html
 
 ### Docker compose 实战RocketMq
 
