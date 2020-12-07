@@ -992,9 +992,14 @@ public ConfigurableApplicationContext run(String... args) {
 
 下面将对其具体的过程进行深入了解
 
-####  SpringApplicationRunListener监听器
+####  1.获取SpringApplicationRunListener监听器并进行监听
 
 通过this.getRunListeners(args)；方法 我们可以得到SpringApplicationRunListeners对象。
+
+```java
+// 获得SpringApplicationRunLister数组，该数组封装于SpringApplicationRunListeners中的listeners中
+SpringApplicationRunListeners listeners = this.getRunListeners(args);
+```
 
 在this.getRunListeners(args) 方法中可以看到
 
@@ -1027,7 +1032,7 @@ public ConfigurableApplicationContext run(String... args) {
 	}
 ```
 
-##### SpringApplicationRunListener解析
+##### SpringApplicationRunListener源码解析
 
 接口SpringApplicationRunListener是SpringApplication的run方法监听器。上节提到了SpringApplicationRunListener通过SpringFactoriesLoader加载，并且必须声明一个公共构造函数，该函数接收SpringApplication实例和String[ ]的参数，而且每次运行都会创建一个新的实例。
 
@@ -1106,14 +1111,19 @@ public void contextPrepared(ConfigurableApplicationContext context) {
         .multicastEvent(new ApplicationContextInitializedEvent(this.application, this.args, context));
 }
 
+
 @Override
 public void contextLoaded(ConfigurableApplicationContext context) {
+    // 遍历application所有的监听器实现类
     for (ApplicationListener<?> listener : this.application.getListeners()) {
+        // 如果为ApplicationContextAware，则将上下文信息设置到该监听器内
         if (listener instanceof ApplicationContextAware) {
             ((ApplicationContextAware) listener).setApplicationContext(context);
         }
+        // 将application中的监听器实现类全部添加到上下文中
         context.addApplicationListener(listener);
     }
+    // 广播事件ApplicationPreparedEvent
     this.initialMulticaster.multicastEvent(new ApplicationPreparedEvent(this.application, this.args, context));
 }
 //使用的是publishEvent
@@ -1131,4 +1141,240 @@ public void started(ConfigurableApplicationContext context) {
 > 在此方法之前执行的事件广播都是通过multicastEvent来进行的，而该方法之后的方法则均采用publishEvent来执行。这是因为只有到了contextLoaded方法之后，上下文才算初始化完成，才可通过它的publishEvent方法来进行事件的发布
 
 
+
+如果想自定义实现SpringApplicationRunListener在对应的方法中实现自己的业务逻辑，则可以去实现这个SpringApplicationRunListener类,然后在spring.factories中配置出扫描的包名和路径类。
+
+
+
+#### 2.初始化ApplicationArguments，将SpringApplication的需要的参数进行初始化
+
+```java
+// 创建ApplicationArguments对象
+ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+```
+
+监听器启动之后，紧接着便是执行ApplicationArguments对象的初始化，Application-Arguments是用于提供访问运行SpringApplication时的参数。
+
+ApplicationArguments的初始化过程非常简单，只是调用了它的实现类Default-ApplicationArguments并传入main方法中的args参数
+
+**在DefaultApplicationArguments中将参数args封装为Source对象，Source对象是基于Spring框架的SimpleCommandLinePropertySource来实现的。只需知道通过main方法传递进来的参数被封装成ApplicationArguments对象即可**
+
+#### 3.初始化ConfigurableEnvironment
+
+完成ApplicationArguments参数准备之后便开始通过prepareEnvironment方法对ConfigurableEnvironment对象进行初始化操作
+
+```java
+ // 加载属性配置，包括所有的属性配置，如application.properties中和外部属性
+ConfigurableEnvironment environment = this.prepareEnvironment(listeners, applicationArguments);
+```
+
+这里我们先看下ConfigurableEnvironment这个接口：
+
+```java
+public interface ConfigurableEnvironment extends Environment, ConfigurablePropertyResolver {
+    // 设置激活的组集合
+    void setActiveProfiles(String... var1);
+	// 向当前激活的组集合中添加一个profile组
+    void addActiveProfile(String var1);
+	// 设置默认激活的组激活。激活组集合为空时会使用默认的组集合
+    void setDefaultProfiles(String... var1);
+	// 获取当前的环境对象中的属性源集合，也就是应用环境变量
+    // 属性原集合其实就是一个容纳PropertySource容器
+    // 该方法提供了直接配置属性源的入口
+    MutablePropertySources getPropertySources();
+	// 获取提供直接配置虚拟机环境变量的入口
+    Map<String, Object> getSystemProperties();
+	// 获取操作系统环境变量
+    Map<String, Object> getSystemEnvironment();
+	// 合并指定环境中的配置到当前的环境
+    void merge(ConfigurableEnvironment var1);
+}
+
+```
+
+从代码可以看到ConfigurableEnvironment接口继承自Environment接口和ConfigurablePropertyResolver，最终都继承自接口PropertyResolver。ConfigurableEnvironment接口的主要作用是提供当前运行环境的公开接口，比如配置文件profiles各类系统属性和变量的设置、添加、读取、合并等功能
+
+我们在看下`this.prepareEnvironment(listeners, applicationArguments);`方法
+
+```java
+private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
+			ApplicationArguments applicationArguments) {
+		// Create and configure the environment
+    	// 获取或创建环境
+		ConfigurableEnvironment environment = getOrCreateEnvironment();
+    	// 配置环境，主要包括PropertySources和activeProfiles的配置
+		configureEnvironment(environment, applicationArguments.getSourceArgs());
+    	// 将ConfigurationPropertySources附加到指定环境中的第一位，并动态跟踪环境的添加或删除
+		ConfigurationPropertySources.attach(environment);
+    	// 监听器准备
+		listeners.environmentPrepared(environment);
+    	// 将环境绑定到SpringApplication
+		bindToSpringApplication(environment);
+    	// 判断是否时定制的环境，如果不是定制的环境则将环境转为StandardEnvironment
+		if (!this.isCustomEnvironment) {
+			environment = new EnvironmentConverter(getClassLoader()).convertEnvironmentIfNecessary(environment,
+					deduceEnvironmentClass());
+		}
+    	// 将ConfigurationPropertySources附件到指定环境中方
+		ConfigurationPropertySources.attach(environment);
+		return environment;
+	}
+	// 推断环境类型
+	private Class<? extends StandardEnvironment> deduceEnvironmentClass() {
+		switch (this.webApplicationType) {
+		case SERVLET:
+			return StandardServletEnvironment.class;
+		case REACTIVE:
+			return StandardReactiveWebEnvironment.class;
+		default:
+			return StandardEnvironment.class;
+		}
+	}
+	//获取或者创建环境
+	private ConfigurableEnvironment getOrCreateEnvironment() {
+		if (this.environment != null) {
+			return this.environment;
+		}
+		switch (this.webApplicationType) {
+		case SERVLET:
+			return new StandardServletEnvironment();
+		case REACTIVE:
+			return new StandardReactiveWebEnvironment();
+		default:
+			return new StandardEnvironment();
+		}
+	}
+```
+
+####  4.忽略信息配置
+
+ConfigurableEnvironment的初始化和准备工作已经完成。之后，程序又对环境中的忽略信息配置项“spring.beaninfo.ignore”的值进行获取判断，进而设置为系统参数中的忽略项
+
+spring.beaninfo.ignore的配置用来决定是否跳过BeanInfo类的扫描，如果设置为true，则跳过。
+
+```java
+private void configureIgnoreBeanInfo(ConfigurableEnvironment environment) {
+    // 如果系统参数中spring.beaninfo.ignore为null
+		if (System.getProperty(CachedIntrospectionResults.IGNORE_BEANINFO_PROPERTY_NAME) == null) {
+            // 获取环境中spring.beaninfo.ignore的配置
+			Boolean ignore = environment.getProperty("spring.beaninfo.ignore", Boolean.class, Boolean.TRUE);
+            // 设置对应的系统参数
+			System.setProperty(CachedIntrospectionResults.IGNORE_BEANINFO_PROPERTY_NAME, ignore.toString());
+		}
+	}
+```
+
+####  5.打印banner
+
+完成环境的基本处理之后，下面就是控制台Banner的打印了
+
+```java
+private Banner printBanner(ConfigurableEnvironment environment) {
+    // 如果处于关闭状态返回null
+		if (this.bannerMode == Banner.Mode.OFF) {
+			return null;
+		}
+    // 如果ResourceLoader不存在则创建一个默认的
+		ResourceLoader resourceLoader = (this.resourceLoader != null) ? this.resourceLoader
+				: new DefaultResourceLoader(null);
+    // 构建SpringApplicationBannerPrinter
+		SpringApplicationBannerPrinter bannerPrinter = new SpringApplicationBannerPrinter(resourceLoader, this.banner);
+		if (this.bannerMode == Mode.LOG) {
+			return bannerPrinter.print(environment, this.mainApplicationClass, logger);
+		}
+    // 打印到控制台
+		return bannerPrinter.print(environment, this.mainApplicationClass, System.out);
+	}
+```
+
+#### 6.Spring应用上下文的创建
+
+在前面的章节中已经多次涉及WebApplicationType枚举类，无论是推断Web应用类型，还是创建不同的配置环境都与此枚举类有关。Spring Boot创建Spring的应用上下文时，如果未指定要创建的类，则会根据之前推断出的类型来进行默认上下文类的创建。
+
+在Spring Boot中通过SpringApplication类中的createApplicationContext来进行应用上下文的创建，代码如下
+
+```java
+// 变量
+public static final String DEFAULT_CONTEXT_CLASS = "org.springframework.context."
+			+ "annotation.AnnotationConfigApplicationContext";
+	
+public static final String DEFAULT_SERVLET_WEB_CONTEXT_CLASS = "org.springframework.boot."
+			+ "web.servlet.context.AnnotationConfigServletWebServerApplicationContext";
+
+public static final String DEFAULT_REACTIVE_WEB_CONTEXT_CLASS = "org.springframework."
+			+ "boot.web.reactive.context.AnnotationConfigReactiveWebServerApplicationContext";
+
+
+protected ConfigurableApplicationContext createApplicationContext() {
+    // 获取容器的类变量
+		Class<?> contextClass = this.applicationContextClass;
+    // 如果为null，则根据web应用类型按照默认类进行创建
+		if (contextClass == null) {
+			try {
+				switch (this.webApplicationType) {
+				case SERVLET:
+					contextClass = Class.forName(DEFAULT_SERVLET_WEB_CONTEXT_CLASS);
+					break;
+				case REACTIVE:
+					contextClass = Class.forName(DEFAULT_REACTIVE_WEB_CONTEXT_CLASS);
+					break;
+				default:
+					contextClass = Class.forName(DEFAULT_CONTEXT_CLASS);
+				}
+			}
+			catch (ClassNotFoundException ex) {
+				throw new IllegalStateException(
+						"Unable create a default ApplicationContext, please specify an ApplicationContextClass", ex);
+			}
+		}
+    // 如果存在对应的Class配置
+		return (ConfigurableApplicationContext) BeanUtils.instantiateClass(contextClass);
+	}
+```
+
+
+
+#### 7.Spring应用上下文的准备
+
+```java
+private void prepareContext(ConfigurableApplicationContext context, ConfigurableEnvironment environment,
+			SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+    // 设置上下文的的配置环境
+		context.setEnvironment(environment);
+    // 
+		postProcessApplicationContext(context);
+    //
+		applyInitializers(context);
+    // 
+		listeners.contextPrepared(context);
+		if (this.logStartupInfo) {
+			logStartupInfo(context.getParent() == null);
+			logStartupProfileInfo(context);
+		}
+		// Add boot specific singleton beans
+		ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+		beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
+		if (printedBanner != null) {
+			beanFactory.registerSingleton("springBootBanner", printedBanner);
+		}
+		if (beanFactory instanceof DefaultListableBeanFactory) {
+			((DefaultListableBeanFactory) beanFactory)
+					.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
+		}
+		if (this.lazyInitialization) {
+			context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
+		}
+		// Load the sources
+		Set<Object> sources = getAllSources();
+		Assert.notEmpty(sources, "Sources must not be empty");
+		load(context, sources.toArray(new Object[0]));
+		listeners.contextLoaded(context);
+	}
+```
+
+
+
+#### 8 .Spring应用上下文的刷新
+
+#### 9. 调用ApplicationRunner和CommandLineRunner
 

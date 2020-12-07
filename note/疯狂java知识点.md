@@ -86,12 +86,19 @@ public class AutoInc{
 ```java 
 public class Equivalence{
     public static void main(String[] args) {
-        Integer n1= new Integer(22);
-        Integer n2= new Integer(22);
-        System.out.print(n1==n2); // false
+       	Integer n1= new Integer(22);
+		Integer n2= new Integer(22);
+		System.out.print(n1==n2); // false
+		Integer n3= 22;
+		Integer n4= 22;
+		System.out.print(n3==n4); // true
+
+		Integer n5= 129;
+		Integer n6= 129;
+		System.out.print(n5==n6); // false
     }
 }
-
+所有的包装类对象都应该采用equals对象，对于integer类型的因为在-128~127之间范围内都会赋值到IntegerCache.cache中，存在复用的情况，所以可以直接用==比较，但是在这之外的就不可以了。
 public class Equivalence{
     public static void main(String[] args) {
         Integer n1= new Integer(22);
