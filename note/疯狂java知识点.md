@@ -1238,7 +1238,26 @@ GC就是垃圾收集的意思（Gabage Collection）。我们在开发中会创�
 
 **Q10:**如果频繁老年代回收怎么分析解决？
 
-
+```
+老年代频繁回收，一般是Full GC，Full GC 消耗很大，因为在所有用户线程停止的情况下完成回收，而造成频繁 Full GC 的原因可能是，程序存在问题，或者环境存在问题。
+对jvm的GC进行必要的监控，操作如下：
+1、使用jps命令（或者ps -eaf|grep java）获取到当前的java进程（取得进程id，假如pid为 1234）
+2、使用jstat查看GC情况（如：jstat -gc 1234 1000，后面的1000表示每个1000毫米打印一次监控），jstat命令可以参考：https://www.cnblogs.com/yjd_hycf_space/p/7755633.html （此文使用的是jdk8，但是本人亲测jstat在jdk7也是这样的）
+jstat -class pid:显示加载class的数量，及所占空间等信息。 
+jstat -compiler pid:显示VM实时编译的数量等信息。 
+jstat -gc pid:可以显示gc的信息，查看gc的次数，及时间。其中最后五项，分别是young gc的次数，young gc的时间，full gc的次数，full gc的时间，gc的总时间。 
+jstat -gccapacity:可以显示，VM内存中三代（young,old,perm）对象的使用和占用大小，如：PGCMN显示的是最小perm的内存使用量，PGCMX显示的是perm的内存最大使用量，PGC是当前新生成的perm内存占用量，PC是但前perm内存占用量。其他的可以根据这个类推， OC是old内纯的占用量。 
+jstat -gcnew pid:new对象的信息。 
+jstat -gcnewcapacity pid:new对象的信息及其占用量。 
+jstat -gcold pid:old对象的信息。 
+jstat -gcoldcapacity pid:old对象的信息及其占用量。 
+jstat -gcpermcapacity pid: perm对象的信息及其占用量。 
+jstat -util pid:统计gc信息统计。 
+jstat -printcompilation pid:当前VM执行的信息。 
+除了以上一个参数外，还可以同时加上 两个数字，如：jstat -printcompilation 3024 250 6是每250毫秒打印一次，一共打印6次，还可以加上-h3每三行显示一下标题
+3、使用jmap（jmap 是一个可以输出所有内存中对象的工具）导出对象文件。如对于java进程（pid=1234），可以这样：jmap -histo 1234 > a.log 将对象导出到文件，然后通过查看对象内存占用大小，返回去代码里面找问题。
+（也可以使用命令，导出对象二进制内容（这样导出内容比jmap -histo多得多，更耗时，对jvm的消耗也更大）：jmap -dump:format=b,file=a.log 1234）
+```
 
 
 
@@ -3720,6 +3739,102 @@ ThreadLocal和Synchronized都是为了解决多线程中相同变量的访问冲
 - ThreadLocal是通过每个线程单独一份存储空间，牺牲空间来解决冲突，并且相比于Synchronized，ThreadLocal具有线程隔离的效果，只有在线程内才能获取到对应的值，线程外则不能访问到想要的值。
 
 正因为ThreadLocal的线程隔离特性，使他的应用场景相对来说更为特殊一些。在android中Looper、ActivityThread以及AMS中都用到了ThreadLocal。当某些数据是以线程为作用域并且不同线程具有不同的数据副本的时候，就可以考虑采用ThreadLocal。
+
+#### 线程池：
+
+1. **线程池的概念：**
+
+​     线程池就是首先创建一些线程，它们的集合称为线程池。使用线程池可以很好地提高性能，线程池在系统启动时即创建大量空闲的线程，程序将一个任务传给线程池，线程池就会启动一条线程来执行这个任务，执行结束以后，该线程并不会死亡，而是再次返回线程池中成为空闲状态，等待执行下一个任务。
+
+2. **线程池的工作机制**
+
+​     2.1 在线程池的编程模式下，任务是提交给整个线程池，而不是直接提交给某个线程，线程池在拿到任务后，就在内部寻找是否有空闲的线程，如果有，则将任务交给某个空闲的线程。
+
+​     2.1 一个线程同时只能执行一个任务，但可以同时向一个线程池提交多个任务。
+
+3. **使用线程池的原因：**
+
+​    多线程运行时间，系统不断的启动和关闭新线程，成本非常高，会过渡消耗系统资源，以及过渡切换线程的危险，从而可能导致系统资源的崩溃。这时，线程池就是最好的选择了。
+
+
+
+```java
+package com.blueearth.bewemp.doc.config;
+
+import java.util.concurrent.*;
+
+/**
+ * @user:
+ * @date:2021/1/11
+ * @Description:
+ */
+public class ExecutorsDemo {
+    /**
+     * 创建一个线程池，该线程池可重用固定数量的线程*在共享的无界队列上操作。在任何时候，最多* {@code nThreads}个线程将是活动的处理任务。
+     * *如果在所有线程都处于活动状态时提交了其他任务，则*它们将在队列中等待，直到某个线程可用为止。
+     * *如果任何线程由于执行过程中的失败而终止
+     * *在关闭之前*如果需要执行一个新任务，将替换一个新线程。池中的线程将存在*，
+     * 直到明确地{@link ExecutorService＃shutdown shutdown}为止
+     */
+    /**
+     * 阿里巴巴规范
+     * 强制】线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。
+     * 说明：Executors返回的线程池对象的弊端如下：
+     * 1）FixedThreadPool和SingleThreadPool:允许的请求队列长度为Integer.MAX_VALUE，可能会堆积大量的请求，从而导致OOM。
+     * 2）CachedThreadPool和ScheduledThreadPool:允许的创建线程数量为Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。
+     */
+    private static ExecutorService executorService = Executors.newFixedThreadPool(15);
+
+    /**
+     * Java中的BlockingQueue主要有两种实现，分别是ArrayBlockingQueue 和 LinkedBlockingQueue。
+     *
+     * ArrayBlockingQueue是一个用数组实现的有界阻塞队列，必须设置容量。
+     *
+     * LinkedBlockingQueue是一个用链表实现的有界阻塞队列，容量可以选择进行设置，不设置的话，将是一个无边界的阻塞队列，最大长度为Integer.MAX_VALUE。
+     *
+     * 这里的问题就出在：**不设置的话，将是一个无边界的阻塞队列，最大长度为Integer.MAX_VALUE。**也就是说，如果我们不设置LinkedBlockingQueue的容量的话，其默认容量将会是Integer.MAX_VALUE。
+     *
+     * 而newFixedThreadPool中创建LinkedBlockingQueue时，并未指定容量。此时，LinkedBlockingQueue就是一个无边界队列，对于一个无边界队列来说，是可以不断的向队列中加入任务的，这种情况下就有可能因为任务过多而导致内存溢出问题。
+     *
+     * 上面提到的问题主要体现在newFixedThreadPool和newSingleThreadExecutor两个工厂方法上，并不是说newCachedThreadPool和newScheduledThreadPool这两个方法就安全了，这两种方式创建的最大线程数可能是Integer.MAX_VALUE，而创建这么多线程，必然就有可能导致OOM
+     *
+     *  public static ExecutorService newFixedThreadPool(int nThreads) {
+     *         return new ThreadPoolExecutor(nThreads, nThreads,
+     *                                       0L, TimeUnit.MILLISECONDS,
+     *                                       new LinkedBlockingQueue<Runnable>());
+     *     }
+     * @param args
+     */
+    // 推荐使用以下形式:
+    // 这种情况下，一旦提交的线程数超过当前可用线程数时，就会抛出java.util.concurrent.RejectedExecutionException，
+    // 这是因为当前线程池使用的队列是有边界队列，队列已经满了便无法继续处理新的请求。但是异常（Exception）总比发生错误（Error）要好
+    private static  ExecutorService executor = new ThreadPoolExecutor(10,10,60L, TimeUnit.SECONDS,new ArrayBlockingQueue<>(10));
+
+    public static void main(String[] args){
+        for(int i=0;i<Integer.MAX_VALUE;i++){
+            executorService.execute(new SubThread());
+            System.out.println("主线程main："+Thread.currentThread().getName()+":::"+i++);
+        }
+    }
+}
+class SubThread implements Runnable{
+    @Override
+    public void run() {
+        try {
+            // 睡100ms然后进行执行子线程
+            Thread.sleep(100);
+        }catch (InterruptedException e){
+
+        }
+        System.out.println("子线程："+Thread.currentThread().getName());
+    }
+}
+
+```
+
+[参考1](https://www.imooc.com/article/282951)
+
+[参考2](https://www.jianshu.com/p/7726c70cdc40)
 
 #### 什么是线程安全？
 
