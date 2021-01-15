@@ -90,9 +90,351 @@ public class OverrideTest3       {
 
 当程序使用静态内部类时，外部类相当于静态内部类的一个包，因此使用起来比较方便；但另一方面，这也给静态内部类增加了一个限制—静态内部类不能访问。
 
+### 字符串陷阱
+
+#### 了解JVM对字符串的处理
+
+了解JVM对字符串处理之前，首先来看如下一条简单的Java语句
+
+```java
+String java = new String("疯狂java");
+// 上面语句创建了几个字符串对象？上面语句实际上创建了2个字符串对象，一个是“疯狂Java”这个直接量对应的字符串对象，一个是由newString()构造器返回的字符串对象
+```
+
+对于Java程序中的字符直接量，JVM会使用一个字符串池来保存它们：当第一次使用某个字符串直接量时，JVM会将它放入字符串池进行缓存。在一般情况下，字符串池中字符串对象不会被垃圾回收，当程序再次需要使用该字符串时，无须重新创建一个新的字符串，而是直接让引用变量指向字符串池中已有的字符
+
+```java
+public void test(){
+	// str1的值是字符串直接常量
+	// str1指向字符串缓存池的“hello” 字符串
+	String str1= "hello";
+	// str2 也指向字符串缓存池的“hello” 字符串
+	String str2 = "hello";
+    // true
+	System.out.println(str1==str2);
+    
+    String str3 = "hello java";
+    // 虽然str4的值不是直接常量，但因为str2的值可以在编译时确定，所以str2也会直接引用字符串缓存池中对应的字符串。
+    String str4 = "hello"+"java";
+    // true
+    System.out.println(str3==str4);
+}
+```
+
+注意上面程序中粗体字代码里的所有运算数，它们都是字符串直接量、整数直接量，没有变量参与，没有方法调用。因此，JVM可以在编译时就确定该字符串连接表达式的值，可以让该字符串变量指向字符串池中对应的字符串。<font color="red">但如果程序使用了变量，或者调用了方法，那就只能等到运行时才可确定该字符串连接表达式的值，也就无法在编译时确定该字符串变量的值，因此无法利用JVM的字符串池</font>。
+
+```java
+String str="hello" +"java "+"test"+"java";
+//其实这条代码只创建了一个字符串对象，因为str的值可以在编译时确定下来，JVM 会在编译时就计算出str的值为“HelloJava testjava”，然后将该字符串直接量放入字符串池中，并让str指向该它
+```
+
+#### 不可变的字符串
+
+String类是一个典型的不可变类。当一个String对象创建完成后，该String类里包含的字符序列就被固定下来了，以后永远都不能改变
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        String str = "hello";
+        //System 提供的identityHashCode()静态方法用于获取某个对象唯一的hashCode 值，这个identityHashCode()的返回值与该类是否重写了hashCode()方法无关。
+        // 只有当两个对象相同时，它们的identityHashCode值才会相等
+        System.out.println(System.identityHashCode(str)); // 864237698
+        // 进行字符串运算
+        str = str + "java";
+        System.out.println(System.identityHashCode(str)); // 537548559
+        // 进行字符串运算
+        str = str + ", test";
+        System.out.println(System.identityHashCode(str)); // 380894366
+        /**
+         * str变量原来指向的字符串对象并没有发生任何改变，它所包含的字符序列依然是“Hello”，
+         * 只是str变量不再指向它而已。str变量指向了一个新的String对象，因此看到str变量所引用String对象的字符序列发生了改变。
+         * 也就是说，发生改变的不是String对象，而是str变量本身，它改变了指向，指向了一个新的String对象
+         */
+    }
+}
+```
+
+[![swNxQ1.png](https://s3.ax1x.com/2021/01/15/swNxQ1.png)](https://imgchr.com/i/swNxQ1)
+
+上面程序中使用了System类的identityHashCode()静态方法来获取str的identityHashCode值，将会发生3次返回的identityHashCode值并不相同的状况，这表明3次访问str时分别指向3个不同的String对象
+
+对于String类而言，它代表字符串序列不可改变的字符串，因此如果程序需要一个字符序列会发生改变的字符串，那应该考虑使用StringBuilder或StringBuffer。很多资料上都推荐使用StringBuffer
+
+StringBuilder与StringBuffer唯一的区别在于，StringBuffer 是线程安全的，也就是说StringBuffer类里绝大部分方法都增加了synchronized修饰符。对方法增加 synchronized 修饰符可以保证该方法线程安全，但会降低该方法的执行效率。在没有多线程的环境下，应该优先使用StringBuilder类来表示字符串
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        StringBuilder stringBuilder = new StringBuilder("hello");
+        //System 提供的identityHashCode()静态方法用于获取某个对象唯一的hashCode 值，这个identityHashCode()的返回值与该类是否重写了hashCode()方法无关。
+        // 只有当两个对象相同时，它们的identityHashCode值才会相等
+        System.out.println(System.identityHashCode(stringBuilder)); // 864237698
+        stringBuilder.append("java");
+        System.out.println(System.identityHashCode(stringBuilder)); // 864237698
+        // 进行字符串运算
+        stringBuilder.append("test");
+        System.out.println(System.identityHashCode(stringBuilder)); // 864237698
+    }
+}
+```
+
+程序3次打印StringBuilder对象将看到输出不同的字符串，但程序3次输出str的identityHashCode时将会完全相同，因为str依然引用同一个StringBuilder对象
+
+### 多线程的陷阱
+
+Java语言提供了非常优秀的多线程支持，使得开发者能以简单的代码来创建、启动多线程，而且Java语言内置的多线程支持极好地简化了多线程编程。虽然如此，Java多线程编程中依然存在一些容易混淆的陷阱
+
+#### 不要调用run方法应该调用start方法启动线程
+
+从JDK 1.5开始，Java提供了3种方式来创建、启动多线程：
+
+■ 继承Thread类来创建线程类，重写run()方法作为线程执行体；
+
+■实现Runnable接口来创建线程类，重写run()方法作为线程执行体；
+
+■实现Callable接口来创建线程类，重写call()方法作为线程执行体。
+
+**其中，第1种方式的效果最差，它有2点坏处：**
+
+■ 线程类继承了Thread类，无法再继承其他父类；
+
+■ 因为每条线程都是一个Thread子类的实例，因此多个线程之间共享数据比较麻烦。
+
+**对于第2种和第3种方式，它们的本质是一样的，只是Callable接口里包含的call()方法既可以声明抛出异常，也可以拥有返回值。除此之外，如果采用继承Thread类的方式来创建多线程，程序还有一个潜在的危险。示例如下**
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        for(int i=0;i<100;i++){
+            // 获取当前线程的名称
+            System.out.println(Thread.currentThread().getName()+ " " + i);
+            if(i==20){
+                // 直接调用run方法：
+                new InvokeRun().run();
+                new InvokeRun().run();
+
+            }
+        }
+    }
+}
+class InvokeRun extends Thread{
+    private int i;
+
+    @Override
+    public void run() {
+        for(;i<100;i++){
+            // 获取当前线程的名称
+            System.out.println(Thread.currentThread().getName()+ " " + i);
+        }
+    }
+}
+// 输出
+/**
+         * (1) 输出main 20之后，又重新开始输出main 0。
+         * (2) 从main 0一直输出到main 99，再次从main 0开始输出。
+         * (3) 再次从main 0一直输出到main 99，再次从main 22开始输出，直到main 99结束。上面程序始终只有一条线程，并没有启动任何新线程，关键是因为粗体字代码那里调用了线程对象的run()方法，
+         * 而不是start()方法—启动线程应该使用start()方法，而不是run()方法
+         */
+// 而应该使用这个：
+for(int i=0;i<100;i++){
+     // 获取当前线程的名称
+     System.out.println(Thread.currentThread().getName()+ " " + i);
+     if(i==20){
+        new InvokeRun().start();
+     }
+   }
+```
+
+#### 静态同步方法
+
+Java提供了synchronized关键字用于修饰方法，使用synchronized修饰的方法被称为同步方法。当然，synchronized关键字除了修饰方法之外，还可以修饰普通代码块，使用synchronized修饰的代码块被称为同步代码块。
+
+Java语法规定，任何线程进入同步方法、同步代码块之前，必须先获取同步方法、同步代码块对应的同步监视器。
+
+对于同步代码块而言，程序必须显式为它指定同步监视器；对于同步非静态方法而言，该方法的同步监视器是this—即调用该方法的Java对象；对于静态的同步方法而言，该方法的同步监视器不是this，而是该类本身。下面程序提供了一个静态的同步方法及一个同步代码块。同步代码块使用this 作为同步监视器，即这两个同步程序单元并没有使用相同的同步监视器，因此它们可以同时并发执行，相互之间不会有任何影响
+
+```java
+public class Test {
+    public static void main(String[] args) throws InterruptedException {
+        SynchronizedStatic synchronizedStatic = new SynchronizedStatic();
+        new Thread(synchronizedStatic).start();
+        // 保证第一条线程开始运行
+        Thread.sleep(1);
+        new Thread(synchronizedStatic).start();
+    }
+}
+class SynchronizedStatic implements Runnable{
+    static boolean staticFlag = true;
+    public static synchronized void test(){
+        for(int i=0;i<100;i++){
+            System.out.println("test:" + Thread.currentThread().getName()+" "+i);
+        }
+    }
+    public  void test2(){
+        synchronized (this){
+            for(int i=0;i<100;i++){
+                System.out.println("test2:" + Thread.currentThread().getName()+" "+i);
+            }
+        }
+
+    }
+    @Override
+    public void run() {
+        if(staticFlag){
+            staticFlag = false;
+            test();
+        }else{
+            staticFlag = true;
+            test2();
+        }
+    }
+}
+/**output
+     * test:Thread-0 23
+     * test:Thread-0 24
+     * test:Thread-0 25
+     * 调用test2
+     * test:Thread-0 26
+     * test2:Thread-1 0
+     * test:Thread-0 27
+     * test2:Thread-1 1
+     * test2:Thread-1 2
+     */
+```
+
+面程序中定义了一个SynchronizedStatic类，该类实现了Runnable接口，因此可作为线程的target来运行。SynchronizedStatic类通过一个staticFlag旗标控制线程使用哪个方法作为线程执行体：
+
+■ 当staticFlag为真时，程序使用test()方法作为线程执行体；
+
+■ 当staticFlag为假时，程序使用test1()方法作为线程执行体。
+
+程序第一次执行SynchronizedStatic对象作为target的线程时，staticFlag初始值为true，因此程序将以 test0()方法作为线程执行体，而且程序将会把 staticFlag修改为false；这使得第二次执行SynchronizedStatic对象作为target的线程时，程序将以test1()方法作为线程执行体
+
+```java
+ public  void test2(){
+        synchronized (this){
+            for(int i=0;i<100;i++){
+                System.out.println("test2:" + Thread.currentThread().getName()+" "+i);
+            }
+        }
+
+    }
+```
+
+静态同步方法可以和以this为同步监视器的同步代码块同时执行，当第一条线程（以 test0()方法作为线程执行体的线程）进入同步代码块执行以后，该线程获得了对同步监视器（SynchronizedStatic类）的锁定；第二条线程（以 test2()方法作为线程执行体的线程）尝试进入同步代码块执行，进入同步代码块之前，该线程必须获得对this引用（也就是ss变量所引用的对象）的锁定。因为第一条线程锁定的是SynchronizedStatic类，而不是ss变量所引用的对象，所以第二条线程完全可以获得对ss变量所引用的对象的锁定，因此系统可以切换到执行第二条线程
+
+将test2()方法改为上面的形式之后，该同步代码块的同步监视器也是SynchronizedStatic类，也就是与同步静态方法test()具有相同的同步监视器。再次运行该程序
+
+```java
+public  void test2(){
+        synchronized (SynchronizedStatic.class){
+            for(int i=0;i<100;i++){
+                System.out.println("test2:" + Thread.currentThread().getName()+" "+i);
+            }
+        }
+
+    }
+ /**output
+         * test:Thread-0 96
+         * test:Thread-0 97
+         * test:Thread-0 98
+         * test:Thread-0 99
+         * 调用test2
+         * test2:Thread-1 0
+         * test2:Thread-1 1
+         * test2:Thread-1 2
+         * test2:Thread-1 3
+         * test2:Thread-1 4
+         */
+```
+
+静态同步方法和以当前类为同步监视器的同步代码块不能同时执行，当第一条线程（以 test0()方法作为线程执行体的线程）进入同步代码块执行以后，该线程获得了对同步监视器（SynchronizedStatic类）的锁定；第二条线程（以 test1()方法作为线程执行体的线程）尝试进入同步代码块执行，进入同步代码块之前，该线程必须获得对SynchronizedStatic类的锁定。因为第一条线程已经锁定了SynchronizedStatic类，在第一条线程执行结束之前，它不会释放对SynchronizedStatic类的锁定，所以第二条线程无法获得对SynchronizedStatic类的锁定，因此只有等到第一条线程执行结束时才可以切换到执行第二条线程.
+
+#### 实例
+
+```java
+public class Test{
+
+    public static void main(String[] args){
+        AccountSync accountSync = new AccountSync("123456",1000);
+        new DrawThread("甲",accountSync,800).start();
+        new DrawThread("乙",accountSync,800).start();
+    }
+}
+
+/**
+ * 银行账户取钱
+ */
+class AccountSync{
+    private String accountNo;
+    private double balance;
+    public AccountSync(String accountNo,double balance){
+        this.accountNo=accountNo;
+        this.balance =balance;
+    }
+    //访问 该账户的余额
+    public synchronized double getBalance(){
+        return this.balance;
+    }
+    // 使用synchronized修饰符将其变为同步的方法
+    public synchronized void draw(double drawAccount){
+        if(balance>=drawAccount){
+            // 暂停当前线程，切换为其他线程
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName()+"取钱成功！吐出钞票" + drawAccount);
+            // 修改余额
+            balance-= drawAccount;
+            System.out.println("\t余额为："+balance);
+        }else{
+            System.out.println(Thread.currentThread().getName()+"取钱失败！余额不足");
+        }
+
+    }
+    //重写hashcode()方法
+    @Override
+    public int hashCode(){
+        return accountNo.hashCode();
+    }
+    public boolean equals(Object obj){
+        if(obj == this) {
+            return true;
+        }
+        if(obj !=null && obj.getClass() == AccountSync.class){
+            AccountSync target=(AccountSync) obj;
+            return target.accountNo.equals(accountNo);
+        }
+        return false;
+    }
+}
+class DrawThread extends Thread{
+    // 模拟用户账户
+    private AccountSync account;
+    // 当前取钱数
+    private double drawAmount;
+    public DrawThread(String name,AccountSync account,double drawAmount){
+        super(name);
+        this.account=account;
+        this.drawAmount = drawAmount;
+    }
+    //当多条线程修改同一个共享数据时，将涉及数据安全问题
+    public void run(){
+        account.draw(drawAmount);
+    }
+}
+/**
+ * 甲取钱成功！吐出钞票800.0
+ * 余额为：200.0
+ * 乙取钱失败！余额不足
+ */
+```
 
 
-## List深入实践
+
+## 集合深入实践
 
 ### ArrayList和Vector类:
 
@@ -621,7 +963,44 @@ Java程序可通过强引用来访问实际的对象，前面介绍的程序中�
 
 
 
-比如创建一个Student类型的数组，初始化为100000，这个时候通过循环依次赋值，然后调用gc进行回收，.gc（） .runFinallize（）这个时候会进行内存泄露，解决方法使用软引用
+比如创建一个Person类型的数组，初始化为100000，这个时候通过循环依次赋值，然后调用gc进行回收，.gc（） .runFinallize（）这个时候会进行内存泄露，
+
+```java
+class Person{
+    String name;
+    int age;
+    public Person(String name , int age){
+        this.name=name;
+        this.age=age;
+    }
+    public String toString(){
+        return "Personname="+name
+                           +", age="+age+"]";
+    }
+}
+public class StrongReferenceTest{
+    public static void main(String] args){
+        Person[] people =
+                            new Person[100000];
+        for (int i=0 ; i < people.length ; i++){
+            people[i]=new Person(
+                                  "名字"+i , (i+1) ＊ 4 % 100);
+        }
+        System.out.println(people[2].get());
+        System.out.println(people[4].get());
+        //通知系统进行垃圾回收
+        System.gc();
+        System.runFinalization();
+        //垃圾回收机制运行之后，SoftReference数组里的元素保持不变
+        System.out.println(people[2].get());
+        System.out.println(people[4].get());
+    }
+}
+```
+
+上面程序以传统方式创建了一个Person数组，该Person长度为100000，即程序的堆内存将保存100000个Person对象，这将使得程序因为系统内存不足而中止。运行上面程序出现异常<font color="red"> Exception in thread "main" java.lang.OutOfMemoryError:java heap space</font>
+
+解决方法使用软引用
 
 #### **软引用**
 
@@ -646,20 +1025,20 @@ class Person{
 }
 public class SoftReferenceTest{
     public static void main(String] args){
-        SoftReference<Person>] people =
-                            new SoftReference100];
+        SoftReference<Person>[] people =
+                            new SoftReference[100];
         for (int i=0 ; i < people.length ; i++){
-            peoplei]=new SoftReference<Person>(new Person(
+            people[i]=new SoftReference<Person>(new Person(
                                   "名字"+i , (i+1) ＊ 4 % 100));
         }
-        System.out.println(people2].get());
-        System.out.println(people4].get());
+        System.out.println(people[2].get());
+        System.out.println(people[4].get());
         //通知系统进行垃圾回收
         System.gc();
         System.runFinalization();
         //垃圾回收机制运行之后，SoftReference数组里的元素保持不变
-        System.out.println(people2].get());
-        System.out.println(people4].get());
+        System.out.println(people[2].get());
+        System.out.println(people[4].get());
     }
 }
 ```
@@ -751,7 +1130,9 @@ public class PhantomReferenceTest {
 
 程序运行过程中会不断地分配内存空间，那些不再使用的内存空间应该即时回收它们，从而保证系统可以再次使用这些内存，如果存在无用的内存没有被回收回来，那就是内存泄漏
 
-垃圾回收机制主要完成下面两件事情：
+### 垃圾回收机制
+
+**垃圾回收机制主要完成下面两件事情：**
 
 ■ 跟踪并监控每个Java对象，当某个对象处于不可达状态时，回收该对象所占用的内存；
 
@@ -759,7 +1140,7 @@ public class PhantomReferenceTest {
 
 
 
-对于一个垃圾回收器的设计算法来说，大致有如下可供选择的设计。
+**对于一个垃圾回收器的设计算法来说**，大致有如下可供选择的设计。
 
 ■ 串行回收（Serial）和并行回收（Parallel）：串行回收就是不管系统有多少个CPU，始终只用一个CPU来执行垃圾回收操作；而并行回收就是把整个回收工作拆分成多部分，每个部分由一个CPU负责，从而让多个CPU并行回收。并行回收的执行效率很高，但复杂度增加，另外也有其他一些副作用，比如内存碎片会增加。
 
@@ -797,7 +1178,7 @@ public class PhantomReferenceTest {
 
 此处将Young翻译为年轻代，将Old翻译为老年代，将Permanent翻译为永久代其实感觉有点别扭，只是希望读者能大致理解垃圾回收器对堆内存进行分代的思路，至于这3个代的名称并不重要，本书后文将直接采用英文说法。
 
-###  **堆内存回收**
+###  **堆内存分代回收**
 
 分代回收的一个依据就是对象生存时间的长短，然后再根据不同代采取不同的垃圾回收策略。采用这种“分代回收”的策略基于如下两点事实：
 
@@ -815,7 +1196,7 @@ public class PhantomReferenceTest {
 
 Young代由1个Eden区和2个Survivor区构成。绝大多数对象先分配到Eden区中（有一些大的对象可能会直接被分配到Old代中），Survivor区中的对象都至少在Young代中经历过一次垃圾回收，所以这些对象在被转移到Old代之前会先保留在Survivor空间中。同一时间2个Survivor空间中有一个用来保存对象，而另一个是空的，用来在下次垃圾回收时保存Young代中的对象。每次复制就是将Eden和第1个Survivor的可达对象复制到第2个Survivor区，然后清空Eden与第1个Survivor区。Eden与第1个Survivor区如图4.11所示。
 
-[插图]
+
 
 图4.11 Yound代的分区
 
@@ -880,3 +1261,136 @@ Permanent代主要用于装载Class、方法等信息，默认为64M，垃圾回
 ■-XX:MaxPermSize=64m：设置Permanent代内存的最大容量，如java-XX:MaxPermSize= 128m XxxClass。
 
 此处只是介绍了垃圾回收相关的常用选项，关于Java垃圾回收的常用选项请参看Sun官方站点http://java.sun.com/javase/technologies/hotspot/vmoptions.jsp页面的介绍。
+
+### 常见的垃圾回收器
+
+#### 串行回收器
+
+串行回收器通过运行Java程序时使用-XX:+UseSerialGC附加选项启用
+
+串行回收器对Young代和Old代的回收都是串行的（只使用一个CPU），而且垃圾回收执行期间会使得应用程序产生暂停。具体策略为，Young代采用串行复制的算法，Old代采用串行标记压缩算法
+
+串行回收器对Old代的回收采用串行、标记压缩算法（mark-sweep-compact），这个算法有3个阶段：mark（标识可达对象）、sweep（清除）、compact（压缩）。在 mark阶段，回收器会识别出哪些对象仍然是可达的，在 sweep阶段将会回收不可达对象所占用的内存。在compact阶段回收器执行sliding compaction，把活动对象往Old代的前端启动，而在尾部保留一块连续的空间，以便下次为新对象分配内存空间
+
+
+
+#### 并行回收器
+
+并行回收器通过运行Java程序时使用-XX:+UseParallelGC附加选项启用，它可以充分利用计算机的多个CPU来提高来垃圾回收吞吐量。并行回收器对于Young代采用与串行回收器基本相似的回收算法，只是增加了多CPU并行的能力，即同时启动多线程并行来执行垃圾回收。线程数默认为CPU个数，当计算机CPU很多时，可用-XX:ParallelGCThreads=size来减少并行线程的数目。并行回收器对于Old代采用与串行回收器完全相同的回收算法，不管计算机有几个CPU，并行回收器依然采用单线程、标记整理的方式进行回收。对于并行回收器而言，只有多CPU并行的机器才能发挥其优势
+
+#### 并行压缩回收器（Parallel Compacting Collector）
+
+并行压缩回收器是在J2SE 5.0 update 6开始引入的，它和并行回收器最大的不同是对Old代的回收使用了不同的算法，并行压缩回收器最终会取代并行回收器。并行压缩回收器通过运 行 Java程序时 使 用-XX:+UseParallelOldGC 附 加 选项 启用，一 样可 通 过-XX:ParallelGCThreads=size来设置并行线程的数目。
+
+并行压缩回收器对于Young代采用与并行回收器完全相同的回收算法。
+
+并行压缩回收器的改变主要体现在对Old代的回收上。系统首先将Old代划分成几个固定大小的区域。在mark阶段，多个垃圾回收线程会并行标记Old代中的可达对象。当某个对象被标记为可达对象时，还会更新该对象所在区域的大小以及该对象的位置信息
+
+接下来是summary阶段。summary阶段操作直接操作Old代的区域，而不是单个的对象。由于每次垃圾回收的压缩都会在 Old代的左边部分存储大量可达对象，对这样的高密度可达对象的区域进行压缩往往很不划算。所以summary阶段会从最左边的区域开始检验每个区域的密度，当检测到某个区域中能回收的空间达到了某个数值的时候（也就是可达对象的密度较小时），垃圾回收器会判定该区域以及该区域右边的所有区域都应该进行回收，而该区域左边的区域都会被会被标识为密集区域，垃圾回收器既不会把新对象移动到这些密集区域中去，也不会对这些密集区域进行压缩。该区域和其右边的所有区域都会被进行压缩并回收空间。summary阶段目前还是串行操作，虽然并行是可以实现的，但重要性不如对mark和压缩阶段的并行重要。
+
+最后是compact阶段。回收器利用summary阶段生成的数据识别出有哪些区域是需要装填的，多个垃圾回收线程可以并行地将数据复制到这些区域中。经过这个过程后，Old代的一端会密集地存在大量活动对象，另一端则存在大块的空闲块
+
+#### 并行标识-清理  (Mark-Sweep) 回收器（CMS）
+
+并发标识-清理回收器通过运行 Java程序时使用-XX:+UseConcMarkSweepGC 附加选项启用。CMS 回收器对 Young代的回收方式和并行回收器的回收方式完全相同。由于对Young的回收依然采用复制回收算法，因此垃圾回收时依然会导致程序暂停，除非依靠多CPU并行来提高垃圾回收的速度。
+
+通常来说，建议适当加大Young代的内存。如果Young代内存够大就不用频繁地进行垃圾回收，而且增加垃圾回收的时间间隔后可以让更多的Young代对象自己死掉，从而避免复制。但将Young代内存设得过大也有一个坏处：当垃圾回收器回收Young代内存时，复制成本会显著上升（复制算法必须等Young满了之后才开回收），所以回收时会让系统暂停时间显著加长
+
+CMS对Old代的回收多数是并发操作，而不是并行操作。垃圾回收开始的时候需要一个短暂的暂停，称之为初始标识（initial mark）。这个阶段仅仅标识出那些被直接引用的可达对象。接下来进入了并发标识阶段（concurrent markingphase），垃圾回收器会依据在初始标识中发现的可达对象来寻找其他可达对象。由于在并发标识阶段应用程序也会同时在运行，无法保证所有的可达对象都被标识出来，因此应用程序会再次很短地暂停一下，多线程并行地重新标记之前可能因为并发而漏掉的对象，这个阶段也被称为再标记（remark）阶段。完成了再标记以后，所有的可达对象都已经被标识出来了，接下来就可以运行并发清理操作了
+
+对于串行、标记压缩的回收器而言，它可以等到 Old代满了之后再开始回收，反正垃圾回收总会让应用程序暂停。但CMS回收器要与应用程序并发运行，如果Old满了才开始回收，那应用程序将无内存可用，所以系统默认在Old代68%满的时候就开始回收。如果系统内存设得比较大，而且程序分配内存速度不是特别快时，可以通过-XX:CMSInitiatingOccupancy Fraction=ratio适当增大这个比例
+
+对于CMS回收器而言，当垃圾回收器执行并发标识时，应用程序在运行的同时也在分配对象，因此 Old代也同时在增长。而且，虽然可达对象在标识阶段会被识别出来，但有些在标识阶段成为垃圾的对象并不能立即被回收，只有等到下次垃圾回收时才能被回收。因此CMS回收器较之前面的几种回收器需要更大的堆内存。对于Permanent代内存，CMS可通过运行 Java程序时使用-XX:+CMSClassUnloading Enabled-XX:+CMSPermGenSweepingEnabled附加选项强制回收Permanent代内存
+
+### 内存管理技巧
+
+#### 使用直接常量
+
+当需要使用字符串，还有Byte、Short、Integer、Long、Float、Double、Boolean、Character包装类的实例时，程序不应该采用new的方式来创建对象，而应该直接采用直接量来创建它们
+
+```java
+// 例如需要使用hello字符串
+String str="hello";
+//上面这种方式会创建一个“hello”字符串，而且JVM的字符串缓存池还会缓存这个字符串。但如果程序使用如下代码
+String str=new String("hello")
+//此时程序同样创建了一个缓存在字符串缓存池中的“hello”字符串。除此之外str所引用的String对象底层还包含一个char[]数组，这个char[]数组里依次存放了h、e、l、l、o等字符。
+```
+
+#### 使用StringBuilder和StringBuffer进行字符串连接
+
+String、StringBuilder、StringBuffer都可代表字符串，其中String代表字符序列不可变的字符串，而StringBuilder和StringBuffer都代表字符序列可变的字符串。
+
+如果程序使用多个String对象进行字符串连接运算，在运行时将生成大量临时字符串，这些字符串会保存在内存中从而导致程序性能下降
+
+#### 尽早释放无用对象
+
+大部分时候，方法局部引用变量所引用的对象会随着方法结束而变成垃圾，因为局部变量的生存期限很短，当方法运行结束之时，该方法内的局部变量就结束了生命期限。因此，大部分时候程序无须将局部、引用变量显式设为null
+
+```java
+//例如下面就是无用的
+public void info(){
+	Object obj =new Object();
+	System.out.println(obj.toString())
+	// 下面的这句无用:随着info()方法执行完成，程序中obj引用变量的作用域就结束了，原来 obj所引用的对象就会变成垃圾
+	obj=null;
+}
+```
+
+#### 尽量少用静态变量
+
+从理论上来说，Java对象何时被回收由垃圾回收机制决定，对程序员来说是不确定的。由于垃圾回收机制判断一个对象是否是垃圾的唯一标准就是该对象是否有引用变量引用它，因此推荐尽早释放对象的引用
+
+最坏的情况是某个对象被static变量所引用，那么垃圾回收机制通常是不会回收这个对象所占的内存 
+
+```java
+class Person{
+	static Object obj = new Object();
+}
+```
+
+对于上面的Object对象而言，只要obj变量还引用到它，它就不会被垃圾回收机制所回收。
+
+obj变量是Person类的静态变量，因此它的生命周期与Person类同步。在Person类不被卸载的情况下，Person类对应的Class对象会常驻内存，直到程序运行结束。因此obj所引用的Object对象一旦被创建，也会常驻内存，直到程序运行结束
+
+#### 避免在经常调用的方法，循环中创建java对象
+
+```java
+public class test(){
+	for(int i=0;i<10;i++){
+		Object obj = new Object();
+	}
+}
+```
+
+上面代码在循环中创建了10个Object对象，虽然上面程序中的obj变量都是代码块的局部变量，当循环执行结束时这些局部变量都会失效，但由于这段循环导致Object对象会被创建10次，因此系统需要不断地为这10个对象分配内存空间，执行初始化操作。这10个对象的生存时间并不长，接下来系统又需要回收它们所占的内存空间，在这种不断的分配、回收操作中，程序的性能受到巨大的影响
+
+#### 缓存经常使用的对象
+
+如果有些对象需要被经常使用，可以考虑把这些对象用缓存池保存起来，这样当下次需要时就可直接拿出这些对象来用。典型的缓存就是数据连接池，数据连接池里缓存了大量数据库连接，每次程序需要访问数据库时都可直接取出数据库连接。
+
+除此之外，如果系统中还有一些常用的基础信息，比如信息化信息里包含的员工信息、物料信息等，也考虑对它们进行缓存。实现缓存时通常有两种方式：
+
+■ 使用HashMap进行缓存；
+
+■ 直接使用某些开源的缓存项目。
+
+如果直接使用HashMap进行缓存，程序员需要手动控制HashMap容器里key-value对不至于太多，因为当key-value太多时将导致HashMap占用过大的内存，从而导致系统性能下降
+
+除了使用HashMap进行缓存之外，还可使用一些开源的缓存项目来解决这个问题。这些缓存项目都会主动分配一个一定大小的缓存容器，再按照一定算法来淘汰容器中不需要继续缓存的对象。这样一方面可以通过缓存已用过的对象来提高系统的运行效率，另一方面又可以控制缓存容器的无限制扩大，从而减少系统的内存占用。对于这种开源的缓存实现有很多选择，如OSCache、Ehcache等，它们大都实现了FIFO、MRU等常见的缓存算法
+
+#### 尽量是不要使用finalize方法
+
+在垃圾回收机制时已经提到，在一个对象失去引用之后，垃圾回收器准备回收该对象之前，垃圾回收机制会先调用该对象的finalize()方法来执行资源清理。出于这种考虑，可能有些开发者会考虑使用finalize()方法来进行资源清理。
+
+实际上，将资源清理放在 finalize()方法中完成是非常拙劣的选择。根据前面介绍的垃圾回收算法，垃圾回收机制的工作量已经够大了，尤其是回收Young代内存时，大都会引起应用程序暂停，使得用户难以忍受。
+
+在垃圾回收器本身已经严重制约应用程序性能的情况下，如果再选择使用finalize()方法进行资源清理，无疑是一种火上浇油的行为，这将导致垃圾回收器的负担更大，导致程序运行效率更差
+
+#### 考虑使用SoftReference
+
+当程序需要创建长度很大的数组时，可以考虑使用SoftReference来包装数组元素，而不是直接让将数组元素来引用对象。
+
+SoftReference 是个很好的选择：当内存足够时，它的功能等同于普通引用；当内存不够时，它会牺牲自己，释放软引用所引用的对象
+
+
+
