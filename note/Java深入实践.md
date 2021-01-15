@@ -911,7 +911,517 @@ public E get(int index){
 
 **上面分析了ArrayList、LinkedList各自的适用场景。大部分情况下，ArrayList的性能总是优于LinkedList，因此绝大部分都应该考虑使用ArrayList集合。但如果程序经常需要添加、删除元素，尤其是经常需要调用add(E e)方法向集合中添加元素时，则应该考虑使用LinkedList集合。**
 
+### HashMap和HashSet
 
+参考：https://blog.csdn.net/qq_37256896/article/details/103325204
+
+### TreeMap和TreeSet
+
+ TreeSet 底层则采用一个NavigableMap 来保存 TreeSet 集合的元素。但实际上，由于NavigableMap只是一个接口，因此底层依然是使用TreeMap来包含Set集合中的所有元素
+
+```java
+public class TreeSet<E> extends AbstractSet<E>
+    implements NavigableSet<E>, Cloneable, java.io.Serializable
+{	// navigableMap继承于sortMap--》继承于Map
+    // 使用NavigableMap的key来保存Set集合的元素
+    private transient NavigableMap<E,Object> m;
+	// 使用一个PRESENT作为Map集合的所有的Value
+    private static final Object PRESENT = new Object();
+	// 指定NavigableMap对象创建Set集合
+    TreeSet(NavigableMap<E,Object> m) {
+        this.m = m;
+    }
+
+    // 以自然排序方式创建一个新的TreeMap，使用TreeMap的key保存Set集合的元素
+    public TreeSet() {
+        this(new TreeMap<E,Object>());
+    }
+
+    // 以定制排序方式创建一个新的TreeMap，根据TreeMap创建一个TreeSet
+    public TreeSet(Comparator<? super E> comparator) {
+        this(new TreeMap<>(comparator));
+    }
+
+    // 像TreeSet中添加Collection集合c里的所有元素
+    public TreeSet(Collection<? extends E> c) {
+        // 调用的是 Tree(){}
+        this();
+        addAll(c);
+    }
+
+    // 向TreeSet中添加SortSet集合里s的所有元素
+    public TreeSet(SortedSet<E> s) {
+        // 调用的是 TreeSet(Comparator<? super E> comparator)
+        this(s.comparator());
+        addAll(s);
+    }
+
+    
+    public Iterator<E> iterator() {
+        return m.navigableKeySet().iterator();
+    }
+
+    
+    public Iterator<E> descendingIterator() {
+        return m.descendingKeySet().iterator();
+    }
+
+    
+    public NavigableSet<E> descendingSet() {
+        return new TreeSet<>(m.descendingMap());
+    }
+
+    
+    public int size() {
+        return m.size();
+    }
+
+   
+    public boolean isEmpty() {
+        return m.isEmpty();
+    }
+
+    
+    public boolean contains(Object o) {
+        return m.containsKey(o);
+    }
+
+    
+    public boolean remove(Object o) {
+        return m.remove(o)==PRESENT;
+    }
+
+  
+    public void clear() {
+        m.clear();
+    }
+	// TreeSet的其他方法都是掉用TreeMap的方法提供的实现
+    public  boolean addAll(Collection<? extends E> c) {
+        // Use linear-time version if applicable
+        if (m.size()==0 && c.size() > 0 &&
+            c instanceof SortedSet &&
+            m instanceof TreeMap) {
+            // 把c集合强制转换为SortSet集合
+            SortedSet<? extends E> set = (SortedSet<? extends E>) c;
+            // 把m集合强制转换为TreeMap集合
+            TreeMap<E,Object> map = (TreeMap<E, Object>) m;
+            Comparator<?> cc = set.comparator();
+            Comparator<? super E> mc = map.comparator();
+            if (cc==mc || (cc != null && cc.equals(mc))) {
+                // 把Collection中的所有元素添加成TreeMap集合中的key
+                map.addAllForTreeSet(set, PRESENT);
+                return true;
+            }
+        }
+        //调用父类的addAll()方法来实现
+        return super.addAll(c);
+    }
+```
+
+**对于TreeMap 而言，它采用一种被称为“红黑树”的排序二叉树来保存 Map 中每个Entry—每个Entry都被当成“红黑树”的一个节点对待**
+
+```java
+    public static void main(String[] args){
+        TreeMap<String,Double> treeMap = new TreeMap<>();
+        treeMap.put("ccc",99.0);
+        treeMap.put("bbb",90.0);
+        treeMap.put("aaa",90.0);
+        treeMap.put("ddd",99.0);
+        System.out.println(treeMap);
+    }
+//output~ {aaa=90.0, bbb=90.0, ccc=99.0, ddd=99.0}
+```
+
+以后每向TreeMap中放入一个key-value对，系统都需要将该Entry当成一个新节点，添加到已有红黑树中，通过这种方式就可保证TreeMap中所有key总是由小到大地排列.
+
+对于TreeMap 而言，由于它底层采用一棵“红黑树”来保存集合中的Entry，这意味着TreeMap添加元素、取出元素的性能都比HashMap低。当TreeMap添加元素时，需要通过循环找到新增Entry的插入位置，因此比较耗性能；当从TreeMap中取出元素时，需要通过循环才能找到合适的Entry，也比较耗性能。但TreeMap、TreeSet相比HashMap、HashSet的优势在于：TreeMap中的所有Entry总是按key根据指定排序规则保持有序状态，TreeSet中的所有元素总是根据指定排序规则保持有序状态
+
+**对于TreeMap集合而言，其关键就是put(K key, V value)，该方法实现了将Entry放入TreeMap的Entry链，并保证该Entry链总是处于有序状态。下面是该方法的源代码**
+
+```java
+public class TreeMap<K,V>
+    extends AbstractMap<K,V>
+    implements NavigableMap<K,V>, Cloneable, java.io.Serializable
+{
+    
+    private final Comparator<? super K> comparator;
+
+    private transient Entry<K,V> root;
+
+    
+    private transient int size = 0;
+
+    
+    private transient int modCount = 0;
+
+    
+    public TreeMap() {
+        comparator = null;
+    }
+
+   
+    public TreeMap(Comparator<? super K> comparator) {
+        this.comparator = comparator;
+    }
+
+    
+    public TreeMap(Map<? extends K, ? extends V> m) {
+        comparator = null;
+        putAll(m);
+    }
+
+   
+    public TreeMap(SortedMap<K, ? extends V> m) {
+        comparator = m.comparator();
+        try {
+            buildFromSorted(m.size(), m.entrySet().iterator(), null, null);
+        } catch (java.io.IOException cannotHappen) {
+        } catch (ClassNotFoundException cannotHappen) {
+        }
+    }
+    // put方法
+    public V put(K key, V value) {
+        // 先以t保存链表的root节点
+        Entry<K,V> t = root;
+        // 如果t==null是一个空链表，TreeMap中无任何的Entry
+        if (t == null) {
+            // 比较key是否相同
+            compare(key, key); // type (and possibly null) check
+			// 将一个新的key-value创建一个Entry并将Entry作为root
+            root = new Entry<>(key, value, null);
+            // 将map集合的size为1，代表包含一个Entry
+            size = 1;
+            // 记录修改次数为1
+            modCount++;
+            return null;
+        }
+        int cmp;
+        Entry<K,V> parent;
+        // split comparator and comparable paths
+        Comparator<? super K> cpr = comparator;
+        // 如果比较器不为null,即采用定制排序
+        if (cpr != null) {
+            do {
+                // 使用parent上次循环后的t所引用的Entry
+                parent = t;
+                // 拿新插入的key和t的key比较
+                cmp = cpr.compare(key, t.key);
+                // 如果新插入的key小于t的key t等于t的左边节点，否则 t等于t的右边节点，如果相等key 新的value覆盖原有的value并返回原有的value
+                if (cmp < 0)
+                    t = t.left;
+                else if (cmp > 0)
+                    t = t.right;
+                else
+                    return t.setValue(value);
+            } while (t != null);
+        }
+        else {
+            if (key == null)
+                throw new NullPointerException();
+            @SuppressWarnings("unchecked")
+                Comparable<? super K> k = (Comparable<? super K>) key;
+            do {
+                parent = t;
+                cmp = k.compareTo(t.key);
+                if (cmp < 0)
+                    t = t.left;
+                else if (cmp > 0)
+                    t = t.right;
+                else
+                    return t.setValue(value);
+            } while (t != null);
+        }
+        // 将新插入的节点作为parent节点的子节点
+        Entry<K,V> e = new Entry<>(key, value, parent);
+         // 如果新插入的key小于t的key t等于t的左边节点，否则 t等于t的右边节点，
+        if (cmp < 0)
+            parent.left = e;
+        else
+            parent.right = e;
+        // 修复红黑树
+        fixAfterInsertion(e);
+        size++;
+        modCount++;
+        return null;
+    }
+}    
+```
+
+上面代码就是实现“排序二叉树”的关键算法。每当程序希望添加新节点时，总是从树的根节点开始比较，即将根节点当成当前节点。
+
+如果新增节点大于当前节点且当前节点的右子节点存在，则以右子节点作为当前节点；
+
+如果新增节点小于当前节点且当前节点的左子节点存在，则以左子节点作为当前节点；
+
+如果新增节点等于当前节点，则用新增节点覆盖当前节点，并结束循环—直到找到某个节点的左、右子节点不存在，将新节点添加为该节点的子节点。如果新节点比该节点大，则添加其为右子节点；如果新节点比该节点小，则添加其为左子节点
+
+**当TreeMap根据key来取value时TreeMap对应的方法如下：**
+
+```java
+    public V get(Object key) {
+        // 根据指定的key取出Entry
+        Entry<K,V> p = getEntry(key);
+        // 返回Entry包含的value
+        return (p==null ? null : p.value);
+    }
+
+    final Entry<K,V> getEntry(Object key) {
+        // 如果comparator不为null 表明程序采用定制排序
+        if (comparator != null)
+            // 调用getEntryUsingComparator取出对应的key
+            return getEntryUsingComparator(key);
+        // 如果key形参的值为null 抛出异常
+        if (key == null)
+            throw new NullPointerException();
+        @SuppressWarnings("unchecked")
+        	// 将key强制转换为Comparable实例
+            Comparable<? super K> k = (Comparable<? super K>) key;
+        // 从树的根节点开始
+        Entry<K,V> p = root;
+        while (p != null) {
+            // 拿key与当前节点的key进行比较
+            int cmp = k.compareTo(p.key);
+            // key小于当前节点的key “左子树” 搜索，大于时 “右子树”搜索，否者返回目标Entry
+            if (cmp < 0)
+                p = p.left;
+            else if (cmp > 0)
+                p = p.right;
+            else
+                return p;
+        }
+        return null;
+    }
+```
+
+上面的getEntry(Object obj)方法也是充分利用排序二叉树的特征来搜索目标Entry。程序依然从二叉树的根节点开始，如果被搜索节点大于当前节点，程序向“右子树”搜索；如果被搜索节点小于当前节点，程序向“左子树”搜索；如果相等，那就是找到了指定节点。
+
+当TreeMap里的comparator != null，即表明该TreeMap采用了定制排序。在采用定制排序的方式下，TreeMap采用getEntryUsingComparator(key)方法来根据key获取Entry。下面是该方法的代码
+
+```java
+final Entry<K,V> getEntryUsingComparator(Object key) {
+        @SuppressWarnings("unchecked")
+            K k = (K) key;
+    	// 获取TreeMap的comparator
+        Comparator<? super K> cpr = comparator;
+        if (cpr != null) {
+            // 从树的根节点开始
+            Entry<K,V> p = root;
+            while (p != null) {
+                // 拿key与当前节点的key进行比较
+                int cmp = cpr.compare(k, p.key);
+                // key小于当前节点的key “左子树” 搜索，大于时 “右子树”搜索，否者返回目标Entry
+                if (cmp < 0)
+                    p = p.left;
+                else if (cmp > 0)
+                    p = p.right;
+                else
+                    return p;
+            }
+        }
+        return null;
+    }
+```
+
+从内部结构来看，TreeMap本质上就是一棵“红黑树”，而TreeMap的每个Entry就是该红黑树的一个节点
+
+### HashMap和TreeMap
+
+Map集合是一个关联数组，它包含两组值：一组是所有key组成的集合，因为Map集合的key不允许重复，而且Map不会保存key加入的顺序，因此这些key可以组成一个Set集合；另外一组是value组成的集合，因为Map集合的value完全可以重复，而且Map可以根据key来获取对应的value，所以这些value可以组成一个List集合
+
+```java
+public class Test{
+
+    public static void main(String[] args){
+        HashMap<String,Double> hashMap = new HashMap<>();
+        TreeMap<String,Double> treeMap = new TreeMap<>();
+        hashMap.put("java",100.0);
+        hashMap.put("js",79.0);
+        hashMap.put("vue",88.0);
+        System.out.println(hashMap.values()); // [100.0, 88.0, 79.0]
+        System.out.println(hashMap.values().getClass()); // class java.util.HashMap$Values
+        treeMap.put("英语",100.0);
+        treeMap.put("数学",120.3);
+        System.out.println(treeMap.values()); // [120.3, 100.0]
+        System.out.println(treeMap.values().getClass());// class java.util.TreeMap$Values
+    }
+
+}
+```
+
+**HashMap的Values()方法**
+
+```java
+public Collection<V> values() {
+        Collection<V> vs;
+        return (vs = values) == null ? (values = new Values()) : vs;
+    }
+```
+
+看下内部类Vaules类
+
+```java
+ final class Values extends AbstractCollection<V> {
+        public final int size()                 { return size; }
+        public final void clear()               { HashMap.this.clear(); }
+        public final Iterator<V> iterator()     { 
+            // 返回newValueIterator()方法的返回值
+            return new ValueIterator(); 
+        }
+        public final boolean contains(Object o) { return containsValue(o); }
+        public final Spliterator<V> spliterator() {
+            return new ValueSpliterator<>(HashMap.this, 0, -1, 0, 0);
+        }
+        public final void forEach(Consumer<? super V> action) {
+            Node<K,V>[] tab;
+            if (action == null)
+                throw new NullPointerException();
+            if (size > 0 && (tab = table) != null) {
+                int mc = modCount;
+                for (int i = 0; i < tab.length; ++i) {
+                    for (Node<K,V> e = tab[i]; e != null; e = e.next)
+                        action.accept(e.value);
+                }
+                if (modCount != mc)
+                    throw new ConcurrentModificationException();
+            }
+        }
+    }
+```
+
+
+
+
+
+
+
+```java
+    final class ValueIterator extends HashIterator
+        implements Iterator<V> {
+        public final V next() { return nextNode().value; }
+    }
+```
+
+HashMap的values()方法表面上返回了一个Values 集合对象，但这个集合对象并不能添加元素。它的主要功能是用于遍历HashMap里的所有value，而遍历集合的所有value则主要依赖于HashIterator的nextNode()方法来实现。对于HashMap而言，每个Entry都持有一个引用变量指向下一个Entry，因此HashMap实现nextNode()方法非常简单。下面是HashIterator的nextNode()方法的源代码
+
+```java
+final Node<K,V> nextNode() {
+            Node<K,V>[] t;
+            Node<K,V> e = next;
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+            if (e == null)
+                throw new NoSuchElementException();
+            if ((next = (current = e).next) == null && (t = table) != null) {
+                do {} while (index < t.length && (next = t[index++]) == null);
+            }
+            return e;
+        }
+```
+
+
+
+**TreeMap的Values()方法**
+
+```java
+    public Collection<V> values() {
+        Collection<V> vs = values;
+        return (vs != null) ? vs : (values = new Values());
+    }
+```
+
+```java
+    class Values extends AbstractCollection<V> {
+        public Iterator<V> iterator() {
+            // 返回 以TreeMap中最小的节点创建一个ValueIterator对象
+            return new ValueIterator(getFirstEntry());
+        }
+		// 返回外部类实例的size
+        public int size() {
+            return TreeMap.this.size();
+        }
+
+        public boolean contains(Object o) {
+            return TreeMap.this.containsValue(o);
+        }
+
+        public boolean remove(Object o) {
+            // 从TreeMap中最小的节点开始搜索，不断搜索下一个节点
+            for (Entry<K,V> e = getFirstEntry(); e != null; e = successor(e)) {
+                // 如果找到节点
+                if (valEquals(e.getValue(), o)) {
+                    // 执行删除
+                    deleteEntry(e);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void clear() {
+            // 调用外部类的clear()实例方法来清空该集合
+            TreeMap.this.clear();
+        }
+
+        public Spliterator<V> spliterator() {
+            return new ValueSpliterator<K,V>(TreeMap.this, null, null, 0, -1, 0);
+        }
+    }
+```
+
+上面Values类与HashMap中Values类的区别不是太大，其中size()、contains(Object o)和clear()等方法也依赖于外部类HashMap的方法来提供实现。不过由于TreeMap是通过“红黑树”来实现的，因此上面程序中还用到了TreeMap提供的以下两个简单的工具方法。
+
+■ getFirstEntry()：获取TreeMap底层“红黑树”中最左边的“叶子节点”，也就是“红黑树”中最小的节点，即TreeMap中第一个节点。
+
+■ successor(Entry<K,V> t)：获取TreeMap中指定Entry（t）的下一个节点，也就是“红黑树”中大于t节点的最小节点。
+
+getFirstEntry()方法的实现比较简单：程序不断搜索“左子树”，直到找到最左边的“叶子节点”。该方法的实现代码如下
+
+```java
+    final Entry<K,V> getFirstEntry() {
+        Entry<K,V> p = root;
+        if (p != null)
+            // 不断的搜索左子树，直到p成为最左子树的叶子节点
+            while (p.left != null)
+                p = p.left;
+        return p;
+    }
+```
+
+successor(Entry<K,V> t)方法实现稍稍复杂一点，该方法实现了搜索“红黑树”中大于指定节点的最小节点，其代码如下
+
+```java
+static <K,V> TreeMap.Entry<K,V> successor(Entry<K,V> t) {
+        if (t == null)
+            return null;
+    	// 如果右子树存在，搜索右子树中最小的节点
+        else if (t.right != null) {
+            // 先获取其右子树节点
+            Entry<K,V> p = t.right;
+            // 不断的搜索左子树节点，直到找到最左的叶子节点
+            while (p.left != null)
+                p = p.left;
+            return p;
+        } else {
+            // 右子树不存在
+            Entry<K,V> p = t.parent;
+            Entry<K,V> ch = t;
+            // 只需父节点存在，且ch是父节点的右节点
+            // 表明ch大于其父子树节点，循环一直继续
+            // 直到父节点为null，或者ch变成父节点的子节点，此时父节点大于搜索的节点
+            while (p != null && ch == p.right) {
+                ch = p;
+                p = p.parent;
+            }
+            return p;
+        }
+    }
+```
+
+通过TreeMap提供的这个successor(Entry<K,V> t)静态方法，可以非常方便地、由小到大遍历 TreeMap 底层的“二叉树”。实际上，完全可以通过这个静态方法来由小到大地遍历TreeMap的所有元素。但TreeMap为了保持Map用法上的一致性，依然通过Values的iterator()方法来遍历Map中所有value。
+
+**总结：**
+
+HashMap、TreeMap的values()方法的实现要更巧妙。这两个Map对象values()方法返回的是一个不存储元素的Collection集合，当程序遍历Collection集合时，实际上就是遍历Map对象的value。HashMap和TreeMap的values()方法并未把Map中的value重新组合成一个包含元素的集合对象，这样就可以降低系统内存开销
 
 ## 引用
 
