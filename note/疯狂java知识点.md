@@ -2681,6 +2681,59 @@ public class Sets {
 
 在泛型代码内部，无法获取任何有关泛型参数类型的信息。java使用泛型擦除，比如List<String> 和List<Integer> 在运行时都是相同的类型，均被擦除为"原生"类型即List. 泛型擦除就是被擦除为父类。
 
+#### 泛型的面试题
+
+###### Q&A  Java中的泛型是什么 ? 使用泛型的好处是什么?
+
+在集合中存储对象并在使用前进行类型转换是多么的不方便。泛型防止了那种情况的发生。它提供了编译期的类型安全，确保你只能把正确类型的对象放入 集合中，避免了在运行时出现ClassCastException
+
+###### Q&A Java的泛型是如何工作的 ? 什么是类型擦除 ?
+
+泛型是通过类型擦除来实现的，编译器在编译时擦除了所有类型相关的信息，所以在运行时不存在任何类型相关的信息。例如 List<String>在运行时仅用一个List来表示。这样做的目的，是确保能和Java 5之前的版本开发二进制类库进行兼容。你无法在运行时访问到类型参数，因为编译器已经把泛型类型转换成了原始类型。
+
+###### Q&A什么是泛型中的限定通配符和非限定通配符 ?
+
+限定通配符对类型进行了限制。有两种限定通配符，一种是<? extends T>它通过确保类型必须是T的子类来设定类型的上界，另一种是<? super T>它通过确保类型必须是T的父类来设定类型的下界。泛型类型必须用限定内的类型来进行初始化，否则会导致编译错误。另一方面<?>表 示了非限定通配符，因为<?>可以用任意类型来替代
+
+###### Q&A List<? extends T> 上界 和List <? super T> 下界 之间有什么区别 ?
+
+上界的list只能get不能add,下届的list只能add不能get
+
+编译器可以支持像上转型，不支持像下转型。
+
+
+
+###### Q&A 你可以把List<String>传递给一个接受List<Object>参数的方法吗？
+
+因为List<Object>可以存储任何类型的对象包括String, Integer等等，而List<String>却只能用来存储Strings。
+
+List<Object> objectList;
+
+List<String> stringList;
+
+objectList = stringList; //compilation error incompatible types
+
+```java
+public static void main(String[] args) {
+        List<String> stringList = new ArrayList<>();
+        List<Object> objectList = new ArrayList<>();
+        stringList.add("add");
+        stringList.add("123");
+        objectList.add("123");
+        objectList.add("234");
+        // 让objectList转为stringList,编译错误stringList必须是接收的List<String> List<Object>之间不能转换。
+        // stringList= objectList; // 编译错误
+        // objectList=stringList; // 编译错误
+        List<?> list = new ArrayList<>();
+        list = stringList;
+        System.out.println(list);
+        list = objectList;
+        System.out.println(list);
+        // list.add("sss"); // 编译器不允许这样使用
+        
+    }
+```
+
 ### 异常：
 
 Java的异常机制主要依赖于try、catch、finally、throw和throws五个关键字，其中try关键字后紧跟一个花括号扩起来的代码块（花括号不可省略），简称try块，它里面放置可能引发异常的代码。catch后对应异常类型和一个代码块，用于表明该catch块用于处理这种类型的代码块。多个catch块后还可以跟一个finally块，finally块用于回收在try块里打开的物理资源，异常机制会保证finally块总被执行。throws关键字主要在方法签名中使用，用于声明该方法可能抛出的异常；而throw用于抛出一个实际的异常，throw可以单独作为语句使用，抛出一个具体的异常对象。
@@ -2735,53 +2788,53 @@ public class FinallyFlowTest {
 
 #### 异常常见的面试题：
 
-1．java中用来抛出异常的关键字是什么？
+###### Q&A java中用来抛出异常的关键字是什么？
 
 throw
 
-2．异常和Error（错误）的区别？
+###### Q&A 异常和Error（错误）的区别？ 
 
 error：是不可捕捉到的，无法采取任何恢复的操作，顶多只能显示错误信息。
 Exception ：表示可恢复的例外，这是可捕捉到的
 
-3．什么是异常？
+###### Q&A 什么是异常？
 
 所谓异常是指程序在运行过程中发生的一些不正常事件。（如：除0溢出，数组下标越界，所读取的文件不存在）
 
-4．什么类是所有异常类的父类
+###### Q&A 什么类是所有异常类的父类 
 
 Throwable类
 
-5．java虚拟机能自动处理的异常是什么？
+###### Q&Ajava  虚拟机能自动处理的异常是什么？
 
 运行异常
 
-6．Try-catch-finally的执行过程
+###### Q&A  Try-catch-finally的执行过程 
 
 （1）try{}语句块中放的是要检测的java代码，可能有会抛出异常，也可能会正常执行
 （2）catch（异常类型）{}块是当java运行时系统接收到try块中所抛出异常对象时，会寻找处理这一异常catch块来进行处理（可以有多个catch块）
 （3）finally{}不管系统有没有抛出异常都会去执行，一般用来释放资源。除了在之前执行了System.exit（0）
 
-7．常见的异常？你的理解。
+###### Q&A 常见的异常？你的理解。
 
 常见异常：RuntimeException,IOException,SQLException,ClassNotFoundException
 
-8．final, finally, finalize的区别。
+###### Q&A final, finally, finalize的区别。
 
 final用于声明属性，方法和类，分别表示属性不可交变，方法不可覆盖，类不可继承。
 **finally是异常处理语句结构的一部分，表示总是执行。**
 **finalize是Object类的一个方法，在垃圾收集器执行的时候会调用被回收对象的此方法，供垃圾收集时的其他资源回收，例如关闭文件等。（**在垃圾回收的时候会调用被回收对象的此方法。**）**
 
-9．Java中的异常处理机制的简单原理和应用。
+###### Q&AJava 中的异常处理机制的简单原理和应用。
 
 ​     当JAVA程序违反了JAVA的语义规则时，JAVA虚拟机就会将发生的错误表示为一个异常。违反语义规则包括2种情况。一种是JAVA类库内置的语义检查。例如数组下标越界,会引发IndexOutOfBoundsException;访问null的对象时会引发NullPointerException。另一种情况就是JAVA允许程序员扩展这种语义检查，程序员可以创建自己的异常，并自由选择在何时用throw关键字引发异常。所有的异常都是java.lang.Thowable的子类。
 
-10．运行时异常与一般异常有何异同？
+###### Q&A 运行时异常与一般异常有何异同？
 
 Java提供了两类主要的异常:运行时异常runtime exception和一般异常checked exception。checked 异常。对于后者这种异常，JAVA要求程序员对其进行catch。所以，面对这种异常不管我们是否愿意，只能自己去写一大堆catch块去处理可能的异常。
 运行时异常我们可以不处理。这样的异常由虚拟机接管。出现运行时异常后，系统会把异常一直往上层抛，一直遇到处理代码。如果不对运行时异常进行处理，那么出现运行时异常之后，要么是线程中止，要么是主程序终止。
 
-11、你平时在项目中是怎样对异常进行处理的。
+###### Q&A 你平时在项目中是怎样对异常进行处理的。 
 
 （1）尽量避免出现runtimeException 。例如对于可能出现空指针的代码，带使用对象之前一定要判断一下该对象是否为空，必要的时候对runtimeException
 
@@ -2789,9 +2842,7 @@ Java提供了两类主要的异常:运行时异常runtime exception和一般异�
 
 （2）进行try catch处理的时候要在catch代码块中对异常信息进行记录，通过调用异常类的相关方法获取到异常的相关信息，返回到web端，不仅要给用户良好
 
-的用户体验，也要能帮助程序员良好的定位异常出现的位置及原因。例如，以前做的一个项目，程序遇到异常页面会显示一个图片告诉用户哪些操作导致程序出现
-
-了什么异常，同时图片上有一个按钮用来点击展示异常的详细信息给程序员看的。
+的用户体验，也要能帮助程序员良好的定位异常出现的位置及原因。
 
 ### Jdbc:
 
@@ -4530,6 +4581,227 @@ public class ProxyTest {
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
+### 反射
+
+Java的反射（reflection）机制是指在程序的运行状态中，可以构造任意一个类的对象，可以了解任意一个对象所属的类，可以了解任意一个类的成员变量和方法，可以调用任意一个对象的属性和方法。在运行时调用任意一个对象的方法；生成动态代理。
+
+```text
+在运行时判断任意一个对象所属的类。
+在运行时构造任意一个类的对象。
+在运行时判断任意一个类所具有的成员变量和方法。
+在运行时调用任意一个对象的方法
+```
+
+比如我们使用的jdbc就是一个反射的列子：
+
+Class.forName("com.mysql.jdbc.Driver");
+
+
+
+其中class代表的是类对象，Constructor－类的构造器对象，Field－类的属性对象，Method－类的方法对象，通过这四个对象我们可以粗略的看到一个类的各个组成部分。其中最核心的就是Class类，它是实现反射的基础，它包含的方法我们在第一部分已经进行了基本的阐述。应用反射时我们最关心的一般是一个类的构造器、属性和方法，下面我们主要介绍Class类中针对这三个元素的方法:
+
+
+
+1、得到构造器的方法
+
+```text
+Constructor getConstructor(Class[] params) -- 获得使用特殊的参数类型的公共构造函数， 
+ 
+Constructor[] getConstructors() -- 获得类的所有公共构造函数 
+ 
+Constructor getDeclaredConstructor(Class[] params) -- 获得使用特定参数类型的构造函数(与接入级别无关) 
+ 
+Constructor[] getDeclaredConstructors() -- 获得类的所有构造函数(与接入级别无关) 
+```
+
+
+
+
+
+2、获得字段信息的方法
+
+```text
+Field getField(String name) -- 获得命名的公共字段 
+ 
+Field[] getFields() -- 获得类的所有公共字段 
+ 
+Field getDeclaredField(String name) -- 获得类声明的命名的字段 
+ 
+Field[] getDeclaredFields() -- 获得类声明的所有字段 
+```
+
+
+
+3、获得方法信息的方法
+
+```text
+Method getMethod(String name, Class[] params) -- 使用特定的参数类型，获得命名的公共方法 
+ 
+Method[] getMethods() -- 获得类的所有公共方法 
+ 
+Method getDeclaredMethod(String name, Class[] params) -- 使用特写的参数类型，获得类声明的命名的方法 
+ 
+Method[] getDeclaredMethods() -- 获得类声明的所有方法 
+```
+
+在程序开发中使用反射并结合属性文件，可以达到程序代码与配置文件相分离的目的
+
+如果我们想要得到对象的信息，一般需要“引入需要的‘包.类’的名称——通过new实例化——取得实例化对象”这样的过程。使用反射就可以变成“实例化对象——getClass()方法——得到完整的‘包.类’名称”这样的过程。
+
+正常方法是通过一个类创建对象，反射方法就是通过一个对象找到这个类
+
+```java
+package com.blueearth.bewemp.doc.config;
+
+/**
+ * @user:
+ * @date:2021/1/18
+ * @Description:
+ */
+public class Fruits {
+    private String color;
+    private double price;
+    private String size;
+    public  String  obs;
+
+    public String getObs() {
+
+        return obs;
+    }
+
+    public void setObs(String obs) {
+        this.obs = obs;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+}
+
+/// 测试代码
+package com.blueearth.bewemp.doc.config;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+/**
+ * @user: kaysanshi
+ * @date:2021/1/18
+ * @Description: 测试反射的列子
+ */
+public class TestReflection {
+    public static void main(String [] args) throws Exception {
+        // 正常的使用
+        Fruits fruits = new Fruits();
+        fruits.setPrice(10);
+        System.out.println(fruits.getPrice());
+        // 使用反射
+        Class<?> aClass = Class.forName("com.blueearth.bewemp.doc.config.Fruits");
+        // 获取命名的公共方法
+        Method setPrice = aClass.getMethod("setPrice", double.class);
+
+        // 获取所有的公共属性getFields()(无法获取私有属性)
+        System.out.println("获取共有属性");
+        Field[] fields = aClass.getFields();
+        for(Field field : fields) {
+            System.out.println(field.getName());
+        }
+        System.out.println("获取私有属性");
+        // getDeclaredFields()(获取私有属性)
+        Field[] dfields = aClass.getDeclaredFields();
+        for(Field field : dfields){
+            System.out.println(field.getName());
+        }
+        // 获取构造器
+        Constructor fruitsConstructor = aClass.getConstructor();
+        // 通过构造器的newInstance()获取反射类对象
+        Object obj = fruitsConstructor.newInstance();
+        // 利用 invoke方法进行调用方法
+        setPrice.invoke(obj,13);
+    }
+}
+
+```
+
+方法名为diff，输入参数为两个同类的对象。输出为一个List，其中存放了两个对象的不同的属性的属性名称。
+
+假设User对象，包含name\age\phone三个参数。
+
+```java
+// 不使用反射
+    List<String> diff(User user1,User user2){
+        List<String> result  = new ArrayList<>();
+        if(user1.getName() == null && user2.getName() !=null || !user1.getName().equals(user2.getName())){
+            result.add("name");
+        }
+        if(user1.getAge() == null && user2.getAge() !=null || !user1.getAge().equals(user2.getAge())){
+            result.add("age");
+        }
+        if(user1.getPhone() == null && user2.getPhone() !=null || !user1.getPhone().equals(user2.getPhone())){
+            result.add("phone");
+        }
+    }
+    // 使用反射
+    List<String> diff(Object obj1,Object obj2){
+        try{
+            Class<?> clazz1 = obj1.getClass();
+            Class<?> clazz2 = obj2.getClass();
+            if(clazz1.equals(clazz2)){
+                List<String> result = new ArrayList<>();
+                for(Field feild: clazz1.getDeclaredFields()){
+                    feild.setAccessible(true);
+                    Object obj1= feild.get(obj1);
+                    Object obj2=feild.get(obj2);
+                    if(value1==null && value2!=null || !value1.equals(value2)){
+                        result.add(feild.getName());
+                    }
+                }
+                return result;
+            }
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+```
+
+该方法的优点是**可以处理任何类的两个对象，而不需要关心它的属性，十分通用**
+
+#### 反射如何创建对象
+
+1.通过获取构造器 getConstructor() 然后 通过构造器的newInstance()获取反射类对象。
+
+2.通过类对象调用newInstance()方法。例如
+
+```java
+// 使用反射
+Class<?> aClass = Class.forName("com.blueearth.bewemp.doc.config.Fruits");
+Object o = aClass.newInstance();
+System.out.println(o);
+```
+
+
 
 本文有个人阅读疯狂java和java编程思想所生成的文档，其中一部分面试题是有面试积累的，是对javaSE的总结与回顾，后序会不定期的进行对其补充和复习。
