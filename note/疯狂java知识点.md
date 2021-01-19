@@ -2679,7 +2679,40 @@ public class Sets {
 
 #### 泛型擦除：
 
-在泛型代码内部，无法获取任何有关泛型参数类型的信息。java使用泛型擦除，比如List<String> 和List<Integer> 在运行时都是相同的类型，均被擦除为"原生"类型即List. 泛型擦除就是被擦除为父类。
+在泛型代码内部，无法获取任何有关泛型参数类型的信息。java使用泛型擦除，比如List<String> 和List<Integer> 在运行时都是相同的类型，均被擦除为"原生"类型即List. 泛型擦除就是被擦除为父类。**下面的代码不能通过编译**
+
+```java
+  /**
+     * 下面两个看似重载实际上是报错的，List<String> he List<Integer> 均被搽除为原生类型了List<E>编译不通过，
+     * 因为不是重载，参数相同，返回值不同
+     * @param list
+     */
+    // 编译器报错 因为有两个相同的方法 method(List<E> list)。
+    public static void method(List<String> list) {
+        System.out.println("List<String> list");
+    }
+
+    public static void method(List<Integer> list) {
+        System.out.println("List<Integer> list");
+    }
+
+    /**
+     * 两个看似重载实际上是报错的，List<String> he List<Integer> 均被搽除为原生类型了List<E>编译不通过,编译器认为两个方法是相同的方法
+     * @param list
+     * @return
+     */
+    // 重载，参数不同，返回值可相同可不同
+    public static String test(List<String> list){
+        System.out.println("invoke method List<String> list");
+        return "1";
+    }
+    public static int test(List<Integer> list){
+        System.out.println("invoke method List<Integer> list");
+        return 0;
+    }
+```
+
+
 
 #### 泛型的面试题
 
@@ -4573,13 +4606,89 @@ public class ProxyTest {
 
             throws Exception {
 
-// 创建一个InvocationHandler对象InvocationHandler handler=new MyInvokationHandler();// 使用指定的InvocationHandler来生成一个动态代理对象Person p=(Person)Proxy.newProxyInstance(Person.class.getClassLoader(), new Class[]{Person.class}, handler); // 调用动态代理对象的walk()和sayHello()方法
+// 创建一个InvocationHandler对象
+        InvocationHandler handler=new MyInvokationHandler();
+        // 使用指定的InvocationHandler来生成一个动态代理对象
+        Person p=(Person)Proxy.newProxyInstance(Person.class.getClassLoader(), new Class[]{Person.class}, handler); // 调用动态代理对象的walk()和sayHello()方法
         p.walk();
         p.sayHello("孙悟空");
     }
 
 }
 ```
+
+```java
+public class Test {
+    /**
+     * JDK提供了java.lang.reflect.InvocationHandler接口和 java.lang.reflect.Proxy类，这两个类相互配合，入口是Proxy。
+     * Proxy有个静态方法：getProxyClass(ClassLoader, interfaces)，只要你给它传入类加载器和一组接口，它就给你返回代理Class对象。
+     */
+    public static void  main(String[] args){
+        // 创建一个程序员
+        Programmer programmer = new Programmer();
+        // 创建kay  bos
+        Person kayProgrammer = new KayProgrammer(programmer);
+        // kay bos 让程序员替写代码
+        kayProgrammer.doJob();
+        // 用program生成一个代理对象
+        Person programmerdoJob = (Person) Proxy.newProxyInstance(programmer.getClass().getClassLoader(), programmer.getClass().getInterfaces(), (proxy, method, args1) -> {
+            System.out.println("----执行方法"+method);
+            // 如果调用了doJob方法
+            if(args!=null){
+                System.out.println("下面是执行该方法时传入的实参为：");
+                for (Object val : args) {
+                    System.out.println(val);
+                }
+                method.invoke(kayProgrammer,args);
+            }else{
+                System.out.println("调用该方法没有实参！");
+            }
+            return null;
+        });
+
+        programmerdoJob.doJob();
+    }
+
+
+}
+
+interface Person{
+    // 人干活
+    void  doJob();
+}
+
+class Programmer implements  Person{
+
+    @Override
+    public void doJob() {
+        System.out.println("程序员的工作是写代码");
+    }
+}
+// 这个KayProgrammer是个不写代码的公司的leader.
+class KayProgrammer implements Person {
+
+    // 让程序员去写
+    private Programmer programmer;
+
+    public KayProgrammer(Programmer programmer) {
+        this.programmer = programmer;
+    }
+    // 这个KayProgrammer程序员写代码让自己看
+    public void notice(){
+        System.out.println("notice.... coding to me");
+    }
+    @Override
+    public void doJob() {
+        System.out.println("我是kay 我不想写代码 我让程序员去写");
+        // 让程序员写代码
+        programmer.doJob();
+        // 自己看代码
+        notice();
+    }
+}
+```
+
+
 
 ### 反射
 
