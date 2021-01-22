@@ -4559,6 +4559,10 @@ public class URLClassLoaderTest {
 
 ### 动态代理：
 
+代理：这个概念是什么呢，比如我们交话费，交话费交给谁呢，这个收钱的是不是中国的三大运营商，但是我们普通人怎么去充值话费呢，这时我们是不不是需要去营业厅去交话费，营业厅输入我们的电话号码，和我们的金额，在运营商的账户中一充值我们手机就能够接收到了余额的信息了。这个充话费的过程就是属于代理，营业厅代理了我们去充值。
+
+[![sfFyB8.png](https://s3.ax1x.com/2021/01/20/sfFyB8.png)](https://imgchr.com/i/sfFyB8)
+
 动态代理（以下称代理），利用Java的反射技术(Java Reflection)，在运行时**创建一个实现某些给定接口的新类**（也称“动态代理类”）及其实例（对象）
 
 (Using Java Reflection to create dynamic implementations of interfaces at runtime)。
