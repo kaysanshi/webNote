@@ -48,6 +48,34 @@
 
 ■ 尽量不要在构造器内调用本构造器创建Java对象。
 
+
+
+```java
+/// 演示
+/// 尽量不要在初始化块中创建当前类的实例
+public class Test {
+
+    private String id;
+
+    private String name;
+
+    private String describe;
+
+    public Test(){
+        System.out.println("构造函数中创建");
+        new Test();
+    }
+
+    public static void main(String[] args) {
+        Test test = new Test();
+    }
+}
+//~out
+//Exception in thread "main" java.lang.StackOverflowError
+```
+
+
+
 ### 重载:
 
 ```java

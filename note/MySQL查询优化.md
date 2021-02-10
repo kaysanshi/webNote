@@ -274,13 +274,9 @@ format_name:TRADITIONAL|JSON
 - simple：简单的select查询，查询中不包含子查询或者union
 - primary：查询中若包含任何复杂的子部分，最外层查询则被标记为此
 - subquery：在select或where列表中包含了子查询
-- derived：在from列表中包含的子查询被标记为derived,MySQL会递归执行这些子查询
+- derived：在from列表中包含的子查询被标记为derived,MySQL会递归执行这些子查询 把结果放在临时表里。
 
-把结果放在临时表里。
-
-- union：若第二个select出现在union之后，则标记为union；
-
-若union包含在from子句的子查询中，外层select将被标记为：derived
+- union：若第二个select出现在union之后，则标记为union；若union包含在from子句的子查询中，外层select将被标记为：derived
 
 - union result：从union表获取结果的select 
 
