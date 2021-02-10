@@ -4709,8 +4709,6 @@ Class.forName("com.mysql.jdbc.Driver");
 
 其中class代表的是类对象，Constructor－类的构造器对象，Field－类的属性对象，Method－类的方法对象，通过这四个对象我们可以粗略的看到一个类的各个组成部分。其中最核心的就是Class类，它是实现反射的基础，它包含的方法我们在第一部分已经进行了基本的阐述。应用反射时我们最关心的一般是一个类的构造器、属性和方法，下面我们主要介绍Class类中针对这三个元素的方法:
 
-
-
 1、得到构造器的方法
 
 ```text
@@ -4723,23 +4721,17 @@ Constructor getDeclaredConstructor(Class[] params) -- 获得使用特定参数�
 Constructor[] getDeclaredConstructors() -- 获得类的所有构造函数(与接入级别无关) 
 ```
 
-
-
-
-
 2、获得字段信息的方法
 
 ```text
 Field getField(String name) -- 获得命名的公共字段 
  
-Field[] getFields() -- 获得类的所有公共字段 
+Field[] getFields() -- 获得类的所有公共字段 public修饰
  
 Field getDeclaredField(String name) -- 获得类声明的命名的字段 
  
-Field[] getDeclaredFields() -- 获得类声明的所有字段 
+Field[] getDeclaredFields() -- 获得类声明的所有字段(private)的 
 ```
-
-
 
 3、获得方法信息的方法
 
