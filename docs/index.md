@@ -10,6 +10,8 @@
 
 <a href="https://github.com/kaysanshi/webNote/blob/master/note/Java8%E6%96%B0%E7%89%B9%E6%80%A7.md" target="_blank">java8</a>
 
+[java深入实践](https://github.com/kaysanshi/learning-note/blob/master/note/Java%E6%B7%B1%E5%85%A5%E5%AE%9E%E8%B7%B5.md)
+
 
 
 ### 计算机基础进阶
@@ -159,7 +161,7 @@
 
 ### 开发记录问题
 
-[开发记录问题（learning-genie）](https://github.com/kaysanshi/learning-note/blob/master/note/%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95%E9%97%AE%E9%A2%98%EF%BC%9A.md)
+[开发记录问题（learning-genie）](https://github.com/kaysanshi/learning-note/blob/master/note/%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95%E9%97%AE%E9%A2%98.md)
 
 
 

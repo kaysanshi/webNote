@@ -1202,7 +1202,33 @@ public class DemobServiceClientFallback implements DemobServiceClient {
 - RequestTemplate声场Request，然后将Request交给client处理，这个client默认是JDK的HTTPUrlConnection，也可以是OKhttp、Apache的HTTPClient等。
 - 最后client封装成LoadBaLanceClient，结合ribbon负载均衡地发起调用。
 
+### 各组件深入之Spring Cloud Ribbon（负载均衡）
 
+Ribbon 是 Netflix 公司的一个开源的负载均衡 项目，是一个客户端/进程内负载均衡器，运行在消费者端 。
+
+其工作原理就是 Consumer 端获取到了所有的服务列表之后，在其内部 使用负载均衡算法 ，进行对多个系统的调用。
+
+
+
+比如有一个项目部署了3个系统中如果不用负载均衡策略，那么没次请求都会达到第一个系统中，那么其余的系统就是摆设了。所以需要负载均衡策略，减少服务器的压力。
+
+####  Ribbon 的几种负载均衡算法
+
+负载均衡，不管 Nginx 还是 Ribbon 都需要其算法的支持，如果我没记错的话 Nginx 使用的是 轮询和加权轮询算法。而在 Ribbon 中有更多的负载均衡调度算法，其默认是使用的 RoundRobinRule 轮询策略。
+
+- RoundRobinRule ：轮询策略。Ribbon 默认采用的策略。若经过一轮轮询没有找到可用的 provider，其最多轮询 10 轮。若最终还没有找到，则返回 null。
+- RandomRule : 随机策略，从所有可用的 provider 中随机选择一个。
+- RetryRule : 重试策略。先按照 RoundRobinRule 策略获取 provider，若获取失败，则在指定的时限内重试。默认的时限为 500 毫秒。
+
+还有很多，这里不一一举了，你最需要知道的是默认轮询算法，并且可以更换默认的负载均衡算法，只需要在配置文件中做出修改就行。
+
+```
+providerName:  
+  ribbon:  
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule  
+```
+
+当然，在 Ribbon 中你还可以自定义负载均衡算法 ，你只需要实现 IRule 接口，然后修改配置文件或者自定义 Java Config 类。
 
 ### 各组件深入之Spring Cloud Hystrix（断路器）
 
@@ -1376,7 +1402,7 @@ Spring Cloud 对 Zuul 进行了整合和增强，Zuul 默认使用的 HTTP 客�
 
 智能路由：接收外部一切请求，并转发到后端的对外服务open-service上去；
 
-   注意：我们只转发外部请求，服务之间的请求不走网关，这就表示全链路追踪、内部服务API监控、内部服务之间调用的容错、智能路由不能在网关完成；
+​      注意：我们只转发外部请求，服务之间的请求不走网关，这就表示全链路追踪、内部服务API监控、内部服务之间调用的容错、智能路由不能在网关完成；
 
 ​       当然，也可以将所有的服务调用都走网关，那么几乎所有的功能都可以集成到网关中，但是这样的话，网关的压力会很大，不堪重负。
 
@@ -1394,7 +1420,15 @@ API日志统一收集：类似于一个aspect切面，记录接口的进入和�
 
 ### 各组件深入之Spring Cloud Config
 
+对于分布式系统而言我们就不应该去每个应用下去分别修改配置文件，再者对于重启应用来说，服务无法访问所以直接抛弃了可用性，这是我们更不愿见到的。
 
+那么有没有一种方法既能对配置文件统一地进行管理，又能在项目运行时动态修改配置文件呢？
+
+那就是 Spring Cloud Config 。
+
+Spring Cloud Config 为分布式系统中的外部化配置提供服务器和客户端支持。使用Config 服务器，可以在中心位置管理所有环境中应用程序的外部属性。
+
+简单来说，Spring Cloud Config 就是能将各个 应用/系统/模块 的配置文件存放到 统一的地方然后进行管理
 
 
 
