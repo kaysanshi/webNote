@@ -1,6 +1,6 @@
 # Java深入实践
 
-## 面向对象的陷阱
+## 面向对象深入理解
 
 根据 Java语言规范，使用instanceof运算符有一个限制：instanceof运算符前面操作数的编译时类型必须是如下3种情况。
 
@@ -1451,7 +1451,7 @@ static <K,V> TreeMap.Entry<K,V> successor(Entry<K,V> t) {
 
 HashMap、TreeMap的values()方法的实现要更巧妙。这两个Map对象values()方法返回的是一个不存储元素的Collection集合，当程序遍历Collection集合时，实际上就是遍历Map对象的value。HashMap和TreeMap的values()方法并未把Map中的value重新组合成一个包含元素的集合对象，这样就可以降低系统内存开销
 
-## 引用
+## 引用深入理解
 
 ### 引用概念
 
@@ -1664,7 +1664,7 @@ public class PhantomReferenceTest {
 
 
 
-## java内存泄露:
+## java内存泄露深入理解:
 
 程序运行过程中会不断地分配内存空间，那些不再使用的内存空间应该即时回收它们，从而保证系统可以再次使用这些内存，如果存在无用的内存没有被回收回来，那就是内存泄漏
 
@@ -1930,5 +1930,9 @@ public class test(){
 
 SoftReference 是个很好的选择：当内存足够时，它的功能等同于普通引用；当内存不够时，它会牺牲自己，释放软引用所引用的对象
 
+## java类加载器深入理解
 
+https://blog.csdn.net/javazejian/article/details/73413292
+
+## java类型信息 Class对象与反射技术深入理解
 

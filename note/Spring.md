@@ -94,26 +94,36 @@ Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.x
 
 ### IOC 容器
 
-​	IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，
+​	IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。把对象的创建、初始化、销毁交给 spring 来管理，而不是由开发者控制，实现控制反转。
 
-​	Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。
+所谓IoC，就是通过容器来控制业务对象之间的依赖关系，而非传统实现中，由代码直接操控。这也就是“控制反转”概念的所在：控制权由应用代码中转到了外部容器，控制权的转移，就是反转。控制权转移带来的好处就是降低了业务对象之间的依赖程度
 
 ​	Spring 容器使用依赖注入（DI）来管理组成一个应用程序的组件。这些对象被称为 Spring Beans，
 
 ​	Spring IoC 容器利用 Java 的 POJO 类和配置元数据来生成完全配置和可执行的系统或应用程序
 
+Spring通过一个配置文件描述了Bean及Bean之间的依赖关系，利用Java语言的反射功能实例化Bean并建立Bean之间的依赖关系。
+
+Spring的IoC容器在完成这些底层工作的基础上，还提供了Bean实例缓存、生命周期管理、Bean实例代理、事件发布、资源装载等高级服务
+
+**谈及IOC容器我们应该从BeanFactory和ApplicationContext接口分析。**
+
 #### BeanFactory
+
+BeanFactory是Spring最核心的接口，他提供了高级的IoC配置机制。BeanFactory使管理不同类型的java对象成为了可能，应用上下文(ApplicationContext)建立在BeanFactory的基础之上。它还提供了国际化支持和框架事件体系，更易于创建实际应用。一般称BeanFactory为IoC容器，而称ApplicationContext为应用上下文。但有时为了行文方便，也将ApplicationContext称为Spring容器。
 
 它主要的功能是为依赖注入 （DI） 提供支持，这个容器接口在 org.springframework.beans.factory.BeanFactor 中被定义。
 `BeanFactory 和相关的接口，比如BeanFactoryAware、 DisposableBean、InitializingBean，仍旧保留在 Spring 中，主要目的是向后兼容已经存在的和那些 Spring 整合在一起的第三方框架实现了IoC控制，可以称为IoC容器通过xml配置文件或.properties中读取Javabean的定义，来实现Javabean配置和管理创建。`
-		XmlBeanFactory可以通过xml读取装配JavaBean
-		在调用getBean()方法时不会实例化任何对象只有在JavaBean需要创建时才会分配资源空间，
+
+**XmlBeanFactory可以通过xml读取装配JavaBean**在调用getBean()方法时不会实例化任何对象只有在JavaBean需要创建时才会分配资源空间，
 
 - 第一步利用框架提供的 XmlBeanFactory() API 去生成工厂 bean 以及利用 ClassPathResource() API 去加载在路径 CLASSPATH 下可用的 bean 配置文件。
   	XmlBeanFactory() API 负责创建并初始化所有的对象，即在配置文件中提到的 bean。
+  	
 - 第二步利用第一步生成的 bean 工厂对象的 getBean() 方法得到所需要的 bean。 这个方法通过配置文件中的 bean ID 来返回一个真正的对象，该对象最后可以用于实际的对象。一旦得到这个对象，就可以利用这个对象来调用任何方法
-  例如：
-
+  
+**例如通过BeanFactory装载配置文件，启动Spring IoC容器：**
+	
 	> Resource re=new ClassPathResource("applicationContext.xml");
 	> BeanFactory factory=new XmlBeanFactory(re);
 	> Test test =factory.getBean("test");
@@ -122,6 +132,11 @@ Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.x
 	> <beans>
 	> < bean id="test" class="com.test.Test">
 	> </beans>
+
+XmlBeanFactory通过Resource装载Spring配置信息并启动IoC容器，然后就可以通过BeanFactory#getBean(beanName)方法从IoC容器中获取Bean了。通过BeanFactory启动IoC容器时，并不会初始化配置文件中定义的Bean。初始化动作发生在第一个调用时，对于单实例（singleton）的Bean来说，BeanFactory会缓存Bean实例，所以第二次使用getBean()获取Bean时，将直接从IoC容器的缓存中获取Bean实例。
+
+Spring在DefaultSingletonBeanRegistry类中提供了一个用于缓存单实例Bean的缓存器，它是一个用HashMap实现的缓存器，单实例的Bean以beanName为键保存在这个HashMap中。值得一提的是，在初始化BeanFactory时，必须为其提供一种日志框架，这里使用Log4J，即在类路径下提供Log4J配置文件，这样启动Spring容器才不会报错
+
 #### ApplicationContext:
 
 ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以加载配置文件定义的bean，将所有的bean集中在一起，当请求时分配bean，扩展了BeanFactory容器并添加了国际化，生命周期，事件，监听，提供了BeanFactory的所有特性而且允许用户使用更多的声明方式
@@ -231,7 +246,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 ​				框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
 
-##### Bean的初始化步骤
+##### Bean的初始化
 
 1.<bean>标签使用autowire属性，会进行自动装配，
 
