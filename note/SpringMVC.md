@@ -183,8 +183,6 @@ public ModelAndView updateItems(Items items){
 
 #### 包装类型的参数：
 
-​		
-
 ```java
 /**
 
@@ -231,7 +229,74 @@ controller的方法：放入model参数的方法的使用：
 
 ```
 
-#### springmvc整合mybatis:
+#### 集合类型的参数绑定
+
+```java
+/**
+* 数组类型的：前台传参
+* var array=[]
+* array.push('1');
+* array.push("2")
+* 传参：array
+* curl -X GET  -i http://localhost:6006/user/file/testarray?list=bmd89x&list=bmd89x
+*/
+@RequestMaping("/array")
+public testArray(Integer[] userId){
+	for(int i: userId){
+        System.out.println(i)
+    }
+}
+    /**
+     * testList
+     * @param list
+     * @return String
+     * 前台传参：array
+     * curl -X GET  -i http://localhost:6006/user/file/testList?list=0xo0z1&list=0xo0z1
+     */
+    @RequestMapping("/testList")
+    public String testList(List<String> list){
+        for(String  s: list){
+            System.out.println(s);
+        }
+        return "true";
+    }
+
+    /**
+     * testMap
+     * @param map
+     * @return String
+     * 前台传参类型：object
+     *	curl -X GET  -i http://localhost:6006/user/file/testMap
+     * {"key1":"aaa"}
+     */
+    @RequestMapping("/testMap")
+    public String testMap(Map<String,Object> map){
+        for(Map.Entry<String,Object> entry: map.entrySet()){
+            System.out.println(entry.getKey()+":"+entry
+            .getValue());
+        }
+        return "";
+    }
+
+    /**
+     * testSet
+     * @param set
+     * @return String
+	 * 前台传参：类型：array
+	 * curl -X GET  -i http://localhost:6006/user/file/set?set=p4d9w2&set=p4d9w2
+     */
+    @RequestMapping("/set")
+    public String testSet(Set<String> set){
+        for(String s: set){
+            System.out.println(s);
+        }
+        return "";
+    }
+```
+
+
+
+###  springmvc整合mybatis:
 
 ​        出现这个错误：BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the Application
 
