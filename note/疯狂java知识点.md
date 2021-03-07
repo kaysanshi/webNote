@@ -3303,113 +3303,71 @@ public class ReadFromProcess {
 下面程序实现了向指定文件、指定位置插入内容的功能。
 
 ```java
-
 public class InsertContent {
-
-    public static void insert(String fileName, long pos
-
-            , String insertContent) throws IOException {
+    public static void insert(String fileName, long pos, String insertContent) throws IOException {
 
         File tmp = File.createTempFile("tmp", null);
-
         tmp.deleteOnExit();
-
         try (
-
-                RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
-
-// 创建一个临时文件来保存插入点后的数据
-
-                FileOutputStream tmpOut = new FileOutputStream(tmp);
-
-                FileInputStream tmpIn = new FileInputStream(tmp)) {
-
+            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+			// 创建一个临时文件来保存插入点后的数据
+            FileOutputStream tmpOut = new FileOutputStream(tmp);
+            FileInputStream tmpIn = new FileInputStream(tmp)) {
             raf.seek(pos);
-
-// ------下面代码将插入点后的内容读入临时文件中保存------
-
+		   // ------下面代码将插入点后的内容读入临时文件中保存------
             byte[] bbuf = new byte[64];
-
-// 用于保存实际读取的字节数
-
+			// 用于保存实际读取的字节数
             int hasRead = 0;
-
-// 使用循环方式读取插入点后的数据
-
-            while ((hasRead = raf.read(bbuf)) > 0) {
-
-// 将读取的数据写入临时文件
-
+			// 使用循环方式读取插入点后的数据
+            while ((hasRead = raf.read(bbuf)) > 0){
+				// 将读取的数据写入临时文件
                 tmpOut.write(bbuf, 0, hasRead);
-
             }
-
-// ----------下面代码用于插入内容----------
-
-// 把文件记录指针重新定位到pos位置
-
-            raf.seek(pos);
-
-// 追加需要插入的内容
-
+		    // ----------下面代码用于插入内容----------
+			// 把文件记录指针重新定位到pos位置
+			raf.seek(pos);
+			// 追加需要插入的内容
             raf.write(insertContent.getBytes());
-
-// 追加临时文件中的内容
-
+			// 追加临时文件中的内容
             while ((hasRead = tmpIn.read(bbuf)) > 0) {
-
                 raf.write(bbuf, 0, hasRead);
-
             }
-
         }
-
     }
-
-    public static void main(String[] args)
-
-            throws IOException {
-
+    public static void main(String[] args)throws IOException {
         insert("InsertContent.java", 45, "插入的内容\r\n");
-
     }
 
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
+
 
 上面程序中使用File的createTempFile(String prefix, String suffix)方法创建了一个临时文件（该临时文件将在JVM退出时被删除），用以保存被插入文件的插入点后面的内容。程序先将文件中插入点后的内容读入临时文件中，然后重新定位到插入点，将需要插入的内容添加到文件后面，最后将临时文件的内容添加到文件后面，通过这个过程就可以向指定文件、指定位置插入内容。
 
 每次运行上面程序，都会看到向InsertContent.java中插入了一行字符串。
 
-流：是一组有序的数据序列，流可以分为：Input流
-
-Output流，Java中有数据流来处理输出输入模式，
+流：是一组有序的数据序列，流可以分为：Input流,Output流，Java中有数据流来处理输出输入模式，
 
 输入模式：由，文件，网络，压缩包，其他， -------》 目的地
 
 输出模式：源  据流数  -----------》    文件，网络，压缩包，其他，
 
-1所有的输入流都是抽象类InputStream《字节流》或Reader《字符》的子类，
+1.所有的输入流都是抽象类InputStream《字节流》或Reader《字符》的子类，
 
-2所有的输出流都是抽象类OutputStream<字节输出流>或Writer《字符输出流》的子类
+2.所有的输出流都是抽象类OutputStream<字节输出流>或Writer《字符输出流》的子类
 
 字节流的一些常见的操作形式：
 
-**程序----》****FileOutputStream---》****文件---》****F**ileInputStream --》**控制台**
+程序---->FileOutputStream  (=>write())-->文件--->FileInputStream(=>read()) -->控制台
 
-​                 **write()****方法**                                               **read()****方法；**
+程序---->FileOutputStream () ----->文件--->FileInputStream ()-->控制台
 
-**程序----》****FileOutputStream-----》****文件---》****F**ileInputStream --》**控制台**
+ **OutputStreamWriter;   ==>  **write()方法       inputStreamReader ==> **read()**方法；
 
-​                 **OutputStreamWriter;   inputStreamReader;**
+**文件** **FileinputStream(read()方法)文件**
 
-​                       **write()****方法**           **read()****方法；**
-
-**文件** **FileinputStream(read****方法****)****文件**
-
-**FileOutputStream****（****write****方法）**
+**FileOutputStream**（write()方法）
 
 字节流中的缓冲流是有些技巧：
 
@@ -3437,7 +3395,7 @@ BufferedWriter();必须flush()刷新；
 
 如果需要让某个对象支持序列化机制，则必须让它的类是可序列化的（serializable）。为了让某个类是可序列化的，该类必须实现如下两个接口之一：
 
-Serializable， Externalizable
+**Serializable**， **Externalizable**
 
 Java的很多类已经实现了Serializable，该接口是一个标记接口，实现该接口无须实现任何方法，它只是表明该类的实例是可序列化的。
 
@@ -3452,47 +3410,30 @@ JDK 1.4提供了Charset来处理字节序列和字符序列（字符串）之间
 ```java
 public class CharsetTransform {
 
-    public static void main(String[] args)
-
-            throws Exception {
-
-// 创建简体中文对应的Charset
-
+    public static void main(String[] args) throws Exception {
+		// 创建简体中文对应的Charset
         Charset cn = Charset.forName("GBK");
-
-// 获取cn对象对应的编码器和解码器
-
+		// 获取cn对象对应的编码器和解码器
         CharsetEncoder cnEncoder = cn.newEncoder();
-
         CharsetDecoder cnDecoder = cn.newDecoder();
 
-// 创建一个CharBuffer对象
-
+		// 创建一个CharBuffer对象
         CharBuffer cbuff = CharBuffer.allocate(8);
-
         cbuff.put('孙');
-
         cbuff.put('悟');
-
         cbuff.put('空');
-
         cbuff.flip();
-
-// 将CharBuffer中的字符序列转换成字节序列ByteBuffer bbuff=cnEncoder.encode(cbuff);// 循环访问ByteBuffer中的每个字节
-
+		// 将CharBuffer中的字符序列转换成字节序列
+        ByteBuffer bbuff=cnEncoder.encode(cbuff);
+        // 循环访问ByteBuffer中的每个字节
         for (int i = 0; i < bbuff.capacity(); i++) {
-
             System.out.print(bbuff.get(i) + " ");
-
         }
-
-// 将ByteBuffer的数据解码成字符序列System.out.println("\n" + cnDecoder.decode(bbuff)); }
-
+		// 将ByteBuffer的数据解码成字符序列
+        System.out.println("\n" + cnDecoder.decode(bbuff)); }
     }
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 上面程序中的两行粗体字代码分别实现了将CharBuffer转换成ByteBuffer，将ByteBuffer转换成CharBuffer的功能。实际上，Charset类也提供了如下3个方法。
 
@@ -3513,7 +3454,7 @@ public class CharsetTransform {
 
 当参数shared为true时，表明该锁是一个共享锁，它将允许多个进程来读取该文件，但阻止其他进程获得对该文件的排他锁。当shared为false时，表明该锁是一个排他锁，它将锁住对该文件的读写。程序可以通过调用FileLock的isShared来判断它获得的锁是否为共享锁。
 
-注意：
+**注意：**
 
 直接使用lock()或tryLock()方法获取的文件锁是排他锁。
 
@@ -3523,42 +3464,27 @@ public class CharsetTransform {
 
 public class PathTest {
 
-    public static void main(String[] args)
-
-            throws Exception {
-
-// 以当前路径来创建Path对象
-
+    public static void main(String[] args)throws Exception {
+		// 以当前路径来创建Path对象
         Path path = Paths.get(".");
-
         System.out.println("path里包含的路径数量：" + path.getNameCount());
         System.out.println("path的根路径：" + path.getRoot());
 
-// 获取path对应的绝对路径
-
+		// 获取path对应的绝对路径
         Path absolutePath = path.toAbsolutePath();
         System.out.println(absolutePath);
-
-// 获取绝对路径的根路径
-
+		// 获取绝对路径的根路径
         System.out.println("absolutePath的跟路径：" + absolutePath.getRoot());
-
-// 获取绝对路径所包含的路径数量
-
+		// 获取绝对路径所包含的路径数量
         System.out.println("absolutePath里包含的路径数量：" + absolutePath.getNameCount());
-
         System.out.println(absolutePath.getName(3));
 
-// 以多个String来构建Path对象Path path2=Paths.get("g:" , "publish" , "codes");
-
+		// 以多个String来构建Path对象Path path2=Paths.get("g:" , "publish" , "codes");
         System.out.println(path2);
-
     }
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 从上面程序可以看出，Paths提供了get(String first, String... more)方法来获取Path对象，Paths会将给定的多个字符串连缀成路径，比如Paths.get("g:" , "publish" , "codes")就返回g:\publish\codes路径。上面程序中的粗体字代码示范了Path接口的常用方法，读者可能对getNameCount()方法感到有点困惑，此处简要说明一下：它会返回Path路径所包含的路径名的数量，例如g:\publish\codes调用该方法就会返回3。
 
@@ -3568,51 +3494,36 @@ Files是一个操作文件的工具类，它提供了大量便捷的工具方法
 
 public class FilesTest {
 
-    public static void main(String[] args)
-
-            throws Exception {
-
-// 复制文件
-
+    public static void main(String[] args) throws Exception {
+		// 复制文件
         Files.copy(Paths.get("FilesTest.java"), new FileOutputStream("a.txt"));
 
-// 判断FilesTest.java文件是否为隐藏文件
+		// 判断FilesTest.java文件是否为隐藏文件
+        System.out.println("FilesTest.java是否为隐藏文件："+
+                           Files.isHidden(Paths.get("FilesTest.java")));
 
-        System.out.println("FilesTest.java是否为隐藏文件：" + Files.isHidden(Paths.get("FilesTest.java")));
-
-// 一次性读取FilesTest.java文件的所有行
-
+		// 一次性读取FilesTest.java文件的所有行
         List <String> lines = Files.readAllLines(Paths.get("FilesTest.java"), Charset.forName("gbk"));
         System.out.println(lines);
 
-// 判断指定文件的大小
-
-        System.out.println("FilesTest.java的大小为：" + Files.size(Paths.get("FilesTest.java")));
+		// 判断指定文件的大小
+        System.out.println("FilesTest.java的大小为：" +
+                           Files.size(Paths.get("FilesTest.java")));
 
         List <String> poem = new ArrayList <>();
-
         poem.add("水晶潭底银鱼跃");
-
         poem.add("清徐风中碧竿横");
-
-// 直接将多个字符串内容写入指定文件中
-
+		// 直接将多个字符串内容写入指定文件中
         Files.write(Paths.get("pome.txt"), poem, Charset.forName("gbk"));
-
         FileStore cStore = Files.getFileStore(Paths.get("C:"));
 
-// 判断C盘的总空间、可用空间
-
+		// 判断C盘的总空间、可用空间
         System.out.println("C:共有空间：" + cStore.getTotalSpace());
-
         System.out.println("C:可用空间：" + cStore.getUsableSpace());
-
     }
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 上面程序中的粗体字代码简单示范了Files工具类的用法。从上面程序不难看出，Files类是一个高度封装的工具类，它提供了大量的工具方法来完成文件复制、读取文件内容、写入文件内容等功能——这些原本需要程序员通过IO操作才能完成的功能。
 
