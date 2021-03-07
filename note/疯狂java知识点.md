@@ -3209,6 +3209,8 @@ Java的IO流的40多个类都是从如下4个抽象基类派生的：
 - InputStream/Reader：所有输入流的基类，前者是字节输入流，后者是字符输入流。
 - OutputStream/Writer：所有输出流的基类，前者是字节输出流，后者是字符输出流。
 
+[![6KtC5D.jpg](https://s3.ax1x.com/2021/03/07/6KtC5D.jpg)](https://imgtu.com/i/6KtC5D)
+
 #### FIle：
 
 ```java
@@ -3219,7 +3221,8 @@ public class FileTest {
         File file = new File(".");
         // 直接获取文件名，输出一点
         System.out.println(file.getName());
-        // 获取相对路径的父路径可能出错，下面代码输出nullSystem.out.println(file.getParent());
+        // 获取相对路径的父路径可能出错，下面代码输出null
+        System.out.println(file.getParent());
         // 获取绝对路径
         System.out.println(file.getAbsoluteFile());
         // 获取上一级路径
@@ -3275,20 +3278,17 @@ public class ReadFromProcess {
 
     public static void main(String[] args)throws IOException {
 
-// 运行javac命令，返回运行该命令的子进程Process p=Runtime.getRuntime().exec("javac");try(
+		// 运行javac命令，返回运行该命令的子进程
+        Process p=Runtime.getRuntime().exec("javac");
+        try(
 
-// 以p进程的错误流创建BufferedReader对象
-
-// 这个错误流对本程序是输入流，对p进程则是输出流BufferedReader br=new BufferedReader(newInputStreamReader(p.getErrorStream()))) {
-
+		// 以p进程的错误流创建BufferedReader对象
+		// 这个错误流对本程序是输入流，对p进程则是输出流
+            BufferedReader br=new BufferedReader(newInputStreamReader(p.getErrorStream()))) {
         String buff = null;
-
-// 采取循环方式来读取p进程的错误输出
-
+		// 采取循环方式来读取p进程的错误输出
         while ((buff = br.readLine()) != null) {
-
             System.out.println(buff);
-
         }
 
     }
