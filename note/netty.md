@@ -44,6 +44,103 @@ BIO是传统的同步阻塞性IO模型。其相关的类就是在java.io包下�
 - 当并发数较大时，需要创建大量线程来处理连接，系统资源占用较大。
 - 连接建立后，如果当前线程暂时没有数据可读，则线程就阻塞在 Read 操作上，造成线程资源浪费
 
+##### 代码示例：
+
+```java
+/**
+ * @user:kaysanshi
+ * @date:2021/3/8
+ * @Description:
+ * 1.创建一个线程池
+ * 2.创建一个客户端连接，与之通信
+ */
+public class BIOServer {
+     public static void main(String[] args) throws IOException {
+        // 线程池机制
+         ExecutorService executorService = Executors.newCachedThreadPool();
+         // 创建ServerSocket
+         ServerSocket serverSocket = new ServerSocket(8888);
+
+         while (true){
+             System.out.println("线程信息 id:"+Thread.currentThread().getId()+"  线程名字 name:"+Thread.currentThread().getName());
+             // 监听
+             System.out.println("等待连接");
+             final Socket socket= serverSocket.accept();
+             // 创建一个线程与之通信
+             executorService.execute(new Runnable() {
+                 @Override
+                 public void run() {
+                     // 重写方法
+                     handler(socket);
+                 }
+             });
+         }
+    }
+
+    /**
+     * 与客户端通信的方法
+     * @param socket
+     */
+    public static void  handler(Socket socket){
+        System.out.println("线程信息 id:"+Thread.currentThread().getId()+"  线程名字 name:"+Thread.currentThread().getName());
+        byte[] bytes= new byte[1024];
+        //创建liu
+        try {
+            InputStream inputStream = socket.getInputStream();
+            // 循环读取客户端发来的信息
+            while(true){
+                System.out.println("线程信息 id:"+Thread.currentThread().getId()+"  线程名字 name:"+Thread.currentThread().getName());
+                System.out.println("read....");
+                int read = inputStream.read(bytes);
+                if (read!=-1){
+                    System.out.println(new String(bytes,0, read));
+                }else{
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+///// 客户端
+/**
+ * @user:kaysanshi
+ * @date:2021/3/8
+ * @Description:
+ * 客户端
+ * 1.创建一个Socket实例
+ * 2.利用I/O流与服务器进行通信
+ * 3.关闭socket
+ */
+public class BIOClient {
+    public static void main(String[] args) {
+        try {
+            // 创建与服务端的连接
+            Socket socket = new Socket("127.0.0.1",8888);
+            // 设置超时时间
+            socket.setSoTimeout(5000);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
+            outputStreamWriter.write("test connection...");
+            outputStreamWriter.flush();
+            Thread.sleep(500);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }finally {
+
+        }
+
+    }
+}
+
+```
+
+
+
 #### NIO
 
 NIO:java non-blocking IO 是指的JDK提供的新的API.其相关类是在java.nio包及子包内，对java.io进行了改写。
@@ -77,7 +174,57 @@ HTTP2.0使用了多路复用的技术，做到同一个连接并发处理多个�
 
 ##### Buffer
 
-缓冲区（Buffer）：缓冲区本质上是一个可以读写数据的内存块，可以理解成是一个容器对象(含数组)，该对象提供了一组方法，可以更轻松地使用内存块，，缓冲区对象内置了一些机制，能够跟踪和记录缓冲区的状态变化情况。Channel 提供从文件、网络读取数据的渠道，但是读取或写入的数据都必须经由 Buffer
+###### Buffer类的主要的职责
+
+缓冲区是特定原始类型的元素的线性有限序列。 除了其内容之外，缓冲区的基本属性还包括其容量，限制和位置：
+缓冲区的容量是它包含的元素数量。 缓冲区的容量永远不会为负，也不会改变。
+缓冲区的限制是不应读取或写入的第一个元素的索引。 缓冲区的限制永远不会为负，也永远不会大于缓冲区的容量。
+缓冲区的位置是下一个要读取或写入的元素的索引。 缓冲区的位置永远不会为负，也不会大于其限制。对于每个非布尔基元类型，该类都有一个子类。
+
+**传输资料**
+
+该buffer类的每个子类都定义了get和put操作的两类：
+
+​		相对操作从当前位置开始读取或写入一个或多个元素，然后将该位置增加传输的元素数量。 如果请求的传输超出限制，则相对的get操作将引发BufferUnderflowException而相对的put操作将引发BufferOverflowException ; 无论哪种情况，都不会传输数据。绝对运算采用显式元素索引，并且不影响位置。 如果index参数超出限制，则绝对的get和put操作将引发IndexOutOfBoundsException 。当然，也可以通过始终相对于当前位置的适当通道的I / O操作将数据移入或移出缓冲区。
+
+**标记和重置**
+
+缓冲区的标记是在调用reset方法时将其位置重置到的索引。 标记并非总是定义的，但是在定义标记时，它永远不会为负，也永远不会大于位置。 如果定义了标记，则在将位置或限制调整为小于标记的值时将其丢弃。 如果未定义标记，则调用reset方法将引发InvalidMarkException 。
+
+**不变量**
+
+对于标记，位置，限制和容量值，以下不变式成立：
+		0 <=标记<=位置<=极限<=容量
+		新创建的缓冲区始终具有零位置和未定义的标记。 初始限制可以为零，也可以是其他一些值，具体取决于缓冲区的类型及其构造方式。 新分配的缓冲区的每个元素都初始化为零。
+
+**清除，翻转和倒带**
+
+除了访问位置，极限和容量值以及标记和重置的方法之外，此类还定义了以下对缓冲区的操作：
+
+- clear使缓冲区为新的通道读取或相对放置操作序列做好准备：将限制设置为容量，并将位置设置为零。
+- flip使缓冲区准备好进行新的通道写入或相对get操作序列：将极限设置为当前位置，然后将该位置设置为零。
+- rewind使缓冲区准备好重新读取它已经包含的数据：保留限制不变，并将位置设置为零。
+
+**只读缓冲区**
+
+每个缓冲区都是可读的，但并非每个缓冲区都是可写的。 每个缓冲区类的变异方法都指定为可选操作，当对只读缓冲区调用时，该方法将引发ReadOnlyBufferException 。 只读缓冲区不允许更改其内容，但是其标记，位置和限制值是可变的。 缓冲区是否为只读可以通过调用其isReadOnly方法来确定。
+
+**线程安全**
+
+缓冲区不能安全用于多个并发线程。 如果一个缓冲区将由多个线程使用，则应通过适当的同步来控制对该缓冲区的访问。
+
+**调用链**
+
+此类中没有其他要返回值的方法被指定为返回在其上调用它们的缓冲区。 这样就可以将方法调用链接在一起。 例如，语句序列
+   b.flip();
+   b.position(23);
+   b.limit(42);
+可以用一个更紧凑的语句代替
+   b.flip().position(23).limit(42)
+
+**缓冲区（Buffer）**：缓冲区本质上是一个可以读写数据的内存块，可以理解成是一个容器对象(含数组)，该对象提供了一组方法，可以更轻松地使用内存块，，缓冲区对象内置了一些机制，能够跟踪和记录缓冲区的状态变化情况。Channel 提供从文件、网络读取数据的渠道，但是读取或写入的数据都必须经由 Buffer。
+
+
 
 **常用Buffer子类一览**
 
@@ -126,6 +273,85 @@ public abstract class ByteBuffer {
 
 ```
 
+```java
+/**
+ * @user:
+ * @date:2021/3/8
+ * @Description: nio的buffer
+ */
+public class Buffer {
+    public static void main(String[] args) {
+        // 举简单的示例说明Buffer
+        // 创建一个buffer可存放数据
+        IntBuffer intBuffer = IntBuffer.allocate(10);
+        for(int i=0;i<intBuffer.capacity();i++){
+            intBuffer.put(i);
+        }
+        // 从buffer中读取数据
+        // 将buffer进行转换.
+        //
+        // flip() 翻转此缓冲区。将buffer从写模式切换到读模式。 限制设置limit为当前位置position的值，然后位置position设置为零。如果定义了标记，则将丢弃
+        intBuffer.flip();
+        while(intBuffer.hasRemaining()){
+            System.out.println(intBuffer.get());
+        }
+    }
+}
+/////////
+/**
+ * @user:
+ * @date:2021/3/8
+ * @Description:
+ * 将buffer转换为只读的Buffer
+ */
+public class ReadOnlyBuffer {
+    public static void main(String[] args) {
+        // 创建一个buffer
+        ByteBuffer byteBuffer = ByteBuffer.allocate(64);
+        for(int i=0;i<64;i++){
+            byteBuffer.put((byte) i);
+        }
+        // 读取
+        byteBuffer.flip();
+        // 得到一个只读的buffer
+        ByteBuffer readOnlyBuffer = byteBuffer.asReadOnlyBuffer();
+        // buffer中是否有元素：
+        // 告诉当前位置和极限之间是否有任何元素。
+        while (readOnlyBuffer.hasRemaining()){
+            System.out.println(readOnlyBuffer.getChar());
+        }
+        // readOnlyBuffer.putInt(123); // ReadOnlyBufferException
+    }
+}
+/**
+ * @user:kaysanshi
+ * @date:2021/3/8
+ * @Description:
+ * ByBuffer支持类型化的put和get,put和get的数据类型应一致。否者会出现BufferUnderflowException
+ */
+public class BufferTypeData {
+    public static void main(String[] args) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+        // 类型化方式放入
+        byteBuffer.putInt(1);
+        byteBuffer.putLong(1);
+        byteBuffer.putDouble(1.0);
+        byteBuffer.putShort((short) 1);
+        byteBuffer.putChar('a');
+
+        // flip() 翻转此缓冲区。将buffer从写模式切换到读模式。 限制设置limit为当前位置position的值，然后位置position设置为零。如果定义了标记，则将丢弃
+        byteBuffer.flip();
+
+        System.out.println(byteBuffer.getInt());
+        System.out.println(byteBuffer.getLong());
+        System.out.println(byteBuffer.getDouble());
+        System.out.println(byteBuffer.getShort());
+        System.out.println(byteBuffer.getChar());
+
+    }
+}
+```
+
 ##### Channel
 
 NIO的通道类似于流，但有些区别如下：
@@ -170,6 +396,163 @@ ByteBuffer 支持类型化的put 和 get, put 放入的是什么数据类型，g
 NIO 还提供了 MappedByteBuffer， 可以让文件直接在内存（堆外的内存）中进行修改， 而如何同步到文件由NIO 来完成.
 
 前面我们讲的读写操作，都是通过一个Buffer 完成的，NIO 还支持 通过多个Buffer (即 Buffer 数组) 完成读写操作，即 Scattering 和 Gathering 
+
+**FileChannel读写**
+
+```java
+/**
+ * @user:kaysanshi
+ * @date:2021/3/8
+ * @Description:
+ * 将文件进行读取
+ */
+public class FIleChannelTestRead {
+    public static void main(String[] args) {
+        try {
+            File file = new File("d:\\fileChannel.txt");
+            FileInputStream fileInputStream = new FileInputStream(file);
+            // 创建fileInputStream对应的fileChannel
+            FileChannel channel = fileInputStream.getChannel();
+            // 创建缓存区
+            ByteBuffer byteBuffer = ByteBuffer.allocate((int) file.length());
+            // 将通道的数据读入Buffer
+            channel.read(byteBuffer);
+            // 将 byteBuffer 的字节转为String
+            System.out.println(new String(byteBuffer.array()));
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    // ~output~   hello fileChannel
+}
+//
+/**
+ * @user: kaysanshi
+ * @date:2021/3/8
+ * @Description:
+ * 利用byteBuffer和FileChannel写入文件数据
+ */
+public class FileChannelTestWrite {
+    public static void main(String[] args) {
+        String string= "hello fileChannel";
+
+        try {
+            // 创建一个输出流
+            FileOutputStream fileOutputStream = new FileOutputStream("d:\\fileChannel.txt");
+            //通过FileOutputstream创建对应的channel
+            FileChannel channel = fileOutputStream.getChannel();
+            // 创建缓存区,并分配缓存区的大小
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+            // 将写入的对象放入缓存区
+            byteBuffer.put(string.getBytes());
+            // flip() 翻转此缓冲区。将buffer从写模式切换到读模式。 限制设置limit为当前位置position的值，然后位置position设置为零。如果定义了标记，则将丢弃
+            byteBuffer.flip();
+            // 将byteBuffer写入到fileChannel
+            channel.write(byteBuffer);
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}
+//////
+/**
+ * @user: kaysanshi
+ * @date:2021/3/8
+ * @Description:
+ * 将文件进行copy到当前的目录下。
+ * 使用两种方式
+ */
+public class FileChannelCopy {
+    /**
+     * 传统的copy
+     */
+    public void test (){
+        try {
+            FileInputStream fileInputStream = new FileInputStream("d:\\fileChannel.txt");
+            FileChannel readChannel = fileInputStream.getChannel();
+
+            // 这个是会创建一个文件在项目下
+            FileOutputStream fileOutputStream = new FileOutputStream("2.txt");
+            FileChannel writeChannel = fileOutputStream.getChannel();
+
+            // 分配缓冲区大小
+            ByteBuffer byteBuffer = ByteBuffer.allocate(512);
+
+            while (true){
+                // 循环读取
+                // 清空buffer
+                byteBuffer.clear();
+
+                int read = readChannel.read((byteBuffer));
+                if(read == -1){ // 读完
+                    break;
+                }
+                // 将buffer中的数据写入fileChannel01
+                // flip() 翻转此缓冲区。将buffer从写模式切换到读模式。 限制设置limit为当前位置position的值，然后位置position设置为零。如果定义了标记，则将丢弃
+                byteBuffer.flip();
+                writeChannel.write(byteBuffer);
+            }
+            fileInputStream.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 使用channel中的transferForm进行copy
+     * 将两个通道直接相连，这样的化会进行效率更好。比使用循环读更快。
+     */
+    public void test1(){
+        try {
+            FileInputStream fileInputStream = new FileInputStream("d:\\fileChannel.txt");
+            FileChannel readChannel = fileInputStream.getChannel();
+
+            // 这个是会创建一个文件在项目下
+            FileOutputStream fileOutputStream = new FileOutputStream("transferFrom.txt");
+            FileChannel writeChannel = fileOutputStream.getChannel();
+            /**
+             * 从给定的可读字节通道将字节传输到此通道的文件中。
+             * 尝试从源通道读取计数字节并将其从给定位置开始写入该通道的文件。 调用此方法可能会或可能不会传输所有请求的字节； 是否这样做取决于渠道的性质和状态。
+             * 如果源通道剩余的字节数少于计数字节，或者源通道是非阻塞的并且输入缓冲区中立即可用的字节数少于计数字节，则传输的字节数将少于请求的字节数。
+             * 此方法不会修改此通道的位置。 如果给定位置大于文件的当前大小，则不会传输任何字节。 如果源通道有一个位置，则从该位置开始读取字节，然后将该位置增加读取的字节数。
+             * 与从源通道读取并写入此通道的简单循环相比，此方法的效率可能要高得多。 许多操作系统可以将字节直接从源通道直接传输到文件系统缓存中，而无需实际复制它们。
+             */
+            writeChannel.transferFrom(readChannel,0,readChannel.size());
+            /**
+             *  transferTo是将当前通道数据写到另一个通道, 对象是当前通道, 所以我们不用考虑另一个通道的什么, 我就把文件数据写给你就行了
+             */
+            // writeChannel.transferTo(0,readChannel.size(),writeChannel);
+            writeChannel.close();
+            readChannel.close();
+            fileInputStream.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        FileChannelCopy fileChannelCopy = new FileChannelCopy();
+        fileChannelCopy.test();
+        // fileChannelCopy.test1();
+    }
+}
+```
+
+
 
 ##### Selector
 
