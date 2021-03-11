@@ -1,6 +1,6 @@
-## Netty
+# Netty
 
-### Netty简介
+## Netty简介
 
 Netty是由[JBOSS](https://baike.baidu.com/item/JBOSS)提供的一个[java开源](https://baike.baidu.com/item/java开源/10795649)框架，现为 [Github](https://baike.baidu.com/item/Github/10145341)上的独立项目。Netty提供异步的、[事件驱动](https://baike.baidu.com/item/事件驱动/9597519)的网络应用程序框架和工具，用以快速开发高性能、高可靠性的[网络服务器](https://baike.baidu.com/item/网络服务器/99096)和客户端程序。
 
@@ -11,9 +11,9 @@ Netty 是一个基于NIO的客户、服务器端的编程框架，使用Netty �
 - 更高的吞吐量
 - 学习难度低。
 
-### BIO,NIO,AIO
+## BIO,NIO,AIO
 
-#### 概念
+### 概念
 
 Java共支持3种网络编程模型/IO模式：BIO、NIO、AIO。
 
@@ -23,7 +23,7 @@ Java共支持3种网络编程模型/IO模式：BIO、NIO、AIO。
 
 **Java AIO(NIO.2) ： 异步非阻塞**，AIO 引入异步通道的概念，采用了 Proactor 模式，简化了程序编写，有效的请求才启动线程，它的特点是先由操作系统完成后才通知服务端程序启动线程去处理，一般适用于连接数较多且连接时间较长的应用
 
-#### BIO
+### BIO
 
 BIO是传统的同步阻塞性IO模型。其相关的类就是在java.io包下。服务端实现就是一个连接启动一个线程。每一个客户端的请求服务端都会创建一个线程的。BIO方式适用于连接数目比较小且固定的架构
 
@@ -38,13 +38,13 @@ BIO是传统的同步阻塞性IO模型。其相关的类就是在java.io包下�
 3. 客户端发出请求后, 先咨询服务器是否有线程响应，如果没有则会等待，或者被拒绝
 4. 如果有响应，客户端线程会等待请求结束后，在继续执行
 
-##### BIO的问题
+#### BIO的问题
 
 - 每个请求都需要创建独立的线程，与对应的客户端进行数据 Read，业务处理，数据 Write 。
 - 当并发数较大时，需要创建大量线程来处理连接，系统资源占用较大。
 - 连接建立后，如果当前线程暂时没有数据可读，则线程就阻塞在 Read 操作上，造成线程资源浪费
 
-##### 代码示例：
+#### 代码示例：
 
 ```java
 /**
@@ -141,7 +141,7 @@ public class BIOClient {
 
 
 
-#### NIO
+### NIO
 
 NIO:java non-blocking IO 是指的JDK提供的新的API.其相关类是在java.nio包及子包内，对java.io进行了改写。
 
@@ -172,9 +172,9 @@ HTTP2.0使用了多路复用的技术，做到同一个连接并发处理多个�
 
 
 
-##### Buffer
+#### Buffer
 
-###### Buffer类的主要的职责
+##### Buffer类的主要的职责
 
 缓冲区是特定原始类型的元素的线性有限序列。 除了其内容之外，缓冲区的基本属性还包括其容量，限制和位置：
 缓冲区的容量是它包含的元素数量。 缓冲区的容量永远不会为负，也不会改变。
@@ -252,7 +252,7 @@ public abstract class Buffer {
 }
 ```
 
-###### ByteBuffer类
+##### ByteBuffer类
 
 从前面可以看出对于 Java 中的基本数据类型(boolean除外)，都有一个 Buffer 类型与之相对应，最常用的自然是ByteBuffer 类（二进制数据），该类的主要方法如下：
 
@@ -352,7 +352,7 @@ public class BufferTypeData {
 }
 ```
 
-##### Channel
+#### Channel
 
 NIO的通道类似于流，但有些区别如下：
 
@@ -368,7 +368,7 @@ Channel在NIO中是一个接口public interface Channel extends Closeable{}
 
 FileChannel 用于文件的数据读写，DatagramChannel 用于 UDP 的数据读写，ServerSocketChannel 和 SocketChannel 用于 TCP 的数据读写。
 
-###### FileChannel类
+##### FileChannel类
 
 FileChannel主要用来对本地文件进行 IO 操作，常见的方法有
 
@@ -554,7 +554,7 @@ public class FileChannelCopy {
 
 
 
-##### Selector
+#### Selector
 
 Java 的 NIO，用非阻塞的 IO 方式。可以用一个线程，处理多个的客户端连接，就会使用到Selector(选择器)
 
@@ -592,7 +592,7 @@ Netty 的 IO 线程 NioEventLoop 聚合了 Selector(选择器，也叫多路复�
 - 在通过 SelectionKey  反向获取 SocketChannel , 方法 channel()
   可以通过  得到的 channel  , 完成业务处理。
 
-###### SelectionKey
+##### SelectionKey
 
 SelectionKey，表示 Selector 和网络通道的注册关系, 共四种:
 
@@ -620,7 +620,7 @@ public abstract class SelectionKey {
 
 ```
 
-###### ServerSocketChannel
+##### ServerSocketChannel
 
 ServerSocketChannel 用于在服务器端监听新的客户端 Socket 连接
 
@@ -635,7 +635,7 @@ public abstract class ServerSocketChannel extends AbstractSelectableChannel impl
 
 ```
 
-###### SocketChannel
+##### SocketChannel
 
 SocketChannel，网络 IO 通道，具体负责进行读写操作。NIO 把缓冲区的数据写入通道，或者把通道里的数据读到缓冲区。
 
@@ -653,15 +653,204 @@ public abstract class SocketChannel extends AbstractSelectableChannel  implement
 
 ```
 
-##### NIO和BIO对比
+#### NIO和BIO对比
 
 - BIO 以流的方式处理数据,而 NIO 以块的方式处理数据,块 I/O 的效率比流 I/O 高很多
 - BIO 是阻塞的，NIO 则是非阻塞的
 - BIO基于字节流和字符流进行操作，而 NIO 基于 Channel(通道)和 Buffer(缓冲区)进行操作，数据总是从通道读取到缓冲区中，或者从缓冲区写入到通道中。Selector(选择器)用于监听多个通道的事件（比如：连接请求，数据到达等），因此使用单个线程就可以监听多个客户端通道 
 
-##### NIO与零拷贝
+实例：
 
-#### AIO
+```java
+package com.kaysanshi.nio.test;
+
+import com.kaysanshi.nio.Buffer;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.util.Iterator;
+import java.util.Set;
+
+/**
+ * @user: kaysanshi
+ * @date:2021/3/9
+ * @Description: NIO的server
+ */
+public class NIOServer {
+    public static void main(String[] args) throws IOException {
+        // 创建一个ServerSocketChannel -> ServerSocket
+        ServerSocketChannel serverSocketChannel=ServerSocketChannel.open();
+        // 得到一个Selector
+        Selector selector = Selector.open();
+        // 绑定端口再服务端进行监听
+        serverSocketChannel.socket().bind(new InetSocketAddress(6666));
+        // 设置为非阻塞IO
+        serverSocketChannel.configureBlocking(false);
+        // 把 severSocketChannel注册到selector
+        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+
+        while (true){
+            if(selector.select(1000) ==0){
+                // 等待1s没有任何事情发生，返回
+                System.out.println("服务器等待了1s,没有其连接");
+                continue;
+            }
+            /**
+             * 如果返回的>0就获取到了相关的selectionKey集合
+             * selector.selectedKeys() 返回关注事件的集合通过selectionsKeys() 反向获取通道
+             */
+            Set<SelectionKey> selectionKeys = selector.selectedKeys();
+            // 遍历Set<SelectionKey>
+            Iterator<SelectionKey> iterator = selectionKeys.iterator();
+            while (iterator.hasNext()){
+                // 获取到SelectionKey
+                /**
+                 * SelectionKey类的方法:
+                 * isAcceptable(): 是否可以accpet
+                 * isReadable() : 是否可以读
+                 * isWritable() : 是否可以写
+                 * attachment() : 得到与之关联的共享数据
+                 * channel() : 得到与之关联的channel()
+                 */
+                SelectionKey key = iterator.next();
+                // 根据key对应的通道发生的事件做相应的处理
+                if(key.isAcceptable()){
+                    // 如果是OP_ACCEPT 有新的客户端连接
+                    SocketChannel socketChannel = serverSocketChannel.accept();
+                    System.out.println("客户端连接成功生成一个socketChannel"+socketChannel.hashCode());
+                    // 将SocketChannel设置为非zuse
+                    socketChannel.configureBlocking(false);
+                    // 将socketChannel注册到selector事件为OP_READ同时给socketChannel关联一个buffer
+                    socketChannel.register(selector,SelectionKey.OP_ACCEPT, ByteBuffer.allocate(1024));
+                }
+                if(key.isReadable()){
+                    // 发生 OP_READ
+                    // 通过key 反向获取对应的channel
+                    SocketChannel channel = (SocketChannel) key.channel();
+                    // 获取到该channel关联的buffer
+                    ByteBuffer attachment =(ByteBuffer) key.attachment();
+                    channel.read(attachment);
+                    System.out.println("from客户端："+new String(attachment.array()));
+                }
+                // 手动从集合中移动当前的selectionKey防止重复操作
+                iterator.remove();
+            }
+        }
+    }
+}
+/////////
+package com.kaysanshi.nio.test;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+
+/**
+ * @user: kaysanshi
+ * @date:2021/3/9
+ * @Description: NIOClient
+ */
+public class NIOClient {
+    public static void main(String[] args) throws IOException {
+        // 得到一个网络通道
+        SocketChannel socketChannel = SocketChannel.open();
+        // 设置为非阻塞
+        socketChannel.configureBlocking(false);
+        // 提供服务器端的ip和端口
+        InetSocketAddress inetSocketAddress = new InetSocketAddress("127.0.0.1", 6666);
+        // 连接服务器
+        if(!socketChannel.connect(inetSocketAddress)){
+            while (!socketChannel.finishConnect()){
+                System.out.println("连接需要时间，客户端不会阻塞，可以做其他工做");
+            }
+        }
+        // 如果连接成功就i发送数据
+        String str="hello sever...";
+        ByteBuffer byteBuffer = ByteBuffer.wrap(str.getBytes());
+        socketChannel.write(byteBuffer);
+        // 发送数据将buffer写入channel
+        socketChannel.write(byteBuffer);
+        System.in.read();
+    }
+}
+
+
+```
+
+
+
+#### NIO与零拷贝
+
+##### 零拷贝
+
+零拷贝是网络编程的关键，很多性能优化都离不开。
+
+在java中常用的零copy有mmap(内存映射)和sendFile。
+
+mmap适合小数据量读写，sendFile适合大文件传输
+
+mmap需要4次上下文的切换，3次数据拷贝；sendFile需要3次上下文切换，最少2次数据拷贝
+
+sendFile可以利用DMA方式，减少CPU拷贝，mmap不能作到（必须从内核拷贝到Socket缓冲区）
+
+```java
+/**
+ * @user: kaysanshi
+ * @date:2021/3/11
+ * @Description:
+ */
+public class NIOServer {
+    public static void main(String[] args) {
+        try {
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+            serverSocketChannel.socket().bind(new InetSocketAddress(9092));
+            //创建buffer
+            ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
+            while (true){
+                SocketChannel socketChannel = serverSocketChannel.accept();
+                int readCount=0;
+                while (-1!=readCount){
+                    readCount = socketChannel.read(byteBuffer);
+                }
+                // 倒带。position=0,mark作废
+                byteBuffer.rewind();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
+
+/**
+ * @user: kaysanshi
+ * @date:2021/3/11
+ * @Description:
+ */
+public class NIOClient {
+    public static void main(String[] args) throws IOException {
+        SocketChannel socketChannel=SocketChannel.open();
+        socketChannel.connect(new InetSocketAddress("127.0.0.1",9092));
+        String fileName="";
+        // 得到文件
+        FileChannel channel = new FileInputStream(fileName).getChannel();
+        long l1 = System.currentTimeMillis();
+        // transferTo底层采用的是零copy.
+        // windows下一次调用transferTo之恶能发送8M，需要分段传输文件
+        long l = channel.transferTo(0, channel.size(), socketChannel);
+        System.out.println("发送的总的字节数="+l+"总耗时："+(System.currentTimeMillis()-l1));
+        // 关闭
+        channel.close();
+    }
+}
+```
+
+
+
+### AIO
 
 JDK 7 引入了 Asynchronous I/O，即 AIO。在进行 I/O 编程中，常用到两种模式：Reactor和 Proactor。Java 的 NIO 就是 Reactor，当有事件触发时，服务器端得到通知，进行相应的处理
 
@@ -669,7 +858,7 @@ AIO 即 NIO2.0，叫做异步不阻塞的 IO。AIO 引入异步通道的概念�
 
 目前 AIO 还没有广泛应用，Netty 也是基于NIO, 而不是AIO， 因此我们就不详解AIO了
 
-#### BIO,NIO,AIO对比
+### BIO,NIO,AIO对比
 
 |          | BIO      | NIO        | AIO        |
 | -------- | -------- | ---------- | ---------- |
@@ -678,5 +867,25 @@ AIO 即 NIO2.0，叫做异步不阻塞的 IO。AIO 引入异步通道的概念�
 | 可靠性   | 差       | 好         | 好         |
 | 吞吐量   | 低       | 高         | 高         |
 
-### Netty高性能架构设计
+## Netty高性能架构设计
+
+![](https://netty.io/images/components.png)
+
+### Netty解决的问题
+
+NIO类库API比较多，必须要掌握Selector,ServerSocketChannel,SocketChannel,ByteBuffer等。多线程使用高。Selector沦询问题
+
+Netty：对java的NIO做了API的封装，
+
+适用于各种传输类型的统一API-阻塞和非阻塞套接字
+
+基于灵活且可扩展的事件模型，可将关注点明确分离
+
+高度可定制的线程模型-单线程，一个或多个线程池，例如SEDA
+
+真正的无连接数据报套接字支持（从3.1开始），完整的SSL/TLS和StartTLS支持
+
+### 线程模型
+
+目前存在的线程模型有：**传统的阻塞I/O服务模型，Reactor模式**
 
