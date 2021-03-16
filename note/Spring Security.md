@@ -4,7 +4,7 @@
 
 Spring Security提供一套的授权功能。这里有三个主要的热点区域，授权web请求、授权方法是否可以被调用和授权访问单个域对象的实例。
 
-<font color="red" font-size="18px">spring本质就是一个过滤器链。</font>
+<font color="red" font-size="18px">spring security本质就是一个过滤器链。</font>
 
 ### demo实例:
 
