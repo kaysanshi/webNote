@@ -191,7 +191,7 @@ WebApplicationContext是专门为Web应用准备的，它允许从相对于Web�
 
 #### IOC容器的初始化
 
-**在看具体的容器初始化先看下重要的BeanDefinition的类图**
+**在看具体的容器初始化先看下重要的BeanDefinition的类图**  
 
 [![6eD13Q.png](https://s3.ax1x.com/2021/03/05/6eD13Q.png)](https://imgtu.com/i/6eD13Q)
 
@@ -204,7 +204,9 @@ BeanDefinition是配置文件<bean>元素标签在容器中内部表示形式。
 - `ConfigurationClassBeanDefinition`处理`@Bean`注解
 - `ScannedGenericBeanDefinition`处理`@Component`注解
 
-IoC容器的初始化包括**BeanDefinition的Resouce定位**、**载入**和**注册**这三个基本的过程
+**BeanDefinition的接口在org.springframework.beans.factory.config包下**
+
+> **IoC容器的初始化包括BeanDefinition的Resouce定位、载入和注册这三个基本的过程**
 
 **BeanDefinition**描述和定义了创建一个Bean需要的所有信息，属性，构造函数参数以及访问它们的方法。还有其他一些信息，比如这些定义来源自哪个类等等信息
 
@@ -540,6 +542,7 @@ protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			return count;
 		}
 		...
+        ...
 	}
 // Spring的BeanDefinion是怎样按照Spring的Bean语义要求进行解析并转化为容器内部数据结构的，这个过程是在registerBeanDefinitions (doc, resource)中完成的
 public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
@@ -558,13 +561,26 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 	 * @see #setDocumentReaderClass
 	 */
 	protected BeanDefinitionDocumentReader createBeanDefinitionDocumentReader() {
+        // 返回了documentReader，为具体的spring bean 解析过程做好准备
 		return BeanUtils.instantiateClass(this.documentReaderClass);
 	}
 /**
 * BeanDefinitionDocumentReader中的 registerBeanDefinitions
 */
+@Override
+public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
+    this.readerContext = readerContext;
+    doRegisterBeanDefinitions(doc.getDocumentElement());
+}
+
 
 ```
+
+BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得到document对象，但这些document对象并没有按照Spring的Bean规则进行解析。在完成通用的XML解析以后，才是按照Spring的Bean规则进行解析的地方，按照Spring的Bean规则进行解析的过程是在documentReader中实现的。这里使用的documentReader是默认设置好的DefaultBeanDe-finitionDocumentReader。这个DefaultBeanDefinitionDocumentReader的创建是在以下的方法里完成的，然后再完成BeanDefinition的处理，处理的结果由BeanDefinition-Holder对象来持有。这个BeanDefinitionHolder除了持有BeanDefinition对象外，还持有了其他与BeanDefinition的使用相关的信息，比如Bean的名字、别名集合等。这个Bean-DefinitionHolder的生成是通过对Document文档树的内容进行解析来完成的，可以看到这个解析过程是由BeanDefinitionParserDelegate来实现（具体在processBeanDefinition方法中实现）的，同时这个解析是与Spring对BeanDefinition的配置规则紧密相关的
+
+
+
+
 
 ##### BeanDefinition的注册
 
@@ -651,6 +667,98 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 			clearByTypeCache();
 		}
 	}
+
+
+	/**
+	 * Register each bean definition within the given root {@code <beans/>} element.
+	 */
+	@SuppressWarnings("deprecation")  // for Environment.acceptsProfiles(String...)
+	protected void doRegisterBeanDefinitions(Element root) {
+		// Any nested <beans> elements will cause recursion in this method. In
+		// order to propagate and preserve <beans> default-* attributes correctly,
+		// keep track of the current (parent) delegate, which may be null. Create
+		// the new (child) delegate with a reference to the parent for fallback purposes,
+		// then ultimately reset this.delegate back to its original (parent) reference.
+		// this behavior emulates a stack of delegates without actually necessitating one.
+		BeanDefinitionParserDelegate parent = this.delegate;
+		this.delegate = createDelegate(getReaderContext(), root, parent);
+
+		if (this.delegate.isDefaultNamespace(root)) {
+			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
+			if (StringUtils.hasText(profileSpec)) {
+				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
+						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+				// We cannot use Profiles.of(...) since profile expressions are not supported
+				// in XML config. See SPR-12458 for details.
+				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Skipped XML bean definition file due to specified profiles [" + profileSpec +
+								"] not matching: " + getReaderContext().getResource());
+					}
+					return;
+				}
+			}
+		}
+
+		preProcessXml(root);
+		parseBeanDefinitions(root, this.delegate);
+		postProcessXml(root);
+
+		this.delegate = parent;
+	}
+
+	protected BeanDefinitionParserDelegate createDelegate(
+			XmlReaderContext readerContext, Element root, @Nullable BeanDefinitionParserDelegate parentDelegate) {
+
+		BeanDefinitionParserDelegate delegate = new BeanDefinitionParserDelegate(readerContext);
+		delegate.initDefaults(root, parentDelegate);
+		return delegate;
+	}
+
+	/**
+	 * Parse the elements at the root level in the document:
+	 * "import", "alias", "bean".
+	 * @param root the DOM root element of the document
+	 */
+	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		if (delegate.isDefaultNamespace(root)) {
+			NodeList nl = root.getChildNodes();
+			for (int i = 0; i < nl.getLength(); i++) {
+				Node node = nl.item(i);
+				if (node instanceof Element) {
+					Element ele = (Element) node;
+					if (delegate.isDefaultNamespace(ele)) {
+						parseDefaultElement(ele, delegate);
+					}
+					else {
+						delegate.parseCustomElement(ele);
+					}
+				}
+			}
+		}
+		else {
+			delegate.parseCustomElement(root);
+		}
+	}
+
+	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
+		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+			importBeanDefinitionResource(ele);
+		}
+		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+			processAliasRegistration(ele);
+		}
+		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+			processBeanDefinition(ele, delegate);
+		}
+		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
+			// recurse
+			doRegisterBeanDefinitions(ele);
+		}
+	}
+
+
+
 ```
 
 
