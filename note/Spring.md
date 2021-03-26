@@ -515,7 +515,7 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
         throw new BeanDefinitionStoreException(
             "Detected cyclic loading of " + encodedResource + " - check your import definitions!");
     }
-	// 的到Xml 文件并用InputStream准备读取
+	// 得到Xml 文件并用InputStream准备读取
     try (InputStream inputStream = encodedResource.getResource().getInputStream()) {
         InputSource inputSource = new InputSource(inputStream);
         if (encodedResource.getEncoding() != null) {
@@ -763,9 +763,10 @@ BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得
 		}
 
 		BeanDefinition oldBeanDefinition;
-
+		// 是否由旧的未注册的
 		oldBeanDefinition = this.beanDefinitionMap.get(beanName);
 		if (oldBeanDefinition != null) {
+            // 是否允许Bean定义重复
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 						"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
@@ -796,6 +797,7 @@ BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+            // 
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
