@@ -751,9 +751,10 @@ BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得
 
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
-
+		// 如果BeanDefinition是AbstractBeanDefinition则进行验证
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
+                // 创建实例
 				((AbstractBeanDefinition) beanDefinition).validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -763,10 +764,10 @@ BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得
 		}
 
 		BeanDefinition oldBeanDefinition;
-		// 是否由旧的未注册的
+		// 尝试从缓存中加载BeDefinition
 		oldBeanDefinition = this.beanDefinitionMap.get(beanName);
 		if (oldBeanDefinition != null) {
-            // 是否允许Bean定义重复
+            // 是否允许Bean定义覆盖，已经存在且不允许覆盖则抛出异常
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 						"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
@@ -797,17 +798,21 @@ BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
-            // 
+            // 缓存中无对应的BeanDefinition，则直接注册
+            // 如果beanDefinition已经被标记为创建(为了解决单例bean的循环依赖问题)
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
+                    
 					this.beanDefinitionMap.put(beanName, beanDefinition);
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
 					updatedDefinitions.addAll(this.beanDefinitionNames);
 					updatedDefinitions.add(beanName);
 					this.beanDefinitionNames = updatedDefinitions;
 					if (this.manualSingletonNames.contains(beanName)) {
+                        // 创建Set集合并将manualSingletonNames加入其中
 						Set<String> updatedSingletons = new LinkedHashSet<>(this.manualSingletonNames);
+                        // 移除新注册的beanName
 						updatedSingletons.remove(beanName);
 						this.manualSingletonNames = updatedSingletons;
 					}
@@ -821,7 +826,7 @@ BeanDefinition的载入包括两部分，首先是通过调用XML的解析器得
 			}
 			this.frozenBeanDefinitionNames = null;
 		}
-
+		// 重置BeanDefinition
 		if (oldBeanDefinition != null || containsSingleton(beanName)) {
 			resetBeanDefinition(beanName);
 		}
