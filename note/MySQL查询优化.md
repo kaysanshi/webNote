@@ -759,19 +759,334 @@ explain extended select * from t1 where t1.a1 <any(select a2 from t2 where t2.a2
 | 1    | primary     | t1    | all  | null | using where |
 | 1    | subquery    | t2    | all  | null | using where |
 
-#### 视图重写：
+#### 视图重写与等价谓词重写：
 
-#### 等价谓词重写：
+##### 视图概念
+
+视图是数据库中基于表中的一种对象，把表的查询固化，这种固化就是视图.
+
+```sql
+CREATE
+	[OR REPLACE]
+	[ALGORITHM={UNDEFINED|MERGE|TEMPTABLE}]
+	[DEFINER={user|current_USER}]
+	[SQL SECURITY {DEFINER | INVOKER}]
+	VIEW view_name[(column_list)]
+	as select_statement [With[CASCADED | LOCAL] CHECK OPTION]
+```
+
+##### 视图类型
+
+1.用SPJ格式构造的视图，称为简单视图。
+
+CREATE VIEW AS Select x,y,z from t;
+
+2.用非SPJ格式构造的视图（带有GROUP BY 等操作） 称为复杂视图。
+
+CREATE VIEW v2 AS SELECT x,y,z from t ORDER BY x;
+
+##### 什么是视图重写
+
+查询语句中出现视图对象
+
+查询优化后，视图对象消失
+
+消失的视图对象的查询语句，融合到初始查询语句中。
+
+**视图重写实例**
+
+```sql
+create table t_a(a INt,b INt);
+create VIEW v_a as Select * from t_a
+
+#基于视图的查询命令
+select col_a from v_a where col_b>100
+
+#经过视图重写后可变为如下形式
+select col_a from (select col_a,col_b from t_a) where col_b>100
+
+#未来经过优化后可以变换为如下的等价形式
+select col_a from t_a where col_b>100;
+```
+
+##### mysql视图重写准则
+
+1. 优化方法是把视图转为对基表的查询，然后对类似子查询的优化
+2. mysql通常之呢个重写简单的视图，复杂的视图不能重写
+3. .Mysql支持对视图进行优化
+
+```sql
+create table t1(a1 INt,b1 INt);
+create table t2(a2 INt,b2 INt);
+create table t3(a3 INt,b3 INt);
+
+#创建简单的视图
+Create VIEW v_t_1_2 as select * from t1,t2;
+
+#创建复杂的视图
+create view v_t_gd_1_2 as select Distinct t1.b1 from t1,t2,Group by t1.b1,t2.b2
+
+```
+
+##### 什么是等价谓词重写
+
+把逻辑表达式重写成等价的且效率更高的形式。**能够有效提高查询执行效率。**  基本上都是为了使用索引
+
+##### 常见的等价谓词重写实例1：LIKE 规则
+
+###### LIKE 规则
+
+like谓词是SQL标准支持的一种模式匹配比较的操作，
+
+Like规则是对LIke谓词的等价重写，即改写Like谓词为其他等价的谓词，以更好地利用索引进行优化。
+
+```sql
+name LIke 'Abc%'
+重写为： name >='Abc' AND name <'Abd'
+```
+
+转换前针对like谓词，只能进行全表扫描，如果name列存在索引，则转换后可以进行索引扫描
+
+##### 常见的等价谓词重写实例2 ：BETWEEN  AND 
+
+between -and 是sql标准支持的一种范围比较操作。between -and规则是对between -and谓词的等价重写，即改写between -and谓词为其他等价的谓词，以更好地利用索引进行优化。
+
+```sql
+sno between 10 and 20
+重写为： sno >=10 AND sno <=20
+如果sno列存在索引，则转换后可以进行索引扫描
+```
+
+##### 常见的等价谓词重写实例3 ：IN转为OR
+
+In是指的是in操作符操作。
+
+in转为or的规则，就是in谓词的 or等价重写，即改写IN谓词为等价的OR谓词，以更好地利用索引进行优化。
+
+将in谓词等价重写为若干OR谓词 **可能**会提高查询效率
+
+```
+age in (8,12,21)
+重写为 age=8 OR age =12 OR age = 21
+in转为OR的规则是否提高查询效率，需要看数据库对IN谓词是否支持全表扫描。
+如果数据库对IN谓词支持全表扫描，且OR谓词中表的age列上存在索引，则转换后查询效率会提高
+```
+
+##### 常见的等价谓词重写实例4 ：IN转为ANY
+
+in转为any的规则，就是in谓词的 any等价重写，即改写IN谓词为等价的any谓词，以更好地利用索引进行优化。
+
+将in谓词等价重写为若干OR谓词,OR谓词可转ANY谓词，所以in可以等价重写为ANY谓词  **可能**会提高查询效率
+
+##### 常见的等价谓词重写实例5 ：OR转为ANY
+
+OR转为any的规则，就是OR谓词的 any等价重写，即改写OR谓词为等价的any谓词，以更好地利用MIN/MAX进行优化。
+
+##### 常见的等价谓词重写实例6 ：ALL/ANY转换为聚焦函数
+
+ALL/ANY转换为聚集函数规则，就是ALL/ANY谓词改写为等价的聚集函数MIN/MAX谓词操作，以更好地利用MIN/MAX进行优化
+
+```
+sno > ANY (10,2*5+3,sqrt(9))
+重写为 sno>sqrt(9)
+```
+
+##### 常见的等价谓词重写实例7 ：Not规则
+
+not规则重写好处：如果col_1上建立了索引，则可以用索引扫描代替全表扫描提高查询效率
+
+```
+NOT (col1!=2) ===> col1=2
+```
+
+##### 常见的等价谓词重写实例8 ：OR重写并集规则
+
+```
+Select * from student where (sex='f' and age>15) OR age>18
+# 及色号sex 和age都存在索引，数据库可能对示例中的where语句强迫查询优化器使用顺序扫描，因为这个语句要检索的是OR操作的集合
+改写为一下方式
+select * from student where sex= 'f and age >15'
+union
+select * from student where age>18
+#改写后都利用了索引进行扫描
+```
 
 #### 条件化简：
 
-#### 外连接消除：
+##### 什么是条件 
 
-#### 嵌套连接的消除：
+sql查询语句中，对元组进行过滤和连接的表达式，从形式上出现在 where join having 
 
-#### 连接消除：
+```
+select 
+[ where where_condition]
+[HAVING where_codition]
+
+join_codition:
+	ON coditional
+```
+
+##### 条件优化技术
+
+###### 条件下推(系统自己优化，无需人为干涉)
+
+把与单表相关的条件，放到单表进行扫描的过程中执行
+
+```
+select * from A,B
+where A.a=1 and A.b=B.b
+扫描顺序：
+1.扫描A表，并带有条件A.a=1把A作为嵌套循环的外表
+2.扫描B表，执行连接操作，并带有过滤条件A.b=B.b
+```
+
+###### 条件化简
+
+where join-ON  having  
+
+利用等式不等式的性质进行化简
+
+**把Having条件并入到Where 条件。**
+
+便于同于，集中化简条件字句，节约化简时间。 只有SQL不存在GROUP BY条件或聚集函数的情况下，才能够将Having条件与Where条件进行合并
+
+```
+select * from t3 where a3>1 having b3=3
+转换为：
+select * from t3 where a3>1 and b3=3
+```
+
+**去除表达式中冗余括号 - 减少CPU 消耗**
+
+简少语法分析是产生的AND和OR树的层次
+
+```
+(（A AND b）and(c AND d))
+化简为 a AND b AND c AND d
+```
+
+**常量传递**
+
+对不同关系可以使得条件分离后 有效实施“选择下推” ，从而极大减少中间的关系的规模
+
+```
+col1=col2 AND col2=3
+化简为
+col1 =3 and col2=3
+```
+
+操作符“=，<,>,<=,>=,<>,Like”中的任何一个 在“col <操作符> col2”条件中都可能会发生常量传递。
+
+**消除死码**
+
+化简条件，将不必要的条件去除。
+
+```
+where(0>1 AND s1=5)
+"0>1" 恒为假，则where条件恒为假
+```
+
+**表达式计算**
+
+对可以求解的表达式进行计算得出结果
+
+```
+where col1=1+2
+转换为
+where col1=3
+```
+
+**等式变换**
+
+化简条件，从而改变某些表的访问路径
+
+**不等式变换**
+
+化简条件，将不必要的条件去除。
+
+```
+a>10 AND b=6 and a>2
+可化简为
+b=6 and a>10
+```
+
+**布尔表达式变化---谓词传递闭包**
+
+一些比较操作，如“<”,">" 具有传递性
+
+```
+a>b and b>2
+可以推导出 a>b and b>2 and a>2
+这样就可以减少比较a>b的元组了
+```
+
+**布尔表达式变化---转换为等价的合取范式**
+
+任何一个布尔表达式都能被转换为一个等价的合取范式
+
+**布尔表达式变化--索引的使用**
+
+如果一个合取项存在索引，则先判断索引是否可用，如果能利用索引快速得出合取项的值，则能加快判断速度。同理，or 表达式中的子项也可以利用索引。
+
+##### MYSQl 对条件简化的支持
+
+**把Having条件并入到Where 条件 ：不支持。**
+
+**去除表达式中冗余括号 - 减少CPU 消 耗  ： 支持**
+
+**常量传递 ：支持**
+
+**消除死码 ： 支持**
+
+**表达式计算 ：支持**
+
+**等式变换 ：不支持**
+
+**不等式变换 ：不支持**
+
+**布尔表达式变化---谓词传递闭包：不支持**
+
+**布尔表达式变化---转换为等价的合取范式 ：支持**
+
+**布尔表达式变化--索引的使用 ： and 操作符是可以交换的：支持**
+
+**IS NULL 表达式 优化：支持，利用索引，支持“ is null” 表达式的优化。**
+
+#### 外连接消除，嵌套连接的消除与连接消除
+
+left join :左外连接，
+
+左外连接结果集包括：Left Out join 子句中指定的左表的所有行，而不仅仅是连接列所匹配的行，如果左表的某行在右边表中没有匹配行，则在相关联的结果集中右表的所有选择列表列均为空值。
+
+right join ：右外连接
+
+右向外连接是左外连接的反相连接，将返回右边表的所有行，如果右表的某行在左表中没有匹配行，则为左表返回空值。
+
+full join: 全外连接
+
+全外连接返回左表和右表中的所有的行，当某行在另一个表中没有匹配行时，则另一个表中没有匹配行时，则另一个表的选择列表列包含空值，如果表之间有匹配行，则整个结果集行包含基表的数据值。
+
+**外连接消除**
+
+把外连接变为内连接。
+
+A OUTER JOIN B 变形为 A JOIN B
+
+**外连接消除的意义**
+
+1.查询优化器在处理外连接操作时所需执行的操作和时间多余内连接。
+
+2.外连接消除后，优化器在选择多表连接顺序时，可以有更多灵活的选择，从而可以选择更好的表连接顺序，加快查询执行的速度。
+
+3.表的一些连接算法在将规模小的或筛选条件最为严格的表作为“外表” （放在连接顺序的最前面，是多层循环体的外层循环）可以减少不必要的I/O开销，能加快算法执行的速度。
+
+
+
+
 
 #### 语义优化：
+
+
 
 #### 非SPJ的优化：
 

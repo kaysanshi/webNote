@@ -122,6 +122,7 @@ redis> get foo
 
 ```
 [root@localhost src]# ./redis-server /usr/local/bin/redis.conf
+
 [root@localhost src]# ps aux|grep redis
 root 97629  0.0  0.7 140912 7396 ? Ssl  11:13   0:00 ./redis-server *:6379
 root  97915  0.0  0.0 112824 976 pts/0  R+ 11:13 0:00 grep --color=auto redis
