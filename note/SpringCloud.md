@@ -1089,6 +1089,8 @@ Eureka Server需要随时维持最新的服务实例信息，所以在注册表�
 
 Eureka Client是一个Java客户端， 用于简化Eureka Server的交互，客户端同时也具备一个内置的、 使用轮询（round-robin）负载算法的负载均衡器。在应用启动后，将会向Eureka Server发送心跳（默认周期为30秒），以证明当前服务是可用状态 (30秒发送一次心跳更新租约。 如果客户端几次无法续签租约)。 如果Eureka Server在一定的时间（默认90秒）未收到客户端的心跳，Eureka Server将会从服务注册表中把这个服务节点移除。 任何区域的客户端都可以查找注册表信息（每30秒发生一次）以查找其服务（可能在任何区域）并进行远程调用。
 
+DiscoveryClient来源于spring-cloud-client-discovery，是Spring Cloud中定义用来服务发现的公共接口，在Spring Cloud的各类服务发现组件中（如NetflixEureka或Consul）都有相应的实现。它提供从服务注册中心根据serviceId获取到对应服务实例信息的能力。当一个服务实例拥有DiscoveryClient的具体实现时，就可以从服务注册中心中发现其他的服务实例。在Eureka Client中注入DiscoveryClient，并从Eureka Server获取服务实例的信息
+
 
 
 #### **Eureka Server的自我保护机制**
@@ -1100,6 +1102,38 @@ Eureka Client是一个Java客户端， 用于简化Eureka Server的交互，客�
 - 当网络稳定时，当前实例新的注册信息会被同步到其它节点中
 
 因此， Eureka可以很好的应对因网络故障导致部分节点失去联系的情况，而不会像ZooKeeper那样使整个注册服务瘫痪。
+
+
+
+#### 服务发现原理
+
+Eureka最初设计的目的是AWS（亚马逊网络服务系统）中用于部署分布式系统，所以首先对AWS上的区域（Regin）和可用区（Availability Zone）进行简单的介绍。
+
+区域：AWS根据地理位置把某个地区的基础设施服务集合称为一个区域，区域之间相对独立。在架构图上，us-east-1c、us-east-1d、us-east-1e表示AWS中的三个设施服务区域，这些区域中分别部署了一个Eureka集群。
+
+可用区：AWS的每个区域都是由多个可用区组成的，而一个可用区一般都是由多个数据中心（简单理解成一个原子服务设施）组成的。可用区与可用区之间是相互独立的，有独立的网络和供电等，保证了应用程序的高可用性。在上述的架构图中，一个可用区中可能部署了多个Eureka，一个区域中有多个可用区，这些Eureka共同组成了一个Eureka集群。
+
+[![cmmBB8.png](https://z3.ax1x.com/2021/04/02/cmmBB8.png)](https://imgtu.com/i/cmmBB8)
+
+□ Application Service：是一个Eureka Client，扮演服务提供者的角色，提供业务服务，向Eureka Server注册和更新自己的信息，同时能从Eureka Server注册表中获取到其他服务的信息。
+
+□ Eureka Server：扮演服务注册中心的角色，提供服务注册和发现的功能。每个Eureka Cient向Eureka Server注册自己的信息，也可以通过EurekaServer获取到其他服务的信息达到发现和调用其他服务的目的。
+
+□ Application Client：是一个Eureka Client，扮演了服务消费者的角色，通过Eureka Server获取注册到其上其他服务的信息，从而根据信息找到所需的服务发起远程调用。
+
+□ Replicate:Eureka Server之间注册表信息的同步复制，使Eureka Server集群中不同注册表中服务实例信息保持一致。
+
+□ Make Remote Call：服务之间的远程调用。
+
+□ Register：注册服务实例，Client端向Server端注册自身的元数据以供服务发现。
+
+□ Renew：续约，通过发送心跳到Server以维持和更新注册表中服务实例元数据的有效性。当在一定时长内，Server没有收到Client的心跳信息，将默认服务下线，会把服务实例的信息从注册表中删除。
+
+□ Cancel：服务下线，Client在关闭时主动向Server注销服务实例元数据，这时Client的服务实例数据将从Server的注册表中删除。
+
+□ Get Registry：获取注册表，Client向Server请求注册表信息，用于服务发现，从而发起服务间远程调用。
+
+
 
 #### **Eureka和ZooKeeper**
 
