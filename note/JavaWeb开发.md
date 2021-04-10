@@ -190,7 +190,7 @@ HTTPS （全称：Hyper Text Transfer Protocol over SecureSocket Layer），是�
 
 ![img](https://pics3.baidu.com/feed/2cf5e0fe9925bc31cf2fb32c368c95b9ca1370eb.jpeg?token=e7790f915cdf3d8db287d67ad70db3f6&s=7E28346313CF614B4AFC40DA0000C0B1)
 
-### Http整个流程
+### Https请求的整个流程
 
 **一个HTTPS请求实际上包含了两次HTTP传输，可以细分为8步。**
 
@@ -216,11 +216,105 @@ HTTPS （全称：Hyper Text Transfer Protocol over SecureSocket Layer），是�
 
 参考：《菜鸟教程》
 
+## TCP与UDP
+
+在介绍TCP与UDP之前我们先看下计算机网络分层模型。OSI七层网络模型和TCP/IP四层概念模型，以及对应的网络协议
+
+TCP: 传输协议TCP
+
+UDP：用户数据协议UDP
+
+[![cKkgQP.png](https://z3.ax1x.com/2021/04/04/cKkgQP.png)](https://imgtu.com/i/cKkgQP)
+
+### TCP
+
+TCP服务模型包括面向连接服务和可靠数据传输服务。当某个应用程序调用TCP作为其运输协议时，该应用程序就能获得来自TCP的这两种服务。
+
+- 面向连接服务：在应用层数据报文开始流动之前，TCP让客户和服务器相互交换运输层控制的信息。这个握手过程提示客户端和服务端做好准备。在握手阶段一个TCP连接就是两个进程的套接字之间建立了，这个过程是双工的。即连接双方的进程可以在此连接上同时进行报文的收发。当应用程序结束报文发送时，必须拆除该连接。
+- 可靠的数据传输服务：通信进程能够依靠TCP，无差错，按适当的顺序交互所有的数据，当应用程序的一端将字节流传进套接字时。他能够依靠TCP将相同的字节流交互到接受方的套接字，而没有字节的丢失和冗余。
+
+#### TCP连接
+
+[![cQ9OXT.png](https://z3.ax1x.com/2021/04/05/cQ9OXT.png)](https://imgtu.com/i/cQ9OXT)
+
+**TCP连接的建立过程主要解决以下3个问题：**
+
+1. 要使每一方都能够确定对方的存在
+2. 要允许双方协商一些参数（如：最大的窗口值，）
+3. 能够对运输实体资源进行分配。
+
+### TCP 三次握手四次挥手原理
+
+在谢希仁著《计算机网络》第四版中讲“三次握手”的目的是“为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误”。在另一部经典的《计算机网络》（Andrew S.Tanenbaum著，第四版）一书中讲“三次握手”的目的是为了解决“网络中存在延迟的重复分组”的问题。这两种不同的表述其实阐明的是同一个问题。
+
+[![cQP1i9.png](https://z3.ax1x.com/2021/04/05/cQP1i9.png)](https://imgtu.com/i/cQP1i9)
+
+- 第一次握手：建立连接，客户端发送sync包（sync=x）到服务器，并进入SYN_SENT状态等待服务器确认;SYN：同步序列编号（Synchronize Sequence Numbers)   。。 首部的同步位SYN=1，初始序号seq=x，SYN=1的报文段不能携带数据，但要消耗掉一个序号。
+- 第二次握手：服务器收到客户端的Syn包，必须确认客户的SYN(ack=x+1) 同时自己也发送一个SYN包(syn=y),即SYN+ACK包，此时服务器进入SYN_RECV状态； 在确认报文段中SYN=1，ACK=1，确认号ack=x+1，初始序号seq=y
+- 第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送确认包ACK(ack=y+1)发送完毕后，客户端和服务端进入ESTABLISHED(TCP连接成功)状态，完成三次握手。 确认报文段ACK=1，确认号ack=y+1，序号seq=x+1（初始为seq=x，第二个报文段所以要+1），ACK报文段可以携带数据，不携带数据则不消耗序号。
+
+#### TCP为何采用三次握手而不是采用两次握手呢
+
+**现在这个有两种解释：第一种是网上流传的：**
+
+3次握手完成两个重要的功能，既要双方做好发送数据的准备工作(双方都知道彼此已准备好)，也要允许双方就初始序列号进行协商，这个序列号在握手过程中被发送和确认。
+
+​       现在把三次握手改成仅需要两次握手，死锁是可能发生的。作为例子，考虑计算机S和C之间的通信，假定C给S发送一个连接请求分组，S收到了这个分组，并发 送了确认应答分组。按照两次握手的协定，S认为连接已经成功地建立了，可以开始发送数据分组。可是，C在S的应答分组在传输中被丢失的情况下，将不知道S 是否已准备好，不知道S建立什么样的序列号，C甚至怀疑S是否收到自己的连接请求分组。在这种情况下，C认为连接还未建立成功，将忽略S发来的任何数据分 组，只等待连接确认应答分组。而S在发出的分组超时后，重复发送同样的分组。这样就形成了死锁
+
+**第二种是谢希仁版的《计算机网络》中的例子：**
+
+[![cQiMOf.png](https://z3.ax1x.com/2021/04/05/cQiMOf.png)](https://imgtu.com/i/cQiMOf)
+
+**注：上图黄色部分说明了为什么不可以使用两次握手的问题。**
+
+#### TCP为什么连接的时候是三次握手，关闭的时候却是四次握手？
+
+先看下四次挥手的释放连接的过程。以下来源于谢希仁编著的《计算机网络》(第七版)
+
+[![cQFu4J.png](https://z3.ax1x.com/2021/04/05/cQFu4J.png)](https://imgtu.com/i/cQFu4J)
+
+[![cQFQ3R.png](https://z3.ax1x.com/2021/04/05/cQFQ3R.png)](https://imgtu.com/i/cQFQ3R)
+
+**那么就来解答为何关闭时需要四次握手？**
+
+因为当Server端收到Client端的SYN连接请求报文后，可以直接发送SYN+ACK报文。其中ACK报文是用来应答的，SYN报文是用来同步的。但是关闭连接时，当Server端收到FIN报文时，很可能并不会立即关闭SOCKET，所以只能先回复一个ACK报文，告诉Client端，"你发的FIN报文我收到了"。只有等到我Server端所有的报文都发送完了，我才能发送FIN报文，因此不能一起发送。故需要四步握手。
+
+#### 如果建立了连接，但客户端突然出现故障怎么办？
+
+TCP还设有一个保活计时器，客户端如果出现故障，服务器不能一直等下去，白白浪费资源。服务器每收到一次客户端的请求后都会重新复位这个计时器，时间通常是设置为2小时，若两小时还没有收到客户端的任何数据，服务器就会发送一个探测报文段，以后每隔75秒发送一次。若一连发送10个探测报文仍然没反应，服务器就认为客户端出了故障，接着就关闭连接。
+
+### UDP
+
+UDP是一个不提供不必要服务的轻量级运输协议，他仅提供最小服务，**UDP是无连接的**，因此在两个进程通信没有握手过程中。UDP协议提供一种不可靠数据传输服务，也就是说，当进程将一个报文发送进UDP套接字时，UDP协议并不保证该报文将到达进程，同时也不保证报文的顺序。**UDP使用尽最大努力交付**，**UDP是面向报文的。**
+
+**UDP没有包含拥塞控制机制**，所以UDP的发送端是可以用它选定的任何速率向下层（网络层）注入数据，
+
+**UDP支持一对一，一对多，多对一和多对多的交互通信**
+
+**UDP的首部开销小，只有8字节，比TCP的20字节的首部要短**
+
+[![cMokdS.png](https://z3.ax1x.com/2021/04/05/cMokdS.png)](https://imgtu.com/i/cMokdS)
+
+
+
+### TCP与UDP区别
+
+- TCP是面向连接的；UDP是无连接的，即发送数据之前不需要建立连接。
+- TCP提供可靠的服务。通过TCP连接传输的数据，无差错，不丢失，不重复，且按序到达；UDP尽量保证到达，不保证可靠交互。
+- TCP是面向字节流，实际tcp连接传送的数据可看成一连串的无结构的字节流；UDP是面向报文的，UDP没有阻塞控制，因此网络出现拥堵不会使得源主机发送效率降低（实时应用有用）
+- 每条TCP连接只能点对点，UDP支持一对一，一对多，多对多的交互通信。
+- TCP首部开销20字节；UDP的首部开销小，只有8个字节
+- TCP的逻辑通信信道是双全工的可靠的信道，UDP则是不可靠信道。
+
 ## Request与Response
+
+在前面Http请求的文章中我们看到一个http请求包含请求头，请求体，响应头和响应体，那么对于这些请求方面和响应方面我们与浏览器交互标准是有了，我们后端是不是需要一个关于请求和响应的API,我们为了方便描述一个http请求出现了Request和Response概念。
+
+[![cdkc11.png](https://z3.ax1x.com/2021/04/10/cdkc11.png)](https://imgtu.com/i/cdkc11)
 
 ### Request
 
-request这个对象不用事先声明，就可以在JSP网页中使用，在编译为Servlet之后，它会转换为javax.servlet.http.HttpServletRequest形态的对象，HttpServletRequest对象是有关于客户端所发出的请求的对象，只要是有关于客户端请求的信息，都可以藉由它来取得，例如请求标头、请求方法、请求参数、客户端IP，客户端浏览器等等信息
+request这个对象不用事先声明，就可以在JSP网页中使用，在编译为Servlet之后，它会转换为javax.servlet.http.HttpServletRequest形态的对象，HttpServletRequest对象是有关于客户端所发出的请求的对象，只要是有关于客户端请求的信息，都可以由它来取得，例如请求标头、请求方法、请求参数、客户端IP，客户端浏览器等等信息
 
 **ServletRequest -- 通用request，提供一个request应该具有的最基本的方法.HttpSerletRequest是Rquest的子类针对http协议进行了进一步的增强**
 
@@ -228,12 +322,39 @@ request这个对象不用事先声明，就可以在JSP网页中使用，在编�
 
 ##### 获取客户机信息
 
-  getRequestURL方法返回客户端发出请求完整URL
-  getRequestURI方法返回请求行中的资源名部分
-  getQueryString 方法返回请求行中的参数部分
-  getRemoteAddr方法返回发出请求的客户机的IP地址
-   getMethod得到客户机请求方式
-   getContextPath 获得当前web应用虚拟目录名称
+  getRequestURL()   方法返回客户端发出请求完整URL
+  getRequestURI()    方法返回请求行中的资源名部分
+  getQueryString()   方法返回请求行中的参数部分
+  getRemoteAddr()  方法返回发出请求的客户机的IP地址
+  getMethod()     得到客户机请求方式
+  getContextPath()   获得当前web应用虚拟目录名称
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//1.获取客户端请求的完整的url
+		String url=request.getRequestURL().toString();
+		System.out.println(url);
+		//2.获取客户端请求的资源的部分名称 
+		String uri=request.getRequestURI();
+		System.out.println(uri);
+		//3.获取请求行中的参数部分
+		String pram=request.getQueryString();
+		System.out.println(pram);
+		//4.返回客户端的ip地址(*)
+		String ip=request.getRemoteAddr();
+		System.out.println(ip);
+		//5.获取客户机的请求方式
+		String method=request.getMethod();
+		System.out.println(method);
+		//6.获取当前web的应用的名称
+		String name=request.getContextPath();
+		System.out.println(name);
+		
+		//请求转发时以后有这个方法
+		response.sendRedirect(request.getContextPath()+"/index.jsp");
+	}
+```
 
 ##### 获取请求头信息
 
@@ -245,28 +366,84 @@ request这个对象不用事先声明，就可以在JSP网页中使用，在编�
        getIntHeader(name)方法  --- int
        getDateHeader(name)方法 --- long(日期对应毫秒)
 
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//获取客户机的请求头
+		//String value=request.getHeader("Host");
+		//System.out.println(value);
+		//遍历所有的请求头
+		Enumeration<String> enument=request.getHeaderNames();
+		while(enument.hasMoreElements()){
+			String name=enument.nextElement();
+			String values=request.getHeader(name);
+			System.out.println(name+":"+values);
+		}
+	}
+```
+
 ##### 获取请求参数
 
 request.getParameter()
 
- 浏览器以什么编码来发送请求参数? 浏览器以什么编码打开的表单页面,就用什么编码发送这个页面提交的数据。服务器以什么编码来打开呢?如果不指定,则使用ISO8859-1,这样如果请求参数中有中文必然就乱码了
-对于POST提交,可以设置request.setCharacterEncoding("utf-8");明确的通知服务器以浏览器发送过来的编码来打开数据就可以解决乱码但是上面的方法只对请求中实体内容部分起作用,所以GET提交的乱码并不能解决.
- 对于GET提交的乱码,只能手动的进行编解码从而解决乱码问题:
-            String username = request.getParameter("username");
-	 username = new String(username.getBytes("iso8859-1"),"utf-8");
+​       浏览器以什么编码来发送请求参数? 浏览器以什么编码打开的表单页面,就用什么编码发送这个页面提交的数据。服务器以什么编码来打开呢?如果不指定,则使用ISO8859-1,这样如果请求参数中有中文必然就乱码了
+​      对于POST提交,可以设置request.setCharacterEncoding("utf-8");明确的通知服务器以浏览器发送过来的编码来打开数据就可以解决乱码但是上面的方法只对请求中实体内容部分起作用,所以GET提交的乱码并不能解决. 对于GET提交的乱码,只能手动的进行编解码从而解决乱码问题:
+​     ``String username = request.getParameter("username");``
+​	 `username = new String(username.getBytes("iso8859-1"),"utf-8");`
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		/*
+		 * post提交乱码解决
+		 */
+		//此处也要进行对服务器编码进行设置(通知服务器以什么编码解码http请求中的实体内容)
+		request.setCharacterEncoding("utf-8");
+		//获取请求参数的值但是传中文字符是会转义到其他的
+		String name=request.getParameter("username");
+		//System.out.println(name);
+		/*
+		 * get提交乱码解决方式(同样也适合post提交方式)
+		 * 现对提交的参数按照iso8859-1进行编码,然后在解码到其他码表转回
+		 * 
+		 */
+			String username=new String(name.getBytes("iso8859-1"),"utf-8");
+		/////
+		//获取到用一个枚举变量的类型；
+		Enumeration<String> enumeration=request.getParameterNames();
+		while(enumeration.hasMoreElements()){
+			String names=enumeration.nextElement();
+			String values=request.getParameter(names);
+			System.out.println(names+":"+values);
+		}
+		
+		
+	}
+```
 
 ##### 利用请求域传递对象
 
-  作用范围:整个请求链上
-        生命周期:当服务器收到一个请求,创建出代表请求的request对象,request开始.当请求结束,服务器销毁代表请求的request对象,request域结束.
-        作用:在整个请求链范围内共享数据,通常我们在Servlet中处理好的数据会存入request域后请求转发到jsp页面来进行展示
+  	  作用范围: 整个请求链上
+        生命周期: 当服务器收到一个请求,创建出代表请求的request对象,request开始.当请求结束,服务器销毁代表请求的request对象,request域结束.
+        作用: 在整个请求链范围内共享数据,通常我们在Servlet中处理好的数据会存入request域后请求转发到jsp页面来进行展示
 
-        setAttribute
-        getAttribute
-        removeAttribute
+```java
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//request作用域 全局域    getRequestDispater() 返回一个作为位于给定路径的资源资源的封装器的 RequestDispatcher 对象。
+		request.setAttribute("banana", "color:yellow");
+		this.getServletContext().getRequestDispatcher("/Demo2").forward(request, response);
+	
+		//转发到xxxjsp中
+	//先要获取其中的数据ru
+		String result="xxxx";
+		request.setAttribute("xxx", result);
+		request.getRequestDispatcher("xxx.jsp");
+	}
+```
 ##### 实现请求转发和请求包含
 
-  (1)请求转发(.forward()):
+  **(1)请求转发(.forward()):**
             this.getServletContext().getRequestDispatcher("").forward(request,response);
             request.getRequestDispatcher("").forward(request,response); 
 
@@ -274,12 +451,12 @@ request.getParameter()
     请求转发时,如果已经有数据被写入到了response的缓冲区,但是这些数据还没有被发送到客户端,则请求转发时,这些数据将会被清空.但是清空的只是响应中的实体内容部分,头信息并不会被清空.
     而请求转发时已经有数据被打给了浏览器,那么再进行请求转发,不能成功,会抛出异常,原因是响应已经结束了,再转发交给其他人没意义了
     在最终输出数据的Servlet执行完成后,response实体内容中的数据将会被设置为已提交的状态,再往里写数据也不会起作用
-   (2)请求包含(.include()):将两个资源的输出进行合并后输出多个资源同是输出
+   **(2)请求包含(.include()):将两个资源的输出进行合并后输出多个资源同是输出**
             this.getServletContext().getRequestDispatcher("").include(request,response);
             request.getRequestDispatcher("").include(request,response);
 
     被包含的Servlet程序不能改变响应消息的状态码和响应头，如果它里面存在这样的语句，这些语句的执行结果将被忽略常被用来进行页面布局
-  (3)三种资源处理方式的区别
+  **(3)三种资源处理方式的区别**
             请求重定向
                 response.sendRedirect();
             请求转发
@@ -287,14 +464,393 @@ request.getParameter()
             请求包含
                 request.getRequestDispatcher().include();
 
-    请求重定向和请求转发的区别:
-        请求重定向地址栏会发生变化.请求转发地址栏不发生变化.
-        请求重定向两次请求两次响应.请求转发一次请求一次响应.
+**请求重定向和请求转发的区别:**
+
+    请求重定向地址栏会发生变化.请求转发地址栏不发生变化.
+    请求重定向两次请求两次响应.请求转发一次请求一次响应.
                 
-        如果需要在资源跳转时利用request域传递域属性则必须使用请求转发 request.getRequestDispatcher().forward();
-        如果希望资源跳转后修改用户的地址栏则使用请求重定向response.sendRedirect();
-        如果使用请求转发也可以重定向也可以,则优先使用请求转发,减少浏览器对服务器的访问次数减轻服务器的压力.
+    如果需要在资源跳转时利用request域传递域属性则必须使用请求转发 request.getRequestDispatcher().forward();
+    如果希望资源跳转后修改用户的地址栏则使用请求重定向response.sendRedirect();
+    如果使用请求转发也可以重定向也可以,则优先使用请求转发,减少浏览器对服务器的访问次数减轻服务器的压力.
+### Response
+
+response是Servlet.service方法的一个参数，类型为javax.servlet.http.HttpServletResponse。在客户端发出每个请求时，服务器都会创建一个response对象，并传入给Servlet.service()方法。response对象是用来对客户端进行响应的，这说明在service()方法中使用response对象可以完成对客户端的响应工作。
+
+#### Response操作
+
+##### 设置编码方式
+
+​		response.setHeader("Content-Type", "text/html;charset=utf-8");
+​		response.setCharacterEncoding("utf-8");
+​		response.getWriter().write("中国");
+
+```java
+public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//这里是一个编码过程,用的是操作系统的编码GBK;
+		//浏览器打开时也是GBK的打开方式所以没有乱码
+		//response.getOutputStream().write("English very so easy".getBytes());
+		//这是会出现乱码,需要让浏览器也使用Utf-8编码打开才不会乱码或则用下面的方法
+		//response.setHeader("Content-Type", "text/html;charset=utf-8");
+		//response.getOutputStream().write("中国".getBytes("utf-8"));
+		/*这时用中文又会乱码这时是只能是服务器把汉字转换为010101然后去查iso8859-1码表
+		这个码表中没有中文,如果在iso8859-1找不到的话会被转换为?,然而浏览器又会用GBK打开这个编码所以会显示??
+		这时要指定服务器查的码表
+		*/
+		//指定服务器查的码表
+		response.setCharacterEncoding("gbk");
+		response.getWriter().write("beijiang");
+		response.getWriter().write("中国");
+		//或者这样;
+		response.setHeader("Content-Type", "text/html;charset=utf-8");
+		response.setCharacterEncoding("utf-8");
+		response.getWriter().write("中国");
+		//或者这样;setContentType可以直接指定浏览器和服务器的编码方式
+		response.setContentType("text/html,charset=utf-8");
+		response.getWriter().write("中国");
+		//或者这样SetCharacterEnconding指定服务器的编码
+		//setContentType指定浏览器的编码
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("text/html,charset=utf-8");
+		response.getWriter().write("中国");
+	}
+```
+
+##### 设置是否缓存(缓存时间)
+
+​		不进行缓存的设置形式
+​		response.setIntHeader("Expires", -1);
+​		response.setHeader("Cache-control","no-cache");
+​		response.setHeader("Pragma","no-cache");
+​		设置缓冲并设置缓存的时间
+​		response.setDateHeader("Expires", System.currentTimeMillis()+1000L*3600*24*30);
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//设置缓冲的时间
+		response.setDateHeader("Expires", System.currentTimeMillis()+1000L*3600*24*30);
+		//这样只是读取到这样的文件但是并没有实现下载功能
+		InputStream in=new  FileInputStream(this.getServletContext().getRealPath("1.jpg"));
+		OutputStream out=response.getOutputStream();
+		byte[]bs=new byte[1024];
+		int i=0;
+		i=in.read(bs);
+		while(i!=-1){
+			out.write(bs,0,i);
+			i=in.read(bs);
+		}
+		in.close();
+		///下载的形式应该用这个方式
+	
+	}
+
+public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//设置响应头信息在浏览器中不进行缓存
+		response.setIntHeader("Expires", -1);
+		response.setHeader("Cache-control","no-cache");
+		response.setHeader("Pragma","no-cache");
+		//同时设置服务器和浏览器的编码方式
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write("当前时间是:"+new Date().toLocaleString());
+	}
+```
+
+##### 设置资源下载
+
+​		文件名中包含中文，则文件名要进行URL编码，URLEncoding.encode('啊啊.jpg','utf-8');如果不进行编码则文件名显示错误并且不可下载
+
+​		///下载的形式应该用这个方式  翻译:Disposition:配置
+
+​		`response.setHeader("Content-Disposition", "attachment;filename=1.jpg");`
+
+​		//这样只是读取到这样的文件但是并没有实现下载功能
+​		`InputStream in=new  FileInputStream(this.getServletContext().getRealPath("1.jpg"));
+`	         
+
+​    	`OutputStream out=response.getOutputStream();`
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		///下载的形式应该用这个方式(Y)
+		//setHeader头信息不支持中文格式所以命名不能用中文命名这样可以指定下载是所显示的名字
+		//response.setHeader("Content-Disposition", "attachment;filename=美女.jpg");
+		//方式一:狭隘
+		//response.setHeader("Content-Disposition", "attachment;filename=butiful.jpg");
+		//解决方式二:url编码可以用ascII码中的转换为url编码然后再转换为指定的编码
+		response.setHeader("Content-Disposition", "attachment;filename="+URLEncoder.encode("美女.jpg","utf-8"));
+		//这样只是读取到这样的文件但是并没有实现下载功能(N)
+		InputStream in=new  FileInputStream(this.getServletContext().getRealPath("1.jpg"));
+		OutputStream out=response.getOutputStream();
+		byte[]bs=new byte[1024];
+		int i=0;
+		i=in.read(bs);
+		while(i!=-1){
+			out.write(bs,0,i);
+			i=in.read(bs);
+		}
+		in.close();
+	}
+```
+
+##### 请求从定向
+
+​	response.sendRedirect("/Test/index.jsp");
+
+##### 设置刷新跳转
+
+​	`response.setHeader("refresh", "3;url=/Test/index.jsp");`
+​	转发`//request.getRequestDispatcher("/index.jsp").forward(request, response);`
+​	包含`/request.getRequestDispatcher("/index.jsp").include(request, response);`
+​	重定向`response.sendRedirect("/Test/index.jsp");`
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//隔几秒刷新页面
+		//response.getWriter().write(new Date().toString());
+		//response.setHeader("Refresh", "1");
+		//隔几秒会到主页
+		//response.setCharacterEncoding("utf-8");
+		//response.setHeader("Content-Type", "text/html;charset=utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().write("恭喜你注册成功 3秒后跳转页面....");
+		response.setHeader("refresh", "3;url=/Test/index.jsp");
+		//但是一般不会这样写会把写出的话放到html页面中
+		//向newFilehtml那样进行操作可以在html中用<meta http-equiv="" content="">来模拟响应头信息
+	}
+```
+
+
+
 ## Session与Cookie
+
+ 1.浏览器开始访问网站到访问网站结束期间产生的多次请求响应组合在一起叫做一次会话，会话的过程中会产生会话相关的数据，我们需要将这些数据保存起来。
+
+### Cookie
+
+​		是客户端的技术，程序把每个用户的数据以cookie的形式写给用户的各自的浏览器，当用户使用浏览器再去访问服务器中的web资源时，这样，web资源处理的就是用户各自的数据了。
+​		Cookie是基于set-Cookie响应头和Cookie请求头工作的,服务器可以发送set-Cookie请求头命令浏览器保存一个cookie信息,浏览器会在访问服务器时以Cookie请求头的方式带回之前保存的信息cookie在浏览器中的存放只允许存300个cookie，每个站点最多有20个cookie在浏览器的存放cookie是不安全的，很有很能被丢失；
+**删除cookie必须设置maxAge path 一致性才可以覆盖**
+
+**cookie是客户端技术**
+
+- 数据保存在客户端,这个信息可以保存很长时间
+- 数据随时有可能被清空,所以cookie保存的数据是不太靠谱的
+- 数据被保存在了客户端,随时有可能被人看走,如果将一些敏感信息比如用户名密码等信息存在cookie中,可能有安全问题
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.setContentType("text/html;charset=utf-8");
+		
+		//创建cookie数组
+		Cookie[] cookies=request.getCookies();
+		Cookie findC=null;
+		if(cookies!=null){
+		for(Cookie c :cookies){
+			if("lasttime".equals(c.getName())){
+				findC=c;
+			}
+		}
+		}
+		if(findC==null){
+			response.getWriter().write("你是第一次访问这个网站");
+		}else{
+			//cookies是返回一个long行的值
+			Long lastTime=Long.parseLong(findC.getValue());
+			response.getWriter().write("你上次访问的时间是："+new Date(lastTime).toLocaleString());
+		}
+		
+		Date date=new Date();
+		Cookie cookie=new Cookie("lasttime", date.getTime()+"");
+		//设置cookies保存的最多时间
+		//相当于response中添加了一个Set-cookie的响应头
+		cookie.setMaxAge(36000);
+		//设置整个web应用的cookie信息都可以带过去；
+		cookie.setPath(request.getContextPath());
+		response.addCookie(cookie);
+	}
+```
+
+**setMaxAge与getMaxAge方法** 
+
+-  一个Cookie如果没有设置过MaxAge则这个Cookie是一个会话级别的Cookie,这个Cookie信息打给浏览器后浏览器会将它保存在浏览器的内存中,这意味着只要浏览器已关闭随着浏览器内存的销毁Cookie信息也就消失了.
+-  一个Cookie也可以设置MaxAge,浏览一一旦发现收到的Cookie被设置了MaxAge,则会将这个Cookie信息以文件的形式保存在浏览器的临时文件夹中,保存到指定的时间到来为止.这样一来即使多次开关浏览器,由于这些浏览器都能在临时文件夹中看到cookie文件,所以在cookie失效之前cookie信息都存在.
+- 想要命令浏览器删除一个Cookie,发送一个同名同path的cookie,maxage设置为0,浏览器以名字+path识别cookie,发现同名同path,cookie覆盖后立即超时被删除,从而就删除了cookie.就是一个覆盖.
+
+**setPath与getPath方法**
+     用来通知浏览器在访问服务器中的哪个路径及其子路径时带着当前cookie信息过来如果不明确设置,则默认的路径是发送Cookie的Servlet所在的路径.
+
+**setDomain与getDomain方法**
+       用来通知浏览器在访问哪个域名的时候带着当前的cookie信息.但是要注意,现代的浏览器一旦发现cookie设置过domain信息则会拒绝接受这个Cookie.我们平常不要设置这个方法.
+
+Cookie是不可跨域名的。域名www.google.com颁发的Cookie不会被提交到域名www.baidu.com去。这是由Cookie的隐私安全机制决定的。隐私安全机制能够禁止网站非法获取其他网站的Cookie。
+
+正常情况下，同一个一级域名下的两个二级域名如www.baidu.com和www.images.baidu.com也不能交互使用Cookie，因为二者的域名并不严格相同。如果想所有www.baidu.com名下的二级域名都可以使用该Cookie，需要设置Cookie的domain参数
+
+```java
+Cookie cookie = new Cookie("time","20080808"); // 新建Cookie
+cookie.setDomain("www.baidu.com"); // 设置域名
+cookie.setPath("/"); // 设置路径
+cookie.setMaxAge(Integer.MAX_VALUE); // 设置有效期
+response.addCookie(cookie);              
+```
+
+```java
+/**
+* 显示之前看的书从cookie中获取信息
+**/
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.setContentType("text/html;charset=utf-8");
+		//查询数据库中的书的展示：
+		Map<String, Book> map=BookDao.getbooks();
+		for (Map.Entry<String, Book>entry :map.entrySet()) {
+			Book book =entry.getValue();
+			response.getWriter().write("<a href='"+request.getContextPath()+"/BookInfoServlet?id="+book.getId()+"'>"+book.getName()+"</a><br>");
+		}
+		response.getWriter().write("<hr>");
+		//2`显示之前看过的书
+		Cookie[] cookies=request.getCookies();
+		Cookie findC=null;
+		if(cookies!=null){
+            for(Cookie c :cookies){
+                if("last".equals(c.getName())){
+                    findC=c;
+                }
+            }
+		}
+		if(findC==null){
+			response.getWriter().write("你未浏览过");
+		}else{
+			response.getWriter().write("你浏览过书有："+"<br/>");
+			//cookies是返回一个long行的值
+			String[] ids=findC.getValue().split(",");
+			for(String id :ids){
+				Book book=BookDao.getbook(id);
+				//response.getWriter().write(book.getName()+"<br/>");
+			}
+		}
+	
+	}
+```
+
+[![cabF3j.png](https://z3.ax1x.com/2021/04/10/cabF3j.png)](https://imgtu.com/i/cabF3j)
+
+### Session
+
+由于HTTP协议是无状态的协议，所以服务端需要记录用户的状态时，就需要用某种机制来识具体的用户，这个机制就是Session.典型的场景比如购物车，当你点击下单按钮时，由于HTTP协议无状态，所以并不知道是哪个用户操作的，所以服务端要为特定的用户创建了特定的Session，用用于标识这个用户，并且跟踪用户，这样才知道购物车里面有几本书。这个Session是保存在服务端的，有一个唯一标识。
+
+session是服务器端技术，数据保存在服务区端,相对来说比较稳定和安全，占用服务器内存,所以一般存活的时间不会太长,超过超时时间就会被销毁.我们要根据服务器的压力和session 的使用情况合理设置session的超时时间,既能保证session的存活时间够用,同时不用的session可以及时销毁减少对服务器内存的占用.
+
+#### **作用范围:**
+
+当前会话范围
+
+ #### **生命周期:**            
+
+​	当程序第一次调用到request.getSession()方法时说明客户端明确的需要用到session此时创建出对应客户端的Session对象.
+
+​	当session超过30分钟(这个时间是可以在web.xml文件中进行修改的)没有人使用则认为session超时销毁这个session.
+
+​	程序中明确的调用session.invalidate()方法可以立即杀死session.
+
+​	当服务器被非正常关闭时,随着虚拟机的死亡而死亡.如果服务器是正常关闭,还未超时的session会被以文件的形式保存在服务器的work目录下,这个过程叫做session的钝化.下次再正常启动服务器时,钝化着的session会被恢复到内存中,这个过程叫做session的活化.
+
+ **作用**:在会话范围内共享数据
+
+​    session时间的配置：在配置的时是以分钟为单位的；
+​	在web.xml中用配置`<session-config><session-timeout>30</></>`
+
+#### **session 的原理:**
+
+​	request.getSession()方法会检查请求中有没有JSESSIONID 如果没有则检查请求的URL后有没有以参数的形式带着JSESSIONID过来,如果有则找到对应的Session， 服务器如果找不到则认为这个浏览器没有对应的Session,创建一个Session然后再在响应中添加JSESSIONID
+
+cookie的值就是这个Session 的id
+
+默认情况下,JSESSIONID 的path为当前web应用的名称,并且没有设置过MaxAge,是一个会话级别的cookie.
+
+这意味着一旦关闭浏览器再新开浏览器时,由于JSESSIONID丢失,会找不到之前的Session我们可以手动的发送JSESSIONID cookie,名字和path设置的和自动发送时一样,但是设置一下MaxAge,使浏览器除了在内存中保存JSESSIONID信息以外还在临时文件夹中以文件的形式保存,这样即使重开浏览器仍然可以使用之前的session
+
+```java
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String prod=request.getParameter("prod");
+		prod=new String(prod.getBytes("iso8859-1"),"UTF-8");
+		
+		HttpSession session=request.getSession();
+		Cookie jc=new Cookie("JSESSIONID", session.getId());
+		jc.setPath(request.getContextPath());
+		jc.setMaxAge(1800);
+		response.addCookie(jc);
+		session.setAttribute("prod", prod);
+	
+	}
+```
+
+```java
+/**
+*
+*登录后将用户信息存到session中
+*/
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		//1.获取用户名密码
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		//2.查询数据库检查用户名密码
+		if(UserDao.valiNamePsw(username, password)){
+			//3.如果正确登录后重定向到主页
+			request.getSession().setAttribute("user", username);
+			response.sendRedirect(request.getContextPath()+"/loginout/index.jsp");
+			return;
+		}else{
+			//4.如果错误提示
+			response.getWriter().write("用户名密码不正确!");
+		}	
+	}
+/**
+* 退出时把session杀死
+*/
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//1.杀死session
+		//request.getsession();如果没有session会创建一个
+    if(request.getSession(false)!=null 
+       && request.getSession().getAttribute("user")!=null){
+        request.getSession().invalidate();
+    }
+    //2.重定向到主页
+    response.sendRedirect(request.getContextPath()+"/loginout/index.jsp");
+}
+
+/**
+* 防止form表单重复提交
+*/
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		request.setCharacterEncoding("utf-8");
+		try {
+			Thread.sleep(4*1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String username = request.getParameter("username");
+		String valinum = request.getParameter("valinum");
+		String valinum2 = (String) request.getSession().getAttribute("valinum");
+		if(valinum2!=null && !"".equals(valinum2) && valinum.equals(valinum2)){
+			request.getSession().removeAttribute("valinum");
+			System.out.println("向数据库中注册一次:"+username);
+		}else{
+			response.getWriter().write("from web:不要重复提交!!");
+		}	
+}
+```
 
 
 
