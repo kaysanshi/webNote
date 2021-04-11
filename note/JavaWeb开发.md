@@ -852,6 +852,17 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 }
 ```
 
+### URL重写:
+
+​            如果浏览器禁用了Cookie,浏览器就没有办法JSESSIONID cookie,这样就用不了Session了.我们可以使用URL重写的机制,在所有的超链接后都以参数的形式拼接JSESSIONID信息,从而在点击超链接时可以使用URL参数的方式待会JSESSIONID,从而使用Session将URL进行重写拼接上JSESSIONID的过程就叫做URL重写
+
+```
+request.getSession() --在URL重写之前一定要先创建出Session,才有Session id,才能进行重写
+response.encodeURL()--- 一般的地址都用这个方法重写
+response.encodeRedirectURL() --- 如果地址是用来进行重定向的则使用这个方法
+```
+
+url重写的方法一旦发现浏览器带回了任意cookie信息,则认为客户端没有禁用cookie,就不会再进行重写操作
 
 
 ## Servlet
