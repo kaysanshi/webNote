@@ -248,7 +248,7 @@ return item;
 `@ PathVariable`  是 获取 url 上数据 的。 @RequestParam获取请求参数的（包括post表单提交）
 
 `@ResponseBody` 注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
-`@RequestBody`  允许request的参数在request体中，而不是在直接连接在地址后面。（放在参数前）
+`@RequestBody`  允许request的参数在request体中，而不是在直接连接在地址后面。（放在参数前） 需要和postMapping一起使用
 
 `@NumberFormat`    支持对数字类型的属性使用 @NumberFormat 注解
 
