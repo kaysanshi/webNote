@@ -2539,10 +2539,10 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
 
 如果Eureka Client在注册后，既没有续约，也没有下线（服务崩溃或者网络异常等原因），那么服务的状态就处于不可知的状态，不能保证能够从该服务实例中获取到回馈，所以需要服务剔除AbstractInstanceRegistry#evict方法定时清理这些不稳定的服务，该方法会批量将注册表中所有过期租约剔除。实现代码如下所示：
 
-```
-/**
+```java
+	/**
      * Evicts everything in the instance registry that has expired, if expiry is enabled.
-     *
+     * 如果启用了到期，则将实例注册表中已到期的所有内容逐出
      * @see com.netflix.eureka.lease.LeaseManager#evict()
      */
     @Override
@@ -2552,15 +2552,14 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
 
     public void evict(long additionalLeaseMs) {
         logger.debug("Running the evict task");
-
+		// 检查是否启用了租约到期
         if (!isLeaseExpirationEnabled()) {
             logger.debug("DS: lease expiration is currently disabled.");
             return;
         }
-
-        // We collect first all expired items, to evict them in random order. For large eviction sets,
-        // if we do not that, we might wipe out whole apps before self preservation kicks in. By randomizing it,
-        // the impact should be evenly distributed across all applications.
+        //我们首先收集所有过期的物品，以随机顺序将其逐出。对于大型驱逐集，
+        //如果不这样做，则可能会在自我保护开始之前先清除整个应用程序。通过将其随机化，
+        //影响应均匀地分布在所有应用程序中。
         List<Lease<InstanceInfo>> expiredLeases = new ArrayList<>();
         for (Entry<String, Map<String, Lease<InstanceInfo>>> groupEntry : registry.entrySet()) {
             Map<String, Lease<InstanceInfo>> leaseMap = groupEntry.getValue();
@@ -2574,8 +2573,7 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
             }
         }
 
-        // To compensate for GC pauses or drifting local time, we need to use current registry size as a base for
-        // triggering self-preservation. Without that we would wipe out full registry.
+        //为了补偿GC暂停或本地时间漂移，我们需要使用当前注册表大小作为触发自我保存的基础。否则，我们将清除完整的注册表
         int registrySize = (int) getLocalRegistrySize();
         int registrySizeThreshold = (int) (registrySize * serverConfig.getRenewalPercentThreshold());
         int evictionLimit = registrySize - registrySizeThreshold;
@@ -2588,11 +2586,13 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
             for (int i = 0; i < toEvict; i++) {
                 // Pick a random item (Knuth shuffle algorithm)
                 int next = i + random.nextInt(expiredLeases.size() - i);
+                // 在指定列表中的指定位置交换元素。 （如果指定的位置相等，则调用此方法将使列表保持不变。
                 Collections.swap(expiredLeases, i, next);
                 Lease<InstanceInfo> lease = expiredLeases.get(i);
 
                 String appName = lease.getHolder().getAppName();
                 String id = lease.getHolder().getId();
+                // EurekaMonitors 给定统计量增加计数器
                 EXPIRED.increment();
                 logger.warn("DS: Registry: expired lease for {}/{}", appName, id);
                 internalCancel(appName, id, false);
@@ -2601,19 +2601,23 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
     }
 ```
 
-服务剔除将会遍历registry注册表，找出其中所有的过期租约，然后根据配置文件中续租百分比阀值和当前注册表的租约总数量计算出最大允许的剔除租约的数量（当前注册表中租约总数量减去当前注册表租约阀值），分批次剔除过期的服务实例租约。对过期的服务实例租约调用AbstractInstanceRegistry#internalCancel服务下线的方法将其从注册表中清除掉。服务剔除#evict方法中有很多限制，都是为了保证EurekaServer的可用性：□ 自我保护时期不能进行服务剔除操作。□ 过期操作是分批进行。□ 服务剔除是随机逐个剔除，剔除均匀分布在所有应用中，防止在同一时间内同一服务集群中的服务全部过期被剔除，以致大量剔除发生时，在未进行自我保护前促使了程序的崩溃。服务剔除是一个定时的任务，所以AbstractInstanceRegistry中定义了一个EvictionTask用于定时执行服务剔除，默认为60秒一次。服务剔除的定时任务一般在AbstractInstanceRegistry初始化结束后进行，按照执行频率evictionIntervalTimerInMs的设定，定时剔除过期的服务实例租约。自我保护机制主要在Eureka Client和Eureka Server之间存在网络分区的情况下发挥保护作用，在服务器端和客户端都有对应实现。假设在某种特定的情况下（如网络故障）, Eureka Client和Eureka Server无法进行通信，此时Eureka Client无法向EurekaServer发起注册和续约请求，Eureka Server中就可能因注册表中的服务实例租约出现大量过期而面临被剔除的危险，然而此时的Eureka Client可能是处于健康状态的（可接受服务访问），如果直接将注册表中大量过期的服务实例租约剔除显然是不合理的。针对这种情况，Eureka设计了“自我保护机制”。在EurekaServer处，如果出现大量的服务实例过期被剔除的现象，那么该Server节点将进入自我保护模式，保护注册表中的信息不再被剔除，在通信稳定后再退出该模式；在Eureka Client处，如果向Eureka Server注册失败，将快速超时并尝试与其他的EurekaServer进行通信。“自我保护机制”的设计大大提高了Eureka的可用性。
+服务剔除将会遍历registry注册表，找出其中所有的过期租约，然后根据配置文件中续租百分比阀值和当前注册表的租约总数量计算出最大允许的剔除租约的数量（当前注册表中租约总数量减去当前注册表租约阀值），分批次剔除过期的服务实例租约。对过期的服务实例租约调用AbstractInstanceRegistry#internalCancel服务下线的方法将其从注册表中清除掉。服务剔除#evict方法中有很多限制，都是为了保证EurekaServer的可用性：
+
+□ 自我保护时期不能进行服务剔除操作。
+
+□ 过期操作是分批进行。
+
+□ 服务剔除是随机逐个剔除，剔除均匀分布在所有应用中，防止在同一时间内同一服务集群中的服务全部过期被剔除，以致大量剔除发生时，在未进行自我保护前促使了程序的崩溃。
+
+服务剔除是一个定时的任务，所以AbstractInstanceRegistry中定义了一个EvictionTask用于定时执行服务剔除，默认为60秒一次。服务剔除的定时任务一般在AbstractInstanceRegistry初始化结束后进行，按照执行频率evictionIntervalTimerInMs的设定，定时剔除过期的服务实例租约。自我保护机制主要在Eureka Client和Eureka Server之间存在网络分区的情况下发挥保护作用，在服务器端和客户端都有对应实现。假设在某种特定的情况下（如网络故障）, Eureka Client和Eureka Server无法进行通信，此时Eureka Client无法向EurekaServer发起注册和续约请求，Eureka Server中就可能因注册表中的服务实例租约出现大量过期而面临被剔除的危险，然而此时的Eureka Client可能是处于健康状态的（可接受服务访问），如果直接将注册表中大量过期的服务实例租约剔除显然是不合理的。针对这种情况，Eureka设计了“自我保护机制”。在EurekaServer处，如果出现大量的服务实例过期被剔除的现象，那么该Server节点将进入自我保护模式，保护注册表中的信息不再被剔除，在通信稳定后再退出该模式；在Eureka Client处，如果向Eureka Server注册失败，将快速超时并尝试与其他的EurekaServer进行通信。“自我保护机制”的设计大大提高了Eureka的可用性。
 
 ##### 服务下线
 
 Eureka Client在应用销毁时，会向Eureka Server发送服务下线请求，清除注册表中关于本应用的租约，避免无效的服务调用。在服务剔除的过程中，也是通过服务下线的逻辑完成对单个服务实例过期租约的清除工作。服务下线的主要实现代码位于AbstractInstanceRegistry#internalCancel方法中，仅需要服务实例的服务名和服务实例id即可完成服务下线
 
 ```java
-/**
-     * Cancels the registration of an instance.
-     *
-     * <p>
-     * This is normally invoked by a client when it shuts down informing the
-     * server to remove the instance from traffic.
+	/**
+     * 取消实例的注册。通常，它在关闭客户端以通知服务器从流量中删除实例时由客户端调用。
      * </p>
      *
      * @param appName the application name of the application.
@@ -2628,13 +2632,13 @@ Eureka Client在应用销毁时，会向Eureka Server发送服务下线请求，
     }
 
     /**
-     * {@link #cancel(String, String, boolean)} method is overridden by {@link PeerAwareInstanceRegistry}, so each
-     * cancel request is replicated to the peers. This is however not desired for expires which would be counted
-     * in the remote peers as valid cancellations, so self preservation mode would not kick-in.
+     * cancel(String, String, boolean)方法被PeerAwareInstanceRegistry覆盖，因此每个取消请求都复制到对等方。 但是，对于在远程对等方中视为有效取消的过期，这是不希望的，因此不会启动自我保存模式
      */
     protected boolean internalCancel(String appName, String id, boolean isReplication) {
         try {
             read.lock();
+            // 根据这是由于从其他eureka服务器进行复制还是由于eureka客户端启动的操作而增加给定统计信息的计数器
+            // 调用EurekaMonitors
             CANCEL.increment(isReplication);
             Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
             Lease<InstanceInfo> leaseToCancel = null;
