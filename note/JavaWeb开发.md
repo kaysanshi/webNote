@@ -626,12 +626,12 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 
 ## Session与Cookie
 
- 1.浏览器开始访问网站到访问网站结束期间产生的多次请求响应组合在一起叫做一次会话，会话的过程中会产生会话相关的数据，我们需要将这些数据保存起来。
+浏览器开始访问网站到访问网站结束期间产生的多次请求响应组合在一起叫做一次会话，会话的过程中会产生会话相关的数据，我们需要将这些数据保存起来。
 
 ### Cookie
 
-​		是客户端的技术，程序把每个用户的数据以cookie的形式写给用户的各自的浏览器，当用户使用浏览器再去访问服务器中的web资源时，这样，web资源处理的就是用户各自的数据了。
-​		Cookie是基于set-Cookie响应头和Cookie请求头工作的,服务器可以发送set-Cookie请求头命令浏览器保存一个cookie信息,浏览器会在访问服务器时以Cookie请求头的方式带回之前保存的信息cookie在浏览器中的存放只允许存300个cookie，每个站点最多有20个cookie在浏览器的存放cookie是不安全的，很有很能被丢失；
+是客户端的技术，程序把每个用户的数据以cookie的形式写给用户的各自的浏览器，当用户使用浏览器再去访问服务器中的web资源时，这样，web资源处理的就是用户各自的数据了。
+Cookie是基于set-Cookie响应头和Cookie请求头工作的,服务器可以发送set-Cookie请求头命令浏览器保存一个cookie信息,浏览器会在访问服务器时以Cookie请求头的方式带回之前保存的信息cookie在浏览器中的存放只允许存300个cookie，每个站点最多有20个cookie在浏览器的存放cookie是不安全的，很有很能被丢失；
 **删除cookie必须设置maxAge path 一致性才可以覆盖**
 
 **cookie是客户端技术**
@@ -751,22 +751,22 @@ session是服务器端技术，数据保存在服务区端,相对来说比较稳
 
  #### **生命周期:**            
 
-​	当程序第一次调用到request.getSession()方法时说明客户端明确的需要用到session此时创建出对应客户端的Session对象.
+当程序第一次调用到request.getSession()方法时说明客户端明确的需要用到session此时创建出对应客户端的Session对象.
 
-​	当session超过30分钟(这个时间是可以在web.xml文件中进行修改的)没有人使用则认为session超时销毁这个session.
+当session超过30分钟(这个时间是可以在web.xml文件中进行修改的)没有人使用则认为session超时销毁这个session.
 
-​	程序中明确的调用session.invalidate()方法可以立即杀死session.
+程序中明确的调用session.invalidate()方法可以立即杀死session.
 
-​	当服务器被非正常关闭时,随着虚拟机的死亡而死亡.如果服务器是正常关闭,还未超时的session会被以文件的形式保存在服务器的work目录下,这个过程叫做session的钝化.下次再正常启动服务器时,钝化着的session会被恢复到内存中,这个过程叫做session的活化.
+当服务器被非正常关闭时,随着虚拟机的死亡而死亡.如果服务器是正常关闭,还未超时的session会被以文件的形式保存在服务器的work目录下,这个过程叫做session的钝化.下次再正常启动服务器时,钝化着的session会被恢复到内存中,这个过程叫做session的活化.
 
  **作用**:在会话范围内共享数据
 
-​    session时间的配置：在配置的时是以分钟为单位的；
-​	在web.xml中用配置`<session-config><session-timeout>30</></>`
+  session时间的配置：在配置的时是以分钟为单位的；
+​在web.xml中用配置`<session-config><session-timeout>30</></>`
 
 #### **session 的原理:**
 
-​	request.getSession()方法会检查请求中有没有JSESSIONID 如果没有则检查请求的URL后有没有以参数的形式带着JSESSIONID过来,如果有则找到对应的Session， 服务器如果找不到则认为这个浏览器没有对应的Session,创建一个Session然后再在响应中添加JSESSIONID
+request.getSession()方法会检查请求中有没有JSESSIONID 如果没有则检查请求的URL后有没有以参数的形式带着JSESSIONID过来,如果有则找到对应的Session， 服务器如果找不到则认为这个浏览器没有对应的Session,创建一个Session然后再在响应中添加JSESSIONID
 
 cookie的值就是这个Session 的id
 
@@ -854,7 +854,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 
 ### URL重写:
 
-​            如果浏览器禁用了Cookie,浏览器就没有办法JSESSIONID cookie,这样就用不了Session了.我们可以使用URL重写的机制,在所有的超链接后都以参数的形式拼接JSESSIONID信息,从而在点击超链接时可以使用URL参数的方式待会JSESSIONID,从而使用Session将URL进行重写拼接上JSESSIONID的过程就叫做URL重写
+ 如果浏览器禁用了Cookie,浏览器就没有办法JSESSIONID cookie,这样就用不了Session了.我们可以使用URL重写的机制,在所有的超链接后都以参数的形式拼接JSESSIONID信息,从而在点击超链接时可以使用URL参数的方式待会JSESSIONID,从而使用Session将URL进行重写拼接上JSESSIONID的过程就叫做URL重写
 
 ```
 request.getSession() --在URL重写之前一定要先创建出Session,才有Session id,才能进行重写
@@ -867,13 +867,1154 @@ url重写的方法一旦发现浏览器带回了任意cookie信息,则认为客�
 
 ## Servlet
 
+Java Servlet 是运行在 Web 服务器或应用服务器上的程序，它是作为来自 Web 浏览器或其他 HTTP 客户端的请求和 HTTP 服务器上的数据库或应用程序之间的中间层。
+
+使用 Servlet，您可以收集来自网页表单的用户输入，呈现来自数据库或者其他源的记录，还可以动态创建网页。
+
+Java Servlet 通常情况下与使用 CGI（Common Gateway Interface，公共网关接口）实现的程序可以达到异曲同工的效果。但是相比于 CGI，Servlet 有以下几点优势：
+
+- 性能明显更好。
+- Servlet 在 Web 服务器的地址空间内执行。这样它就没有必要再创建一个单独的进程来处理每个客户端请求。
+- Servlet 是独立于平台的，因为它们是用 Java 编写的。
+- 服务器上的 Java 安全管理器执行了一系列限制，以保护服务器计算机上的资源。因此，Servlet 是可信的。
+- Java 类库的全部功能对 Servlet 来说都是可用的。它可以通过 sockets 和 RMI 机制与 applets、数据库或其他软件进行交互。
+
 ### Servlet生命周期
+
+Servlet 生命周期可被定义为从创建直到毁灭的整个过程。以下是 Servlet 遵循的过程：
+
+- Servlet 初始化后调用 **init ()** 方法。
+- Servlet 调用 **service()** 方法来处理客户端的请求。
+- Servlet 销毁前调用 **destroy()** 方法。
+- 最后，Servlet 是由 JVM 的垃圾回收器进行垃圾回收的。
+
+现在让我们详细讨论生命周期的方法。
 
 ### Servlet调用过程
 
+![Servlet的调用过程图](E:\Java\learning-note\note_old_jsp_servlert\Servlet的调用过程图.gif)
+
 ### Servlet过滤器与监听器
+
+#### 过滤器
+
+Servlet 过滤器可以动态地拦截请求和响应，以变换或使用包含在请求或响应中的信息。
+
+可以将一个或多个 Servlet 过滤器附加到一个 Servlet 或一组 Servlet。Servlet 过滤器也可以附加到 JavaServer Pages (JSP) 文件和 HTML 页面。调用 Servlet 前调用所有附加的 Servlet 过滤器。
+
+Servlet 过滤器是可用于 Servlet 编程的 Java 类，可以实现以下目的：
+
+- 在客户端的请求访问后端资源之前，拦截这些请求。
+- 在服务器的响应发送回客户端之前，处理这些响应。
+
+例如：统一字符编码，字符的压缩，加密，实施安全控制等；
+
+与过滤器有关的有三个包：Filter FilterChain和FilterConfig;
+
+
+
+
+	Filter:所有过滤器都必须实现这个接口；
+			生命周期：web应用加载后立即创建这个web应用的所有过滤器，创建后是驻留在内存中init();过滤器初始化，容器会创建实例后调用这个方法
+	FilterConfig：代表web.xml中对filter的配置信息
+			获取servletContext对象
+			获取初始信息	
+	FilterChain:doFilter();用于调用过滤器链中的下一个过滤器，如果是最后一个则将请求提交给处理程序或响应到客户端上；filterChain代表一个连对象，一个资源可以用多个过滤器进行拦截，拦截顺序和filtermapping的顺序决定链的最后一各节点就是访问的资源；
+	FilterConfig:用于过滤器初始化阶段提供过滤器的名字，初始化参数，servlet上下文的信息；
+		String getFilterName();返回web.xml文件定义的名称
+		ServletContext getServletContext()方法,返回调用者所处的Servlet的上下文
+		String getInitParameter(String name):返回配置过滤器名是name的初始值；‘
+		Enumeration getgetInitParameterNames()以Enumeration形式返回过滤器所有初始化参数的名称
+		
+	出现servlet3.0后在eclipes中就不需要配置web.xml了
+	如何进行创建出filter中的参数，写在web.xml中是不能实现的：
+	范式：创建filter过滤器，然后在其中的参数列表中选择是否创建参数，然后在改下对应的url-parttern参数
+	让他对应你的jsp文件就可以解决这个问题；
+	@WebFilter(
+		urlPatterns = { "/jsp/index.jsp" }, 
+		initParams = { 
+				@WebInitParam(name = "count", value = "5000")
+		})
+		用filterConfig来获取属性的值是多少
+		filterConfig.getInitParameter(String name);
+	@WebFilter(asyncSupported = true, description = "filterdemo", urlPatterns = { "/*" })
+	
+	在myeclipse中就必须在web.xml逐一配置出来
+	有：
+		<filter>
+			<filter-name>Filter1</filter-name>
+	  		<filter-class>cn.itcast.filter.Filter1</filter-class>
+		</filter>	
+		<!-- 配置过滤器去拦截哪个资源 -->
+		<filter-mapping>
+	  		<filter-name>Filter1</filter-name>
+	  		<url-pattern>/hello.jsp</url-pattern>
+			<dispatcher>REQUEST</dispatcher>--用来配置以哪种方式对资源的访问(request/forward/include/error)
+		可以配置多个dispatcher如果不配置默认为request请求
+		</filter-mapping>	
+```java
+@WebFilter(asyncSupported = true, description = "filterdemo", urlPatterns = { "/demo1Filr" })
+public class Demo1Filter implements Filter {
+
+    /**
+     * Default constructor. 
+     */
+    public Demo1Filter() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see Filter#destroy()
+	 */
+	public void destroy() {
+		// TODO Auto-generated method stub
+	System.out.println("filter销毁了");
+	}
+
+	/**
+	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
+	 */
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		// place your code here
+		System.out.println("demo1前");
+		// pass the request along the filter chain
+		//意思是执行下一个节点可以为过滤器可以为资源
+		chain.doFilter(request, response);
+		System.out.println("demo1后");
+	}
+
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig fConfig) throws ServletException {
+		// TODO Auto-generated method stub
+	System.out.println("filter创建了");
+	}
+
+}
+```
 
 ### Servlert经典实例
 
+#### 文件上传
 
+```java
+package com.itheima.upload;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import com.itheima.domain.Resource;
+import com.itheima.util.DaoUtils;
+import com.itheima.util.IOUtils;
+
+/**
+ * Servlet implementation class UploaddisckServlet
+ */
+@WebServlet("/UploaddisckServlet")
+@MultipartConfig
+public class UploaddisckServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public UploaddisckServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//1.上传文件
+		String upload=this.getServletContext().getRealPath("WEB-INF/upload");
+		String temp=this.getServletContext().getRealPath("WEB_INF/temp");
+		//创建工厂设置缓冲大小和穿就缓冲区路径
+		DiskFileItemFactory factory=new DiskFileItemFactory();
+		factory.setSizeThreshold(1024*100);
+		factory.setRepository(new File(temp));
+		//2.生产文件上传核心类
+		ServletFileUpload fileUpload=new ServletFileUpload(factory);
+		//设置编码
+		fileUpload.setHeaderEncoding("UTF-8");
+		//设置文件大小的上传限制
+		fileUpload.setFileSizeMax(1024*1024*10);
+		fileUpload.setSizeMax(1024*1024*100);
+		//检查当前是项目是否为上传文件
+		//if (fileUpload.isMultipartContent(request)) {
+			//throw new RuntimeException("请用正确的表单上传");
+		//}
+		//解析request
+		//3.利用文件上传核心类来解析request
+		try {
+			List<FileItem> list=fileUpload.parseRequest(request);
+			Map<String,String> map=new HashMap<>();
+			//循环遍历
+			for(FileItem item :list){
+				if (item.isFormField()) {
+					//普通的字段获得的是一个表单
+					String name=item.getFieldName();
+					String value=item.getString("utf-8");
+					map.put(name, value);
+					System.out.println(name+":"+value);
+				}else{
+					//当前一个文件上传项
+					String filename=item.getName();//文件名
+					//设置一个独一无二的文件名
+					String uuidfilename=UUID.randomUUID().toString()+"_"+filename;
+					map.put("realname", filename);
+					map.put("uuidname",uuidfilename);
+					map.put("ip", request.getRemoteAddr());
+					String savepath="/WEB-INF/upload";
+					//转换为hash值
+					int hash=uuidfilename.hashCode();
+					//转化为hash字符串
+					String hashstr=Integer.toHexString(hash);
+					char[] hss=hashstr.toCharArray();
+					
+					for(char c:hss){
+						upload+="/"+c;
+						savepath+="/"+c;
+					}
+					new File(upload).mkdirs();
+					map.put("savepath", savepath);
+					InputStream inputStream=item.getInputStream();
+					
+					OutputStream outputStream=new FileOutputStream(new File(upload,uuidfilename)); 
+					IOUtils.In2Out(inputStream, outputStream);
+					IOUtils.close(inputStream, outputStream);
+					//删除临时文件
+					item.delete();
+				}
+			}
+			//像数据库中插入
+			Resource resource=new Resource();
+			BeanUtils.populate(resource, map);
+			String sql="insert into netdisk values(null,?,?,?,?,null,?)";
+			QueryRunner runner=new QueryRunner(DaoUtils.getSource());
+			runner.update(sql,resource.getUuidname(),resource.getRealname(),resource.getSavepath(),resource.getIp(),resource.getDescription() );
+			//3.重定向回主页
+			response.sendRedirect(request.getContextPath()+"/disk/index.jsp");
+		} catch (FileUploadException | IllegalAccessException | InvocationTargetException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		
+	
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
+
+```
+
+版本二：
+
+```java
+package com.itheima.upload;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilePermission;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import com.itheima.util.IOUtils;
+
+import sun.nio.ch.IOUtil;
+
+
+
+/**
+ * Servlet implementation class UploadServlet
+ */
+@WebServlet(description = "文件上传", urlPatterns = { "/UploadServlet" })
+public class UploadServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpSep=rvlet()
+     */
+    public UploadServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//通过工厂类来实现
+		DiskFileItemFactory factory=new DiskFileItemFactory();
+		//设置缓冲区大小
+		factory.setSizeThreshold(100*1024);
+		//设置临时文件夹
+		factory.setRepository(new File(this.getServletContext().getRealPath("WEB-INF/temp")));
+		//2.生产文件上传核心类
+		ServletFileUpload fileUpload=new ServletFileUpload(factory);
+		try {
+		//判断是否为真正的表单上传文件
+		//if (fileUpload.isMultipartContent(request)) {
+			//throw new RuntimeException("请用正确的表单上传");
+		//}
+		//设置文件大小的上传限制
+		fileUpload.setFileSizeMax(1024*1024*10);
+		fileUpload.setSizeMax(1024*1024*100);
+		//设置编码
+		fileUpload.setHeaderEncoding("UTF-8");
+		//设置上传监听进度条：
+		fileUpload.setProgressListener(new ProgressListener() {
+			//
+			Long beginTime = System.currentTimeMillis();
+			//已经读了，总共多少 ，读到第几个了
+			@Override
+			public void update(long pBytesRead, long pContentLength, int pItems) {
+				// TODO Auto-generated method stub
+				//转换为kb
+				//double br=pBytesRead*1.0/1024;
+				//double cl=pContentLength*1.0/1024;
+				//为了保留字节用以下方法
+				BigDecimal br = new BigDecimal(pBytesRead).divide(new BigDecimal(1024),2,BigDecimal.ROUND_HALF_UP);
+				BigDecimal cl = new BigDecimal(pContentLength).divide(new BigDecimal(1024),2,BigDecimal.ROUND_HALF_UP);
+				System.out.print("当前读取的是第"+pItems+"个上传项,总大小"+cl+"KB,已经读取"+br+"KB");
+				//剩余字节数
+				BigDecimal ll = cl.subtract(br);
+				System.out.print("剩余"+ll+"KB");
+				//上传百分比
+				BigDecimal per = br.multiply(new BigDecimal(100)).divide(cl,2,BigDecimal.ROUND_HALF_UP);
+				System.out.print("已经完成"+per+"%");
+				//上传用时
+				Long nowTime = System.currentTimeMillis();
+				Long useTime = (nowTime - beginTime)/1000;
+				System.out.print("已经用时"+useTime+"秒");
+				//上传速度
+				BigDecimal speed = new BigDecimal(0);
+				if(useTime!=0){
+					//四舍五入模式向“最近邻居”转弯，除非两个邻居都是等距的，在这种情况下是圆括弧的。
+					speed = br.divide(new BigDecimal(useTime),2,BigDecimal.ROUND_HALF_UP);
+				}
+				System.out.print("上传速度为"+speed+"KB/S");
+				//大致剩余时间
+				BigDecimal ltime = new BigDecimal(0);
+				if(!speed.equals(new BigDecimal(0))){
+					//返回一个 BigDecimal ，其值为 (this / divisor) ，其比例为指定。
+					ltime = ll.divide(speed,0,BigDecimal.ROUND_HALF_UP);
+				}
+				System.out.print("大致剩余时间为"+ltime+"秒");
+				
+				System.out.println();
+				}
+		});
+		
+		//3.利用文件上传核心类来解析request
+			List<FileItem> list=fileUpload.parseRequest(request);
+			//循环遍历
+			for(FileItem item :list){
+				if (item.isFormField()) {
+					//普通的字段获得的是一个表单？？
+					String name=item.getFieldName();
+					String value=item.getString("utf-8");
+					System.out.println(name+":"+value);
+				}else{
+					//当前一个文件上传项
+					String filename=item.getName();//文件名
+					//设置一个独一无二的文件名
+					String uuidfilename=UUID.randomUUID().toString()+"_"+filename;
+					//转换为hash值
+					int hash=uuidfilename.hashCode();
+					//转化为hash字符串
+					String hashstr=Integer.toHexString(hash);
+					char[] hss=hashstr.toCharArray();
+					String path=this.getServletContext().getRealPath("upload");
+					for(char c:hss){
+						path+="/"+c;
+					}
+					new File(path).mkdirs();
+					InputStream inputStream=item.getInputStream();
+					
+					OutputStream outputStream=new FileOutputStream(new File(path,uuidfilename)); 
+					IOUtils.In2Out(inputStream, outputStream);
+					IOUtils.close(inputStream, outputStream);
+					//删除临时文件
+					item.delete();
+				}
+			}
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+	
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}
+
+
+```
+
+util
+
+```java
+public class IOUtils {
+	private IOUtils() {
+	}
+	
+	public static void In2Out(InputStream in,OutputStream out) throws IOException{
+		byte [] bs = new byte[1024];
+		int i = 0;
+		while((i=in.read(bs))!=-1){
+			out.write(bs,0,i);
+		}
+	}
+	
+	public static void close(InputStream in,OutputStream out){
+		if(in!=null){
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally{
+				in = null;
+			}
+		}
+		if(out!=null){
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally{
+				out = null;
+			}
+		}
+	}
+}
+```
+
+#### 自动登录拦截器
+
+```java
+package com.itheima.filter;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+
+import com.itheima.domain.User;
+import com.itheima.util.DaoUtils;
+
+/**
+ * Servlet Filter implementation class AutologinFilter
+ */
+@WebFilter(
+		description = "自动登录过滤器", 
+		urlPatterns = { "/*" }, 
+		initParams = { 
+				@WebInitParam(name = "encode", value = "utf-8", description = "编码过滤")
+		})
+public class AutologinFilter implements Filter {
+
+    /**
+     * Default constructor. 
+     */
+    public AutologinFilter() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see Filter#destroy()
+	 */
+	public void destroy() {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
+	 */
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		// place your code here
+		//1.只有未登录的才能自动登录
+		HttpServletRequest req=(HttpServletRequest)request;
+		HttpServletResponse rsp=(HttpServletResponse)response;
+		if (req.getSession(false)==null|| req.getSession().getAttribute("user")==null) {
+			//2.只有带自动登录的的cookie才能自动登录
+			Cookie[]cs=req.getCookies();
+			Cookie findC=null;
+			if (cs!=null) {
+				for(Cookie c:cs) {
+					if ("autologin".equals(c.getName())) {
+						findC=c;
+						break;
+					}
+				}
+			}
+			if (findC!=null) {
+				//3.自动登录cookie中保存的用户名密码正确才能登录
+				String name=findC.getValue().split(":")[0];
+				String password=findC.getValue().split(":")[1];
+				User user=null;
+				String sql="select *from user where name=?and password=?";
+				//数据库的操作
+			
+				try {
+					QueryRunner runner=new QueryRunner(DaoUtils.getSource());
+					user=runner.query(sql,new BeanHandler<User>(User.class),name,password);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (user!=null) {
+					req.getSession().setAttribute("user", user);
+				}
+			}
+		}
+		// pass the request along the filter chain
+		chain.doFilter(request, response);
+	}
+
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig fConfig) throws ServletException {
+		// TODO Auto-generated method stub
+	}
+
+}
+
+```
+
+#### 全站乱码过滤器
+
+```java
+package com.itheima.filter;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+
+/**
+ * Servlet Filter implementation class EncodingFilter
+ */
+@WebFilter(description = "全站乱码过滤器", urlPatterns = { "/*" },
+initParams = { 
+		@WebInitParam(name ="encode", value = "UTF-8")
+})
+public class EncodingFilter implements Filter {
+	private FilterConfig config=null;
+	private String encode=null;
+    /**
+     * Default constructor. 
+     */
+    public EncodingFilter() {
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see Filter#destroy()
+	 */
+	public void destroy() {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
+	 */
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		// place your code here
+		//处理get请求的乱码
+		response.setCharacterEncoding(encode);
+		response.setContentType("text/html;charset="+encode);
+		//处理post请求乱码
+		//request.setCharacterEncoding(encode);
+		// pass the request along the filter chain
+		chain.doFilter(new MyHttpServletRequest((HttpServletRequest)request), response);
+	}
+
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig fConfig) throws ServletException {
+		// TODO Auto-generated method stub
+		this.config=fConfig;
+		//获取参数看参数是哪一个然后把他设置给新的编码方式
+		encode=config.getInitParameter(encode)==null?"utf-8":config.getInitParameter(encode);
+	}
+
+	//装饰：写一个类实现被装饰的一个接口在构造方法传入被装饰者，不想改造的方法调用原有的方法，想改造
+	//的自己来写逻辑
+	
+class MyHttpServletRequest extends HttpServletRequestWrapper{
+		private HttpServletRequest request=null;
+		private boolean isNotEncode=true;
+		public MyHttpServletRequest(HttpServletRequest request) {
+			super(request);
+			// TODO Auto-generated constructor stub
+			this.request=request;
+		}
+		@Override
+		public String getParameter(String name) {
+			// TODO Auto-generated method stub
+			return getParameterValues(name)==null?null:getParameterValues(name)[0];
+		
+		
+		}
+		@Override
+		public Map<String, String[]> getParameterMap() {
+			// TODO Auto-generated method stub
+			try {
+				//post提交处理方式
+			if (request.getMethod().equalsIgnoreCase("post")) {
+				
+					request.setCharacterEncoding(encode);
+					return request.getParameterMap();
+					
+				}else if (request.getMethod().equalsIgnoreCase("get")) {
+					//get处理方式
+					Map<String, String[]> map=request.getParameterMap();
+					if (isNotEncode) {
+						for(Map.Entry<String, String[]> entry:map.entrySet()){
+							String[] vsString=entry.getValue();
+							for(int i=0;i<vsString.length;i++){
+							vsString[i]=new String(vsString[i].getBytes("iso8859-1"),encode);
+							}
+						}
+						isNotEncode=false;
+					}
+					
+					return map;
+				}else{
+					return super.getParameterMap();
+					}
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					throw new RuntimeException();
+				}
+			
+			
+			
+				
+		}
+		@Override
+		public String[] getParameterValues(String name) {
+			// TODO Auto-generated method stub
+			return getParameterMap().get(name);
+			
+		}	
+	}
+}
+
+```
+
+#### 邮件发送
+
+```java
+public class MailUtils {
+
+	//email:邮件发给谁  subject:主题  emailMsg：邮件的内容
+	public static void sendMail(String email, String subject, String emailMsg)
+			throws AddressException, MessagingException {
+		
+		// 1.创建一个程序与邮件服务器会话对象 Session
+		Properties props = new Properties();
+		props.setProperty("mail.transport.protocol", "SMTP");//发邮件的协议
+		props.setProperty("mail.host", "localhost");//发送邮件的服务器地址
+		props.setProperty("mail.smtp.auth", "true");// 指定验证为true
+
+		// 创建验证器
+		Authenticator auth = new Authenticator() {
+			public PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication("tom", "12345");//发邮件的账号的验证
+			}
+		};
+
+		Session session = Session.getInstance(props, auth);
+
+		// 2.创建一个Message，它相当于是邮件内容
+		Message message = new MimeMessage(session);
+
+		message.setFrom(new InternetAddress("leokay555@163.com")); // 设置发送者
+
+		message.setRecipient(RecipientType.TO, new InternetAddress(email)); // 设置发送方式与接收者
+
+		message.setSubject(subject);//邮件的主题
+
+		message.setContent(emailMsg, "text/html;charset=utf-8");
+
+		// 3.创建 Transport用于将邮件发送
+		Transport.send(message);
+	}
+}
+```
+
+```
+(1) javax.mail.Properties类   
+		　　JavaMail需要Properties来创建一个session对象。它将寻找字符串"mail.smtp.host"，属性值就是发送邮件的主机.   
+		用法:   
+		　   Properties props = new Properties ();  //Properties props = System.getProperties();  
+		　	props.put("mail.smtp.host", "smtp.163.com");//可以换上你的smtp主机名。   
+(2) javax.mail.Session类   
+		　　这个Session类代表JavaMail 中的一个邮件session. 每一个基于 JavaMail的应用程序至少有一个session但是可以有任意多的session。 在这个例子中, Session对象需要知道用来处理邮件的SMTP 服务器。   
+		用法:   
+		　　 Session sendMailSession = Session.getInstance(props, null);   //不须认证  
+(3) javax.mail.Transport类   
+		　　邮件是既可以被发送也可以被受到。JavaMail使用了两个不同的类来完成这两个功能：Transport 和Store. Transport 是用来发送信息的，而Store用来收邮件。在这发送邮件我们只需要用到Transport对象。   
+			用法：   
+			    Transport  transport = sendMailSession.getTransport("smtp");   
+			　　用JavaMail Session对象的getTransport 方法来初始化Transport。传过去的字符串申明了对象所要使用的协议，如"smtp"。这将为我们省了很多时间。因为JavaMail以经内置了很多协议的实现方法。   
+			　注意: JavaMail并不是绝对支持每一个协议，目前支持IMAP、 SMTP和 POP3.   
+(4) javax.mail.MimeMessage类   
+	　　Message对象将存储我们实际发送的电子邮件信息，Message对象被作为一个MimeMessage对象来创建并且需要知道应当选择哪一个JavaMail session。   
+	　　用法：   
+			 Message newMessage = new MimeMessage(sendMailSession);   
+(5) javax.mail.InternetAddress类   
+		一旦您创建了 Session 和 Message，并将内容填入消息后，就可以用Address确定信件地址了。和 Message 一样，Address 也是个抽象类。您用的是Javax.mail.internet.InternetAddress 类.   
+		用法:   
+		    InternetAddress from=new InternetAddress("xxf@cafe.com");   //收件人邮箱地址  
+(6) javax.mail.Store类   
+		Store类实现特定邮件协议上的读、写、监视、查找等操作。通过Javax.mail.Store类可以访问Javax.mail.Folder类。   
+		用法:   
+		    Store store=s.getSorte("pop3");  //s为一个邮件会话   
+		    store.connect(popserver,username,password);//通过你提供的popserver地址(邮箱服务器),用户名和密码登录你的邮箱    
+(7) javax.mail.Folder类   
+		Folder类用于分级组织邮件，并提供照Javax.mail.Message格式访问email的能力。   
+			用法:   
+			    Folder folder=store.getFolder("INBOX");   
+			    folder.open(Folder.READ_ONLY);   
+(8) javax.mail.Internet.MimeMultipart   
+		一般保存电子邮件内容的容器是Multipart抽象类,它定义了增加和删除及获得电子邮件不同部分内容的方法.由于Multipart是抽象类,我们必须为它使用一个具体的子类,JavaMail API提供javax.mail.Internet.MimeMultpart类来使用MimeMessage对象.   
+			用法:   
+			    MimeMultipart multipart=new MimeMultipart();   
+		注:我们使用MimeMultipart对象的一个方法是addBodyPart(),它在我们的电子邮件内容里添加BodyPart(BodyPart类在下面紧接着要介绍)对象.消息可以有很多部分,一个BodyPart可以代表一个部分.   
+(9) javax.mail.Internet.MimeBodyPart类   
+		MimeBodyPart是BodyPart具体用于mimeMessage的一个子类.   
+		MimeBodyPart对象代表一个MimeMessage对象内容的一部分.每个MimeBodyPart被认为有两部分:   
+		⊙一个MIME类型   
+		⊙匹配这个类型的内容   
+		用法:   
+		    MimeBodyPart mdp=new MimeBodyPart();   
+		    String text="Hello JavaMail!";   
+		//定义MIME类型为text/plain,并设置MimeBodyPart的内容.   
+		    mdp.setContent(text,"text/plain");    
+(10) javax.activation.DataHandler类(包含在JAF中)   
+		JavaMail API不限制信息只为文本,任何形式的信息都可能作茧自缚MimeMessage的一部分.除了文本信息,作为文件附件包含在电子邮件信息的一部分是很普遍的.JavaMail API通过使用DataHandler对象,提供一个允许我们包含非文本BodyPart对象的简便方法.   
+		用法:   
+		    DataHandler dh=new DataHandler(text,type);   
+		    mdp.setDatahandler(dh);  //mdp是一个MimeBodyPart对象   
+(11) javax.activation.FileDataSource类(包含在JAF中)   
+		一个FileDataSource对象可以表示本地文件和服务器可以直接访问的资源.一个本地文件可以通过创建一个新的MimeBodyPart对象附在一个mimeMessage对象上.   
+		用法:   
+		    MimeMultipart mm=new MimeMultipart();   
+		    MimeBodyPart mdp=new MimeBodyPart();   
+		    FileDataSource fds=new FileDataSource("c:/exam.txt");   
+		    mdp.setDataHandler(new DataHandler(fds));   //设置数据源   
+		    mm.addBodyPart(mdp);  //为当前消息MimeMultipart对象增加MimeBodyPart   
+(12) javax.activation.URLDataSource类(包含在JAF中)   
+远程资源,URL不会指向它们,由一个URLDataSource对象表示.一个远程资源可以通过创建一个新mimeBodyPart对象附在一个mimeMessage对象上(同FileDataSource差不多).   
+```
+
+#### 文件下载
+
+```java
+package com.leo.crazy;
+
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+/**
+ *下载
+ *download()方法负责按如下步骤来实现多线程下载。
+（1）创建URL对象。
+（2）获取指定URL对象所指向资源的大小（通过getContentLength()方法获得），此处用到了URLConnection类，该类代表Java应用程序和URL之间的通信链接。后面还有关于URLConnection更详细的介绍。
+（3）在本地磁盘上创建一个与网络资源具有相同大小的空文件。
+（4）计算每个线程应该下载网络资源的哪个部分（从哪个字节开始，到哪个字节结束）。
+（5）依次创建、启动多个线程来下载网络资源的指定部分。
+ * @author leoi555
+ *@date 2018年10月20日
+ */
+public class DownUtil {
+	    // 定义下载资源的路径
+	    private String path;
+	    // 指定所下载的文件的保存位置
+	    private String targetFile;
+	    // 定义需要使用多少个线程下载资源
+	    private int threadNum;
+	    // 定义下载的线程对象
+	    private DownThread[] threads;
+	    // 定义下载的文件的总大小
+	    private int fileSize;
+	    public DownUtil(String path, String targetFile, int threadNum)
+	    {
+	          this.path=path;
+	          this.threadNum=threadNum;
+	          // 初始化threads数组
+	          threads=new DownThread[threadNum];
+	          this.targetFile=targetFile;
+	    }
+	    public void download() throws Exception
+	    {
+	          URL url=new URL(path);
+	          HttpURLConnection conn=(HttpURLConnection) url.openConnection();
+	          conn.setConnectTimeout(5*1000);
+	          conn.setRequestMethod("GET");
+	          conn.setRequestProperty(
+	                "Accept",
+	                "image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
+	                + "application/x-shockwave-flash, application/xaml+xml, "
+	                + "application/vnd.ms-xpsdocument, application/x-ms-xbap, "
+	                + "application/x-ms-application, application/vnd.ms-excel, "
+	                + "application/vnd.ms-powerpoint, application/msword, ＊/＊");
+	          conn.setRequestProperty("Accept-Language", "zh-CN");
+	          conn.setRequestProperty("Charset", "UTF-8");
+	          conn.setRequestProperty("Connection", "Keep-Alive");
+	          // 得到文件大小
+	          fileSize=conn.getContentLength();
+	          conn.disconnect();
+	          int currentPartSize=fileSize / threadNum + 1;
+	          RandomAccessFile file=new RandomAccessFile(targetFile, "rw");
+	          // 设置本地文件的大小
+	          file.setLength(fileSize);
+	          file.close();
+	          for (int i=0; i < threadNum; i++)
+	          {
+	                // 计算每个线程下载的开始位置
+	                int startPos=i*currentPartSize;
+	                // 每个线程使用一个RandomAccessFile进行下载
+	                RandomAccessFile currentPart=new RandomAccessFile(targetFile,
+	                    "rw");
+	                // 定位该线程的下载位置
+	                currentPart.seek(startPos);
+	                // 创建下载线程
+	                threads[i]=new DownThread(startPos, currentPartSize,
+	                    currentPart);
+	                // 启动下载线程
+	                threads[i].start();
+	          }
+	    }
+	    // 获取下载的完成百分比
+	    public double getCompleteRate()
+	    {
+	          // 统计多个线程已经下载的总大小
+	          int sumSize=0;
+	          for (int i=0; i < threadNum; i++)
+	          {
+	                sumSize +=threads[i].length;
+	          }
+	          // 返回已经完成的百分比
+	          return sumSize*1.0 / fileSize;
+	    }
+	    private class DownThread extends Thread
+	    {
+	          // 当前线程的下载位置
+	          private int startPos;
+	          // 定义当前线程负责下载的文件大小
+	          private int currentPartSize;
+	          // 当前线程需要下载的文件块
+	          private RandomAccessFile currentPart;
+	          // 定义该线程已下载的字节数
+	          public int length;
+	          public DownThread(int startPos, int currentPartSize,
+	                RandomAccessFile currentPart)
+	          {
+	                this.startPos=startPos;
+	                this.currentPartSize=currentPartSize;
+	                this.currentPart=currentPart;
+	          }
+	          public void run()
+	          {
+	                try
+	                {
+	                    URL url=new URL(path);
+	                    HttpURLConnection conn=(HttpURLConnection)url
+	                          .openConnection();
+	                    conn.setConnectTimeout(5*1000);
+	                    conn.setRequestMethod("GET");
+	                    conn.setRequestProperty(
+	                          "Accept",
+	                          "image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
+	                          + "application/x-shockwave-flash, application/xaml+xml, "
+	                          + "application/vnd.ms-xpsdocument, application/x-ms-xbap, "
+	                          + "application/x-ms-application, application/vnd.ms-excel, "
+	                          + "application/vnd.ms-powerpoint, application/msword, ＊/＊");
+	                    conn.setRequestProperty("Accept-Language", "zh-CN");
+	                    conn.setRequestProperty("Charset", "UTF-8");
+	                    InputStream inStream=conn.getInputStream();
+	                    // 跳过startPos个字节，表明该线程只下载自己负责的那部分文件
+	                    inStream.skip(this.startPos);
+	                    byte[] buffer=new byte[1024];
+	                    int hasRead=0;
+	                    // 读取网络数据，并写入本地文件
+	                    while (length < currentPartSize
+	                          && (hasRead=inStream.read(buffer)) !=-1)
+	                    {
+	                          currentPart.write(buffer, 0, hasRead);
+	                          // 累计该线程下载的总大小
+	                          length +=hasRead;
+	                    }
+	                    currentPart.close();
+	                    inStream.close();
+	                }
+	                catch (Exception e)
+	                {
+	                    e.printStackTrace();
+	                }
+	          }
+	    }
+	
+}
+
+```
+
+## 面试题：
+
+**jsp 和 servlet 有什么区别？**
+
+-  jsp经编译后就变成了Servlet.（JSP的本质就是Servlet，JVM只能识别java的类，不能识别JSP的代码，Web容器将JSP的代码编译成JVM能够识别的java类）
+- jsp更擅长表现于页面显示，servlet更擅长于逻辑控制。
+- Servlet中没有内置对象，Jsp中的内置对象都是必须通过HttpServletRequest对象，HttpServletResponse对象以及HttpServlet对象得到。
+- Jsp是Servlet的一种简化，使用Jsp只需要完成程序员需要输出到客户端的内容，Jsp中的Java脚本如何镶嵌到一个类中，由Jsp容器完成。而Servlet则是个完整的Java类，这个类的Service方法用于生成对客户端的响应
+
+**jsp 有哪些内置对象？作用分别是什么？**
+
+ JSP有9个内置对象：
+
+- request：封装客户端的请求，其中包含来自GET或POST请求的参数；
+- response：封装服务器对客户端的响应；
+- pageContext：通过该对象可以获取其他对象；
+- session：封装用户会话的对象；
+- application：封装服务器运行环境的对象；
+- out：输出服务器响应的输出流对象；
+- config：Web应用的配置对象；
+- page：JSP页面本身（相当于Java程序中的this）；
+- exception：封装页面抛出异常的对象。
+
+**说一下 jsp 的 4 种作用域？**
+
+ JSP中的四种作用域包括page、request、session和application，
+
+- **page**代表与一个页面相关的对象和属性
+- **request**代表与Web客户机发出的一个请求相关的对象和属性。一个请求可能跨越多个页面，涉及多个Web组件；需要在页面显示的临时数据可以置于此作用域。
+- **session**代表与某个用户与服务器建立的一次会话相关的对象和属性。跟某个用户相关的数据应该放在用户自己的session中
+- **application**代表与整个Web应用程序相关的对象和属性，它实质上是跨越整个Web应用程序，包括多个页面、请求和会话的一个全局作用域
+
+**session 和 cookie 有什么区别？**
+
+-  cookie数据存放在客户的浏览器上，session数据放在服务器上。
+- cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗,考虑到安全应当使用session。
+- session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能,考虑到减轻服务器性能方面，应当使用cookie。
+- 单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie，而session则存储与服务端，浏览器对其没有限制。
+
+**说一下 session 的工作原理？**
+
+ 其实session是一个存在服务器上的类似于一个散列表格的文件。里面存有我们需要的信息，在我们需要用的时候可以从里面取出来。类似于一个大号的map吧，里面的键存储的是用户的sessionid，用户向服务器发送请求的时候会带上这个sessionid。这时就可以从中取出对应的值了
+
+**如果客户端禁止 cookie 能实现 session 还能用吗？**
+
+ Cookie与 Session，一般认为是两个独立的东西，Session采用的是在服务器端保持状态的方案，而Cookie采用的是在客户端保持状态的方案。但为什么禁用Cookie就不能得到Session呢？因为Session是用Session ID来确定当前对话所对应的服务器Session，而Session ID是通过Cookie来传递的，禁用Cookie相当于失去了Session ID，也就得不到Session了
+
+**假定用户关闭Cookie的情况下使用Session，其实现途径有以下几种：**
+
+-  设置php.ini配置文件中的“session.use_trans_sid = 1”，或者编译时打开打开了“--enable-trans-sid”选项，让PHP自动跨页传递Session ID。
+- 手动通过URL传值、隐藏表单传递Session ID
+- 用文件、数据库等形式保存Session ID，在跨页过程中手动调用
+
+**Tomcat的优化经验**
+
+去掉对web.xml的监视，把jsp提前编辑成Servlet。有富余物理内存的情况，加大tomcat使用的jvm的内存,关于Tomcat我会单独做一个关于Tomcat服务器的文章，毕竟我们无论如何都离不开运行的容器
+
+**解释一下什么是servlet;**
+
+servlet有良好的生存期的定义，包括加载和实例化、初始化、处理请求以及服务结束。这个生存期由javax.servlet.Servlet接口的init,service和destroy方法表达。
+
+**4、说一说Servlet的生命周期?**
+
+Servlet被服务器实例化后，容器运行其init方法，请求到达时运行其service方法，service方法自动派遣运行与请求对应的doXXX方法（doGet，doPost）等，当服务器决定将实例销毁的时候调用其destroy方法。
+
+web容器加载servlet，生命周期开始。通过调用servlet的init()方法进行servlet的初始化。通过调用service()方法实现，根据请求的不同调用不同的do***()方法。结束服务，web容器调用servlet的destroy()方法。
+
+**Servlet的基本架构**
+
+```java
+public class ServletName extends HttpServlet {
+
+public void doPost(HttpServletRequest request,HttpServletResponse response) throws
+
+ServletException, IOException {
+
+}
+
+public void doGet(HttpServletRequest request,HttpServletResponse response) throws
+
+ServletException, IOException {
+
+}
+
+}
+```
+
+**SERVLET API中forward()与redirect()的区别？**
+
+forward是服务器请求资源，服务器直接访问目标地址的URL，把那个URL的响应内容读取过来，然后把这些内容再发给浏览器，浏览器根本不知道服务器发送的内容是从哪儿来的，所以它的地址栏中还是原来的地址。
+
+redirect就是服务端根据逻辑,发送一个状态码,告诉浏览器重新去请求那个地址，一般来说浏览器会用刚才请求的所有参数重新请求，所以session,request参数都可以获取。
+
+**什么情况下调用doGet()和doPost()？**
+
+Jsp页面中的FORM标签里的method属性为get时调用doGet()，为post时调用doPost()。
+
+**Request对象的主要方法：**
+
+```java
+setAttribute(String name,Object)：设置名字为name的request的参数值
+
+getAttribute(String name)：返回由name指定的属性值
+
+getAttributeNames()：返回request对象所有属性的名字集合，结果是一个枚举的实例
+
+getCookies()：返回客户端的所有Cookie对象，结果是一个Cookie数组
+
+getCharacterEncoding()：返回请求中的字符编码方式
+
+getContentLength()：返回请求的Body的长度
+
+getHeader(String name)：获得HTTP协议定义的文件头信息
+
+getHeaders(String name)：返回指定名字的request Header的所有值，结果是一个枚举的实例
+
+getHeaderNames()：返回所以request Header的名字，结果是一个枚举的实例
+
+getInputStream()：返回请求的输入流，用于获得请求中的数据
+
+getMethod()：获得客户端向服务器端传送数据的方法
+
+getParameter(String name)：获得客户端传送给服务器端的有name指定的参数值
+
+getParameterNames()：获得客户端传送给服务器端的所有参数的名字，结果是一个枚举的实例
+
+getParametervalues(String name)：获得有name指定的参数的所有值
+
+getProtocol()：获取客户端向服务器端传送数据所依据的协议名称
+
+getQueryString()：获得查询字符串
+
+getRequestURI()：获取发出请求字符串的客户端地址
+
+getRemoteAddr()：获取客户端的IP地址
+
+getRemoteHost()：获取客户端的名字
+
+getSession([Boolean create])：返回和请求相关Session
+
+getServerName()：获取服务器的名字
+
+getServletPath()：获取客户端所请求的脚本文件的路径
+
+getServerPort()：获取服务器的端口号
+
+removeAttribute(String name)：删除请求中的一个属性
+```
+
+**jsp页面间对象传递的方法**
+
+request，session，application，cookie
+
+**MVC的各个部分都有那些技术来实现?如何实现?**
+
+MVC是Model－View－Controller的简写。Model代表的是应用的业务逻辑（通过JavaBean，EJB组件实现），View是应用的表示面（由JSP页面产生），Controller是提供应用的处理过程控制（一般是一个Servlet），通过这种设计模型把应用逻辑，处理过程和显示逻辑分成不同的组件实现。这些组件可以进行交互和重用。
+
+**我们在web应用开发过程中经常遇到输出某种编码的字符，如iso8859-1等，如何输出一个某种编码的字符串？**
+
+```java
+String tempStr  = newString(str.getBytes("ISO-8859-1"), "GBK");
+```
 
