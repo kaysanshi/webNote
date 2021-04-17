@@ -1885,6 +1885,21 @@ private void initScheduledTasks() {
 
         if (clientConfig.shouldRegisterWithEureka()) {
             // 发送心跳定时器，默认30秒发送一次。
+            /**
+            * 通过InstanceInfo类中的获取LeaseInfo类
+            * private volatile LeaseInfo leaseInfo;
+            *
+            *	@JsonRootName("leaseInfo")
+                public class LeaseInfo {
+
+                    public static final int DEFAULT_LEASE_RENEWAL_INTERVAL = 30;
+                    public static final int DEFAULT_LEASE_DURATION = 90;
+
+                    // Client settings
+                    private int renewalIntervalInSecs = DEFAULT_LEASE_RENEWAL_INTERVAL;
+                    private int durationInSecs = DEFAULT_LEASE_DURATION;
+                    }
+            */
             int renewalIntervalInSecs = instanceInfo.getLeaseInfo().getRenewalIntervalInSecs();
             int expBackOffBound = clientConfig.getHeartbeatExecutorExponentialBackOffBound();
             logger.info("Starting heartbeat executor: " + "renew interval is: {}", renewalIntervalInSecs);
@@ -2552,7 +2567,8 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
 
     public void evict(long additionalLeaseMs) {
         logger.debug("Running the evict task");
-		// 检查是否启用了租约到期
+		// 检查是否启用了租约到期 
+        // 自我保护机制如果出现该状态不允许剔除服务
         if (!isLeaseExpirationEnabled()) {
             logger.debug("DS: lease expiration is currently disabled.");
             return;
@@ -2560,6 +2576,7 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
         //我们首先收集所有过期的物品，以随机顺序将其逐出。对于大型驱逐集，
         //如果不这样做，则可能会在自我保护开始之前先清除整个应用程序。通过将其随机化，
         //影响应均匀地分布在所有应用程序中。
+        // 遍历注册表register，一次性获取所有的过期租约
         List<Lease<InstanceInfo>> expiredLeases = new ArrayList<>();
         for (Entry<String, Map<String, Lease<InstanceInfo>>> groupEntry : registry.entrySet()) {
             Map<String, Lease<InstanceInfo>> leaseMap = groupEntry.getValue();
@@ -2574,15 +2591,18 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
         }
 
         //为了补偿GC暂停或本地时间漂移，我们需要使用当前注册表大小作为触发自我保存的基础。否则，我们将清除完整的注册表
+        // 计算最大允许剔除的租约的数量，获取注册租约总数
         int registrySize = (int) getLocalRegistrySize();
+        // 计算注册表租约的阈值，与自我保护相关
         int registrySizeThreshold = (int) (registrySize * serverConfig.getRenewalPercentThreshold());
         int evictionLimit = registrySize - registrySizeThreshold;
-
+		// 计算剔除租约的数量
         int toEvict = Math.min(expiredLeases.size(), evictionLimit);
         if (toEvict > 0) {
             logger.info("Evicting {} items (expired={}, evictionLimit={})", toEvict, expiredLeases.size(), evictionLimit);
 
             Random random = new Random(System.currentTimeMillis());
+            // 逐个随机剔除
             for (int i = 0; i < toEvict; i++) {
                 // Pick a random item (Knuth shuffle algorithm)
                 int next = i + random.nextInt(expiredLeases.size() - i);
@@ -2595,6 +2615,7 @@ Eureka Client在发起服务注册时会将自身的服务实例元数据封装�
                 // EurekaMonitors 给定统计量增加计数器
                 EXPIRED.increment();
                 logger.warn("DS: Registry: expired lease for {}/{}", appName, id);
+                // 逐个剔除
                 internalCancel(appName, id, false);
             }
         }
@@ -2636,15 +2657,19 @@ Eureka Client在应用销毁时，会向Eureka Server发送服务下线请求，
      */
     protected boolean internalCancel(String appName, String id, boolean isReplication) {
         try {
+            // 获取锁，防止被其他线程进行修改
             read.lock();
             // 根据这是由于从其他eureka服务器进行复制还是由于eureka客户端启动的操作而增加给定统计信息的计数器
             // 调用EurekaMonitors
             CANCEL.increment(isReplication);
+            // 根据appName获取服务实例集群
             Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
             Lease<InstanceInfo> leaseToCancel = null;
+            // 移除服务实例的租约
             if (gMap != null) {
                 leaseToCancel = gMap.remove(id);
             }
+            // 将服务实例信息添加到最近下线服务实例统计队列
             synchronized (recentCanceledQueue) {
                 recentCanceledQueue.add(new Pair<Long, String>(System.currentTimeMillis(), appName + "(" + id + ")"));
             }
@@ -2652,27 +2677,34 @@ Eureka Client在应用销毁时，会向Eureka Server发送服务下线请求，
             if (instanceStatus != null) {
                 logger.debug("Removed instance id {} from the overridden map which has value {}", id, instanceStatus.name());
             }
+             // 如果租约不存在返回false
             if (leaseToCancel == null) {
                 CANCEL_NOT_FOUND.increment(isReplication);
                 logger.warn("DS: Registry: cancel failed because Lease is not registered for: {}/{}", appName, id);
                 return false;
             } else {
+                // 设置租约的下线时间
                 leaseToCancel.cancel();
                 InstanceInfo instanceInfo = leaseToCancel.getHolder();
                 String vip = null;
                 String svip = null;
                 if (instanceInfo != null) {
                     instanceInfo.setActionType(ActionType.DELETED);
+                    // 添加最近租约变更记录的队列，标识ActionType为DELETED
+                    // 这将用于Eureka Client 增量式获取注册表信息
                     recentlyChangedQueue.add(new RecentlyChangedItem(leaseToCancel));
                     instanceInfo.setLastUpdatedTimestamp();
                     vip = instanceInfo.getVIPAddress();
                     svip = instanceInfo.getSecureVipAddress();
                 }
+                // 设置response缓存过期
                 invalidateCache(appName, vip, svip);
                 logger.info("Cancelled instance {}/{} (replication={})", appName, id, isReplication);
+                // 下线成功
                 return true;
             }
         } finally {
+            // 释放锁
             read.unlock();
         }
     }
@@ -2696,9 +2728,10 @@ internalCancel方法与register方法的行为过程很类似，首先通过regi
      */
     @Override
     public int syncUp() {
+        // 从临近的Peer中复制整个注册表
         // Copy entire entry from neighboring DS node
         int count = 0;
-
+		// 如果获取不到，线程等待
         for (int i = 0; ((i < serverConfig.getRegistrySyncRetries()) && (count == 0)); i++) {
             if (i > 0) {
                 try {
@@ -2708,11 +2741,14 @@ internalCancel方法与register方法的行为过程很类似，首先通过regi
                     break;
                 }
             }
+            // 获取所有的服务实例
             Applications apps = eurekaClient.getApplications();
             for (Application app : apps.getRegisteredApplications()) {
                 for (InstanceInfo instance : app.getInstances()) {
                     try {
+                        // 判断是否可注册，主要用于AWS环境下进行，若部署在其他的环境，直接返回true
                         if (isRegisterable(instance)) {
+                            // 注册到自身的注册表中
                             register(instance, instance.getLeaseInfo().getDurationInSecs(), true);
                             count++;
                         }
@@ -2734,22 +2770,26 @@ Eureka Server也是一个Eureka Client，在启动的时候也会进行Discovery
 @Override
     public void openForTraffic(ApplicationInfoManager applicationInfoManager, int count) {
         // Renewals happen every 30 seconds and for a minute it should be a factor of 2.
+        // 初始化自我保护机制统计参数
         this.expectedNumberOfRenewsPerMin = count * 2;
         this.numberOfRenewsPerMinThreshold =
                 (int) (this.expectedNumberOfRenewsPerMin * serverConfig.getRenewalPercentThreshold());
         logger.info("Got {} instances from neighboring DS node", count);
         logger.info("Renew threshold is: {}", numberOfRenewsPerMinThreshold);
         this.startupTime = System.currentTimeMillis();
+        // 如果同步的应用实例数量为0，将在一段时间内拒绝Client获取注册信息
         if (count > 0) {
             this.peerInstancesTransferEmptyOnStartup = false;
         }
         DataCenterInfo.Name selfName = applicationInfoManager.getInfo().getDataCenterInfo().getName();
         boolean isAws = Name.Amazon == selfName;
+        // 判断是否是AWS运行环境
         if (isAws && serverConfig.shouldPrimeAwsReplicaConnections()) {
             logger.info("Priming AWS connections for all replicas..");
             primeAwsReplicas(applicationInfoManager);
         }
         logger.info("Changing status to UP");
+        // 修改服务实例的状态为健康上线，可以接受流量
         applicationInfoManager.setInstanceStatus(InstanceStatus.UP);
         super.postInit();
     }
@@ -2759,13 +2799,14 @@ Eureka Server也是一个Eureka Client，在启动的时候也会进行Discovery
 
 ###### Eureka Server之间注册表信息的同步复制
 
-为了保证Eureka Server集群运行时注册表信息的一致性，每个Eureka Server在对本地注册表进行管理操作时，会将相应的操作同步到所有peer节点中。在PeerAwareInstanceRegistryImpl中，对Abstractinstanceregistry中的#register、#cancel和#renew等方法都添加了同步到peer节点的操作，使Server集群中注册表信息保持最终一致性，如下所示
+为了保证Eureka Server集群运行时注册表信息的一致性，每个Eureka Server在对本地注册表进行管理操作时，会将相应的操作同步到所有peer节点中。在**PeerAwareInstanceRegistryImpl**中，对Abstractinstanceregistry中的#register、#cancel和#renew等方法都添加了同步到peer节点的操作，使Server集群中注册表信息保持最终一致性，如下所示
 
 ```java
 @Override
     public boolean cancel(final String appName, final String id,
                           final boolean isReplication) {
         if (super.cancel(appName, id, isReplication)) {
+            // 同步下线状态
             replicateToPeers(Action.Cancel, appName, id, null, null, isReplication);
             synchronized (lock) {
                 if (this.expectedNumberOfRenewsPerMin > 0) {
@@ -2798,6 +2839,7 @@ Eureka Server也是一个Eureka Client，在启动的时候也会进行Discovery
             leaseDuration = info.getLeaseInfo().getDurationInSecs();
         }
         super.register(info, leaseDuration, isReplication);
+        // 同步注册状态
         replicateToPeers(Action.Register, info.getAppName(), info.getId(), info, null, isReplication);
     }
 
@@ -2809,6 +2851,7 @@ Eureka Server也是一个Eureka Client，在启动的时候也会进行Discovery
      */
     public boolean renew(final String appName, final String id, final boolean isReplication) {
         if (super.renew(appName, id, isReplication)) {
+            // 同步续约状态
             replicateToPeers(Action.Heartbeat, appName, id, null, null, isReplication);
             return true;
         }
@@ -2825,15 +2868,18 @@ private void replicateToPeers(Action action, String appName, String id,
                 numberOfReplicationsLastMin.increment();
             }
             // If it is a replication already, do not replicate again as this will create a poison replication
+            // 如果peer集群为空，或者这本来就是复制操作，那么就不再复制，防止造成循环复制
             if (peerEurekaNodes == Collections.EMPTY_LIST || isReplication) {
                 return;
             }
-
+			// 向peer 集群的每一个peer进行同步
             for (final PeerEurekaNode node : peerEurekaNodes.getPeerEurekaNodes()) {
                 // If the url represents this host, do not replicate to yourself.
+                // 如果peer节点是自身的话，不进行同步复制
                 if (peerEurekaNodes.isThisMyUrl(node.getServiceUrl())) {
                     continue;
                 }
+                // 根据Action调用不同的同步请求
                 replicateInstanceActionsToPeers(action, appName, id, info, newStatus, node);
             }
         } finally {
@@ -2844,7 +2890,9 @@ private void replicateToPeers(Action action, String appName, String id,
     /**
      * Replicates all instance changes to peer eureka nodes except for
      * replication traffic to this node.
-     *
+     * 根据action的不同，调用PeerEurekaNode的不同方法进行同步复制
+     *  将所有实例更改复制到对等eureka节点，但复制到该节点的流量除外
+     * Action是一个枚举内部类 包含 Heartbeat,Refister,Cancel,StatusUpdate,DeleteStatusOverride
      */
     private void replicateInstanceActionsToPeers(Action action, String appName,
                                                  String id, InstanceInfo info, InstanceStatus newStatus,
@@ -2854,18 +2902,21 @@ private void replicateToPeers(Action action, String appName, String id,
             CurrentRequestVersion.set(Version.V2);
             switch (action) {
                 case Cancel:
+                    // 同步下线
                     node.cancel(appName, id);
                     break;
                 case Heartbeat:
                     InstanceStatus overriddenStatus = overriddenInstanceStatusMap.get(id);
                     infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+                    // 同步心跳
                     node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, false);
                     break;
                 case Register:
+                    // 同步注册
                     node.register(info);
                     break;
                 case StatusUpdate:
-                    infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+                    infoFromRegistry = getInstanceByAppAndId(appName, id, false);			// 同步状态更新
                     node.statusUpdate(appName, id, newStatus, infoFromRegistry);
                     break;
                 case DeleteStatusOverride:
@@ -2883,7 +2934,7 @@ PeerEurekaNode中的每一个同步复制都是通过批任务流的方式进行
 
 ##### 获取注册表中服务实例信息
 
-Eureka Server中获取注册表的服务实例信息主要通过两个方法实现：AbstractInstanceRegistry #getApplicationsFromMultipleRegions从多地区获取全量注册表数据，AbstractInstanceRegistry#getApplicationDeltasFromMultipleRegions从多地区获取增量式注册表数据。
+Eureka Server中获取注册表的服务实例信息主要通过两个方法实现：AbstractInstanceRegistry .getApplicationsFromMultipleRegions()从多地区获取全量注册表数据，AbstractInstanceRegistry.getApplicationDeltasFromMultipleRegions()从多地区获取增量式注册表数据。
 
 ###### getApplicationsFromMultipleRegions获取全量注册表数据
 
@@ -2902,6 +2953,7 @@ Eureka Server中获取注册表的服务实例信息主要通过两个方法实�
         }
         Applications apps = new Applications();
         apps.setVersion(1L);
+        // 从本地registry获取所有的服务实例信息InstanceInfo
         for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
             Application app = null;
 
@@ -2919,6 +2971,7 @@ Eureka Server中获取注册表的服务实例信息主要通过两个方法实�
             }
         }
         if (includeRemoteRegion) {
+            // 获取远程Region中的Eureka Server中的注册表信息
             for (String remoteRegion : remoteRegions) {
                 RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
                 if (null != remoteRegistry) {
@@ -2977,7 +3030,9 @@ public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegio
         apps.setVersion(responseCache.getVersionDeltaWithRegions().get());
         Map<String, Application> applicationInstancesMap = new HashMap<String, Application>();
         try {
+            // 开启写锁
             write.lock();
+            // 遍历recentlyChangedQueue队列获取最近变化的服务实例信息InstanceInfo
             Iterator<RecentlyChangedItem> iter = this.recentlyChangedQueue.iterator();
             logger.debug("The number of elements in the delta queue is :{}", this.recentlyChangedQueue.size());
             while (iter.hasNext()) {
@@ -2995,6 +3050,7 @@ public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegio
             }
 
             if (includeRemoteRegion) {
+                // 获取远程Region中的Eureka Server的增量式注册表信息
                 for (String remoteRegion : remoteRegions) {
                     RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
                     if (null != remoteRegistry) {
@@ -3019,6 +3075,7 @@ public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegio
             }
 
             Applications allApps = getApplicationsFromMultipleRegions(remoteRegions);
+            // 计算应用集合一致性哈希码，用以在Eureka Client拉取时进行对比
             apps.setAppsHashCode(allApps.getReconcileHashCode());
             return apps;
         } finally {
@@ -3027,7 +3084,7 @@ public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegio
     }
 ```
 
-获取增量式注册表信息将会从recentlyChangedQueue中获取最近变化的服务实例信息。recentlyChangedQueue中统计了近3分钟内进行注册、修改和剔除的服务实例信息，在服务注册AbstractInstanceRegistry#registry、接受心跳请求AbstractInstanceRegistry#renew和服务下线AbstractInstanceRegistry#internalCancel等方法中均可见到recentlyChangedQueue对这些服务实例进行登记，用于记录增量式注册表信息。#getApplicationsFromMultipleRegions方法同样提供了从远程Region的Eureka Server获取增量式注册表信息的能力
+获取增量式注册表信息将会从recentlyChangedQueue队列中获取最近变化的服务实例信息。recentlyChangedQueue队列中统计了近3分钟内进行注册、修改和剔除的服务实例信息，在服务注册AbstractInstanceRegistry.registry()、接受心跳请求AbstractInstanceRegistry.renew()和服务下线AbstractInstanceRegistry.internalCancel()等方法中均可见到recentlyChangedQueue队列对这些服务实例进行登记，用于记录增量式注册表信息。getApplicationsFromMultipleRegions()方法同样提供了从远程Region的Eureka Server获取增量式注册表信息的能力
 
 #### **Eureka和ZooKeeper**
 
@@ -3045,13 +3102,19 @@ Eureka在设计时就优先保证可用性。Eureka各个节点都是平等的�
 
 ### 各组件深入之Spring Cloud openFeign（远程调用）
 
-​			在微服务架构中，业务都会被拆分成一个独立的服务，服务与服务的通讯是基于HTTP RESTful的。Spring Cloud有两种服务调用方式，一种是Ribbon+RestTemplate，另一种是Feign。
+在微服务架构中，业务都会被拆分成一个独立的服务，服务与服务的通讯是基于HTTP RESTful的。Spring Cloud有两种服务调用方式，一种是Ribbon+RestTemplate，另一种是Feign。
 
-​			Feign是声明性Web服务客户端。 它使编写Web服务客户端更加容易。 要使用Feign，请创建一个接口并对其进行注释。 它具有可插入注释支持，包括Feign注释和JAX-RS注释。 Feign还支持可插拔编码器和解码器。 Spring Cloud添加了对Spring MVC注释的支持，并支持使用Spring Web中默认使用的相同HttpMessageConverters。 Spring Cloud集成了Eureka和Spring Cloud LoadBalancer，以在使用Feign时提供负载平衡的http客户端。 就是通过把http请求封装到了注解中。
+Feign是声明性Web服务客户端。 它使编写Web服务客户端更加容易。 要使用Feign，请创建一个接口并对其进行注释。 它具有可插入注释支持，包括Feign注释和JAX-RS注释。 Feign还支持可插拔编码器和解码器。 Spring Cloud添加了对Spring MVC注释的支持，并支持使用Spring Web中默认使用的相同HttpMessageConverters。 Spring Cloud集成了Eureka和Spring Cloud LoadBalancer，以在使用Feign时提供负载平衡的http客户端。 就是通过把http请求封装到了注解中。
 
-​			Spring Cloud 的 Feign 支持中的一个核心概念是命名客户机。每个佯装的客户机都是一个组件集合的一部分，这些组件一起工作，根据需要联系一个远程服务器，这个集合有一个名称，作为一个使用@feignclient 注释的应用程序开发人员，你可以给它一个名称。Spring Cloud 使用 FeignClientsConfiguration 根据需要为每个命名客户机创建一个新的集合，作为 ApplicationContext。其中包括一个假动作。解码器，一个假装。编码器，和一个假装。合约。可以使用@feignclient 注释的 contextId 属性覆盖集合的名称。
+使用OpenFeign的Spring应用架构一般分为三个部分，分别为服务注册中心、服务提供者和服务消费者。服务提供者向服务注册中心注册自己，然后服务消费者通过OpenFeign发送请求时，OpenFeign会向服务注册中心获取关于服务提供者的信息，然后再向服务提供者发送网络请求
 
-​			Hystrix 支持熔断(fallback)的概念: 一个默认的代码路径，在熔断或出现错误时执行。要为给定的@feignclient 启用熔断，请将熔断属性设置为实现熔断的类名。您还需要将实现声明为 springbean。
+[![c5isUS.png](https://z3.ax1x.com/2021/04/17/c5isUS.png)](https://imgtu.com/i/c5isUS)
+
+
+
+Spring Cloud 的 Feign 支持中的一个核心概念是命名客户机。每个佯装的客户机都是一个组件集合的一部分，这些组件一起工作，根据需要联系一个远程服务器，这个集合有一个名称，作为一个使用@feignclient 注释的应用程序开发人员，你可以给它一个名称。Spring Cloud 使用 FeignClientsConfiguration 根据需要为每个命名客户机创建一个新的集合，作为 ApplicationContext。其中包括一个假动作。解码器，一个假装。编码器，和一个假装。合约。可以使用@feignclient 注释的 contextId 属性覆盖集合的名称。
+
+Hystrix 支持熔断(fallback)的概念: 一个默认的代码路径，在熔断或出现错误时执行。要为给定的@feignclient 启用熔断，请将熔断属性设置为实现熔断的类名。您还需要将实现声明为 springbean。
 
 ```java
 /**
@@ -3141,6 +3204,12 @@ public class DemobServiceClientFallback implements DemobServiceClient {
 - RequestTemplate中包含请求的所有信息，如请求参数，请求URL等。
 - RequestTemplate声场Request，然后将Request交给client处理，这个client默认是JDK的HTTPUrlConnection，也可以是OKhttp、Apache的HTTPClient等。
 - 最后client封装成LoadBaLanceClient，结合ribbon负载均衡地发起调用。
+
+#### Feign源码解析
+
+在阅读OpenFeign源码时，可以沿着两条路线进行，一是FeignServiceClient这样的被@FeignClient注解修饰的接口类（后续简称为FeignClient接口类）如何创建，也就是其Bean实例是如何被创建的；二是调用FeignServiceClient对象的网络请求相关的函数时，OpenFeign是如何发送网络请求的。而OpenFeign相关的类也可以以此来进行分类，一部分是用来初始化相应的Bean实例的，一部分是用来在调用方法时发送网络请求。
+
+
 
 ### 各组件深入之Spring Cloud Ribbon（负载均衡）
 
