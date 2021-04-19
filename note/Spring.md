@@ -573,6 +573,7 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 在DefaultListableBeanFactory中实现了BeanDefinitionRegistry的接口，这个接口的实现完成BeanDefinition向容器的注册。这个注册过程不复杂，就是把解析得到的BeanDefinition设置到hashMap中去。需要注意的是，如果遇到同名的BeanDefinition的情况，进行处理的时候需要依据allowBeanDefinitionOverriding的配置来完成
 
 ```java
+	// DefaultListableBeanFactory.java	
 	/---------------------------------------------------------------------
 	// Implementation of BeanDefinitionRegistry interface
 	//---------------------------------------------------------------------
@@ -580,10 +581,10 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-
+		
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
-
+		// 是否是AbstractBeanDefinition的实例
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
 				((AbstractBeanDefinition) beanDefinition).validate();
@@ -593,7 +594,7 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 						"Validation of bean definition failed", ex);
 			}
 		}
-
+		// 从map中获取BeanDefinition
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
 		if (existingDefinition != null) {
 			if (!isAllowBeanDefinitionOverriding()) {
@@ -624,8 +625,9 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+            // 检查该工厂的Bean创建阶段是否已经开始，即在此期间是否有任何Bean被标记为已创建
 			if (hasBeanCreationStarted()) {
-				// Cannot modify startup-time collection elements anymore (for stable iteration)
+				// Cannot modify startup-time collection elements anymore (for stable iteration)不能再修改启动时收集元素（用于稳定的迭代）
 				synchronized (this.beanDefinitionMap) {
 					this.beanDefinitionMap.put(beanName, beanDefinition);
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
@@ -637,6 +639,7 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 			}
 			else {
 				// Still in startup registration phase
+                // 仍处于启动注册阶段
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
@@ -645,6 +648,7 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 		}
 
 		if (existingDefinition != null || containsSingleton(beanName)) {
+            // 重置给定bean的所有bean定义缓存，包括从其派生的bean的缓存
 			resetBeanDefinition(beanName);
 		}
 		else if (isConfigurationFrozen()) {
@@ -1117,6 +1121,263 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     </bean>
 </beans>
 ```
+### IOC容器依赖注入原理探索
+
+由IOC容器已经初始化完毕，IoC容器初始化的过程,主要完成的工作是在IoC容器中建立 BeanDefinition 数据映射,并没有看到IoC容器对Bean依赖关系进行注入,
+
+假设当前IoC容器已经载入用户定义的Bean信息,依赖注入主要发生在两个阶段
+
+正常情况下,由用户第一次向IoC容器索要Bean时触发
+
+但我们可以在 BeanDefinition 信息中通过控制 lazy-init 属性来让容器完成对Bean的预实例化,即在初始化的过程中就完成某些Bean的依赖注入的过程.
+
+```java
+	   AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+
+        // 从spring ioc 容器获取 person
+        Person person = (Person) configApplicationContext.getBean("person");
+        System.out.println(person.toString());
+```
+
+从getBean进行探索,这个方法将bean定义转换为了对象
+
+```java
+	@Override
+	public Object getBean(String name) throws BeansException {
+		return doGetBean(name, null, null, false);
+	}
+```
+
+```java
+/**
+*	返回一个实例，该实例可以是指定bean的共享或独立的。
+    参数：
+        名称–要检索的bean的名称
+        requiredType –要检索的bean的必需类型
+        args –使用显式参数创建bean实例时要使用的参数（仅在创建新实例而不是检索现有实例时才应用）
+        typeCheckOnly –是否为类型检查而不是实际使用获取实例
+    返回值：Bean的一个实例
+    抛出：BeansException如果无法创建Bea
+*/
+protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
+			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
+		// 返回Bean名称，必要时去除工厂取消引用前缀，并将别名解析为规范名称
+		final String beanName = transformedBeanName(name);
+		Object bean;
+		/**
+		* 检查缓存中或者实例工厂中是否由对应的实例
+		* 在创建单例bean时会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖
+		* spring创建bean的原则是不等bean创建完成就会将创建bean的ObjectFactory提早曝光。也就是将ObjectFactory加入缓存，一旦下个bean创建时候需要依赖上个bean直接使用ObjectFactory
+		* 
+		**/
+		// Eagerly check singleton cache for manually registered singletons.
+    	// 检查单例缓存中是否有手动注册的单例
+    	// getSingleton返回以给定名称注册的（原始）单例对象。检查已经实例化的单例，并且还允许对当前创建的单例的早期引用（解析循环引用）
+		Object sharedInstance = getSingleton(beanName);
+		if (sharedInstance != null && args == null) {
+			if (logger.isDebugEnabled()) {
+                // 返回指定的单例bean当前是否正在创建（在整个工厂内）
+				if (isSingletonCurrentlyInCreation(beanName)) {
+					logger.debug("Returning eagerly cached instance of singleton bean '" + beanName +
+							"' that is not fully initialized yet - a consequence of a circular reference");
+				}
+				else {
+					logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
+				}
+			}
+            // 获取给定bean实例的对象，如果是FactoryBean，则可以是bean实例本身或其创建的对象,就是返回指定方法返回的实例
+			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
+		}
+
+		else {
+			// Fail if we're already creating this bean instance:
+			// We're assumably within a circular reference.
+            // 如果我们已经在创建这个bean实例，则失败：
+            //我们大概在循环引用中。isPrototypeCurrentlyInCreation()方法返回指定的原型bean是否当前正在创建中（在当前线程内）
+            // 只有在单例情况下才会尝试解决循环依赖，原型模式如果存在A中又B的属性，B中有A的属性，那么当依赖注入的时候就会产生当A还未创建完的时候，因为对B的再次返回创建A造成循环依赖的情况
+			if (isPrototypeCurrentlyInCreation(beanName)) {
+				throw new BeanCurrentlyInCreationException(beanName);
+			}
+
+			// Check if bean definition exists in this factory.
+            // 检查该工厂中是否存在bean定义
+			BeanFactory parentBeanFactory = getParentBeanFactory();
+            // 如果beanDefinitionMap中不包含beanName则尝试从parentBeanFactory检查
+			if (parentBeanFactory != null && !containsBeanDefinition(beanName)) {
+				// Not found -> check parent.
+                // 确定原始bean名称，将本地定义的别名解析为规范名称
+				String nameToLookup = originalBeanName(name);
+				if (parentBeanFactory instanceof AbstractBeanFactory) {
+					return ((AbstractBeanFactory) parentBeanFactory).doGetBean(
+							nameToLookup, requiredType, args, typeCheckOnly);
+				}
+                // 递归到BeanFactory中找
+				else if (args != null) {
+					// Delegation to parent with explicit args.
+                    // 使用显式参数委派给父级.返回一个实例，该实例可以是指定bean的共享或独立的。允许指定显式构造函数自变量/工厂方法自变量，覆盖Bean定义中指定的默认自变量（如果有
+					return (T) parentBeanFactory.getBean(nameToLookup, args);
+				}
+				else {
+                    // 没有参数->委托给标准的getBean方法
+					// No args -> delegate to standard getBean method.
+                    // 返回一个实例，方法getBean(name,type)该实例可以是指定bean的共享或独立的。行为与getBean(String)相同，但是如果bean不是必需的类型，则通过抛出BeanNotOfRequiredTypeException来提供类型安全性的度量。 这意味着如getBean(String)那样，不能正确地强制转换结果时抛出ClassCastException。将别名转换回相应的规范bean名称。 将询问父工厂是否在该工厂实例中找不到该bean
+					return parentBeanFactory.getBean(nameToLookup, requiredType);
+				}
+			}
+			// 如果不是仅仅做类型检查则是创建bean,这里要进行记录
+			if (!typeCheckOnly) {
+                // 将指定的bean标记为已经创建（或将要创建）。这允许bean工厂优化其缓存以重复创建指定的bean
+				markBeanAsCreated(beanName);
+			}
+
+			try {
+                // 将存储XMl配置文件的GernericBeanDefinition转换为RootBeanDefinition,如何指定BeanName是子Bean的话同时会合并父类的相关属性
+                // 返回合并的RootBeanDefinition，如果指定的bean对应于子bean定义，则遍历父bean定义
+				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+                // 检查给定的合并bean定义，可能会引发验证异常
+				checkMergedBeanDefinition(mbd, beanName, args);
+				// 保证当前bean依赖的bean的初始化
+				// Guarantee initialization of beans that the current bean depends on.
+                // 返回该bean依赖的bean名称
+				String[] dependsOn = mbd.getDependsOn();
+                // 若存在依赖则需要递归实例化依赖的bean
+				if (dependsOn != null) {
+					for (String dep : dependsOn) {
+						if (isDependent(beanName, dep)) {
+							throw new BeanCreationException(mbd.getResourceDescription(), beanName,
+									"Circular depends-on relationship between '" + beanName + "' and '" + dep + "'");
+						}
+                        // 为给定的bean注册一个从属bean，要在给定的bean被销毁之前将其销毁
+                        // 缓存依赖调用
+						registerDependentBean(dep, beanName);
+						getBean(dep);
+					}
+				}
+				// 创建bean实例
+				// Create bean instance.
+				if (mbd.isSingleton()) {
+					sharedInstance = getSingleton(beanName, () -> {
+						try {
+							return createBean(beanName, mbd, args);
+						}
+						catch (BeansException ex) {
+							// Explicitly remove instance from singleton cache: It might have been put there
+							// eagerly by the creation process, to allow for circular reference resolution.
+							// Also remove any beans that received a temporary reference to the bean.
+                            //从单例缓存中显式删除实例：创建过程可能将它
+                            //急切地放置在那里，以允许循环引用解析。
+                            //还删除所有收到对bean的临时引用的bean
+                            // 销毁给定的bean。 如果找到了相应的一次性Bean实例，则委托destroyBean
+							destroySingleton(beanName);
+							throw ex;
+						}
+					});
+                    // 获取给定bean实例的对象，如果是FactoryBean，则可以是bean实例本身或其创建的对象
+					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
+				}
+
+				else if (mbd.isPrototype()) {
+					// It's a prototype -> create a new instance.
+					Object prototypeInstance = null;
+					try {
+                        // 创建原型之前进行回调。默认实现将原型注册为当前正在创建中
+						beforePrototypeCreation(beanName);
+                        // 为给定的合并bean定义（和参数）创建一个bean实例。 如果是子定义，则Bean定义将已经与父定义合并。所有bean检索方法都委托该方法进行实际的bean创建
+						prototypeInstance = createBean(beanName, mbd, args);
+					}
+					finally {
+                        //创建原型后进行回调。默认实现将原型标记为不再创建
+						afterPrototypeCreation(beanName);
+					}
+					bean = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
+				}
+
+				else {
+                    // 获取scope域
+					String scopeName = mbd.getScope();
+					final Scope scope = this.scopes.get(scopeName);
+					if (scope == null) {
+						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");
+					}
+					try {
+						Object scopedInstance = scope.get(beanName, () -> {
+                            // 创建原型之前进行回调。默认实现将原型注册为当前正在创建中
+							beforePrototypeCreation(beanName);
+							try {
+								return createBean(beanName, mbd, args);
+							}
+							finally {
+                                // 创建原型后进回调
+								afterPrototypeCreation(beanName);
+							}
+						});
+                        // 获取给定bean实例的对象，如果是FactoryBean，则可以是bean实例本身或其创建的对象
+						bean = getObjectForBeanInstance(scopedInstance, name, beanName, mbd);
+					}
+					catch (IllegalStateException ex) {
+						throw new BeanCreationException(beanName,
+								"Scope '" + scopeName + "' is not active for the current thread; consider " +
+								"defining a scoped proxy for this bean if you intend to refer to it from a singleton",
+								ex);
+					}
+				}
+			}
+			catch (BeansException ex) {
+                // Bean创建失败后，对缓存的元数据执行适当的清理
+				cleanupAfterBeanCreationFailure(beanName);
+				throw ex;
+			}
+		}
+		// 检查所需的类型是否与实际bean实例的类型匹配
+		// Check if required type matches the type of the actual bean instance.
+		if (requiredType != null && !requiredType.isInstance(bean)) {
+			try {
+                // 获取此BeanFactory使用的类型转换器。 这可能是每个调用的新实例，因为TypeConverters通常不是线程安全的。如果默认的PropertyEditor机制处于活动状态，则返回的TypeConverter将知道所有已注册的自定义编辑器
+                // 将值转换为所需的类型（如果需要，则从字符串）。从String到任何类型的转换通常将使用PropertyEditor类的setAsText方法或ConversionService中的Spring Converter
+				T convertedBean = getTypeConverter().convertIfNecessary(bean, requiredType);
+				if (convertedBean == null) {
+					throw new BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
+				}
+				return convertedBean;
+			}
+			catch (TypeMismatchException ex) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Failed to convert bean '" + name + "' to required type '" +
+							ClassUtils.getQualifiedName(requiredType) + "'", ex);
+				}
+				throw new BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
+			}
+		}
+		return (T) bean;
+	}
+```
+
+仅从代码量上就能看出来bean的加载经历了一个相当复杂的过程，其中涉及各种各样的考虑。相信读者细心阅读上面的代码，并参照部分代码注释，是可以粗略地了解整个Spring加载bean的过程。对于加载过程中所涉及的步骤大致如下。
+
+1. **转换对应beanName**。或许很多人不理解转换对应beanName是什么意思，传入的参数name不就是beanName吗？其实不是，这里传入的参数可能是别名，也可能是FactoryBean，所以需要进行一系列的解析，这些解析内容包括如下内容。
+
+   ​    ● 去除FactoryBean的修饰符，也就是如果name="&aa"，那么会首先去除&而使name="aa"。
+
+   ​	● 取指定alias所表示的最终beanName，例如别名A指向名称为B的bean则返回B；若别名A指向别名B，别名B又指向名称为C的bean则返回C。
+
+2. **尝试从缓存中加载单例**。单例在Spring的同一个容器内只会被创建一次，后续再获取bean，就直接从单例缓存中获取了。当然这里也只是尝试加载，首先尝试从缓存中加载，如果加载不成功则再次尝试从singletonFactories中加载。因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖，在Spring中创建bean的原则是不等bean创建完成就会将创建bean的ObjectFactory提早曝光加入到缓存中，一旦下一个bean创建时候需要依赖上一个bean则直接使用ObjectFactory（后面章节会对循环依赖重点讲解）。
+
+3. **bean的实例化**。如果从缓存中得到了bean的原始状态，则需要对bean进行实例化。这里有必要强调一下，缓存中记录的只是最原始的bean状态，并不一定是我们最终想要的bean。举个例子，假如我们需要对工厂bean进行处理，那么这里得到的其实是工厂bean的初始状态，但是我们真正需要的是工厂bean中定义的factory-method方法中返回的bean，而getObjectForBeanInstance就是完成这个工作的，后续会详细讲解。
+
+4. **原型模式的依赖检查**。只有在单例情况下才会尝试解决循环依赖，如果存在A中有B的属性，B中有A的属性，那么当依赖注入的时候，就会产生当A还未创建完的时候因为对于B的创建再次返回创建A，造成循环依赖，也就是情况：isPrototypeCurrentlyInCreation(beanName)判断true。
+
+5. **检测parentBeanFactory**。从代码上看，如果缓存没有数据的话直接转到父类工厂上去加载了，这是为什么呢？可能读者忽略了一个很重要的判断条件：parentBeanFactory != null &&!containsBean Definition (beanName)，parentBeanFactory != null。parentBeanFactory如果为空，则其他一切都是浮云，这个没什么说的，但是!containsBeanDefinition(beanName)就比较重要了，它是在检测如果当前加载的XML配置文件中不包含beanName所对应的配置，就只能到parentBeanFactory去尝试下了，然后再去递归的调用getBean方法
+
+6. **将存储XML配置文件的GernericBeanDefinition转换为RootBeanDefinition**。因为从XML配置文件中读取到的Bean信息是存储在GernericBeanDefinition中的，但是所有的Bean后续处理都是针对于RootBeanDefinition的，所以这里需要进行一个转换，转换的同时如果父类bean不为空的话，则会一并合并父类的属性。
+
+7. **寻找依赖**。因为bean的初始化过程中很可能会用到某些属性，而某些属性很可能是动态配置的，并且配置成依赖于其他的bean，那么这个时候就有必要先加载依赖的bean，所以，在Spring的加载顺寻中，在初始化某一个bean的时候首先会初始化这个bean所对应的依赖。
+
+8. **针对不同的scope进行bean的创建**。我们都知道，在Spring中存在着不同的scope，其中默认的是singleton，但是还有些其他的配置诸如prototype、request之类的。在这个步骤中，Spring会根据不同的配置进行不同的初始化策略。
+
+9. **类型转换**。程序到这里返回bean后已经基本结束了，通常对该方法的调用参数requiredType是为空的，但是可能会存在这样的情况，返回的bean其实是个String，但是requiredType却传入Integer类型，那么这时候本步骤就会起作用了，它的功能是将返回的bean转换为requiredType所指定的类型。当然，String转换为Integer是最简单的一种转换，在Spring中提供了各种各样的转换器，用户也可以自己扩展转换器来满足需求
+
+
+
 ### 自动装配Bean
 
 **自动装配：**
