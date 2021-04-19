@@ -63,7 +63,7 @@ bootstrap.yml > application.yml > application-dev(prod).yml
 - **当资源文件中有bootstrap.yml、application.yml 、 application-dev(prod、test).yml文件时，并且三个文件都设置三个不同的tomcat的端口，此时application-dev或者bootstrap-dev.yml会覆盖掉bootstrap.yml中的端口。**
 - **当只有bootstrap.yml application.yml时，application.yml中的端口则不会覆盖掉bootstrap.yml中的端口**
 
-**在application.yml或者bootstrap.yml中用 spring.profiles.active=dev 或者prod 来指定运行哪个环境。如果在dev中包含了bootstrap.yml中没有的参数配置 则会进行给加入到运行时环境**
+**在application.yml或者bootstrap.yml中用 spring.profiles.active=dev 或者prod 来指定运行哪个环境。如果在dev中包含了bootstrap.yml中没有的参数配置 则会进行给加入到运行时环境，bootstrap.yml可当作一个基本的配置文件，对于bootstrap-dev.yml可看作是指定的运行，会先运行加载bootstrap.yml再加载bootstrap.dev.xml**
 
 [参考：使用 spring.profiles.active来区分配置](https://blog.csdn.net/uniquewonderq/article/details/79963719)
 
