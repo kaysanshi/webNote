@@ -3229,7 +3229,7 @@ OpenFeign可以通过多种方式进行自定义配置，配置的变化会导�
 
 ###### FeignClentsRegister
 
-@EnableFeignClients有三个作用，一是引入FeignClientsRegistrar；二是指定扫描FeignClient的包信息，就是指定FeignClient接口类所在的包名；三是指定FeignClient接口类的自定义配置类。@EnableFeignClients注解的定义如下所示.
+@EnableFeignClients有三个作用，**一是引入FeignClientsRegistrar；二是指定扫描FeignClient的包信息，就是指定FeignClient接口类所在的包名；三是指定FeignClient接口类的自定义配置类**。@EnableFeignClients注解的定义如下所示.
 
 ```java
 @Retention(RetentionPolicy.RUNTIME)
@@ -3307,7 +3307,7 @@ class FeignClientsRegistrar implements ImportBeanDefinitionRegistrar,
             
 ```
 
-FeignClientsRegistrar的registerBeanDefinitions方法主要做了两个事情，一是注册@EnableFeignClients提供的自定义配置类中的相关Bean实例，二是根据@EnableFeignClients提供的包信息扫描@FeignClient注解修饰的FeignCleint接口类，然后进行Bean实例注册。@EnableFeignClients的自定义配置类是被@Configuration注解修饰的配置类，它会提供一系列组装FeignClient的各类组件实例。这些组件包括：Client、Targeter、Decoder、Encoder和Contract等。接下来看看registerDefaultConfiguration的代码实现，如下所示
+FeignClientsRegistrar的registerBeanDefinitions方法主要做了两个事情，**一是注册@EnableFeignClients提供的自定义配置类中的相关Bean实例，二是根据@EnableFeignClients提供的包信息扫描@FeignClient注解修饰的FeignCleint接口类，然后进行Bean实例注册**。@EnableFeignClients的自定义配置类是被@Configuration注解修饰的配置类，它会提供一系列组装FeignClient的各类组件实例。这些组件包括：Client、Targeter、Decoder、Encoder和Contract等。接下来看看registerDefaultConfiguration的代码实现，如下所示
 
 ```java
 private void registerDefaultConfiguration(AnnotationMetadata metadata,
@@ -3344,7 +3344,7 @@ private void registerClientConfiguration(BeanDefinitionRegistry registry, Object
 
 BeanDefinitionRegistry是Spring框架中用于动态注册BeanDefinition信息的接口，调用其registerBeanDefinition方法可以将BeanDefinition注册到Spring容器中，其中name属性就是注册BeanDefinition的名称.
 
-FeignClientSpecification类实现了NamedContextFactory.Specification接口，它是OpenFeign组件实例化的重要一环，它持有自定义配置类提供的组件实例，供OpenFeign使用。Spring Cloud框架使用NamedContextFactory创建一系列的运行上下文（ApplicationContext），来让对应的Specification在这些上下文中创建实例对象。这样使得各个子上下文中的实例对象相互独立，互不影响，可以方便地通过子上下文管理一系列不同的实例对象。NamedContextFactory有三个功能，一是创建AnnotationConfigApplicationContext子上下文；二是在子上下文中创建并获取Bean实例；三是当子上下文消亡时清除其中的Bean实例。在OpenFeign中，FeignContext继承了NamedContextFactory，用于存储各类OpenFeign的组件实例。
+FeignClientSpecification类实现了NamedContextFactory.Specification接口，它是OpenFeign组件实例化的重要一环，它持有自定义配置类提供的组件实例，供OpenFeign使用。Spring Cloud框架使用NamedContextFactory创建一系列的运行上下文（ApplicationContext），来让对应的Specification在这些上下文中创建实例对象。这样使得各个子上下文中的实例对象相互独立，互不影响，可以方便地通过子上下文管理一系列不同的实例对象。**NamedContextFactory有三个功能，一是创建AnnotationConfigApplicationContext子上下文；二是在子上下文中创建并获取Bean实例；三是当子上下文消亡时清除其中的Bean实例**。在OpenFeign中，FeignContext继承了NamedContextFactory，用于存储各类OpenFeign的组件实例。
 
 [![cIyDYR.png](https://z3.ax1x.com/2021/04/18/cIyDYR.png)](https://imgtu.com/i/cIyDYR)
 
