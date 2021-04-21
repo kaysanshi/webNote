@@ -260,6 +260,7 @@ public void setConfigLocations(@Nullable String... locations) {
 			Assert.noNullElements(locations, "Config locations must not be null");
 			this.configLocations = new String[locations.length];
 			for (int i = 0; i < locations.length; i++) {
+                // resolvePath为同一类中将字符串解析路径的方法
 				this.configLocations[i] = resolvePath(locations[i]).trim();
 			}
 		}
@@ -335,10 +336,12 @@ public ClassPathXmlApplicationContext(
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing. 刷新前的准备
+            // 调用容器准备刷新方法，获取容器的当前时间，同时给容器设置同步标识
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory. 
             // 关键方法构建beanFactory——>接下来会详解本方法
+            // 告诉子类启动refershBeanFactory()方法，Bean定义资源文件的载入从子类的refreshBeanFactory()方法启动
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context. 为在这个上下文中使用beanFactory做准备
@@ -405,10 +408,15 @@ public ClassPathXmlApplicationContext(
 	}
 ```
 
-在这个refesh()方法中我们主要看下AbstractApplicationContext类下的obtainFreshBeanFactory()相关方法
+refresh()方法主要为IOC容器Bean的生命周期管理提供条件，Spring IOC容器载入Bean配置信息从其子类容器的refreshBeanFactory()方法启动，所以整个refresh()方法中obtainFreshBeanFactory()以后的代码都是再注册容器信息源和生命周期事件。
+
+refresh()方法主要作用是：在创建IOC容器前，如果已经存在容器，需要把已有的容器销毁和关闭，以保证在refresh()方法之后使用的是最新创建的IOC容器，它类似于对Ioc容器的重启，在新创建的容器中进行初始化对Bean配置资源进行载入。
+
+在这个refresh()方法中我们主要看下AbstractApplicationContext类下的obtainFreshBeanFactory()相关方法
 
 ```java
 protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+    // 使用委派模式，父类定义了抽象的refreshBeanFactory()的方法
     refreshBeanFactory();
     return getBeanFactory();
 }
@@ -418,6 +426,7 @@ protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 **/
 @Override
 protected final void refreshBeanFactory() throws BeansException {
+    // 如果已经有容器，销毁容器的Bean，关闭容器
     if (hasBeanFactory()) {
         destroyBeans();
         closeBeanFactory();
@@ -429,7 +438,7 @@ protected final void refreshBeanFactory() throws BeansException {
         beanFactory.setSerializationId(getId());
         // 定制此上下文使用的内部bean工厂，主要分析是否允许Bean定义覆盖，和允许循环引用是否设置为null
         customizeBeanFactory(beanFactory);
-        // 启动对BeanDefiniton的载入
+        // 启动对BeanDefiniton的载入，这里又使用了委派模式，在当前类中只定义了抽象的loadBeanDefinitions()方法，调用子类容器实现
         loadBeanDefinitions(beanFactory);
         this.beanFactory = beanFactory;
     }
@@ -454,19 +463,21 @@ protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throw
     // Create a new XmlBeanDefinitionReader for the given BeanFactory.
     XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 	
-    // 设置
+    // 为Bean读取器设置Spring资源加载器
     // Configure the bean definition reader with this context's
     // resource loading environment.
     beanDefinitionReader.setEnvironment(this.getEnvironment());
     // 设定ResourceLoader
+    // 容器本身也是个资源加载器
     beanDefinitionReader.setResourceLoader(this);
+    // 为Bean读取器设置SAX xml解析器
     beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
     // Allow a subclass to provide custom initialization of the reader,
     // then proceed with actually loading the bean definitions.
-    // 启动Bean定义信息载入的过程
+    // 启动Bean定义信息载入的过程，启用xml的校验机制
     initBeanDefinitionReader(beanDefinitionReader);
-    // 加载Bean定义
+    // 加载Bean定义（Bean读取器真正实现加载的方法）
     loadBeanDefinitions(beanDefinitionReader);
 }
 /**
@@ -474,12 +485,16 @@ protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throw
 * 实际上是调用的XmlBeanDefinitionReader的loadBeanDefinitions()
 */
 protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+    // 获取Bean配置的资源定位
     Resource[] configResources = getConfigResources();
     if (configResources != null) {
+        // xml Bean读取器调用其父类XmlBeanDefinitionReader读取Bean的配置信息
         reader.loadBeanDefinitions(configResources);
     }
+    // 如果子类中获取的Bean资源定位为空，则获取ClassPathXmlApplicationContext构造方法的setConfigLocation方法设置的资源
     String[] configLocations = getConfigLocations();
     if (configLocations != null) {
+        // xml Bean 读取器调用其父类AbstractBeanDefinitionReader读取定位
         reader.loadBeanDefinitions(configLocations);
     }
 }
