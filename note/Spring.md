@@ -189,7 +189,7 @@ WebApplicationContext是专门为Web应用准备的，它允许从相对于Web�
 
 **ApplicationContext的初始化和BeanFactory的初始化有一个重大的区别：BeanFactory在初始化容器时，并未实例化Bean，直到第一次访问某个Bean时才实例化目标Bean；而ApplicationContext在初始化应用上下文时就实例化所有单实例的Bean。因此ApplicationContext的初始化时间会比BeanFactory稍长一些，不过稍后的调用则没有“第一次惩罚”的问题**
 
-#### IOC容器的初始化
+#### IOC容器的初始化（以Xml形式的Ioc初始化）
 
 **在看具体的容器初始化先看下重要的BeanDefinition的类图**
 
@@ -227,7 +227,7 @@ Resource定位这个过程就是我们所看到的寻找bean定义的资源配�
 ###### **以ClassPathXmlApplicationContext获取bean为例深入源码分析**
 
 ```java
-        ClassPathXmlApplicationContext  context = new ClassPathXmlApplicationContext("bean.xml");
+ClassPathXmlApplicationContext  context = new ClassPathXmlApplicationContext("bean.xml");
 ```
 
 当程序通过new的时候会进行调用其构造方法，在构造方法内进行资源加载，主要看构造方法内的**setConfigLocations(configLocations)** 进行资源定位
@@ -498,6 +498,67 @@ protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansE
         reader.loadBeanDefinitions(configLocations);
     }
 }
+///////////////分配路径处理策略//////////
+
+// 程序会走进reader.loadBeanDefinitions(configLocations);我们看下载入过程
+@Override
+	public int loadBeanDefinitions(String location) throws BeanDefinitionStoreException {
+		return loadBeanDefinitions(location, null);
+	}
+
+	/**
+	 * 从指定的资源位置加载bean定义。该位置也可以是位置模式，前提是此bean定义读取器的ResourceLoader是ResourcePatternResolver
+	 */
+	public int loadBeanDefinitions(String location, @Nullable Set<Resource> actualResources) throws BeanDefinitionStoreException {
+        // 获取IOC容器初始化过程中设置的资源加载器
+		ResourceLoader resourceLoader = getResourceLoader();
+		if (resourceLoader == null) {
+			throw new BeanDefinitionStoreException(
+					"Cannot import bean definitions from location [" + location + "]: no ResourceLoader available");
+		}
+
+		if (resourceLoader instanceof ResourcePatternResolver) {
+			// Resource pattern matching available.
+			try {
+               // 将指定位置的Bean配置信息解析为Spring IOC容器封装的资源，加载多个指定位置的Bean配置信息
+				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
+                // 在这里loadBeanDefinitions会进行调用BeanDefinitionReader的实现类就是下面的
+            // XmlBeanDefinitionReader的loadBeanDefinitions()。这里又一次用了委派模型
+				int loadCount = loadBeanDefinitions(resources);
+				if (actualResources != null) {
+					for (Resource resource : resources) {
+						actualResources.add(resource);
+					}
+				}
+				if (logger.isDebugEnabled()) {
+					logger.debug("Loaded " + loadCount + " bean definitions from location pattern [" + location + "]");
+				}
+				return loadCount;
+			}
+			catch (IOException ex) {
+				throw new BeanDefinitionStoreException(
+						"Could not resolve bean definition resource pattern [" + location + "]", ex);
+			}
+		}
+		else {
+			// Can only load single resources by absolute URL.
+            // 将指定的位置的Bean位置信息解析为Spring IOC容器封装的资源，加载单个指定的位置Bean配置信息
+			Resource resource = resourceLoader.getResource(location);
+            // 在这里loadBeanDefinitions会进行调用BeanDefinitionReader的实现类就是下面的
+            // XmlBeanDefinitionReader的loadBeanDefinitions()这里又一次用了委派模型
+			int loadCount = loadBeanDefinitions(resource);
+			if (actualResources != null) {
+				actualResources.add(resource);
+			}
+			if (logger.isDebugEnabled()) {
+				logger.debug("Loaded " + loadCount + " bean definitions from location [" + location + "]");
+			}
+			return loadCount;
+		}
+	}
+
+
+
 // 实际上是调用的XmlBeanDefinitionReader的loadBeanDefinitions()
 
 	/**
@@ -519,7 +580,7 @@ public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefin
         throw new BeanDefinitionStoreException(
             "Detected cyclic loading of " + encodedResource + " - check your import definitions!");
     }
-	// 的到Xml 文件并用InputStream准备读取
+	// 得到Xml 文件并用InputStream准备读取
     try (InputStream inputStream = encodedResource.getResource().getInputStream()) {
         InputSource inputSource = new InputSource(inputStream);
         if (encodedResource.getEncoding() != null) {
@@ -546,6 +607,7 @@ protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 
 		try {
             // 取得XML的Document对象，由DefaultDocumentLoader在定义时创建的documentLoader
+            // 将bean配置转换成Document对象
 			Document doc = doLoadDocument(inputSource, resource);
             // 启动对Beandefinition解析的详细过程，会将bean转变为IOC容器里的内部的数据结构，这个过程会用到spring的Bean
 			int count = registerBeanDefinitions(doc, resource);
@@ -560,9 +622,12 @@ protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
 	// 创建BeanDefinitionDocumentReader来对xml进行解析
     BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+    // 获取容器注册的Bean的数量
 		int countBefore = getRegistry().getBeanDefinitionCount();
     	// 具体解析会放到了BeanDefinitionDocumentReader中的 registerBeanDefinitions
+    	// 使用了委派将委派到DefaultBeanDefinitionDocumentReader完成
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+    	// 统计解析Bean的数量
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 
@@ -576,9 +641,65 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 		return BeanUtils.instantiateClass(this.documentReaderClass);
 	}
 /**
-* BeanDefinitionDocumentReader中的 registerBeanDefinitions
+* BeanDefinitionDocumentReader中的 registerBeanDefinitions()调用其实现类DefaultBeanDefinitionDocumentReader对文档进行解析
 */
+	/**
+	 *此实现根据“ spring-beans” XSD（历史上称为DTD）解析bean定义。
+打开一个DOM文档； 然后初始化在<beans/>级别指定的默认设置； 然后解析包含的bean定义
+	 */
+	@Override
+	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
+        // 获得XML描述
+		this.readerContext = readerContext;
+		logger.debug("Loading bean definitions");
+        // 获得Document根元素
+		Element root = doc.getDocumentElement();
+        // 
+		doRegisterBeanDefinitions(root);
+	}
+	/**
+	 * Register each bean definition within the given root {@code <beans/>} element.
+	 */
+	protected void doRegisterBeanDefinitions(Element root) {
+		// Any nested <beans> elements will cause recursion in this method. In
+		// order to propagate and preserve <beans> default-* attributes correctly,
+		// keep track of the current (parent) delegate, which may be null. Create
+		// the new (child) delegate with a reference to the parent for fallback purposes,
+		// then ultimately reset this.delegate back to its original (parent) reference.
+		// this behavior emulates a stack of delegates without actually necessitating one.	 
+        // 具体解析过程由BeanDefinitionParserDelegate实现
+        // BeanDefinitionParserDelegate定义了XML文件各种元素
+		BeanDefinitionParserDelegate parent = this.delegate;
+		this.delegate = createDelegate(getReaderContext(), root, parent);
 
+		if (this.delegate.isDefaultNamespace(root)) {
+			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
+			if (StringUtils.hasText(profileSpec)) {
+				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
+						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+				if (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
+					if (logger.isInfoEnabled()) {
+						logger.info("Skipped XML bean definition file due to specified profiles [" + profileSpec +
+								"] not matching: " + getReaderContext().getResource());
+					}
+					return;
+				}
+			}
+		}
+		// 解析前进行自定义解析，增强解析过程的可扩展性
+		preProcessXml(root);
+        //从文档的根元素，开始进行Bean定义的文档对象的解析
+		parseBeanDefinitions(root, this.delegate);
+        // 在解析Bean定义之后进行自定义解析，增加解析过程的可扩展性
+		postProcessXml(root);
+
+		this.delegate = parent;
+	}
+... 省略了createDelegate()方法的解析。整个过程包含parseBeanDefinitionElement()
+    parsePropertyElements(Element beanEle,BeanDefinition bd)
+    parsePropertySubElement(Element ele,@Nullable BeanDefinition bd, ...)
+    parseListElement(Element collections,@Nullable BeanDefinition bd)
+    
 ```
 
 ##### BeanDefinition的注册
@@ -587,7 +708,39 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 
 在DefaultListableBeanFactory中实现了BeanDefinitionRegistry的接口，这个接口的实现完成BeanDefinition向容器的注册。这个注册过程不复杂，就是把解析得到的BeanDefinition设置到hashMap中去。需要注意的是，如果遇到同名的BeanDefinition的情况，进行处理的时候需要依据allowBeanDefinitionOverriding的配置来完成
 
+**分配注册策略**
+
 ```java
+	// BeanDefinitionReaderUtils的registerBeanDefinition()方法向Spring IOC容器注册解析Bean，
+	/**
+	 * Register the given bean definition with the given bean factory.
+	 * @param definitionHolder the bean definition including name and aliases
+	 * @param registry the bean factory to register with
+	 * @throws BeanDefinitionStoreException if registration failed
+	 */
+	public static void registerBeanDefinition(
+			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
+			throws BeanDefinitionStoreException {
+		// 获取解析的BeanDefinition的名称
+		// Register bean definition under primary name.
+		String beanName = definitionHolder.getBeanName();
+        // 向IOC容器注册BeanDefinition
+		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
+		// 如果解析的BeanDefinition有别名向Spring Ioc注册别名
+		// Register aliases for bean name, if any.
+		String[] aliases = definitionHolder.getAliases();
+		if (aliases != null) {
+			for (String alias : aliases) {
+				registry.registerAlias(beanName, alias);
+			}
+		}
+	}
+```
+
+**像容器中进行注册**
+
+```java
+	
 	// DefaultListableBeanFactory.java	
 	/---------------------------------------------------------------------
 	// Implementation of BeanDefinitionRegistry interface
