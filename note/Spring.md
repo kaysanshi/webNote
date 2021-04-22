@@ -1544,6 +1544,69 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 
 9. **类型转换**。程序到这里返回bean后已经基本结束了，通常对该方法的调用参数requiredType是为空的，但是可能会存在这样的情况，返回的bean其实是个String，但是requiredType却传入Integer类型，那么这时候本步骤就会起作用了，它的功能是将返回的bean转换为requiredType所指定的类型。当然，String转换为Integer是最简单的一种转换，在Spring中提供了各种各样的转换器，用户也可以自己扩展转换器来满足需求
 
+#### FactoryBean
+
+Spring通过反射机制利用bean的class属性指定实现类来实例化bean.实例化bean过程比较复杂，如果按照传统的方式，则需要在<bean>中提供大量的配置信息，配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。Spring为此提供了一个org.Springframework.bean.factory.FactoryBean的工厂类接口，用户可以通过实现该接口定制实例化bean的逻辑.看下FactoryBean的源码：
+
+```java
+package org.Springframework.beans.factory;
+public interface FactoryBean<T>{
+	// 返回由factoryBean创建的bean实例，如果是isSingleton()返回true,将该实例放到spring容器中的单例缓冲池中。
+	T getObjec() throw Exception;
+	// 返回由FactoryBean创建的bean实例的作用域是single还是propertype.
+	Class<?> getObjectType();
+	// 返回factoryBean创建的bean类型
+	boolean isSingleton()
+}
+```
+
+#### 缓存中获取单例bean
+
+单例在Spring的同一个容器内只会被创建一次，后续再获取bean直接从单例缓存中获取，当然这里也只是尝试加载，首先尝试从缓存中加载，然后再次尝试尝试从singletonFactories中加载。因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖， Spring创建bean的原则是不等bean创建完成就会将创建bean的ObjectFactory提早曝光加入到缓存中，一旦下一个bean创建时需要依赖上个bean，则直接使用ObjectFactory.
+
+```java
+	@Override
+	@Nullable
+	public Object getSingleton(String beanName) {
+        // 参数true设置标识允许早期依赖
+		return getSingleton(beanName, true);
+	}
+	/**
+	 * 返回以给定名称注册的（原始）单例对象。
+检查已经实例化的单例，并且还允许对当前创建的单例的早期引用（解析循环引用
+	 * @param beanName the name of the bean to look for
+	 * @param allowEarlyReference whether early references should be created or not
+	 * @return the registered singleton object, or {@code null} if none found
+	 */
+	@Nullable
+	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+        // 检查缓存中是否存在实例
+		Object singletonObject = this.singletonObjects.get(beanName);
+		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
+            // 如果为空，则锁定全局变量进行处理
+			synchronized (this.singletonObjects) {
+                // 如果bean正在加载则不处理
+				singletonObject = this.earlySingletonObjects.get(beanName);
+				if (singletonObject == null && allowEarlyReference) {
+                    // 当某些方法需要提前初始化的时候则会调用addSingletonFactory方法将对应的ObjectFactory初始化策略，存储在singletonFactories
+					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
+					if (singletonFactory != null) {
+                        // 调用预先设定的getObject方法
+						singletonObject = singletonFactory.getObject();
+						// 记录在缓存中 earlySingletonObjects和singletonFactories互斥
+                        // 早期的单例对象bean的缓存：bean名称-> bean实例
+                        // 与singletonObjects不同之处在于，当一个单例bean被放到这里后那么bean还在创建过程中，就可以通过getBean方法获取到了，其目的检查循环引用
+                        this.earlySingletonObjects.put(beanName, singletonObject);	
+                        // 单例工厂的缓存就是个map：Bean名称-> ObjectFactory
+						this.singletonFactories.remove(beanName);
+					}
+				}
+			}
+		}
+		return singletonObject;
+	}
+```
+
 
 
 ### 自动装配Bean
