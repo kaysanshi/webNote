@@ -3227,7 +3227,7 @@ OpenFeign会首先进行相关BeanDefinition的动态注册，然后当Spring容
 
 OpenFeign可以通过多种方式进行自定义配置，配置的变化会导致接口类初始化时使用不同的Bean实例，从而控制OpenFeign的相关行为，比如说网络请求的编解码、压缩和日志处理
 
-###### FeignClentsRegister
+###### FeignClientsRegister
 
 @EnableFeignClients有三个作用，**一是引入FeignClientsRegistrar；二是指定扫描FeignClient的包信息，就是指定FeignClient接口类所在的包名；三是指定FeignClient接口类的自定义配置类**。@EnableFeignClients注解的定义如下所示.
 

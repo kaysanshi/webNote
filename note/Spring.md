@@ -3,28 +3,24 @@
 ### 为什么需要Spring FrameWork
 
 当已经存在许多开放源代码（和专有）J2EEframework时，我们为什么还需要Spring Framework？
-	`因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。`
 
-​		`Spring致力于提供一种方法管理你的业务对象。`
+​	`因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。``Spring致力于提供一种方法管理你的业务对象。``Spring是全面的和模块化的。`
 
-​		`Spring是全面的和模块化的。`
+​	`Spring有分层的体系结构`，这意味着你能选择使用它孤立的任何部分，它的架构仍然是内在稳定的。因此从你的学习中，你可得到最大的价值。例如，你可能选择仅仅使用Spring来简单化JDBC的使用，或用来管理所有的业务对象。它的设计从底部帮助你编写易于测试的代码。   
 
-​		`Spring有分层的体系结构`，这意味着你能选择使用它孤立的任何部分，它的架构仍然是内在稳定的。因此从你的学习中，你可得到最大的价值。例如，你可能选择仅仅使用Spring来简单化JDBC的使用，或用来管理所有的业务对象。它的设计从底部帮助你编写易于测试的代码。   
+​     Spring是用于测试驱动工程的理想的framework。
 
-​        Spring是用于测试驱动工程的理想的framework。
-
-​		Spring对你的工程来说，它不需要一个以上的framework。Spring是潜在地一站式解决方案，定位于与典型应用相关的大部分基础结构。它也涉及到其他framework没有考虑到的内容。可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
+​	 Spring对你的工程来说，它不需要一个以上的framework。Spring是潜在地一站式解决方案，定位于与典型应用相关的大部分基础结构。它也涉及到其他framework没有考虑到的内容。可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
 
 ### 体系结构
 
-​	Spring 有可能成为所有企业应用程序的一站式服务点，然而，Spring 是模块化的，允许你挑选和选择适用于你的模块，不必要把剩余部分也引入。
-​	Spring 框架提供约 20 个模块，可以根据应用程序的要求来使用。
+Spring 有可能成为所有企业应用程序的一站式服务点，然而，Spring 是模块化的，允许你挑选和选择适用于你的模块，不必要把剩余部分也引入。Spring 框架提供约 20 个模块，可以根据应用程序的要求来使用。
 
 ![img](https://img-blog.csdn.net/20180825212519786?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MjU2ODk2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)![Click and drag to move](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 ### 核心容器
 
-`核心容器由spring-core，spring-beans，spring-context，spring-context-support和spring-expression（SpEL，Spring表达式语言，Spring Expression Language）等模块组成，它们的细节如下`：
+**核心容器由spring-core，spring-beans，spring-context，spring-context-support和spring-expression（SpEL，Spring表达式语言，Spring Expression Language）等模块组成，它们的细节如下：**
 
 - spring-core模块提供了框架的基本组成部分，包括 IoC 和依赖注入功能。
 - spring-beans 模块提供 BeanFactory，工厂模式的微妙实现，它移除了编码式单例的需要，并且可以把配置和依赖从实际编码逻辑中解耦。
@@ -33,8 +29,8 @@
 
 ### 数据访问/集成
 
-- ​	数据访问/集成层包括 JDBC，ORM，OXM，JMS 和事务处理模块，它们的细节如下：
-  ​					（注：JDBC=Java Data Base Connectivity，ORM=Object Relational Mapping，OXM=Object XML Mapping，JMS=Java Message Service）
+**数据访问/集成层包括 JDBC，ORM，OXM，JMS 和事务处理模块，它们的细节如下：（注：JDBC=Java Data Base Connectivity，ORM=Object Relational Mapping，OXM=Object XML Mapping，JMS=Java Message Service）**
+
 - JDBC 模块提供了JDBC抽象层，它消除了冗长的JDBC编码和对数据库供应商特定错误代码的解析。
 -  ORM 模块提供了对流行的对象关系映射API的集成，包括JPA、JDO和Hibernate等。通过此模块可以让这些ORM框架和spring的其它功能整合，比如前面提及的事务管理。
 - OXM 模块提供了对OXM实现的支持，比如JAXB、Castor、XML Beans、JiBX、XStream等。
@@ -43,7 +39,7 @@
 
 ### Web
 
-`Web 层由 Web，Web-MVC，Web-Socket 和 Web-Portlet 组成，它们的细节如下：`
+**Web 层由 Web，Web-MVC，Web-Socket 和 Web-Portlet 组成，它们的细节如下：**
 
 - Web 模块提供面向web的基本功能和面向web的应用上下文，比如多部分（multipart）文件上传功能、使用Servlet监听器初始化IoC容器等。它还包括HTTP客户端以及Spring远程调用中与web相关的部分。
 - Web-MVC 模块为web应用提供了模型视图控制（MVC）和REST Web服务的实现。Spring的MVC框架可以使领域模型代码和web表单完全地分离，且可以与Spring框架的其它所有功能进行集成。
@@ -52,7 +48,7 @@
 
 ### 其他
 
-`还有其他一些重要的模块，像 AOP，Aspects，Instrumentation，Web 和测试模块，它们的细节如下：`
+**还有其他一些重要的模块，像 AOP，Aspects，Instrumentation，Web 和测试模块，它们的细节如下：**
 
 - AOP 模块提供了面向方面的编程实现，允许你定义方法拦截器和切入点对代码进行干净地解耦，从而使实现功能的代码彻底的解耦出来。使用源码级的元数据，可以用类似于.Net属性的方式合并行为信息到代码中。
 - Aspects 模块提供了与 AspectJ 的集成，这是一个功能强大且成熟的面向切面编程（AOP）框架。
@@ -64,9 +60,9 @@
 
 `每个模块可以单独使用也可以多模块组合使用，`
 
-`核心模块：`spring core是核心容器实现了IoC模式，提供了框架的基础功能，在模块中包含BeanFactory类，负责对JavaBean配置与管理采用Factory模式实现loC容器即依赖注入。
+`核心模块：` spring core是核心容器实现了IoC模式，提供了框架的基础功能，在模块中包含BeanFactory类，负责对JavaBean配置与管理采用Factory模式实现loC容器即依赖注入。
 
-`Context模块：`继承了BeanFactory并且添加了处理事件，国际化,资源装载，数据校验等，JNDI访问，ejb,远程调用，集成模块框架，Email,定时任务。
+`Context模块：` 继承了BeanFactory并且添加了处理事件，国际化,资源装载，数据校验等，JNDI访问，ejb,远程调用，集成模块框架，Email,定时任务。
 
 `AOP模块`：通过事务管理使得任意Spring管理的对象AOP化。
 
@@ -94,13 +90,9 @@ Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.x
 
 ### IOC 容器
 
-​	IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。把对象的创建、初始化、销毁交给 spring 来管理，而不是由开发者控制，实现控制反转。
+IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。把对象的创建、初始化、销毁交给 spring 来管理，而不是由开发者控制，实现控制反转。
 
-所谓IoC，就是通过容器来控制业务对象之间的依赖关系，而非传统实现中，由代码直接操控。这也就是“控制反转”概念的所在：控制权由应用代码中转到了外部容器，控制权的转移，就是反转。控制权转移带来的好处就是降低了业务对象之间的依赖程度
-
-​	Spring 容器使用依赖注入（DI）来管理组成一个应用程序的组件。这些对象被称为 Spring Beans，
-
-​	Spring IoC 容器利用 Java 的 POJO 类和配置元数据来生成完全配置和可执行的系统或应用程序
+所谓IoC，就是通过容器来控制业务对象之间的依赖关系，而非传统实现中，由代码直接操控。这也就是“控制反转”概念的所在：控制权由应用代码中转到了外部容器，控制权的转移，就是反转。控制权转移带来的好处就是降低了业务对象之间的依赖程度 Spring 容器使用依赖注入（DI）来管理组成一个应用程序的组件。这些对象被称为 Spring Beans，Spring IoC 容器利用 Java 的 POJO 类和配置元数据来生成完全配置和可执行的系统或应用程序
 
 Spring通过一个配置文件描述了Bean及Bean之间的依赖关系，利用Java语言的反射功能实例化Bean并建立Bean之间的依赖关系。
 
@@ -831,6 +823,10 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 
 经过上面的步骤IOC容器已经初始化完成了。下面就是IOC容器的依赖注入的实现了。
 
+### IOC容器初始化（基于注解形式的初始化）
+
+
+
 ### Spring Bean
 
 要使应用程序中的Spring容器成功启动，需要同时具备以下3方面的条件。
@@ -853,7 +849,7 @@ Bean配置信息定义了Bean的实现及依赖关系，Spring容器根据各种
 
 ​	`<bean>元素有以下属性：`	id，name,class,singleton,autowire,init-method,destroy-method,depends-on
 
-```
+```xml
 <bean id="id" class="创建的bean类" scope="bean的作用域">
 <!-- collaborators and configuration for this bean go here -->
 </bean>
@@ -929,29 +925,44 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 </beans>
 ```
 
-​				如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明初始化方法和销毁方法。
+​	如果你有太多具有相同名称的初始化或者销毁方法的 Bean，那么你不需要在每一个 bean 上声明初始化方法和销毁方法。框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
 
-​				框架使用 元素中的 default-init-method 和 default-destroy-method 属性提供了灵活地配置这种情况，
+##### Bean的初始化
 
-Bean工厂实现应尽可能支持标准Bean生命周期接口。 全套初始化方法及其标准顺序为：
+**Bean初始化 Bean工厂实现应尽可能支持标准Bean生命周期接口。 全套BeanFactory初始化方法及其标准顺序为：**
 
 - BeanNameAware的setBeanName()
+  - 在创建此bean的 `BeanFactory` 中设置bean的名称。
+  - 在填充常规bean属性之后 但在 `InitializingBean.afterPropertiesSet（）`类的init回调 或 `自定义 init-method`之前调用
 - BeanClassLoaderAware的setBeanClassLoader()
+  - 允许bean知道 bean 的回调 `ClassLoader class loader` ;
+  - 当前 bean 工厂使用的类加载器来加载bean类。
 - BeanFactoryAware的setBeanFactory()
+  - 将拥有的工厂提供给 Bean 实例的回调。
+  - 在填充常规 bean 属性之后但在初始化回调之前调用，例如 `InitializingBean.afterPropertiesSet()` 或 `自定义的 init-method`。
+  - bean 可以立即在工厂中调用方法。
 - EnvironmentAware的setEnvironment()
 - EmbeddedValueResolverAware的setEmbeddedValueResolver()
+  - 通过 `ApplicationContextAware` / `BeanFactoryAware` 接口，这可以替代完整的`ConfigurableBeanFactory` 依赖项。
+  - 设置 `StringValueResolver` 以用于解析嵌入式定义值。
 - ResourceLoaderAware的setResourceLoade()r （仅在在应用程序上下文中运行时适用）
+  - 设置运行该对象的 ResourceLoader。
+  - 这可能是 ResourcePatternResolver，可以通过 `instanceof ResourcePatternResolver 进行检查。
 - ApplicationEventPublisherAware的setApplicationEventPublisher ()（仅适用于在应用程序上下文中运行的情况）
+  - 设置此对象在其中运行的 ApplicationEventPublisher。
+  - 在填充正常的 bean 属性之后,但在 InitializingBean.afterPropertiesSet 或 自定义init-method 之类的 init 回调之前调用。
+  - 在 ApplicationContextAware.setApplicationContext 之前调用
 - MessageSourceAware的setMessageSource ()（仅适用于在应用程序上下文中运行的情况）
 - ApplicationContextAware的setApplicationContext() （仅适用于在应用程序上下文中运行的情况）
 - ServletContextAware的setServletContext() （仅适用于在Web应用程序上下文中运行的情况）
 - BeanPostProcessors的postProcessBeforeInitialization方法
 - InitializingBean的afterPropertiesSet()
-- 自定义的初始化方法定义
-  BeanPostProcessors的postProcessAfterInitialization()方法
+- 自定义的初始化方法(init-method)定义(a custom init-method Definition)
+- BeanPostProcessors的postProcessAfterInitialization()方法
 
-##### Bean的初始化
+**简版：**
 
+```
 1.<bean>标签使用autowire属性，会进行自动装配，
 
 2.通过get(),set()方法。
@@ -967,12 +978,13 @@ Bean工厂实现应尽可能支持标准Bean生命周期接口。 全套初始�
 7.在XML中配置Bean时如果用init-method属性指定来了初始化方法容器会执行指定的方法
 
 8.如果注册了BeanPostProcessor的实现类，将调用实现类的postProcessAfterInitialization()方法完成后置处理方法
+```
 
 ##### Bean的销毁
 
 1.在销毁bean之前如果Bean实现了DisposableBean接口，容器会调用bean的destroy()方法来完成销毁工作，
 
-2.如果在bean定义了指定的销毁方法呢么在bean被销毁前会先执行指定的方法，在同时指定的时候DisposableBean接口时有优先权
+2.如果在bean定义了指定的销毁方法了在bean被销毁前会先执行指定的方法，在同时指定的时候DisposableBean接口时有优先权
 
 #### Bean的后置处理
 
@@ -1610,6 +1622,47 @@ public interface FactoryBean<T>{
 这个方法因为涉及循环依赖的检测，以及涉及很多变量的记录存取，所以让很多读者摸不着头脑。这个方法首先尝试从singletonObjects里面获取实例，如果获取不到再从earlySingleton Objects里面获取，如果还获取不到，再尝试从singletonFactories里面获取beanName对应的ObjectFactory，然后调用这个ObjectFactory的getObject来创建bean，并放到earlySingleton Objects里面去，并且从singletonFacotories里面remove掉这个ObjectFactory，而对于后续的所有内存操作都只为了循环依赖检测时候使用，也就是在allowEarlyReference为true的情况下才会使用
 
 #### 从bean的实例中获取对象
+
+主要是针对的这一段代码进行分析：AbstractBeanFactory.getObjectForBeanInstance()
+
+```java
+// AbstractBeanFactory.java中
+protected Object getObjectForBeanInstance(
+			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
+		// 如果指定的name是相关的工厂（以&前缀）且beanInstance又不是FactoryBean类型则验证不通过
+		// Don't let calling code try to dereference the factory if the bean isn't a factory.
+		if (BeanFactoryUtils.isFactoryDereference(name) && !(beanInstance instanceof FactoryBean)) {
+			throw new BeanIsNotAFactoryException(transformedBeanName(name), beanInstance.getClass());
+		}
+		// 现在我们有了bean实例，它可以是普通bean或FactoryBean。 
+    	//如果它是一个FactoryBean，我们将使用它创建一个bean实例，但如果用户想要直接获取工厂实例而不是工厂的getObject方法对应的实例那么传入的name应该加前缀&
+		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
+		// If it's a FactoryBean, we use it to create a bean instance, unless the
+		// caller actually wants a reference to the factory.
+		if (!(beanInstance instanceof FactoryBean) || BeanFactoryUtils.isFactoryDereference(name)) {
+			return beanInstance;
+		}
+		// 加载FactoryBean
+		Object object = null;
+		if (mbd == null) {
+            // 尝试从缓存获取bean
+			object = getCachedObjectForFactoryBean(beanName);
+		}
+		if (object == null) {
+			// Return bean instance from factory.
+			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
+			// Caches object obtained from FactoryBean if it is a singleton.
+			if (mbd == null && containsBeanDefinition(beanName)) {
+				mbd = getMergedLocalBeanDefinition(beanName);
+			}
+			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
+		}
+		return object;
+	}
+```
+
+
 
 #### 获取单例
 
