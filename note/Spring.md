@@ -1607,6 +1607,18 @@ public interface FactoryBean<T>{
 	}
 ```
 
+这个方法因为涉及循环依赖的检测，以及涉及很多变量的记录存取，所以让很多读者摸不着头脑。这个方法首先尝试从singletonObjects里面获取实例，如果获取不到再从earlySingleton Objects里面获取，如果还获取不到，再尝试从singletonFactories里面获取beanName对应的ObjectFactory，然后调用这个ObjectFactory的getObject来创建bean，并放到earlySingleton Objects里面去，并且从singletonFacotories里面remove掉这个ObjectFactory，而对于后续的所有内存操作都只为了循环依赖检测时候使用，也就是在allowEarlyReference为true的情况下才会使用
+
+#### 从bean的实例中获取对象
+
+#### 获取单例
+
+#### 准备创建bean
+
+#### 循环依赖
+
+#### 创建bean
+
 
 
 ### 自动装配Bean
