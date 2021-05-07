@@ -325,9 +325,9 @@ final作用于数据，方法，类。
 
 一个既是static又是final的域只占据一段不能改变的存储空间。
 
-**空白的final:**java允许生成一个空白的final;所谓的空白的final是指的被声明为final但又未给定初始值的域。比如： private final int j;
+**空白的final:** java允许生成一个空白的final;所谓的空白的final是指的被声明为final但又未给定初始值的域。比如： private final int j;
 
-**final参数**：java允许声明一个参数为final的对象。 
+**final参数** ：java允许声明一个参数为final的对象。 
 
 void(final Gizmo g){
 
@@ -335,11 +335,11 @@ g=new Gizmo() // Illegal ---g is final
 
 }
 
-**final方法:**定义为final方法的原因有两个；1.把方法锁定，以防止任何继承类修改它的含义（保持不变，防止覆盖）。2.是效率
+**final方法:** 定义为final方法的原因有两个；1.把方法锁定，以防止任何继承类修改它的含义（保持不变，防止覆盖）。2.是效率
 
-**private和final关键字：**类中所有的private方法都隐式的指定为final,由于无法取用private方法，所以也就无法进行覆盖他，对于private方法添加final关键字并不能给方法增加任何意义。
+**private和final关键字：** 类中所有的private方法都隐式的指定为final,由于无法取用private方法，所以也就无法进行覆盖他，对于private方法添加final关键字并不能给方法增加任何意义。
 
-**final类：**将类设置为final即使永远不需要做任何变动，或者出于安全不希望有子类。由于final类禁止继承，所以final类的方法都隐式的指定为final的，因为无法覆盖他们，同样也可以给final类的方法添加final修饰词，但是这没有任何意义。
+**final类：** 将类设置为final即使永远不需要做任何变动，或者出于安全不希望有子类。由于final类禁止继承，所以final类的方法都隐式的指定为final的，因为无法覆盖他们，同样也可以给final类的方法添加final修饰词，但是这没有任何意义。
 
 final修饰引用类型的时候，引用的指向不能修改，但是引用的值可以改
 
@@ -420,7 +420,7 @@ Strings are constant; their values cannot be changed after theyare created. Stri
  * <p>
 ```
 
-#####Q&A **为何String设计为不可变？**
+##### Q&A **为何String设计为不可变？**
 
 1、运行时常量池的需要,节省内存空间。
 
@@ -474,7 +474,7 @@ new将对象存储在堆中，所以用new创建一个对象---特别小的，�
 
 对象产生的时机 类加载，然后进行对象的实例化：
 
-#####Q&A **什么时候会进行类加载？**
+##### Q&A **什么时候会进行类加载？**
 
 1.创建类的实例，也就是new一个对象
 
@@ -788,7 +788,7 @@ StringBuffer对象则代表一个字符序列可变的字符串，当一个Strin
 
 从JDK 1.5开始出现的StringBuilder类，也代表字符串对象。实际上，StringBuilder和StringBuffer基本相似，两个类的构造器和方法也基本相同。不同的是，StringBuffer是线程安全的，而StringBuilder则没有实现线程安全功能，所以性能略高。因此在通常情况下，如果需要创建一个内容可变的字符串对象，则应该优先考虑使用StringBuilder类。
 
-**String常用方法：**
+**String常用方法**
 
 -  String substring(int beginIndex)：获取从beginIndex位置开始到结束的子字符串。
 - String substring(int beginIndex, int endIndex)：获取从beginIndex位置开始到endIndex位置的子字符串。
@@ -925,13 +925,13 @@ public Connection getConnection() throws Exception{
 
 #### 垃圾清理的方式：
 
-**标记清除法：** 这是垃圾收集算法中最基础的，它的思想是标记哪些要被回收的对象，然后统一回收。这种方法很简单，但是效率不高，标记和清除的效率都很低；此外会产生大量不连续的内存碎片，从而导致以后程序在分配较大对象时由于没有充足的连续内存而提前触发一次 GC 操作。
+**标记清除法：**  这是垃圾收集算法中最基础的，它的思想是标记哪些要被回收的对象，然后统一回收。这种方法很简单，但是效率不高，标记和清除的效率都很低；此外会产生大量不连续的内存碎片，从而导致以后程序在分配较大对象时由于没有充足的连续内存而提前触发一次 GC 操作。
 
-**复制算法：** 为了解决效率问题，复制算法将可用内存按容量划分为相等的两部分，然后每次只使用其中的一块，当一块内存用完后就将还存活的对象复制到第二块内存上，然后一次性清楚完第一块内存，再将第二块上的对象复制到第一块。**但是这种方式内存的代价太高，每次基本上都要浪费一半的内存；于是将该算法进行了改进，内存区域不再是按照 1：1 去划分，而是将内存划分为 8：1：1 三部分，较大那份内存是 Eden 区，其余是两块较小的内存区叫 Survior 区，每次都会优先使用 Eden 区，若 Eden 区满则将对象复制到第二块内存区上，然后清除 Eden 区，如果此时存活的对象太多，以至于 Survivor 不够时，会将这些对象通过分配担保机制复制到老年代中。**
+**复制算法：**  为了解决效率问题，复制算法将可用内存按容量划分为相等的两部分，然后每次只使用其中的一块，当一块内存用完后就将还存活的对象复制到第二块内存上，然后一次性清楚完第一块内存，再将第二块上的对象复制到第一块。**但是这种方式内存的代价太高，每次基本上都要浪费一半的内存；于是将该算法进行了改进，内存区域不再是按照 1：1 去划分，而是将内存划分为 8：1：1 三部分，较大那份内存是 Eden 区，其余是两块较小的内存区叫 Survior 区，每次都会优先使用 Eden 区，若 Eden 区满则将对象复制到第二块内存区上，然后清除 Eden 区，如果此时存活的对象太多，以至于 Survivor 不够时，会将这些对象通过分配担保机制复制到老年代中。**
 
-**标记整理法：** 这种方法主要是为了解决标记清除法产生大量内存碎片的问题；当对象存活率较高时，也解决了复制算法的效率问题。它的不同之处就是在清除对象的时候现将可回收对象移动到一端，然后清除掉端边界以外的对象，这样就不会产生内存碎片了。
+**标记整理法：**  这种方法主要是为了解决标记清除法产生大量内存碎片的问题；当对象存活率较高时，也解决了复制算法的效率问题。它的不同之处就是在清除对象的时候现将可回收对象移动到一端，然后清除掉端边界以外的对象，这样就不会产生内存碎片了。
 
-**分代收集法：** 现在的虚拟机垃圾收集大多采用这种方式，它根据对象的生存周期，将堆分为新生代和老年代。**在新生代中，由于对象生存期短，每次回收都会有大量对象死去，那么这时就采用复制算法。老年代里的对象存活率较高，没有额外的空间进行分配担保，所以可以使用标记整理法或标记清除法。**
+**分代收集法：**  现在的虚拟机垃圾收集大多采用这种方式，它根据对象的生存周期，将堆分为新生代和老年代。** 在新生代中，由于对象生存期短，每次回收都会有大量对象死去，那么这时就采用复制算法。老年代里的对象存活率较高，没有额外的空间进行分配担保，所以可以使用标记整理法或标记清除法。**
 
 #### 构造器初始化：
 
@@ -1160,7 +1160,7 @@ UUIDUtil 构造函数
 - System.arrayCopy();复制数组比用for循环速度快了许多。
 
 
-**数组元素的比较：** 1.实现java.lang.Comparable接口，
+**数组元素的比较：**  1.实现java.lang.Comparable接口，
 
 1：所有可以 “排序” 的类都实现了java.lang.Comparable接口，Comparable接口中只有一个方法。
 2：public int compareTo(Object obj) ;
@@ -1174,13 +1174,13 @@ UUIDUtil 构造函数
 
 可以参看：https://www.cnblogs.com/alter888/p/9163612.html
 
-#### Q&A对于初始化与清理常见的面试题：
+#### Q&A 对于初始化与清理常见的面试题：
 
-**Q1**:java 对象加载初始化的顺序？
+**Q1** :java 对象加载初始化的顺序？
 
 静态代码块--》非静态代码块-（静态代码块（只有一次），构造函数）-》构造函数，而{}包含的非静态代码块就是和构造方法一样会默认初始化
 
-**Q2**:如何判断一个对象是否要回收？
+**Q2** :如何判断一个对象是否要回收？
 
 这就是所谓的对象存活性判断，常用的方法有两种：1.引用计数法;　2.对象可达性分析。由于引用计数法存在互相引用导致无法进行GC的问题，所以目前JVM虚拟机多使用对象可达性分析算法。从GC Roots对象计算引用链，能链上的就是存活的。
 
@@ -1198,7 +1198,7 @@ UUIDUtil 构造函数
 
 参看：https://blog.csdn.net/qq_42996761/article/details/90667725
 
-**Q3**:如何理解java中的垃圾回收机制？为什么需要垃圾回收机制？
+**Q3** :如何理解java中的垃圾回收机制？为什么需要垃圾回收机制？
 
 java采用分代回收，分为年轻代、老年代、永久代。年轻代又分为E区、S1区、S2区。
 
@@ -1209,11 +1209,11 @@ java采用分代回收，分为年轻代、老年代、永久代。年轻代又�
 System.gc()即垃圾收集机制是指jvm用于释放那些不再使用的对象所占用的内存。垃圾收集的目的在于清除不再使用的对象。gc通过确定对象是否被活动对象引用来确定是否收集该对象。
 如果你向系统申请分配内存进行使用(new)，可是使用完了以后却不归还(delete)，结果你申请到的那块内存你自己也不能再访问,该块已分配出来的内存也无法再使用，随着服务器内存的不断消耗，而无法使用的内存越来越多，系统也不能再次将它分配给需要的程序，产生泄露。一直下去，程序也逐渐无内存使用，就会溢出。
 
-**Q4**:java垃圾收集的方式有哪些？
+**Q4** :java垃圾收集的方式有哪些？
 
 上文已经讲述。
 
-**Q5**:java垃圾回收机制的优缺点？
+**Q5** :java垃圾回收机制的优缺点？
 
 优点：
 
@@ -1227,26 +1227,26 @@ GC 在管理内存上有很多智能的算法，它们自动在后台运行。�
 
 虽然GC有很多方面可以调优，但你不能指定应用程序在何时怎样执行GC
 
-**Q6**:java垃圾回收的时间有哪些？
+**Q6** :java垃圾回收的时间有哪些？
 
 CPU空闲时进行回收、堆内存满了后进行回收、调用System.gc()回收。
 
-**Q7**:如果对象置为null，垃圾收集器是否会立即释放占用的内存？
+**Q7** :如果对象置为null，垃圾收集器是否会立即释放占用的内存？
 
 不会。对象回收需要一个过程，这个过程中对象还能复活。而且垃圾回收具有不确定性，指不定什么时候开始回收。
 
-**Q8**:什么是GC？为何有GC?
+**Q8** :什么是GC？为何有GC?
 
 GC就是垃圾收集的意思（Gabage Collection）。我们在开发中会创建很多对象，这些对象一股脑的都扔进了堆里，如果这些对象只增加不减少，那么堆空间很快就会被耗尽。所以我们需要把一些没用的对象清理掉。jvm使用 jstat -gc 12538 5000   即会每5秒一次显示进程号为12538的java进成的GC情况.
 
-**Q9:**方法区如何判断是否需要回收？
+**Q9:** 方法区如何判断是否需要回收？
 
 方法区主要回收的内容有：废弃常量和无用的类。对于废弃常量也可通过引用的可达性来判断，但是对于无用的类则需要同时满足下面3个条件：
 ① 该类所有的实例都已经被回收，也就是Java堆中不存在该类的任何实例；
 ② 加载该类的ClassLoader已经被回收；
 ③ 该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。
 
-**Q10:**如果频繁老年代回收怎么分析解决？
+**Q10:** 如果频繁老年代回收怎么分析解决？
 
 ```
 老年代频繁回收，一般是Full GC，Full GC 消耗很大，因为在所有用户线程停止的情况下完成回收，而造成频繁 Full GC 的原因可能是，程序存在问题，或者环境存在问题。
@@ -1282,9 +1282,9 @@ Collection是描述所有序列容器的共同的根接口，他可能被认为�
 
 Collection接口是List、Set和Queue接口的父接口，该接口里定义的方法既可用于操作Set集合，也可用于操作List和Queue集合。
 
-**Collection**:一个独立的元素序列，这些元素都服从一条或多条规则。List必须按照插入的顺序保存元素，而Set不能有重复元素，Query按照排队规则来确定对象产生的顺序（通常与插入的顺序相同）（List,Set,Query）
+**Collection** :一个独立的元素序列，这些元素都服从一条或多条规则。List必须按照插入的顺序保存元素，而Set不能有重复元素，Query按照排队规则来确定对象产生的顺序（通常与插入的顺序相同）（List,Set,Query）
 
-**Map**:一组成对的“键值对”对象，允许使用键来查找对象。将数字与对象关联，映射表允许我们使用另一个对象来查找某个对象，因此被称为关联数组。(HashMap,TreeMap)
+**Map** :一组成对的“键值对”对象，允许使用键来查找对象。将数字与对象关联，映射表允许我们使用另一个对象来查找某个对象，因此被称为关联数组。(HashMap,TreeMap)
 
 Collection接口里定义了如下操作集合元素的方法：
 
@@ -1889,7 +1889,7 @@ public class SortedMapDemo {
 
 ##### LinkedHashMap
 
-**LinkedHashMap** 针对速度进行哈希处理，但在遍历期间也会按插入顺序生成键值对（ `System.out.println()` 可以遍历它，因此可以看到遍历的结果）。 此外，可以在构造方法中配置 **LinkedHashMap** 以使用基于访问的 *最近最少使用*（LRU） 算法，因此未访问的元素（因此是删除的候选者）会出现在列表的前面。 这样可以轻松创建一个能够定期清理以节省空间的程序。下面是一个显示这两个功能的简单示例：
+**LinkedHashMap**  针对速度进行哈希处理，但在遍历期间也会按插入顺序生成键值对（ `System.out.println()` 可以遍历它，因此可以看到遍历的结果）。 此外，可以在构造方法中配置 **LinkedHashMap**  以使用基于访问的 *最近最少使用*（LRU） 算法，因此未访问的元素（因此是删除的候选者）会出现在列表的前面。 这样可以轻松创建一个能够定期清理以节省空间的程序。下面是一个显示这两个功能的简单示例：
 
 ```java
 // collectiontopics/LinkedHashMapDemo.java
@@ -2465,13 +2465,20 @@ hashtable线程安全，采用的是线程同步得方法。
 
 ###### Q&A Linkedhashmap 与 hashmap 的区别?
 
-- **HashMap**
+​	**HashMap**
+
 - HashMap 是一个最常用的Map，它根据键的HashCode 值存储数据，根据键可以直接获取它的值，具有很快的访问速度。遍历时，取得数据的顺序是完全随机的。
+
 - HashMap最多只允许一条记录的键为Null；允许多条记录的值为 Null。
+
 - HashMap不支持线程的同步（即任一时刻可以有多个线程同时写HashMap），可能会导致数据的不一致。如果需要同步，可以用 Collections的synchronizedMap方法使HashMap具有同步的能力，或者使用ConcurrentHashMap。
+
 - Hashtable与 HashMap类似，它继承自Dictionary类。不同的是：Hashtable不允许记录的键或者值为空；它支持线程的同步（即任一时刻只有一个线程能写Hashtable），因此也导致了 Hashtable在写入时会比较慢。
-- **LinkedHashMap**
+
+  **LinkedHashMap**
+
 - **保存插入顺序**：LinkedHashMap保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的。也可以在构造时带参数，按照应用次数排序。
+
 - **速度慢**：在遍历的时候会比HashMap慢，不过有种情况例外：当HashMap容量很大，实际数据较少时，遍历起来可能会比LinkedHashMap慢。因为LinkedHashMap的遍历速度只和实际数据有关，和容量无关，而HashMap的遍历速度和他的容量有关。
 
 ###### Q&A  hashmap 与 hashset 区别?
@@ -2932,11 +2939,9 @@ SQL语句的关键字不区分大小写，也就是说，create和CREATE的作�
 例代码块：
 
 ```java
-    ResultSet rs = stmt.executeQuery(sqlField.getText()))
+    ResultSet rs = stmt.executeQuery(sqlField.getText())) {
 
-        {
-
-// 取出ResultSet的MetaData
+		// 取出ResultSet的MetaData
 
         ResultSetMetaData rsmd=rs.getMetaData();
 
@@ -2944,23 +2949,23 @@ SQL语句的关键字不区分大小写，也就是说，create和CREATE的作�
 
         Vector<Vector<String>>data=new Vector<>();
 
-// 把ResultSet的所有列名添加到Vector里
+		// 把ResultSet的所有列名添加到Vector里
 
         for(int i=0;i<rsmd.getColumnCount();i++){
 
-        columnNames.add(rsmd.getColumnName(i+1));
+        	columnNames.add(rsmd.getColumnName(i+1));
 
         }
 
-// 把ResultSet的所有记录添加到Vector里
+		// 把ResultSet的所有记录添加到Vector里
 
         while(rs.next()){
 
-        Vector<String> v=new Vector<>();
+            Vector<String> v=new Vector<>();
 
-        for(int i=0;i<rsmd.getColumnCount();i++){
+            for(int i=0;i<rsmd.getColumnCount();i++){
 
-        v.add(rs.getString(i+1));
+            v.add(rs.getString(i+1));
 
         }
 
@@ -2997,70 +3002,50 @@ public class DatabaseMetaDataTest {
 
     public void initParam(String paramFile) throws Exception {
 
-// 使用Properties类来加载属性文件
+        // 使用Properties类来加载属性文件
 
         Properties props = new Properties();
-
         props.load(new FileInputStream(paramFile));
-
         driver = props.getProperty("driver");
-
         url = props.getProperty("url");
-
         user = props.getProperty("user");
-
         pass = props.getProperty("pass");
 
     }
 
     public void info() throws Exception {
 
-// 加载驱动
-
+        // 加载驱动
         Class.forName(driver);
-
         try (
+                // 获取数据库连接
 
-// 获取数据库连接
+         Connection conn = DriverManager.getConnection(url, user, pass)) {
 
-                Connection conn = DriverManager.getConnection(url
-
-                        , user, pass)) {
-
-// 获取DatabaseMetaData对象
-
+            // 获取DatabaseMetaData对象
             DatabaseMetaData dbmd = conn.getMetaData();
-
-// 获取MySQL支持的所有表类型ResultSet rs=dbmd.getTableTypes();System.out.println("--MySQL支持的表类型信息--");
-
+            // 获取MySQL支持的所有表类型ResultSet rs=dbmd.getTableTypes();System.out.println("--MySQL支持的表类型信息--");
+            printResultSet(rs);
+            
+            // 获取当前数据库的全部数据表rs=dbmd.getTables(null,null, "%" , new String[]{"TABLE"});System.out.println("--当前数据库里的数据表信息--");
             printResultSet(rs);
 
-// 获取当前数据库的全部数据表rs=dbmd.getTables(null,null, "%" , new String[]{"TABLE"});System.out.println("--当前数据库里的数据表信息--");
-
+            // 获取student_table表的主键rs=dbmd.getPrimaryKeys(null , null, "student_table");System.out.println("--student_table表的主键信息--");
             printResultSet(rs);
 
-// 获取student_table表的主键rs=dbmd.getPrimaryKeys(null , null, "student_table");System.out.println("--student_table表的主键信息--");
-
+            // 获取当前数据库的全部存储过程rs=dbmd.getProcedures(null , null, "%");System.out.println("--当前数据库里的存储过程信息--");
             printResultSet(rs);
 
-// 获取当前数据库的全部存储过程rs=dbmd.getProcedures(null , null, "%");System.out.println("--当前数据库里的存储过程信息--");
-
-            printResultSet(rs);
-
-// 获取teacher_table表和student_table表之间的外键约束
-
+            // 获取teacher_table表和student_table表之间的外键约束
             rs = dbmd.getCrossReference(null, null, "teacher_table", null, null, "student_table");
 
             System.out.println("--teacher_table表和student_table表之间" + "的外键约束--");
 
             printResultSet(rs);
 
-// 获取student_table表的全部数据列
-
+            // 获取student_table表的全部数据列
             rs = dbmd.getColumns(null, null, "student_table", "%");
-
             System.out.println("--student_table表的全部数据列--");
-
             printResultSet(rs);
 
         }
@@ -3071,7 +3056,7 @@ public class DatabaseMetaDataTest {
 
         ResultSetMetaData rsmd = rs.getMetaData();
 
-// 打印ResultSet的所有列标题
+        // 打印ResultSet的所有列标题
 
         for (int i = 0; i < rsmd.getColumnCount(); i++) {
 
@@ -3081,27 +3066,17 @@ public class DatabaseMetaDataTest {
 
         System.out.print("\n");
 
-// 打印ResultSet里的全部数据
-
+        // 打印ResultSet里的全部数据
         while (rs.next()) {
-
             for (int i = 0; i < rsmd.getColumnCount(); i++) {
-
                 System.out.print(rs.getString(i + 1) + "\t");
-
             }
-
             System.out.print("\n");
-
         }
-
         rs.close();
-
     }
 
-    public static void main(String[] args)
-
-            throws Exception {
+    public static void main(String[] args) throws Exception {
 
         DatabaseMetaDataTest dt = new DatabaseMetaDataTest();
 
@@ -3114,7 +3089,7 @@ public class DatabaseMetaDataTest {
 }
 ```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==
+
 
 #### DBCP：
 
@@ -3606,60 +3581,36 @@ MAX_PRIORITY：其值是10。MIN_PRIORITY：其值是1 NORM_PRIORITY：其值是
 ```java
 public class PriorityTest extends Thread {
 
-// 定义一个有参数的构造器，用于创建线程时指定name
-
+    // 定义一个有参数的构造器，用于创建线程时指定name
     public PriorityTest(String name) {
-
         super(name);
-
     }
 
     public void run() {
-
         for (int i = 0; i < 50; i++) {
-
-            System.out.println(getName() + ",其优先级是："
-
-                    + getPriority() + ",循环变量的值为:" + i);
-
+            System.out.println(getName() + ",其优先级是：" + getPriority() + ",循环变量的值为:" + i);
         }
-
     }
 
     public static void main(String[] args) {
 
-// 改变主线程的优先级Thread.currentThread().setPriority(6); for (int i=0 ; i < 30 ; i++ )
-
-        {
-
+        // 改变主线程的优先级
+        Thread.currentThread().setPriority(6); 
+        for (int i=0 ; i < 30 ; i++ ) {
             if (i == 10) {
-
                 PriorityTest low = new PriorityTest("低级");
-
                 low.start();
-
-                System.out.println("创建之初的优先级:"
-
-                        + low.getPriority());
-
-// 设置该线程为最低优先级
-
+                System.out.println("创建之初的优先级:" + low.getPriority());
+                // 设置该线程为最低优先级
                 low.setPriority(Thread.MIN_PRIORITY);
-
             }
-
             if (i == 20) {
 
                 PriorityTest high = new PriorityTest("高级");
-
                 high.start();
+                System.out.println("创建之初的优先级:" + high.getPriority());
 
-                System.out.println("创建之初的优先级:"
-
-                        + high.getPriority());
-
-// 设置该线程为最高优先级
-
+                // 设置该线程为最高优先级
                 high.setPriority(Thread.MAX_PRIORITY);
 
             }
@@ -3668,10 +3619,8 @@ public class PriorityTest extends Thread {
 
     }
 
-}
-```
 
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
+```
 
 上面程序中的第一行粗体字代码改变了主线程的优先级为6，这样由main线程所创建的子线程的优先级默认都是6，所以程序直接输出low、high两个线程的优先级时应该看到6。接着程序将low线程的优先级设为Priority.MIN_PRIORITY，将high线程的优先级设置为Priority.MAX_PRIORITY。
 
@@ -4001,40 +3950,32 @@ InetAddress类还提供了一个isReachable()方法，用于测试是否可以�
 ```java
 public class InetAddressTest {
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception {
 
-            throws Exception {
-
-// 根据主机名来获取对应的InetAddress实例
+        // 根据主机名来获取对应的InetAddress实例
 
         InetAddress ip = InetAddress.getByName("www.crazyit.org");
 
-// 判断是否可达
+        // 判断是否可达
 
         System.out.println("crazyit是否可达：" + ip.isReachable(2000));
 
-// 获取该InetAddress实例的IP字符串
+        // 获取该InetAddress实例的IP字符串
 
         System.out.println(ip.getHostAddress());
 
-// 根据原始IP地址来获取对应的InetAddress实例
+        // 根据原始IP地址来获取对应的InetAddress实例
 
-        InetAddress local = InetAddress.getByAddress(
-
-                new byte[]{127, 0, 0, 1});
+        InetAddress local = InetAddress.getByAddress(new byte[]{127, 0, 0, 1});
 
         System.out.println("本机是否可达：" + local.isReachable(5000));
-
-// 获取该InetAddress实例对应的全限定域名
-
+        // 获取该InetAddress实例对应的全限定域名
         System.out.println(local.getCanonicalHostName());
 
     }
 
 }
 ```
-
-![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
 
 ### URLDecoder和URLEncoder类：
 
@@ -4048,17 +3989,18 @@ URLEncoder类包含一个encode(String s,String enc)静态方法，它可以将�
 public class URLDecoderTest {
 
     public static void main(String[] args) throws Exception {
-// 将application/x-www-form-urlenco
-        疯狂java:
+// 将application/x-www-form-urlenco疯狂java:
         public class URLDecoderTest {
             public static void main(String[] args) throws Exception {
-
-            // 将application/x-www-form-urlencoded字符串
-            // 转换成普通字符串
-            // 其中的字符串直接从图17.3所示的窗口中复制过来String keyWord=URLDecoder.decode("%B7%E8%BF%F1java", "GBK");System.out.println(keyWord);
-            // 将普通字符串转换成
-            // application/x-www-form-urlencoded字符串String urlStr=URLEncoder.encode("疯狂Android讲义" , "GBK"); System.out.println(urlStr);
-
+                // 将application/x-www-form-urlencoded字符串
+                // 转换成普通字符串
+                // 其中的字符串直接从图17.3所示的窗口中复制过来
+                String keyWord=URLDecoder.decode("%B7%E8%BF%F1java", "GBK");
+                System.out.println(keyWord);
+                // 将普通字符串转换成
+                // application/x-www-form-urlencoded字符串
+                String urlStr=URLEncoder.encode("疯狂Android讲义" , "GBK");
+                System.out.println(urlStr);
             }
 
         }
@@ -4104,9 +4046,7 @@ public class DownUtil {
         conn.setConnectTimeout(5 * 1000);
         conn.setRequestMethod("GET");
         conn.setRequestProperty(
-                "Accept",
-
-                "image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
+                "Accept", "image/gif, image/jpeg, image/pjpeg, image/pjpeg, "
 
                         + "application/x-shockwave-flash, application/xaml+xml, "
 
@@ -4129,12 +4069,10 @@ public class DownUtil {
 
         RandomAccessFile file = new RandomAccessFile(targetFile, "rw");
 
-// 设置本地文件的大小
+		// 设置本地文件的大小
 
         file.setLength(fileSize);
-
         file.close();
-
         for (int i = 0; i < threadNum; i++) {
 
             // 计算每个线程下载的开始位置
@@ -4178,14 +4116,9 @@ public class DownUtil {
         // 定义该线程已下载的字节数
         private RandomAccessFile currentPart;
 
-        public DownThread(int startPos, int currentPartSize,
-
-                          RandomAccessFile currentPart) {
-
+        public DownThread(int startPos, int currentPartSize, RandomAccessFile currentPart) {
             this.startPos = startPos;
-
             this.currentPartSize = currentPartSize;
-
             this.currentPart = currentPart;
 
         }
@@ -4196,9 +4129,7 @@ public class DownUtil {
 
                 URL url = new URL(path);
 
-                HttpURLConnection conn = (HttpURLConnection) url
-
-                        .openConnection();
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
                 conn.setConnectTimeout(5 * 1000);
 
@@ -4272,55 +4203,37 @@ public class DownUtil {
 有了上面的DownUtil工具类之后，接下来就可以在主程序中调用该工具类的down()方法执行下载，如下程序所示。
 
 ```java
-
 public class MultiThreadDown {
 
-    public static void main(String[] args) throws Exception {
+        public static void main(String[] args) throws Exception {
+            // 初始化DownUtil对象
+            final DownUtil downUtil = new DownUtil("http://www.crazyit.org/" 
+                    + "attachment.php?aid=MTY0NXxjNjBiYzNjN3wxMzE1NTQ2MjU5fGNhO"
+                    + "DlKVmpXVmhpNGlkWmVzR2JZbnluZWpqSllOd3JzckdodXJOMUpOWWt0aTJz,"
+                    , "oracelsql.rar", 4);
 
-// 初始化DownUtil对象
+            // 开始下载
+            downUtil.download(); 
+            new Thread() {
+                public void run () {
+                    while (downUtil.getCompleteRate() < 1) {
+                        // 每隔0.1秒查询一次任务的完成进度
+                        // GUI程序中可根据该进度来绘制进度条
+                        System.out.println("已完成：" + downUtil.getCompleteRate());
 
-        final DownUtil downUtil = new DownUtil("http://www.crazyit.org/"
+                        try {
+                            Thread.sleep(1000);
 
-                + "attachment.php?aid=MTY0NXxjNjBiYzNjN3wxMzE1NTQ2MjU5fGNhO"
-
-                + "DlKVmpXVmhpNGlkWmVzR2JZbnluZWpqSllOd3JzckdodXJOMUpOWWt0aTJz,"
-
-                , "oracelsql.rar", 4);
-
-// 开始下载downUtil.download(); new Thread()
-
-        {
-
-            public void run ()
-
-            {
-
-                while (downUtil.getCompleteRate() < 1) {
-
-// 每隔0.1秒查询一次任务的完成进度
-
-// GUI程序中可根据该进度来绘制进度条
-
-                    System.out.println("已完成："
-
-                            + downUtil.getCompleteRate());
-
-                    try {
-
-                        Thread.sleep(1000);
-
-                    } catch (Exception ex) {
+                        } catch (Exception ex) {
+                        }
                     }
-
                 }
 
-            }
+            }.start();
 
-        }.start();
+        }
 
     }
-
-}
 ```
 
 运行上面程序，即可看到程序从www.crazyit.org下载得到一份名为oracelsql.rar的压缩文件。
@@ -4357,28 +4270,23 @@ public class MultiThreadDown {
 
 ```java
 class Tester {
-
     static {
-
         System.out.println("Tester类的静态初始化块...");
-
     }
-
 }
 
 public class ClassLoaderTest {
 
-    public static void main(String[] args)
-
-            throws ClassNotFoundException {
+    public static void main(String[] args)throws ClassNotFoundException {
 
         ClassLoader cl = ClassLoader.getSystemClassLoader();
-
-// 下面语句仅仅是加载Tester类cl.loadClass("Tester");System.out.println("系统加载Tester类");
-
-// 下面语句才会初始化Tester类Class.forName("Tester"); }
-
+		// 下面语句仅仅是加载Tester类
+        cl.loadClass("Tester");System.out.println("系统加载Tester类");
+		// 下面语句才会初始化Tester类
+        Class.forName("Tester");
     }
+
+}
 ```
 
 ![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
@@ -4421,46 +4329,27 @@ public class URLClassLoaderTest {
 
     private static Connection conn;
 
-// 定义一个获取数据库连接的方法
-
-    public static Connection getConn(String url,
-
-                                     String user, String pass) throws Exception {
+	// 定义一个获取数据库连接的方法
+    public static Connection getConn(String url,String user, String pass) throws Exception {
 
         if (conn == null) {
+			// 创建一个URL数组
+            URL[] urls = {new URL("file:mysql-connector-java-3.1.10-bin.jar")};
 
-// 创建一个URL数组
-
-            URL[] urls = {new URL(
-
-                    "file:mysql-connector-java-3.1.10-bin.jar")};
-
-// 以默认的ClassLoader作为父ClassLoader，创建URLClassLoaderURLClassLoader myClassLoader=new URLClassLoader(urls);// 加载MySQL的JDBC驱动，并创建默认实例Driver driver=(Driver)myClassLoader.loadClass("com.mysql.jdbc.Driver").newInstance(); // 创建一个设置JDBC连接属性的Properties对象
-
+			// 以默认的ClassLoader作为父ClassLoader，创建URLClassLoaderURLClassLoader myClassLoader=new URLClassLoader(urls);// 加载MySQL的JDBC驱动，并创建默认实例Driver driver=(Driver)myClassLoader.loadClass("com.mysql.jdbc.Driver").newInstance(); // 创建一个设置JDBC连接属性的Properties对象
             Properties props = new Properties();
-
-// 至少需要为该对象传入user和password两个属性
-
+			// 至少需要为该对象传入user和password两个属性
             props.setProperty("user", user);
-
             props.setProperty("password", pass);
 
-// 调用Driver对象的connect方法来取得数据库连接
-
+			// 调用Driver对象的connect方法来取得数据库连接
             conn = driver.connect(url, props);
-
         }
-
         return conn;
-
     }
 
     public static void main(String[] args) throws Exception {
-
-        System.out.println(getConn("jdbc:mysql://localhost:3306/mysql"
-
-                , "root", "32147"));
-
+        System.out.println(getConn("jdbc:mysql://localhost:3306/mysql" "root", "32147"));
     }
 
 }
@@ -4493,13 +4382,13 @@ interface Person {
 }
 
 class MyInvokationHandler implements InvocationHandler {
-/*
-执行动态代理对象的所有方法时，都会被替换成执行如下的invoke方法
-其中：
-proxy：代表动态代理对象
-method：代表正在执行的方法
-args：代表调用目标方法时传入的实参
-*/
+    /*
+    执行动态代理对象的所有方法时，都会被替换成执行如下的invoke方法
+    其中：
+    proxy：代表动态代理对象
+    method：代表正在执行的方法
+    args：代表调用目标方法时传入的实参
+    */
     public Object invoke(Object proxy, Method method, Object[] args) {
         System.out.println("----正在执行的方法:" + method);
         if (args != null) {
@@ -4521,10 +4410,11 @@ public class ProxyTest {
 
             throws Exception {
 
-// 创建一个InvocationHandler对象
+		// 创建一个InvocationHandler对象
         InvocationHandler handler=new MyInvokationHandler();
         // 使用指定的InvocationHandler来生成一个动态代理对象
-        Person p=(Person)Proxy.newProxyInstance(Person.class.getClassLoader(), new Class[]{Person.class}, handler); // 调用动态代理对象的walk()和sayHello()方法
+        Person p=(Person)Proxy.newProxyInstance(Person.class.getClassLoader(), new Class[]{Person.class}, handler); 
+        // 调用动态代理对象的walk()和sayHello()方法
         p.walk();
         p.sayHello("孙悟空");
     }
