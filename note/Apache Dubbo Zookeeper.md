@@ -196,7 +196,7 @@ Zookeeper的一个最常用的使用场景是担任服务生产者和服务消�
 
 Zookeeper 的数据模型是什么样子呢？它很像数据结构当中的树，也很像文件系统的目录。
 
-![img](https://www.funtl.com/assets/Lusifer201810170010.png)
+[![g8gnF1.png](https://z3.ax1x.com/2021/05/08/g8gnF1.png)](https://imgtu.com/i/g8gnF1)
 
 树是由节点所组成，Zookeeper 的数据存储也同样是基于节点，这种节点叫做 **Znode**
 
@@ -211,7 +211,7 @@ Zookeeper 的数据模型是什么样子呢？它很像数据结构当中的树�
 
 ##### Znode 包含哪些元素
 
-![img](https://www.funtl.com/assets/Lusifer201810170011.png)
+[![g8gJwd.png](https://z3.ax1x.com/2021/05/08/g8gJwd.png)](https://imgtu.com/i/g8gJwd)
 
 - data：Znode 存储的数据信息。
 - ACL：记录 Znode 的访问权限，即哪些人或哪些 IP 可以访问本节点。
