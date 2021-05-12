@@ -1058,6 +1058,10 @@ kill -9 nginx主进程号
 
 ### 目录树：
 
+我们一般查询的时候都是通过递归查询的。比如获取到某个父节点下的所有的子集就可以使用levelDeep
+
+
+
 level_deep
 
 [![DW7jXT.png](https://s3.ax1x.com/2020/12/01/DW7jXT.png)](https://imgchr.com/i/DW7jXT)
@@ -1071,6 +1075,8 @@ level_deep
 
 拆解level_deep 
 最后一个是自身的id，倒数第二个是pid,倒数第三个是pid的pid,一直找到顶层目录。顶层的pid置为-1
+
+levelDeep字段维护：查看gitee上的代码示例
 
 
 
