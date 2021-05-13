@@ -1322,7 +1322,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
         System.out.println(person.toString());
 ```
 
-从getBean进行探索,这个方法将bean定义转换为了对象
+从AbstractBeanFactory#getBean()进行探索,这个方法将bean定义转换为了对象 
 
 ```java
 	@Override
@@ -1333,7 +1333,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 ```java
 /**
-*	返回一个实例，该实例可以是指定bean的共享或独立的。
+*	返回一个实例，该实例可以是指定bean的共享或独立的。 
     参数：
         名称–要检索的bean的名称
         requiredType –要检索的bean的必需类型
@@ -1577,7 +1577,7 @@ public interface FactoryBean<T>{
 
 #### 缓存中获取单例bean
 
-单例在Spring的同一个容器内只会被创建一次，后续再获取bean直接从单例缓存中获取，当然这里也只是尝试加载，首先尝试从缓存中加载，然后再次尝试尝试从singletonFactories中加载。因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖， Spring创建bean的原则是不等bean创建完成就会将创建bean的ObjectFactory提早曝光加入到缓存中，一旦下一个bean创建时需要依赖上个bean，则直接使用ObjectFactory.
+单例在Spring的同一个容器内只会被创建一次，后续再获取bean直接从单例缓存中获取，当然这里也只是尝试加载，首先尝试从缓存中加载，然后再次尝试尝试从singletonFactories中加载。因为在创建单例bean的时候会存在依赖注入的情况，而在创建依赖的时候为了避免循环依赖， Spring创建bean的原则是不等bean创建完成就会将创建bean的ObjectFactory提早曝光加入到缓存中，一旦下一个bean创建时需要依赖上个bean，则直接使用ObjectFactory. DefaultSingletonBeanRegistry#getSingleton()
 
 ```java
 	@Override
@@ -1626,7 +1626,7 @@ public interface FactoryBean<T>{
 
 #### 从bean的实例中获取对象
 
-主要是针对的这一段代码进行分析：AbstractBeanFactory.getObjectForBeanInstance()
+主要是针对的这一段代码进行分析：AbstractBeanFactory#getObjectForBeanInstance()
 
 ```java
 // AbstractBeanFactory.java中
@@ -1665,13 +1665,365 @@ protected Object getObjectForBeanInstance(
 	}
 ```
 
+从上面的代码来看，其实这个方法并没有什么重要的信息，大多是些辅助代码以及一些功能性的判断，而真正的核心代码却委托给了getObjectFromFactoryBean，
 
+我们来看看getObjectForBeanInstance中的所做的工作。
 
-#### 获取单例
+（1）对FactoryBean正确性的验证。
+
+（2）对非FactoryBean不做任何处理。
+
+（3）对bean进行转换。
+
+（4）将从Factory中解析bean的工作委托给getObjectFromFactoryBean
+
+#### 获取单例（当缓存中没有bean的实例）
+
+在AbstractBeanFactory#doGetBean()方法中有判断在bean的加载过程如果缓存中不存已经加载的单例bean就需要从头开始bean的加载过程。以下就是获取单例bean的实现
+
+```java
+public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
+		Assert.notNull(beanName, "Bean name must not be null");
+    	// 同步变量map
+		synchronized (this.singletonObjects) {
+            // 从map中获取指定name的bean对象，判断适度加载过，因为singleton模式其实就是复用以前创建的bean
+			Object singletonObject = this.singletonObjects.get(beanName);
+            // 如果bean为空可以进行singletonObject的bean的初始化
+			if (singletonObject == null) {
+				if (this.singletonsCurrentlyInDestruction) {
+					throw new BeanCreationNotAllowedException(beanName,
+							"Singleton bean creation not allowed while singletons of this factory are in destruction " +
+							"(Do not request a bean from a BeanFactory in a destroy method implementation!)");
+				}
+				if (logger.isDebugEnabled()) {
+					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
+				}
+                // 创建单例之前的回调。默认实现将单例注册为当前正在创建中   其实就是做标记
+				beforeSingletonCreation(beanName);
+				boolean newSingleton = false;
+				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
+				if (recordSuppressedExceptions) {
+					this.suppressedExceptions = new LinkedHashSet<>();
+				}
+				try {
+                    // 初始化bean
+					singletonObject = singletonFactory.getObject();
+					newSingleton = true;
+				}
+				catch (IllegalStateException ex) {
+					// Has the singleton object implicitly appeared in the meantime ->
+					// if yes, proceed with it since the exception indicates that state.
+					singletonObject = this.singletonObjects.get(beanName);
+					if (singletonObject == null) {
+						throw ex;
+					}
+				}
+				catch (BeanCreationException ex) {
+					if (recordSuppressedExceptions) {
+						for (Exception suppressedException : this.suppressedExceptions) {
+							ex.addRelatedCause(suppressedException);
+						}
+					}
+					throw ex;
+				}
+				finally {
+					if (recordSuppressedExceptions) {
+						this.suppressedExceptions = null;
+					}
+                    // 创建单例后的回调。默认实现将单例标记为不在创建中   其实就是做标记
+					afterSingletonCreation(beanName);
+				}
+                // 新的singleton为true
+				if (newSingleton) {
+                    // 加入缓存
+					addSingleton(beanName, singletonObject);
+				}
+			}
+			return singletonObject;
+		}
+	}
+```
+
+上述代码中其实是使用了回调方法，使得程序可以在单例创建的前后做一些准备及处理操作，而真正的获取单例bean的方法其实并不是在此方法中实现的，其实现逻辑是在ObjectFactory类型的实例singletonFactory中实现的。而这些准备及处理操作包括如下内容。
+
+（1）检查缓存是否已经加载过。
+
+（2）若没有加载，则记录beanName的正在加载状态。
+
+（3）加载单例前记录加载状态。
+
+```java
+/**
+	 * Callback before singleton creation.
+	 * <p>The default implementation register the singleton as currently in creation.
+	 * @param beanName the name of the singleton about to be created
+	 * @see #isSingletonCurrentlyInCreation
+	 */
+	protected void beforeSingletonCreation(String beanName) {
+		if (!this.inCreationCheckExclusions.contains(beanName) && !this.singletonsCurrentlyInCreation.add(beanName)) {
+			throw new BeanCurrentlyInCreationException(beanName);
+		}
+	}
+
+	/**
+	 * Callback after singleton creation.
+	 * <p>The default implementation marks the singleton as not in creation anymore.
+	 * @param beanName the name of the singleton that has been created
+	 * @see #isSingletonCurrentlyInCreation
+	 */
+	protected void afterSingletonCreation(String beanName) {
+		if (!this.inCreationCheckExclusions.contains(beanName) && !this.singletonsCurrentlyInCreation.remove(beanName)) {
+			throw new IllegalStateException("Singleton '" + beanName + "' isn't currently in creation");
+		}
+	}
+```
+
+（4）通过调用参数传入的ObjectFactory的个体Object方法实例化bean。
+
+（5）加载单例后的处理方法调用。
+
+（6）将结果记录至缓存并删除加载bean过程中所记录的各种辅助状态。
+
+```java
+	/**
+	 * Add the given singleton object to the singleton cache of this factory.
+	 * <p>To be called for eager registration of singletons.
+	 * @param beanName the name of the bean
+	 * @param singletonObject the singleton object
+	 */
+	protected void addSingleton(String beanName, Object singletonObject) {
+		synchronized (this.singletonObjects) {
+			this.singletonObjects.put(beanName, singletonObject);
+			this.singletonFactories.remove(beanName);
+			this.earlySingletonObjects.remove(beanName);
+			this.registeredSingletons.add(beanName);
+		}
+	}
+```
+
+（7）返回处理结果
+
+虽然我们已经从外部了解了加载bean的逻辑架构，但现在我们还并没有开始对bean加载功能的探索，之前提到过，bean的加载逻辑其实是在传入的ObjectFactory类型的参数singletonFactory中定义的，我们反推参数的获取，其实是去执行的doGetBean中的createBean：
+
+```java
+sharedInstance = getSingleton(beanName, () -> {
+						try {
+							return createBean(beanName, mbd, args);
+						}
+						catch (BeansException ex) {
+							// Explicitly remove instance from singleton cache: It might have been put there
+							// eagerly by the creation process, to allow for circular reference resolution.
+							// Also remove any beans that received a temporary reference to the bean.
+							destroySingleton(beanName);
+							throw ex;
+						}
+					});
+```
 
 #### 准备创建bean
 
+在AbstractautowireCapableBeanFactory#createBean()
+
+```java
+	@Override
+	protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
+			throws BeanCreationException {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("Creating instance of bean '" + beanName + "'");
+		}
+		RootBeanDefinition mbdToUse = mbd;
+
+		// Make sure bean class is actually resolved at this point, and
+		// clone the bean definition in case of a dynamically resolved Class
+		// which cannot be stored in the shared merged bean definition.
+        // 锁定class，根据设置的class属性或者根据className来解析Class
+		Class<?> resolvedClass = resolveBeanClass(mbd, beanName);
+		if (resolvedClass != null && !mbd.hasBeanClass() && mbd.getBeanClassName() != null) {
+			mbdToUse = new RootBeanDefinition(mbd);
+			mbdToUse.setBeanClass(resolvedClass);
+		}
+
+		// Prepare method overrides. 验证及准备覆盖的方法 处理overrides属性
+		try {
+			mbdToUse.prepareMethodOverrides();
+		}
+		catch (BeanDefinitionValidationException ex) {
+			throw new BeanDefinitionStoreException(mbdToUse.getResourceDescription(),
+					beanName, "Validation of method overrides failed", ex);
+		}
+
+		try {
+           	// 给BeanPostProcessors一个机会返回代理来替代真正的实例 Aop的功能基于这个判断
+			// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
+			if (bean != null) {
+				return bean;
+			}
+		}
+		catch (Throwable ex) {
+			throw new BeanCreationException(mbdToUse.getResourceDescription(), beanName,
+					"BeanPostProcessor before instantiation of bean failed", ex);
+		}
+
+		try {
+			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Finished creating instance of bean '" + beanName + "'");
+			}
+			return beanInstance;
+		}
+		catch (BeanCreationException ex) {
+			// A previously detected exception with proper bean creation context already...
+			throw ex;
+		}
+		catch (ImplicitlyAppearedSingletonException ex) {
+			// An IllegalStateException to be communicated up to DefaultSingletonBeanRegistry...
+			throw ex;
+		}
+		catch (Throwable ex) {
+			throw new BeanCreationException(
+					mbdToUse.getResourceDescription(), beanName, "Unexpected exception during bean creation", ex);
+		}
+	}
+```
+
+从代码中我们可以总结出函数完成的具体步骤及功能。
+
+（1）根据设置的class属性或者根据className来解析Class。
+
+（2）对override属性进行标记及验证。很多读者可能会不知道这个方法的作用，因为在Spring的配置里面根本就没有诸如override-method之类的配置，那么这个方法到底是干什么用的呢？其实在Spring中确实没有override-method这样的配置，但是如果读过前面的部分，可能会有所发现，在Spring配置中是存在lookup-method和replace-method的，而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，而这个函数的操作其实也就是针对于这两个配置的。
+
+（3）应用初始化前的后处理器，解析指定bean是否存在初始化前的短路操作。
+
+（4）创建bean。我们首先查看下对override属性标记及验证的逻辑实现
+
+##### 处理override属性
+
+查看源码中AbstractBeanDefinition类的prepareMethodOverrides方法：
+
+```java
+/**
+	 * 验证并准备为此bean定义的方法替代。 检查是否存在具有指定名称的方法
+	 */
+	public void prepareMethodOverrides() throws BeanDefinitionValidationException {
+		// Check that lookup methods exists.
+		MethodOverrides methodOverrides = getMethodOverrides();
+		if (!methodOverrides.isEmpty()) {
+			Set<MethodOverride> overrides = methodOverrides.getOverrides();
+			synchronized (overrides) {
+				for (MethodOverride mo : overrides) {
+					prepareMethodOverride(mo);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 验证并准备给定的方法重写。 检查是否存在具有指定名称的方法，如果找不到该方法，则将其标记为未重载
+	 */
+	protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
+        // 获取对应类中对应方法名的个数
+		int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
+		if (count == 0) {
+			throw new BeanDefinitionValidationException(
+					"Invalid method override: no method with name '" + mo.getMethodName() +
+					"' on class [" + getBeanClassName() + "]");
+		}
+		else if (count == 1) {
+			// Mark override as not overloaded, to avoid the overhead of arg type checking.
+            // 标记MethodOverride暂未被覆盖，避免参数类型检查的开销
+			mo.setOverloaded(false);
+		}
+	}
+```
+
+通过以上两个函数的代码你能体会到它所要实现的功能吗？之前反复提到过，在Spring配置中存在lookup-method和replace-method两个配置功能，而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，这两个功能实现原理其实是在bean实例化的时候如果检测到存在methodOverrides属性，会动态地为当前bean生成代理并使用对应的拦截器为bean做增强处理，相关逻辑实现在bean的实例化部分详细介绍。但是，这里要提到的是，对于方法的匹配来讲，如果一个类中存在若干个重载方法，那么，在函数调用及增强的时候还需要根据参数类型进行匹配，来最终确认当前调用的到底是哪个函数。但是，Spring将一部分匹配工作在这里完成了，如果当前类中的方法只有一个，那么就设置重载该方法没有被重载，这样在后续调用的时候便可以直接使用找到的方法，而不需要进行方法的参数匹配验证了，而且还可以提前对方法存在性进行验证，正可谓一箭双雕
+
+##### 实例化的前置处理
+
+在真正调用doCreate方法创建bean的实例前使用了这样一个方法resolveBeforeInstantiation (beanName, mbd)对BeanDefinigiton中的属性做些前置处理。当然，无论其中是否有相应的逻辑实现我们都可以理解，因为真正逻辑实现前后留有处理函数也是可扩展的一种体现，但是，这并不是最重要的，在函数中还提供了一个短路判断，这才是最为关键的部分
+
+```java
+if(bean !=null){
+	return bean;
+}
+```
+
+当经过前置处理后返回的结果如果不为空，那么会直接略过后续的Bean的创建而直接返回结果。这一特性虽然很容易被忽略，但是却起着至关重要的作用，我们熟知的AOP功能就是基于这里的判断的。
+
+```java
+@Nullable
+	protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
+		Object bean = null;
+        // 如果尚未被解析
+		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
+			// Make sure bean class is actually resolved at this point.
+            // 确保此时确实解决了bean类
+			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
+				Class<?> targetType = determineTargetType(beanName, mbd);
+				if (targetType != null) {
+                    // 实例化前的后处理器应用
+					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
+					if (bean != null) {
+                        // 实例化后的后置处理器
+						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+					}
+				}
+			}
+			mbd.beforeInstantiationResolved = (bean != null);
+		}
+		return bean;
+	}
+```
+
+**实例化前的后处理器应用**
+
+bean的实例化前调用，也就是将AbsractBeanDefinition转换为BeanWrapper前的处理。给子类一个修改BeanDefinition的机会，也就是说当程序经过这个方法后，bean可能已经不是我们认为的bean了，而是或许成为了一个经过处理的代理bean，可能是通过cglib生成的，也可能是通过其它技术生成的。 这个是Aop的技术相关所以这里不进入仔细探究
+
+```java
+@Nullable
+	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+		for (BeanPostProcessor bp : getBeanPostProcessors()) {
+			if (bp instanceof InstantiationAwareBeanPostProcessor) {
+				InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+				Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);
+				if (result != null) {
+					return result;
+				}
+			}
+		}
+		return null;
+	}
+```
+
+
+
+**实例化后的后置处理器**
+
+在讲解从缓存中获取单例bean的时候就提到过，Spring中的规则是在bean的初始化后尽可能保证将注册的后处理器的postProcessAfterInitialization方法应用到该bean中，因为如果返回的bean不为空，那么便不会再次经历普通bean的创建过程，所以只能在这里应用后处理器的postProcessAfterInitialization方法
+
+```java
+@Override
+	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
+
+		Object result = existingBean;
+		for (BeanPostProcessor beanProcessor : getBeanPostProcessors()) {
+			Object current = beanProcessor.postProcessAfterInitialization(result, beanName);
+			if (current == null) {
+				return result;
+			}
+			result = current;
+		}
+		return result;
+	}
+```
+
 #### 循环依赖
+
+[![gDP9PI.png](https://z3.ax1x.com/2021/05/13/gDP9PI.png)](https://imgtu.com/i/gDP9PI)
+
+
 
 #### 创建bean
 
