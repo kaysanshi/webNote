@@ -129,7 +129,6 @@ BeanFactory是Spring最核心的接口，他提供了高级的IoC配置机制。
   	XmlBeanFactory() API 负责创建并初始化所有的对象，即在配置文件中提到的 bean。
   
 - 第二步利用第一步生成的 bean 工厂对象的 getBean() 方法得到所需要的 bean。 这个方法通过配置文件中的 bean ID 来返回一个真正的对象，该对象最后可以用于实际的对象。一旦得到这个对象，就可以利用这个对象来调用任何方法
-  
 
 **例如通过BeanFactory装载配置文件，启动Spring IoC容器：**
 	
@@ -828,6 +827,10 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 
 
 ### Spring Bean
+
+**什么是bean:**
+
+在 Spring 中，构成应用程序**主干**并由**Spring IoC容器**管理的**对象**称为**bean**。bean是一个由Spring IoC容器实例化、组装和管理的对象。
 
 要使应用程序中的Spring容器成功启动，需要同时具备以下3方面的条件。
 
