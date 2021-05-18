@@ -203,7 +203,7 @@
 >   		后台服务贯彻 Single Responsibility Principle（单一职责原则）
 >   		VM -> Docker
 >   		DevOps
->	
+>			
 >   		springCloud 基于springboot的技术技术框架；
 >   		java原生云开发=springCloud+spring boot
 
@@ -244,12 +244,12 @@
 **2.Apache Dubbo Zookeeper**
 
    	Dubbo是一个高效性能的 Java RPC 通信框架，2.6.x
-
+   	
    	服务注册与发现，Zookeeper，
-
+   	
    	API网关 没有  找第三方或自己实现。
-
-  	服务挂了，Hystrix
+   	
+   	服务挂了，Hystrix
 
 **3.Spring Cloud Alibaba**
 
@@ -264,7 +264,7 @@
 ### SpringCloud Netflix:
 
    	到2019目前最流行的微服务架构解决方案是：springBoot+spring cloud Netflix
-
+   	
    	Spring Cloud 为开发人员提供了快速构建分布式系统中一些常见模式的工具（例如配置管理，服务发现，断路器，智能路由，微代理，控制总线）。分布式系统的协调导致了样板模式, 使用 Spring Cloud 开发人员可以快速地支持实现这些模式的服务和应用程序。他们将在任何分布式环境中运行良好，包括开发人员自己的笔记本电脑，裸机数据中心，以及 Cloud Foundry 等托管平台。
 
 ​    	Spring Cloud 是基于Spring Boot进行开发，并且都是使用 Maven 做项目管理工具。   然而在2019年Spring Cloud Netflix 开始进入维护模式。所以使用的少了。      
@@ -3213,6 +3213,8 @@ public class DemobServiceClientFallback implements DemobServiceClient {
 
 #### Feign源码解析
 
+**参考：Spring Cloud微服务架构进阶**
+
 ##### 核心组件
 
 在阅读OpenFeign源码时，可以沿着两条路线进行，一是FeignServiceClient这样的被@FeignClient注解修饰的接口类（后续简称为FeignClient接口类）如何创建，也就是其Bean实例是如何被创建的；二是调用FeignServiceClient对象的网络请求相关的函数时，OpenFeign是如何发送网络请求的。而OpenFeign相关的类也可以以此来进行分类，一部分是用来初始化相应的Bean实例的，一部分是用来在调用方法时发送网络请求。
@@ -3630,19 +3632,777 @@ ClassPathScanningCandidateComponentProvider的作用是遍历指定路径的包�
 
 ##### 实例初始化
 
-FeignClientFactoryBean是工厂类，Spring容器通过调用它的getObject方法来获取对应的Bean实例。被@FeignClient修饰的接口类都是通过FeignClientFactoryBean的getObject方法来进行实例化的，具体实现如下代码所示：
+FeignClientFactoryBean是工厂类，Spring容器通过调用它的getObject方法来获取对应的Bean实例。被@FeignClient修饰的接口类都是通过FeignClientFactoryBean#getObject()方法来进行实例化的，具体实现如下代码所示：
 
 ```java
+@Override
+	public Object getObject() throws Exception {
+		return getTarget();
+	}
 
+	/**
+	 * @param <T> the target type of the Feign client
+	 * @return a {@link Feign} client created with the specified data and the context
+	 * information
+	 */
+	<T> T getTarget() {
+        // FeignContext 创建伪装类实例的工厂。 它为每个客户端名称创建一个Spring ApplicationContext，并从那里提取所需的bean
+		FeignContext context = applicationContext.getBean(FeignContext.class);
+		Feign.Builder builder = feign(context);
+
+		if (!StringUtils.hasText(url)) {
+			if (!name.startsWith("http")) {
+				url = "http://" + name;
+			}
+			else {
+				url = name;
+			}
+			url += cleanPath();
+			return (T) loadBalance(builder, context,
+					new HardCodedTarget<>(type, name, url));
+		}
+		if (StringUtils.hasText(url) && !url.startsWith("http")) {
+			url = "http://" + url;
+		}
+		String url = this.url + cleanPath();
+        // 调用FeignContext的getInstance方法获取Client对象
+		Client client = getOptional(context, Client.class);
+        // 因为有具体的url所以就饿不需要负载均衡，所以去除loadbalancerFeignClient实例
+		if (client != null) {
+			if (client instanceof LoadBalancerFeignClient) {
+				// not load balancing because we have a url,
+				// but ribbon is on the classpath, so unwrap
+				client = ((LoadBalancerFeignClient) client).getDelegate();
+			}
+			if (client instanceof FeignBlockingLoadBalancerClient) {
+				// not load balancing because we have a url,
+				// but Spring Cloud LoadBalancer is on the classpath, so unwrap
+				client = ((FeignBlockingLoadBalancerClient) client).getDelegate();
+			}
+			builder.client(client);
+		}
+        // Targeter是一个接口，它的target方法会生成对应的实例对象。它有两个实现类，分别为DefaultTargeter和HystrixTargeter.  DefaultTargeter 调用了Feign.Builder的target方法。Feign.Builder负责生成被@FeignClient修饰的FeignClient接口类实例。它通过Java反射机制，构造InvocationHandler实例并将其注册到FeignClient上，当FeignClient的方法被调用时，InvocationHandler的回调函数会被调用，OpenFeign会在其回调函数中发送网络请求
+		Targeter targeter = get(context, Targeter.class);
+		return (T) targeter.target(this, builder, context,
+				new HardCodedTarget<>(type, name, url));
+	}
 ```
+
+这里就用到了FeignContext的getInstance方法，我们在前边已经讲解了FeignContext的作用，getOptional方法调用了FeignContext的getInstance方法，从FeignContext的对应名称的子上下文中获取到Client类型的Bean实例
+
+```java
+// FeignClientFactoryBean.java
+protected <T> T getOptional(FeignContext context, Class<T> type) {
+	return context.getInstance(contextId, type);
+}
+// 
+public <T> T getInstance(String name, Class<T> type) {
+    AnnotationConfigApplicationContext context = getContext(name);
+    if (BeanFactoryUtils.beanNamesForTypeIncludingAncestors(context,
+                                                            type).length > 0) {
+        // 从对应的context中获取Bean实例，如果对应的子上下文没有则直接从父上下文中获取
+        // 在feignAutoConfiguration中 feignClient(){ return new ApacheHttpClient(httpClient)}
+        return context.getBean(type);
+    }
+    return null;
+}
+```
+
+
 
 ###### 扫描函数信息
 
+在扫描FeignClient接口类所有函数生成对应Handler的过程中，OpenFeign会生成调用该函数时发送网络请求的模板，也就是RequestTemplate实例。RequestTemplate中包含了发送网络请求的URL和函数参数填充的信息。@RequestMapping、@PathVariable等注解信息也会包含到RequestTemplate中，用于函数参数的填充。ParseHandlersByName类的apply方法就是这一过程的具体实现。它首先会使用Contract来解析接口类中的函数信息，并检查函数的合法性，然后根据函数的不同类型来为每个函数生成一个BuildTemplateByResolvingArgs对象，最后使用SynchronousMethodHandler.Factory来创建MethodHandler实例。ParseHandlersByName的apply()实现如下代码所示:
+
+```java
+public Map<String, MethodHandler> apply(Target target) {
+    // 获取type的所有的方法的信息，会根据注解生成每个方法的RequestTemplate
+      List<MethodMetadata> metadata = contract.parseAndValidateMetadata(target.type());
+      Map<String, MethodHandler> result = new LinkedHashMap<String, MethodHandler>();
+      for (MethodMetadata md : metadata) {
+        BuildTemplateByResolvingArgs buildTemplate;
+        if (!md.formParams().isEmpty() && md.template().bodyTemplate() == null) {
+          buildTemplate =
+              new BuildFormEncodedTemplateFromArgs(md, encoder, queryMapEncoder, target);
+        } else if (md.bodyIndex() != null) {
+          buildTemplate = new BuildEncodedTemplateFromArgs(md, encoder, queryMapEncoder, target);
+        } else {
+          buildTemplate = new BuildTemplateByResolvingArgs(md, queryMapEncoder, target);
+        }
+        if (md.isIgnored()) {
+          result.put(md.configKey(), args -> {
+            throw new IllegalStateException(md.configKey() + " is not a method handled by feign");
+          });
+        } else {
+          result.put(md.configKey(),
+              factory.create(target, md, buildTemplate, options, decoder, errorDecoder));
+        }
+      }
+      return result;
+    }
+```
+
+OpenFeign默认的Contract实现是SpringMvcContract。SpringMvcContract的父类为BaseContract，而BaseContract是Contract众多子类中的一员，其他还有JAXRSContract和HystrixDelegatingContract等。Contract的parseAndValidateMetadata方法会解析与HTTP请求相关的所有函数的基本信息和注解信息，代码如下所示:
+
+```java
+// springMvcContract.java  
+@Override
+	public MethodMetadata parseAndValidateMetadata(Class<?> targetType, Method method) {
+		processedMethods.put(Feign.configKey(targetType, method), method);
+		MethodMetadata md = super.parseAndValidateMetadata(targetType, method);
+
+		RequestMapping classAnnotation = findMergedAnnotation(targetType,
+				RequestMapping.class);
+		if (classAnnotation != null) {
+			// produces - use from class annotation only if method has not specified this
+			if (!md.template().headers().containsKey(ACCEPT)) {
+				parseProduces(md, method, classAnnotation);
+			}
+
+			// consumes -- use from class annotation only if method has not specified this
+			if (!md.template().headers().containsKey(CONTENT_TYPE)) {
+				parseConsumes(md, method, classAnnotation);
+			}
+
+			// headers -- class annotation is inherited to methods, always write these if
+			// present
+			parseHeaders(md, method, classAnnotation);
+		}
+		return md;
+	}
+```
+
+BaseContract的parseAndValidateMetadata方法会依次解析接口类的注解，函数注解和函数的参数注解，将这些注解包含的信息封装到MethodMetadata对象中，然后返回
+
+```java
+// BaseContract.java
+protected MethodMetadata parseAndValidateMetadata(Class<?> targetType, Method method) {
+      final MethodMetadata data = new MethodMetadata();
+      data.targetType(targetType);
+      data.method(method);
+    // 函数的返回值
+      data.returnType(Types.resolve(targetType, targetType, method.getGenericReturnType()));
+    // 函数feign相关的唯一配置键
+      data.configKey(Feign.configKey(targetType, method));
+	// 获取并处理修饰class的注解信息
+      if (targetType.getInterfaces().length == 1) {
+        processAnnotationOnClass(data, targetType.getInterfaces()[0]);
+      }
+    // 调用子类processAnnotationOnClass的实现
+      processAnnotationOnClass(data, targetType);
+
+	// 处理修饰method的注解信息	
+      for (final Annotation methodAnnotation : method.getAnnotations()) {
+        processAnnotationOnMethod(data, methodAnnotation, method);
+      }
+      if (data.isIgnored()) {
+        return data;
+      }
+      checkState(data.template().method() != null,
+          "Method %s not annotated with HTTP method type (ex. GET, POST)%s",
+          data.configKey(), data.warnings());
+      final Class<?>[] parameterTypes = method.getParameterTypes();
+      final Type[] genericParameterTypes = method.getGenericParameterTypes();
+	// 函数参数注解类型
+      final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+      final int count = parameterAnnotations.length;
+    // 依次处理参数注解并且返回该参数来指明是否为将要发送请求的body。除了body外还可能是path，param等
+      for (int i = 0; i < count; i++) {
+        boolean isHttpAnnotation = false;
+        if (parameterAnnotations[i] != null) {
+          isHttpAnnotation = processAnnotationsOnParameter(data, parameterAnnotations[i], i);
+        }
+
+        if (isHttpAnnotation) {
+          data.ignoreParamater(i);
+        }
+
+        if (parameterTypes[i] == URI.class) {
+          data.urlIndex(i);
+        } else if (!isHttpAnnotation && parameterTypes[i] != Request.Options.class) {
+          if (data.isAlreadyProcessed(i)) {
+            checkState(data.formParams().isEmpty() || data.bodyIndex() == null,
+                "Body parameters cannot be used with form parameters.%s", data.warnings());
+          } else {
+            checkState(data.formParams().isEmpty(),
+                "Body parameters cannot be used with form parameters.%s", data.warnings());
+            checkState(data.bodyIndex() == null,
+                "Method has too many Body parameters: %s%s", method, data.warnings());
+            // 表明发送请求body的参数位置和参数类型
+            data.bodyIndex(i);
+            data.bodyType(Types.resolve(targetType, targetType, genericParameterTypes[i]));
+          }
+        }
+      }
+
+      if (data.headerMapIndex() != null) {
+        checkMapString("HeaderMap", parameterTypes[data.headerMapIndex()],
+            genericParameterTypes[data.headerMapIndex()]);
+      }
+
+      if (data.queryMapIndex() != null) {
+        if (Map.class.isAssignableFrom(parameterTypes[data.queryMapIndex()])) {
+          checkMapKeys("QueryMap", genericParameterTypes[data.queryMapIndex()]);
+        }
+      }
+
+      return data;
+    }
+```
+
+processAnnotationOnClass方法用于处理接口类注解。该函数在parseAndValidateMetadata方法中可能会被调用两次，如果targetType只继承或者实现一种接口时，先处理该接口的注解，再处理targetType的注解；否则只会处理targetType的注解。@RequestMapping在修饰FeignClient接口类时，其value所代表的值会被记录下来，它是该FeignClient下所有请求URL的前置路径，处理接口类注解的函数代码如下所示：
+
+```java
+@Override
+	protected void processAnnotationOnClass(MethodMetadata data, Class<?> clz) {
+		if (clz.getInterfaces().length == 0) {
+            // 获取RequestMapping的注解信息，并设置MethodMetadata.template数据
+			RequestMapping classAnnotation = findMergedAnnotation(clz,
+					RequestMapping.class);
+			if (classAnnotation != null) {
+				// Prepend path from class annotation if specified
+				if (classAnnotation.value().length > 0) {
+					String pathValue = emptyToNull(classAnnotation.value()[0]);
+					pathValue = resolve(pathValue);
+					if (!pathValue.startsWith("/")) {
+						pathValue = "/" + pathValue;
+					}
+                    // 处理@RequestMapping的value,一般都是发送请求的path
+					data.template().uri(pathValue);
+				}
+			}
+		}
+	}
+
+
+```
+
+processAnnotationOnMethod方法的主要作用是处理修饰函数的注解。它会首先校验该函数是否被@RequestMapping修饰，如果没有就会直接返回。然后获取该函数所对应的HTTP请求的方法，默认的方法是GET。接着会处理@RequestMapping中的value属性，解析value属性中的pathValue，比如说value属性值为/instance/{instanceId}，那么pathValue的值就是instanceId。最后处理消费（consumes）和生产（produces）相关的信息，记录媒体类型（media types）:
+
+```java
+// SpringmvcContract.java
+@Override
+	protected void processAnnotationOnMethod(MethodMetadata data,
+			Annotation methodAnnotation, Method method) {
+		if (CollectionFormat.class.isInstance(methodAnnotation)) {
+			CollectionFormat collectionFormat = findMergedAnnotation(method,
+					CollectionFormat.class);
+			data.template().collectionFormat(collectionFormat.value());
+		}
+
+		if (!RequestMapping.class.isInstance(methodAnnotation) && !methodAnnotation
+				.annotationType().isAnnotationPresent(RequestMapping.class)) {
+			return;
+		}
+
+		RequestMapping methodMapping = findMergedAnnotation(method, RequestMapping.class);
+		// HTTP Method
+        // 处理http method
+		RequestMethod[] methods = methodMapping.method();
+		if (methods.length == 0) {
+			methods = new RequestMethod[] { RequestMethod.GET };
+		}
+		checkOne(method, methods, "method");
+		data.template().method(Request.HttpMethod.valueOf(methods[0].name()));
+
+		// path
+		checkAtMostOne(method, methodMapping.value(), "value");
+		if (methodMapping.value().length > 0) {
+			String pathValue = emptyToNull(methodMapping.value()[0]);
+			if (pathValue != null) {
+				pathValue = resolve(pathValue);
+				// Append path from @RequestMapping if value is present on method
+				if (!pathValue.startsWith("/") && !data.template().path().endsWith("/")) {
+					pathValue = "/" + pathValue;
+				}
+				data.template().uri(pathValue, true);
+			}
+		}
+
+		// produces 处理生产者
+		parseProduces(data, method, methodMapping);
+
+		// consumes 处理消费者
+		parseConsumes(data, method, methodMapping);
+
+		// headers 处理头部
+		parseHeaders(data, method, methodMapping);
+
+		data.indexToExpander(new LinkedHashMap<>());
+	}
+
+// SpringmvcContract.java
+private void parseProduces(MethodMetadata md, Method method,
+			RequestMapping annotation) {
+		String[] serverProduces = annotation.produces();
+		String clientAccepts = serverProduces.length == 0 ? null
+				: emptyToNull(serverProduces[0]);
+		if (clientAccepts != null) {
+			md.template().header(ACCEPT, clientAccepts);
+		}
+	}
+
+	private void parseConsumes(MethodMetadata md, Method method,
+			RequestMapping annotation) {
+		String[] serverConsumes = annotation.consumes();
+		String clientProduces = serverConsumes.length == 0 ? null
+				: emptyToNull(serverConsumes[0]);
+		if (clientProduces != null) {
+			md.template().header(CONTENT_TYPE, clientProduces);
+		}
+	}
+
+	private void parseHeaders(MethodMetadata md, Method method,
+			RequestMapping annotation) {
+		// TODO: only supports one header value per key
+		if (annotation.headers() != null && annotation.headers().length > 0) {
+			for (String header : annotation.headers()) {
+				int index = header.indexOf('=');
+				if (!header.contains("!=") && index >= 0) {
+					md.template().header(resolve(header.substring(0, index)),
+							resolve(header.substring(index + 1).trim()));
+				}
+			}
+		}
+	}
+```
+
+而processAnnotationsOnParameter方法则主要处理修饰函数参数的注解。它会根据注解类型来调用不同的AnnotatedParameterProcessor的实现类，解析注解的属性信息。函数参数的注解类型包括@RequestParam、@RequestHeader和@PathVariable。processAnnotationsOnParameter方法的具体实现如下代码所示
+
+```java
+// springmvcContract.java
+@Override
+protected boolean processAnnotationsOnParameter(MethodMetadata data,
+      Annotation[] annotations, int paramIndex) {
+   boolean isHttpAnnotation = false;
+
+   AnnotatedParameterProcessor.AnnotatedParameterContext context = new SimpleAnnotatedParameterContext(
+         data, paramIndex);
+   Method method = processedMethods.get(data.configKey());
+   // 遍历所有的参数注解
+   for (Annotation parameterAnnotation : annotations) {
+       // 不同的注解类型有不同的Processor
+      AnnotatedParameterProcessor processor = annotatedArgumentProcessors
+            .get(parameterAnnotation.annotationType());
+      if (processor != null) {
+         Annotation processParameterAnnotation;
+         // synthesize, handling @AliasFor, while falling back to parameter name on
+         // missing String #value():
+          // 如果没有缓存的processor则生成一个
+         processParameterAnnotation = synthesizeWithMethodParameterNameAsFallbackValue(
+               parameterAnnotation, method, paramIndex);
+         isHttpAnnotation |= processor.processArgument(context,
+               processParameterAnnotation, method);
+      }
+   }
+
+   if (!isMultipartFormData(data) && isHttpAnnotation
+         && data.indexToExpander().get(paramIndex) == null) {
+      TypeDescriptor typeDescriptor = createTypeDescriptor(method, paramIndex);
+      if (conversionService.canConvert(typeDescriptor, STRING_TYPE_DESCRIPTOR)) {
+         Param.Expander expander = convertingExpanderFactory
+               .getExpander(typeDescriptor);
+         if (expander != null) {
+            data.indexToExpander().put(paramIndex, expander);
+         }
+      }
+   }
+   return isHttpAnnotation;
+}
+```
+
+AnnotatedParameterProcessor是一个接口，有三个实现类：PathVariableParameterProcessor、RequestHeaderParameterProcessor和RequestParamParameterProcessor，三者分别用于处理@RequestParam、@RequestHeader和@PathVariable注解.
+
 ######  生成Proxy接口类
+
+ReflectiveFeign#newInstance方法的第二部分就是生成相应接口类的实例对象，并设置方法处理器，如下所示:
+
+```java
+public <T> T newInstance(Target<T> target) {
+    Map<String, MethodHandler> nameToHandler = targetToHandlersByName.apply(target);
+    Map<Method, MethodHandler> methodToHandler = new LinkedHashMap<Method, MethodHandler>();
+    List<DefaultMethodHandler> defaultMethodHandlers = new LinkedList<DefaultMethodHandler>();
+
+    for (Method method : target.type().getMethods()) {
+      if (method.getDeclaringClass() == Object.class) {
+        continue;
+      } else if (Util.isDefault(method)) {
+        DefaultMethodHandler handler = new DefaultMethodHandler(method);
+        defaultMethodHandlers.add(handler);
+        methodToHandler.put(method, handler);
+      } else {
+        methodToHandler.put(method, nameToHandler.get(Feign.configKey(target.type(), method)));
+      }
+    }
+    InvocationHandler handler = factory.create(target, methodToHandler);
+    T proxy = (T) Proxy.newProxyInstance(target.type().getClassLoader(),
+        new Class<?>[] {target.type()}, handler);
+
+    for (DefaultMethodHandler defaultMethodHandler : defaultMethodHandlers) {
+      defaultMethodHandler.bindTo(proxy);
+    }
+    return proxy;
+  }
+```
+
+OpenFeign使用Proxy的newProxyInstance方法来创建FeignClient接口类的实例，然后将InvocationHandler绑定到接口类实例上，用于处理接口类函数调用.Default实现了InvocationHandlerFactory接口，其create方法返回ReflectiveFeign. FeignInvocationHandler实例。ReflectiveFeign的内部类FeignInvocationHandler是InvocationHandler的实现类，其主要作用是将接口类相关函数的调用分配给对应的MethodToHandler实例，即SynchronousMethodHandler来处理。当调用接口类实例的函数时，会直接调用到FeignInvocationHandler的invoke方法。invoke方法会根据函数名称来调用不同的MethodHandler实例的invoke方法，如下所示:
+
+```java
+/**
+ * Controls reflective method dispatch.
+ */
+public interface InvocationHandlerFactory {
+
+  InvocationHandler create(Target target, Map<Method, MethodHandler> dispatch);
+
+  /**
+   * Like {@link InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])}, except for a
+   * single method.
+   */
+  interface MethodHandler {
+
+    Object invoke(Object[] argv) throws Throwable;
+  }
+
+  static final class Default implements InvocationHandlerFactory {
+	// 最终指向的是ReflectiveFeign
+    @Override
+    public InvocationHandler create(Target target, Map<Method, MethodHandler> dispatch) {
+      return new ReflectiveFeign.FeignInvocationHandler(target, dispatch);
+    }
+  }
+}
+
+  static class FeignInvocationHandler implements InvocationHandler {
+
+    private final Target target;
+    private final Map<Method, MethodHandler> dispatch;
+
+    FeignInvocationHandler(Target target, Map<Method, MethodHandler> dispatch) {
+      this.target = checkNotNull(target, "target");
+      this.dispatch = checkNotNull(dispatch, "dispatch for %s", target);
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+      if ("equals".equals(method.getName())) {
+        try {
+          Object otherHandler =
+              args.length > 0 && args[0] != null ? Proxy.getInvocationHandler(args[0]) : null;
+          return equals(otherHandler);
+        } catch (IllegalArgumentException e) {
+          return false;
+        }
+      } else if ("hashCode".equals(method.getName())) {
+        return hashCode();
+      } else if ("toString".equals(method.getName())) {
+        return toString();
+      }
+	// dispath是一个map用于分发函数交给对应的MethodHandler
+      return dispatch.get(method).invoke(args);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof FeignInvocationHandler) {
+        FeignInvocationHandler other = (FeignInvocationHandler) obj;
+        return target.equals(other.target);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return target.hashCode();
+    }
+
+    @Override
+    public String toString() {
+      return target.toString();
+    }
+  }
+
+```
 
 ##### 函数调用和网络请求
 
+在配置和实例生成结束之后，就可以直接使用FeignClient接口类的实例，调用它的函数来发送网络请求。在调用其函数的过程中，由于设置了MethodHandler，所以最终函数调用会执行SynchronousMethodHandler的invoke方法。在该方法中，OpenFeign会将函数的实际参数值与之前生成的RequestTemplate进行结合，然后发送网络请求.
 
+```java
+@Override
+  public Object invoke(Object[] argv) throws Throwable {
+    // 根据函数参数创建RequestTemplate实例，buildTemplateFromArgs是RequestTemplate.Factory接口的实例，在当前是BuildTemplateResolvingArgs类的实例  
+    RequestTemplate template = buildTemplateFromArgs.create(argv);
+    Options options = findOptions(argv);
+    Retryer retryer = this.retryer.clone();
+    while (true) {
+      try {
+        return executeAndDecode(template, options);
+      } catch (RetryableException e) {
+        try {
+          retryer.continueOrPropagate(e);
+        } catch (RetryableException th) {
+          Throwable cause = th.getCause();
+          if (propagationPolicy == UNWRAP && cause != null) {
+            throw cause;
+          } else {
+            throw th;
+          }
+        }
+        if (logLevel != Logger.Level.NONE) {
+          logger.logRetry(metadata.configKey(), logLevel);
+        }
+        continue;
+      }
+    }
+  }
+```
+
+SynchronousMethodHandler的invoke方法先创建了RequestTemplate对象。在该对象的创建过程中，使用到之前收集的函数信息MethodMetadata。遍历MethodMetadata中参数相关的indexToName，然后根据索引从invoke的参数数组中获得对应的值，将其填入对应的键值对中。然后依次处理查询和头部相关的参数值。invoke方法调用RequestTemplate.Factory 的实现类 ReflectiveFeign类的create方法创建RequestTemplate对象：
+
+```java
+// ReflectiveFeign.java
+@Override
+    public RequestTemplate create(Object[] argv) {
+      RequestTemplate mutable = RequestTemplate.from(metadata.template());
+      mutable.feignTarget(target);
+        // 设置url
+      if (metadata.urlIndex() != null) {
+        int urlIndex = metadata.urlIndex();
+        checkArgument(argv[urlIndex] != null, "URI parameter %s was null", urlIndex);
+        mutable.target(String.valueOf(argv[urlIndex]));
+      }
+      Map<String, Object> varBuilder = new LinkedHashMap<String, Object>();
+       // 遍历MethodMeadata中所有关于参数的索引及其对应名称的配置信息
+      for (Entry<Integer, Collection<String>> entry : metadata.indexToName().entrySet()) {
+        int i = entry.getKey();
+        // entry.getKey()就是参数的索引  
+        Object value = argv[entry.getKey()];
+        if (value != null) { // Null values are skipped.
+          // indexToExpander保存着将各种类型参数的值转换为String类型的Expander转换器  
+          if (indexToExpander.containsKey(i)) {
+             // 将value转为string
+            value = expandElements(indexToExpander.get(i), value);
+          }
+          for (String name : entry.getValue()) {
+            varBuilder.put(name, value);
+          }
+        }
+      }
+	// resolve首先会替换URL中的pathValues，然后对URL进行编码，接着将所有头部信息进行转化，最后处理请求的Body数据
+      RequestTemplate template = resolve(argv, mutable, varBuilder);
+      // 设置queryMap参数 
+      if (metadata.queryMapIndex() != null) {
+        // add query map parameters after initial resolve so that they take
+        // precedence over any predefined values
+        Object value = argv[metadata.queryMapIndex()];
+        Map<String, Object> queryMap = toQueryMap(value);
+        template = addQueryMapQueryParameters(queryMap, template);
+      }
+	// 设置headerMap参数
+      if (metadata.headerMapIndex() != null) {
+        template =
+            addHeaderMapHeaders((Map<String, Object>) argv[metadata.headerMapIndex()], template);
+      }
+
+      return template;
+    }
+```
+
+我们看下resolve函数：
+
+```java
+public RequestTemplate resolve(Map<String, ?> variables) {
+
+    StringBuilder uri = new StringBuilder();
+
+    /* create a new template form this one, but explicitly */
+    RequestTemplate resolved = RequestTemplate.from(this);
+
+    if (this.uriTemplate == null) {
+      /* create a new uri template using the default root */
+      this.uriTemplate = UriTemplate.create("", !this.decodeSlash, this.charset);
+    }
+
+    String expanded = this.uriTemplate.expand(variables);
+    if (expanded != null) {
+      uri.append(expanded);
+    }
+
+    /*
+     * for simplicity, combine the queries into the uri and use the resulting uri to seed the
+     * resolved template.
+     */
+    if (!this.queries.isEmpty()) {
+      /*
+       * since we only want to keep resolved query values, reset any queries on the resolved copy
+       */
+      resolved.queries(Collections.emptyMap());
+      StringBuilder query = new StringBuilder();
+      Iterator<QueryTemplate> queryTemplates = this.queries.values().iterator();
+
+      while (queryTemplates.hasNext()) {
+        QueryTemplate queryTemplate = queryTemplates.next();
+        String queryExpanded = queryTemplate.expand(variables);
+        if (Util.isNotBlank(queryExpanded)) {
+          query.append(queryExpanded);
+          if (queryTemplates.hasNext()) {
+            query.append("&");
+          }
+        }
+      }
+
+      String queryString = query.toString();
+      if (!queryString.isEmpty()) {
+        Matcher queryMatcher = QUERY_STRING_PATTERN.matcher(uri);
+        if (queryMatcher.find()) {
+          /* the uri already has a query, so any additional queries should be appended */
+          uri.append("&");
+        } else {
+          uri.append("?");
+        }
+        uri.append(queryString);
+      }
+    }
+
+    /* add the uri to result */
+    resolved.uri(uri.toString());
+
+    /* headers */
+    if (!this.headers.isEmpty()) {
+      /*
+       * same as the query string, we only want to keep resolved values, so clear the header map on
+       * the resolved instance
+       */
+      resolved.headers(Collections.emptyMap());
+      for (HeaderTemplate headerTemplate : this.headers.values()) {
+        /* resolve the header */
+        String header = headerTemplate.expand(variables);
+        if (!header.isEmpty()) {
+          /* split off the header values and add it to the resolved template */
+          String headerValues = header.substring(header.indexOf(" ") + 1);
+          if (!headerValues.isEmpty()) {
+            /* append the header as a new literal as the value has already been expanded. */
+            resolved.header(headerTemplate.getName(), Literal.create(headerValues));
+          }
+        }
+      }
+    }
+
+    if (this.bodyTemplate != null) {
+      resolved.body(this.bodyTemplate.expand(variables));
+    }
+
+    /* mark the new template resolved */
+    resolved.resolved = true;
+    return resolved;
+  }
+```
+
+executeAndDecode方法会根据RequestTemplate生成Request对象，然后交给Client实例发送网络请求，最后返回对应的函数返回类型的实例。executeAndDecode方法的具体实现如下所示:
+
+```java
+// SynchronousMethodHandler.java
+Object executeAndDecode(RequestTemplate template, Options options) throws Throwable {
+    // 根据RequestTemplate生成Request
+    Request request = targetRequest(template);
+
+    if (logLevel != Logger.Level.NONE) {
+      logger.logRequest(metadata.configKey(), logLevel, request);
+    }
+
+    Response response;
+    long start = System.nanoTime();
+    // client发送网路请求，client可能为okhttpClient和apacheClient
+    try {
+      response = client.execute(request, options);
+      // ensure the request is set. TODO: remove in Feign 12
+      response = response.toBuilder()
+          .request(request)
+          .requestTemplate(template)
+          .build();
+    } catch (IOException e) {
+      if (logLevel != Logger.Level.NONE) {
+        logger.logIOException(metadata.configKey(), logLevel, e, elapsedTime(start));
+      }
+      throw errorExecuting(request, e);
+    }
+    long elapsedTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+
+
+    if (decoder != null)
+      return decoder.decode(response, metadata.returnType());
+
+    CompletableFuture<Object> resultFuture = new CompletableFuture<>();
+    asyncResponseHandler.handleResponse(resultFuture, metadata.configKey(), response,
+        metadata.returnType(),
+        elapsedTime);
+
+    try {
+      if (!resultFuture.isDone())
+        throw new IllegalStateException("Response handling not done");
+
+      return resultFuture.join();
+    } catch (CompletionException e) {
+      Throwable cause = e.getCause();
+      if (cause != null)
+        throw cause;
+      throw e;
+    }
+  }
+```
+
+
+
+#### OpenFein Client编解码器的自定义和请求/响应压缩
+
+Encoder用于将Object对象转化为HTTP的请求Body，而Decoder用于将网络响应转化为对应的Object对象。对于二者，OpenFeign都提供了默认的实现，但是使用者可以根据自己的业务来选择其他的编解码方式。只需要在自定义配置类中给出Decoder和Encoder的自定义Bean实例，那么OpenFeign就可以根据配置，自动使用我们提供的自定义实例进行编解码操作。如下代码所示，CustomFeignConfig配置类将ResponseEntityDecoder和SpringEncoder配置为Feign的Decoder与Encoder实例。
+
+```java
+ class CustomFeignConfig{
+    @Bean
+    public Decoder feignDecoder(){
+        HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter(customObjectMapper());
+        ObjectFactory<HttpMessageConverters> objectFactory = ()-> new HttpMessageConverters(jacksonConverter);
+        return  new ResponseEntityDecoder(new SpringDecoder(objectFactory));
+    }
+    @Bean
+     public Encoder feignEncoder(){
+         HttpMessageConverter jacksonConverter = new MappingJackson2HttpMessageConverter(customObjectMapper());
+         ObjectFactory<HttpMessageConverters> objectFactory = ()-> new HttpMessageConverters(jacksonConverter);
+         return  new SpringEncoder(objectFactory);
+     }
+
+     private ObjectMapper customObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT,true);
+        return objectMapper;
+     }
+ }
+
+```
+
+同样还有其他的编码转换器，这个可以自行研究
+
+**请求压缩**
+
+可以通过下面的属性配置来让OpenFeign在发送请求时进行GZIP压缩：
+
+```
+feign.compression.request.enabled=true
+feign.compression.reponse.enabled=true
+```
+
+也可以使用FeignContentGzipEncodingInterceptor来实现请求的压缩，需要在自定义配置文件中初始化该类型的实例，供OpenFeign使用，具体实现如下所示：
+
+```
+public class FeignContentGZipEncodingAutoConfiguration{
+    @Bean
+    public FeignContentGzipEncodingInterceptor feignContentGzipEncodingInterceptor(FeignClientEncodingProperties properties){
+        return new FeignContentGzipEncodingInterceptor(properties);
+    }
+}
+```
 
 
 

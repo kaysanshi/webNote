@@ -2409,6 +2409,7 @@ public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefi
 			}
 
 			if (explicitArgs == null) {
+                // 将解析的构造函数加入缓存
 				argsHolderToUse.storeCache(mbd, constructorToUse);
 			}
 		}
@@ -2438,9 +2439,7 @@ public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefi
 	}
 ```
 
-
-
-**instantiateBean**
+包含：属性注入，
 
 ### 自动装配Bean
 
