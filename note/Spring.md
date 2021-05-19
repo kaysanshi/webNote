@@ -913,6 +913,8 @@ Singleton是单例类型，就是在创建起容器时就同时自动创建了�
 
 #### Bean的生命周期
 
+[![g432ff.jpg](https://z3.ax1x.com/2021/05/19/g432ff.jpg)](https://imgtu.com/i/g432ff)
+
 声明带有 init-method 和/或 destroy-method 参数的 。init-method 属性指定一个方法，在实例化 bean 时，立即调用该方法。同样，destroy-method 指定一个方法，只有从容器中移除 bean 之后，才能调用该方法
 				
 
@@ -1042,7 +1044,7 @@ xml配置信息：
 ```
 ### 依赖注入（DI）
 
-依赖注入(DI)的设计模式是用来定义对象彼此间的依赖 主要有两种方式注入：
+**依赖注入(DI)的设计模式是用来定义对象彼此间的依赖** 主要有以下方式注入：
 
 - Setter方法注入
 - 构造器注入（构造函数注入）
@@ -1306,13 +1308,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 ```
 ### IOC容器依赖注入原理探索
 
-由IOC容器已经初始化完毕，IoC容器初始化的过程,主要完成的工作是在IoC容器中建立 BeanDefinition 数据映射,并没有看到IoC容器对Bean依赖关系进行注入,
-
-假设当前IoC容器已经载入用户定义的Bean信息,依赖注入主要发生在两个阶段
-
-正常情况下,由用户第一次向IoC容器索要Bean时触发
-
-但我们可以在 BeanDefinition 信息中通过控制 lazy-init 属性来让容器完成对Bean的预实例化,即在初始化的过程中就完成某些Bean的依赖注入的过程.
+由IOC容器已经初始化完毕，IoC容器初始化的过程,主要完成的工作是在IoC容器中建立 BeanDefinition 数据映射,并没有看到IoC容器对Bean依赖关系进行注入,假设当前IoC容器已经载入用户定义的Bean信息,依赖注入主要发生在两个阶段正常情况下,由用户第一次向IoC容器索要Bean时触发但我们可以在 BeanDefinition 信息中通过控制 lazy-init 属性来让容器完成对Bean的预实例化,即在初始化的过程中就完成某些Bean的依赖注入的过程.
 
 ```java
 	   AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
@@ -2032,6 +2028,7 @@ bean的实例化前调用，也就是将AbsractBeanDefinition转换为BeanWrappe
 当经历过resolveBeforeInstantiation方法后，程序有两个选择，如果创建了代理或者说重写了InstantiationAwareBeanPostProcessor的postProcessBeforeInstantiation方法并在方法postProcess BeforeInstantiation中改变了bean，则直接返回就可以了，否则需要进行常规bean的创建。而这常规bean的创建就是在doCreateBean中完成的
 
 ```java
+// AbstractAutowireCapableBeanFactory.java
 protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
 
@@ -2166,6 +2163,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 ##### 创建bean的实例 createBeanInstance(beanName, mbd, args)
 
 ```java
+//// AbstractAutowireCapableBeanFactory.java
 protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
 		// Make sure bean class is actually resolved at this point.
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);

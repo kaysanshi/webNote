@@ -1934,5 +1934,111 @@ SoftReference 是个很好的选择：当内存足够时，它的功能等同于
 
 https://blog.csdn.net/javazejian/article/details/73413292
 
+类加载指的是将类的class文件读入内存，并为之创建一个java.lang.Class对象，也就是说，当程序中使用任何类时，系统都会为之建立一个java.lang.Class对象。
+
+通过使用不同的类加载器，可以从不同来源加载类的二进制数据，通常有如下几种来源。
+
+- 从本地文件系统加载class文件，这是前面绝大部分示例程序的类加载方式。
+- 从JAR包加载class文件，这种方式也是很常见的，前面介绍JDBC编程时用到的数据库驱动类就放在JAR文件中，JVM可以从JAR文件中直接加载该class文件。
+- 通过网络加载class文件。
+- 把一个Java源文件动态编译，并执行加载。
+
+类加载器通常无须等到“首次使用”该类时才加载该类，Java虚拟机规范允许系统预先加载某些类当类被加载之后，系统为之生成一个对应的Class对象，接着将会进入连接阶段，连接阶段负责把类的二进制数据合并到JRE中。类连接又可分为如下3个阶段。
+
+- （1）验证：验证阶段用于检验被加载的类是否有正确的内部结构，并和其他类协调一致。
+- 2）准备：类准备阶段则负责为类的静态Field分配内存，并设置默认初始值。
+- （3）解析：将类的二进制数据中的符号引用替换成直接引用。
+
+当使用ClassLoader类的loadClass()方法来加载某个类时，该方法只是加载该类，并不会执行该类的初始化。
+
+使用Class的forName()静态方法才会导致强制初始化该类。例如如下代码。
+
+```java
+class Tester {
+    static {
+        System.out.println("Tester类的静态初始化块...");
+    }
+}
+
+public class ClassLoaderTest {
+
+    public static void main(String[] args)throws ClassNotFoundException {
+
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+		// 下面语句仅仅是加载Tester类
+        cl.loadClass("Tester");System.out.println("系统加载Tester类");
+		// 下面语句才会初始化Tester类
+        Class.forName("Tester");
+    }
+
+}
+```
+
+![拖曳以移動](data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==)
+
+类加载器负责将.class文件（可能在磁盘上，也可能在网络上）加载到内存中，并为之生成对应的java.lang.Class对象
+
+当JVM启动时，会形成由3个类加载器组成的初始类加载器层次结构。
+
+- Bootstrap ClassLoader：根类加载器。
+- Extension ClassLoader：扩展类加载器。
+- System ClassLoader：系统类加载器。
+
+Bootstrap ClassLoader被称为引导（也称为原始或根）类加载器，它负责加载Java的核心类。在Sun的JVM中，当执行java.exe命令时，使用-Xbootclasspath选项或使用-D选项指定sun.boot.class.path系统属性值可以指定加载附加的类。
+
+根类加载器非常特殊，它并不是java.lang.ClassLoader的子类，而是由JVM自身实现的。
+
+JVM的类加载机制主要有如下3种。
+
+- 全盘负责。所谓全盘负责，就是当一个类加载器负责加载某个Class时，该Class所依赖的和引用的其他Class也将由该类加载器负责载入，除非显式使用另外一个类加载器来载入。
+- 父类委托。所谓父类委托，则是先让parent（父）类加载器试图加载该Class，只有在父类加载器无法加载该类时才尝试从自己的类路径中加载该类。
+- 缓存机制。缓存机制将会保证所有加载过的Class都会被缓存，当程序中需要使用某个Class时，类加载器先从缓存区中搜寻该Class，只有当缓存区中不存在该Class对象时，系统才会读取该类对应的二进制数据，并将其转换成Class对象，存入缓存区中。这就是为什么修改了Class后，必须重新启动JVM，程序所做的修改才会生效的原因。
+
+注意：
+
+类加载器之间的父子关系并不是类继承上的父子关系，这里的父子关系是类加载器实例之间的关系。
+
+类加载器加载Class大致要经过如下8个步骤。
+
+- 1）检测此Class是否载入过（即在缓存区中是否有此Class），如果有则直接进入第8步，否则接着执行第2步。
+- （2）如果父类加载器不存在（如果没有父类加载器，则要么parent一定是根类加载器，要么本身就是根类加载器），则跳到第4步执行；如果父类加载器存在，则接着执行第3步。
+- （3）请求使用父类加载器去载入目标类，如果成功载入则跳到第8步，否则接着执行第5步。
+- （4）请求使用根类加载器来载入目标类，如果成功载入则跳到第8步，否则跳到第7步。
+- （5）当前类加载器尝试寻找Class文件（从与此ClassLoader相关的类路径中寻找），如果找到则执行第6步，如果找不到则跳到第7步。
+- （6）从文件中载入Class，成功载入后跳到第8步。
+- （7）抛出ClassNotFoundException异常。
+- （8）返回对应的java.lang.Class对象。
+
+```java
+public class URLClassLoaderTest {
+
+    private static Connection conn;
+
+	// 定义一个获取数据库连接的方法
+    public static Connection getConn(String url,String user, String pass) throws Exception {
+
+        if (conn == null) {
+			// 创建一个URL数组
+            URL[] urls = {new URL("file:mysql-connector-java-3.1.10-bin.jar")};
+
+			// 以默认的ClassLoader作为父ClassLoader，创建URLClassLoaderURLClassLoader myClassLoader=new URLClassLoader(urls);// 加载MySQL的JDBC驱动，并创建默认实例Driver driver=(Driver)myClassLoader.loadClass("com.mysql.jdbc.Driver").newInstance(); // 创建一个设置JDBC连接属性的Properties对象
+            Properties props = new Properties();
+			// 至少需要为该对象传入user和password两个属性
+            props.setProperty("user", user);
+            props.setProperty("password", pass);
+
+			// 调用Driver对象的connect方法来取得数据库连接
+            conn = driver.connect(url, props);
+        }
+        return conn;
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(getConn("jdbc:mysql://localhost:3306/mysql" "root", "32147"));
+    }
+
+}
+```
+
 ## java类型信息 Class对象与反射技术深入理解
 

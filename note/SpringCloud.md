@@ -203,7 +203,7 @@
 >   		后台服务贯彻 Single Responsibility Principle（单一职责原则）
 >   		VM -> Docker
 >   		DevOps
->			
+>				
 >   		springCloud 基于springboot的技术技术框架；
 >   		java原生云开发=springCloud+spring boot
 
