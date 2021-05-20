@@ -508,7 +508,7 @@ new ObjectInitTest（）
 
 对象初始化的过程也是线程安全的动作。
 
-#####  StringBuffer StringBulider String 的区别：
+#####   Q&A StringBuffer StringBulider String 的区别：
 
 StringBuffer线程安全，StringBulider线程不安全，底层实现StringBuffer比StringBulider多一个Synchronized.从源码中可以看得到：
 
@@ -562,7 +562,7 @@ StringBuffer源码分析：
     }
 ```
 
-##### String 是否可以继承，“+”如何实现的，与StringBuffer区别？
+##### Q&A String 是否可以继承，“+”如何实现的，与StringBuffer区别？
 
 java中通过使用“+”符号串联时实际是使用的StringBuilder实例的appdenf()方法来实现的。
 
