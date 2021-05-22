@@ -1669,6 +1669,7 @@ protected Object getObjectForBeanInstance(
 
 我们来看看getObjectForBeanInstance中的所做的工作。
 
+
 （1）对FactoryBean正确性的验证。
 
 （2）对非FactoryBean不做任何处理。

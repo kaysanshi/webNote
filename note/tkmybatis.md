@@ -252,12 +252,36 @@ sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 </bean>
 ```
 
-
-
 #### 配置打印sql
 
 ```properties
 logging.level.com.kaysanshi.dao=debug
+```
+
+#### 配置Mapper.mappers：
+
+```yaml
+mapper:
+  mappers:
+    - com.kaysanshi.file.dao.TkMapper
+  notEmpty: false
+  identity: MYSQL
+```
+
+当上面的mapper.mappers路径配置不正确时会报错：
+
+```java
+2021-05-15 10:58:43.945  WARN 11824 --- [           main] t.m.s.annotation.MapperScannerRegistrar  : 只有 Spring Boot 环境中可以通过 Environment(配置文件,环境变量,运行参数等方式) 配置通用 Mapper，其他环境请通过 @MapperScan 注解中的 mapperHelperRef 或 properties 参数进行配置!如果你使用 tk.mybatis.mapper.session.Configuration 配置的通用 Mapper，你可以忽略该错误!
+
+java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at tk.mybatis.spring.mapper.SpringBootBindUtil$SpringBoot2Bind.bind(SpringBootBindUtil.java:133) ~[mapper-spring-1.1.5.jar:na]
+	at tk.mybatis.spring.mapper.SpringBootBindUtil.bind(SpringBootBindUtil.java:58) ~[mapper-spring-1.1.5.jar:na]
+	at tk.mybatis.spring.mapper.ClassPathMapperScanner.setMapperProperties(ClassPathMapperScanner.java:278) ~[mapper-spring-1.1.5.jar:na]
+	at tk.mybatis.spring.annotation.MapperScannerRegistrar.registerBeanDefinitions(MapperScannerRegistrar.java:103) ~[mapper-spring-1.1.5.jar:na]
+	at org.springframework.context.annotation.ImportBeanDefinitionRegistrar.registerBeanDefinitions(ImportBeanDefinitionRegistrar.java:86) [spring-context-5.2.9.RELEASE.jar:5.2.9.RELEASE]
+	at org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader.lambda$loadBeanDefinitionsFromRegistrars$1(ConfigurationClassBeanDefinitionReader.java:384) [spring-context-5.2.9.RELEASE.jar:5.2.9.RELEASE]
+	at java.util.LinkedHashMap.forEach(LinkedHashMap.java:676) ~[na:1.8.0_91]
+
 ```
 
 
@@ -407,7 +431,7 @@ public static void main(String[] args) throws Exception {
 
 这里最关键的参数就是 `mappers`，配置后生成的 Mapper 接口都会自动继承上改接口，如果你定义了一个自己的基础接口，例如：
 
-```
+```java
 package xxx.base;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -420,6 +444,12 @@ public interface MyMapper<T> extends Mapper<T>, MySqlMapper<T> {
     //TODO
     //FIXME 特别注意，该接口不能被扫描到，否则会出错
 }
+```
+
+<font color="red">这个baseMapper不能和MapperScan('xxx.dao') 被扫描的包在同一路径不然会报错  MapperScan里的basePackage不能包含通用mapper（我的是dao）的路径，只包含其他的mapper的路径，不然会报错：</font>
+
+```java
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name   XXXX   Invocation of init method failed; nested exception is tk.mybatis.mapper.MapperException: tk.mybatis.mapper.MapperException: java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
 ```
 
 在配置插件时，可以配置为：
