@@ -890,6 +890,12 @@ centos用上面的会出现 `chown: changing ownership of '/var/lib/rabbitmq': P
 
 解决方案：https://jingyan.baidu.com/article/9c69d48f7821b853c9024ef8.html
 
+
+
+[![gzNflq.png](https://z3.ax1x.com/2021/05/25/gzNflq.png)](https://imgtu.com/i/gzNflq)
+
+经过以上配置就可以进行访问。
+
 ### Docker compose 实战RocketMq
 
 **docker-compose.yml**
