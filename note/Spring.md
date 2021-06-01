@@ -2537,20 +2537,18 @@ public class Customer {
 
 ### AOP
 
-​		横向重复，纵向抽取
-​		Aop基于代理的机制
-​		Spring产生代理对象，
+​		横向重复，纵向抽取Aop 基于代理的机制 Spring产生代理对象，
+
+
 
 #### 实现的AOP的原理：
 
 ##### 动态代理：
-​			被代理对象必须实现接口，如果没有接口将不能使用对某一个目标中的方法进行增强
+​			被代理对象必须实现接口，如果没有接口将不能使用对某一个目标中的方法进行增强。关于动态代理可以看另一篇文章。
 
 #### cglib代理：
 
-​			可以对任何类生成代理，他可以目标对象进行继承代理。若目标对象被final修饰则该类不可以生成代理
-
-​				`Spring两者混合使用。`
+​			可以对任何类生成代理，他可以目标对象进行继承代理。若目标对象被final修饰则该类不可以生成代理`Spring两者混合使用。`
 
 #### SpringAop开发：
 
@@ -2585,7 +2583,7 @@ public class Customer {
 
 ```java
 public interface Pointcut{
-                                                  						ClassFilter getClassFilter();                                				MethodMatcher getMethodMatcher();
+    ClassFilter getClassFilter();                                				        	MethodMatcher getMethodMatcher();
 }
 //使用ClassFilter接口匹配目标类
 public interface ClassFilter{
@@ -2685,6 +2683,116 @@ public interface ClassFilter{
 
 </beans>
 ```
+#### SpringBoot aop开发
+
+引入maven依赖：
+
+```xml
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.9.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.6</version>
+        </dependency>
+```
+
+**基于注解的aop：**
+
+**定义一个注解：**
+
+```java
+/**
+ * @user:
+ * @date:2021/5/31
+ * @Description:
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface SayHello {
+}
+```
+
+**定义一个切面类：**
+
+```java
+/**
+ * @user:
+ * @date:2021/5/31
+ * @Description:
+ */
+@Aspect
+@Component
+public class SayHelloExec {
+
+    // 定义个切点
+    @Pointcut("@annotation(com.kaysanshi.file.annotation.SayHello)")
+    public void before(){ }
+
+    @Before(value = "before()")
+    public void beforeHello(){
+        System.out.println("hello before");
+    }
+
+    @Before("@annotation(com.kaysanshi.file.annotation.SayHello)")
+    public void before1(){
+        System.out.println("before");
+    }
+
+    /**
+     * 环绕增强，在before之前会触发
+     */
+//    @Around("before()")
+//    public void around(){
+//        System.out.println("around....");
+//    }
+
+
+    @After("@annotation(com.kaysanshi.file.annotation.SayHello)")
+    public void After(){
+        System.out.println("after");
+    }
+     /**
+     * 定义一个作用于某个方法的切点
+     */
+    @Pointcut("execution(* com.kaysanshi.file.service.impl.AliOssFileService.uploadFile(..))")
+    public void point(){
+
+    }
+    // 方法执行前
+    @Before(value = "point()")
+    public void beforeUpload(){
+        System.out.println("before method do ...");
+    }
+   // 方法执行后
+    @After(value = "point()")
+    public void afterUpload(){
+        System.out.println("after method do ...");
+    }
+}
+```
+
+**测试：**
+
+```java
+@RequestMapping("/get")
+@SayHello
+public Result SayHello(){
+return new Result().success("Aaaa");
+}
+/**
+* ~output
+* 	before
+*	hello before
+*	after
+*/
+```
+
+
+
 ### Spring最核心的两个类：
 
 #### DefaultListableBeanFactory
