@@ -203,7 +203,7 @@
 >   		后台服务贯彻 Single Responsibility Principle（单一职责原则）
 >   		VM -> Docker
 >   		DevOps
->				
+>					
 >   		springCloud 基于springboot的技术技术框架；
 >   		java原生云开发=springCloud+spring boot
 
@@ -4436,11 +4436,33 @@ providerName:
 
 ### 各组件深入之Spring Cloud Hystrix（断路器）
 
+我们在分布式的系统中，微服务之间少不了相互调用，由于是走网络的所以我们在调用过程中会出现依赖服务失效的问题，或者是被调用的微服务发生了调用异常，还有可能是因为依赖的微服务负载过大无法及时响应请求等。因此希望有一个公共组件能够在服务通过网络请求访问其他微服务时，对延迟和失败提供强大的容错能力，为服务间调用提供保护和控制。所以就有了Hystrix.
+
 Hystrix是从Netflix API团队2011年开始的弹性工程工作中发展而来的。2012年，Hystrix继续发展和成熟，Netflix的许多团队都采用了它。今天，每天都有数百亿线程孤立的调用和数千亿信号量孤立的调用通过Hystrix在Netflix上执行。这极大地提高了正常运行时间和弹性
 
 Netflix的创造了一个调用的库[Hystrix](https://github.com/Netflix/Hystrix)实现了[断路器图案](http://martinfowler.com/bliki/CircuitBreaker.html)。在微服务架构中，通常有多层服务调用
 
 较低级别的服务中的服务故障可能导致用户级联故障。当对特定服务的呼叫达到一定阈值时（Hystrix中的默认值为5秒，20次故障），电路打开，不进行通话。在错误和开路的情况下，开发人员可以提供后备。
+
+spring-cloud-netflix-hystrix对Hystrix进行封装和适配，使Hystrix能够更好地运行于Spring Cloud环境中，为微服务间的调用提供强有力的容错机制.
+
+**Hystirx的功能：**
+
+-  在通过第三方客户端访问（通常是通过网络）依赖服务出现高延迟或者失败时，为系统提供保护和控制。
+- 在复杂的分布式系统中防止级联失败（服务雪崩效应）。
+-  快速失败（Fail fast）同时能快速恢复。
+- 提供失败回滚（Fallback）和优雅的服务降级机制。
+- 提供近实时的监控、报警和运维控制手段。
+
+Hystrix可以RestTemplate一起使用，需要加入spring-cloud-starter-neflix-hystrix，然后再在springboot的开启@EnableCircuitBreaker 进行开启hystrix.  并注入RestTemplate
+
+```java
+@Bean
+@LoadBalanced
+RestTemplate restTeplate(){
+	return new RestTemplate();
+}
+```
 
 **Feign 是自带熔断器的，但默认是关闭的。需要在配置文件中配置打开它**
 
@@ -4460,23 +4482,45 @@ feign:
 - 通过在Hystrix的大多数方面中以低延迟传播配置更改来优化恢复时间，并支持动态属性更改，这使您可以通过低延迟反馈回路进行实时操作修改。
 - 防止整个依赖客户端执行失败，而不仅仅是网络通信失败
 
+讲到hystrix必须谈论到几个问题。**服务雪崩, 服务降级，服务容错**
 
+#### 服务雪崩
 
-讲到hystrix必须谈论到几个问题。**服务降级，服务容错**
+服务雪崩效应是一种因服务提供者的不可用导致服务调用者的不可用，并将不可用逐渐放大的过程，
 
+[![2QPgfg.png](https://z3.ax1x.com/2021/06/02/2QPgfg.png)](https://imgtu.com/i/2QPgfg)
 
+导致服务提供者不可用的原因有很多：可能是因为服务器的宕机或者网络故障；也可能是因为程序存在的缺陷；也有可能是大量的请求导致服务提供者的资源受限无法及时响应；还有可能是因为缓存击穿造成服务提供者超负荷运行等等，毕竟没有人能保证软件的完全正确。
 
-#### Hystrix容错
+服务不可用时用户肯定会不断的发送相同的请求过去，上游不断的进行重试，这样会导致请求的流量挤压过大。而这是服务调用者一直调不通。最后导致了自身的崩溃，最终导致无法响应用户的请求。这就是**服务雪崩**
+
+#### 断路器
+
+在分布式系统中，不同服务之间的调用非常常见，当服务提供者不可用时就很有可能发生服务雪崩效应，导致整个系统的不可用。所以为了预防这种情况的发生，可以使用断路器模式进行预防（类比电路中的断路器，在电路过大的时候自动断开，防止电线过热损害整条电路）。
+
+断路器将远程方法调用包装到一个断路器对象中，用于监控方法调用过程的失败。一旦该方法调用发生的失败次数在一段时间内达到一定的阀值，那么这个断路器将会跳闸，在接下来时间里再次调用该方法将会被断路器直接返回异常，而不再发生该方法的真实调用。这样就避免了服务调用者在服务提供者不可用时发送请求，从而减少线程池中资源的消耗，保护了服务调用者。
+
+[![2QAd4f.png](https://z3.ax1x.com/2021/06/02/2QAd4f.png)](https://imgtu.com/i/2QAd4f)
+
+- 关闭状态：断路器处于关闭状态，统计调用失败次数，在一段时间内达到一定的阀值后断路器打开。
+- 打开状态：断路器处于打开状态，对方法调用直接返回失败错误，不发生真正的方法调用。设置了一个重置时间，在重置时间结束后，断路器来到半开状态。
+- 半开状态：断路器处于半开状态，此时允许进行方法调用，当调用都成功了（或者成功到达一定的比例），关闭断路器，否则认为服务没有恢复，重新打开断路器。断路器的打开能保证服务调用者在调用异常服务时，快速返回结果，避免大量的同步等待，减少服务调用者的资源消耗。并且断路器能在打开一段时间后继续侦测请求执行结果，判断断路器是否能关闭，恢复服务的正常调用
+
+#### Hystrix容错(服务容错)
 
 Hystrix的容错主要是通过添加容许延迟和容错的方法，帮助控制这些分布式服务之间的交互。主要有以下几种容错方式：
 
-资源隔离，熔断，降级
+**资源隔离**，**熔断**，**降级**
 
 ##### 资源隔离
 
 资源隔离主要指对线程的隔离。Hystrix提供了两种线程隔离方式：线程池和信号量
 
-**线程池**
+###### **线程与线程池**
+
+Hystrix通过将调用服务线程与服务访问的执行线程分隔开来，调用线程能够空出来去做其他的工作而不至于因为服务调用的执行阻塞过长时间。在Hystrix中，将使用独立的线程池对应每一个服务提供者，用于隔离和限制这些服务。于是，某个服务提供者的高延迟或者饱和资源受限只会发生在该服务提供者对应的线程池中。
+
+[![2QEwZR.png](https://z3.ax1x.com/2021/06/02/2QEwZR.png)](https://imgtu.com/i/2QEwZR)
 
 通过自己线程池中的线程进行隔离的好处是：
 
@@ -4497,7 +4541,7 @@ Hystrix的容错主要是通过添加容许延迟和容错的方法，帮助控�
 
 Netflix在设计此系统时，决定接受此间接费用，以换取其提供的收益，并认为它很小，不会对成本或性能造成重大影响。
 
-**信号量**
+###### **信号量**
 
 您可以使用信号量（或计数器）将并发调用的数量限制为任何给定的依赖项，而不是使用线程池/队列大小。这使Hystrix无需使用线程池就可以减轻负载，但它不允许超时和退出。如果您信任客户端，并且只想减少负载，则可以使用这种方法。
 
@@ -4545,6 +4589,8 @@ Hystrix中的熔断器(Circuit Breaker)也是起类似作用，Hystrix在运行�
 
 降级，通常指务高峰期，为了保证核心服务正常运行，需要停掉一些不太重要的业务，或者某些服务不可用时，执行备用逻辑从故障服务中快速失败或快速返回，以保障主体业务不受影响。Hystrix提供的降级主要是为了容错，保证当前服务不受依赖服务故障的影响，从而提高服务的健壮性。要支持回退或降级处理，可以重写HystrixCommand的getFallBack方法或HystrixObservableCommand的resumeWithFallback方法。
 
+在Hystrix中，当服务间调用发生问题时，它将采用备用的Fallback方法代替主方法执行并返回结果，对失败服务进行了服务降级。当调用服务失败次数在一段时间内超过了断路器的阀值时，断路器将打开，不再进行真正的方法调用，而是快速失败，直接执行Fallback逻辑，服务降级，减少服务调用者的资源消耗，保护服务调用者中的线程资源。
+
 Hystrix在以下几种情况下会走降级逻辑：
 
 - 执行construct()或run()抛出异常
@@ -4575,6 +4621,750 @@ Hystrix在以下几种情况下会走降级逻辑：
 [hystrix的服务熔断和服务降级](https://www.cnblogs.com/guanyuehao0107/p/11848286.html)
 
 [hystrix降级理解](https://www.cnblogs.com/qdhxhz/p/9581440.html)
+
+#### Hystrix 实现思路
+
+- 它将所有的远程调用逻辑封装到HystrixCommand或者HystrixObservableCommand对象中，这些远程调用将会在独立的线程中执行（资源隔离），这里使用了设计模式中的命令模式。
+- Hystrix对访问耗时超过设置阀值的请求采用自动超时的策略。该策略对所有的命令都有效（如果资源隔离的方式为信号量，该特性将失效），超时的阀值可以通过命令配置进行自定义。
+- 为每一个服务提供者维护一个线程池（或者信号量），当线程池被占满时，对于该服务提供者的请求将会被直接拒绝（快速失败）而不是排队等待，减少系统的资源等待。
+-  针对请求服务提供者划分出成功、失效、超时和线程池被占满等四种可能出现的情况。
+- 断路器机制将在请求服务提供者失败次数超过一定阀值后手动或者自动切断服务一段时间。
+- 当请求服务提供者出现服务拒绝、超时和短路（多个服务提供者依次顺序请求，前面的服务提供者请求失败，后面的请求将不会发出）等情况时，执行其Fallback方法，服务降级。
+-  提供接近实时的监控和配置变更服务
+
+#### Hystrix源码解析、
+
+Hystrix通过HystrixCommand或者HystrixObservableCommand将对所有第三方依赖、服务调用进行封装，整个封装对象是运行在一个单独的线程之中。我们先看下HystrixCommand的执行流程。
+
+[![2QZrvD.png](https://z3.ax1x.com/2021/06/02/2QZrvD.png)](https://imgtu.com/i/2QZrvD)
+
+简单的流程如下：
+
+1. 构建HystrixCommand或者HystrixObservableCommand对象
+
+2. **检查相同的命令执行的缓存是否可用**。当我们为Hystrix开启了缓存功能时，Hystrix在执行命令时首先会检查是否缓存命中，如果是则立即将缓存的结果以Observale对象的形式返回，并不再继续执行该命令
+
+3. **检查断路器是否打开**。当我们为Hystrix开启了缓存功能时，Hystrix在执行命令时首先会检查是否缓存命中，如果是则立即将缓存的结果以Observale对象的形式返回，并不再继续执行该命令
+
+4. **检查线程池或者信号量是否被消耗完**。被消耗完毕后Hystrix将不执行该命令，而且转入服务降级处理
+
+5. **调用HystrixObservableCommand#constuct()或者HystrixCommand#run()执行被封装的远程调用逻辑.**
+
+   在命令执行过程中如果执行时间超时，那么执行线程（如果该命令没有在其自身线程中执行，则会使用一个单独线程）将会抛出一个TimeoutException异常，这时Hystrix将会转入到fallback处理。同时，如果线程没有被取消或者中断，那么run()或者construct()返回的结果将会被抛弃，该超时时间可以通过execution.isolation.thread.timeoutInMilliseconds设置，默认值为1000ms。
+
+6. **计算链路的状态更新短路器的健康状态 。**  Hystrix将会把采集到的“成功”、“失败”、“拒绝”和“超时”等数据提交给断路器，断路器则会把这些统计数据更新到一系列的计数器中，然后根据这些统计数据计算断路器是否需要打开；一旦断路器打开，在恢复期结束之前Hystrix都会对该服务进行熔断处理，在恢复期之后会根据采集到的数据再次进行判断，如果仍未达到健康状态，则将继续对该服务实施熔断处理的操作，直至符合健康状态为止。
+
+7. **在命令执行失败时获取FallBack逻辑.** 当使用HystrixCommand时降级处理逻辑将通过getFallback()来实现，如果使用的是HystrixObservableCommand，降级逻辑则是通过resumeWithFallback()实现。
+
+8. **返回成功的Observable**
+
+##### 封装HystrixCommand
+
+######  @HystrixCommand注解
+
+```java
+/**
+ * This annotation used to specify some methods which should be processes as hystrix commands.
+ */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface HystrixCommand {
+
+    /**
+     *命令分组键用于报告，预警及面板展示
+     *默认被注解方法的运行时类名
+     */
+    String groupKey() default "";
+
+    /**
+     * hystrix的命令键，用于区分不同的注解方法
+     */
+    String commandKey() default "";
+
+    /**
+     * 线程池键用来指定命令执行的HystrixThreadPool
+     */
+    String threadPoolKey() default "";
+
+    /**
+     * 指定fallback方法，fallBack方法也可以被HystrixCommand注解
+     */
+    String fallbackMethod() default "";
+
+    /**
+     * 自定义命令相关配置
+     */
+    HystrixProperty[] commandProperties() default {};
+
+    /**
+     * 自定义线程池相关的信息
+     */
+    HystrixProperty[] threadPoolProperties() default {};
+
+    /**
+     * 定义忽略哪些异常
+     */
+    Class<? extends Throwable>[] ignoreExceptions() default {};
+
+    /**
+     * 
+     */
+    ObservableExecutionMode observableExecutionMode() default ObservableExecutionMode.EAGER;
+
+    /**
+     * 
+     */
+    HystrixException[] raiseHystrixExceptions() default {};
+
+    /**
+     * 默认的fallback
+     */
+    String defaultFallback() default "";
+}
+```
+
+###### @HystrixCollapser注解
+
+```java
+/**
+ * 这个注解是和@HystrixCommand一同使用的
+ * Example:
+ * <pre>
+ *     @HystrixCollapser(batchMethod = "getUserByIds"){
+ *          public Future<User> getUserById(String id) {
+ *          return null;
+ * }
+ *  @HystrixCommand
+ *      public List<User> getUserByIds(List<String> ids) {
+ *          List<User> users = new ArrayList<User>();
+ *          for (String id : ids) {
+ *              users.add(new User(id, "name: " + id));
+ *          }
+ *      return users;
+ * }
+ *   </pre>
+ *
+ * A method annotated with {@link HystrixCollapser} annotation can return any
+ * value with compatible type, it does not affect the result of collapser execution,
+ * collapser method can even return {@code null} or another stub.
+ * Pay attention that if a collapser method returns parametrized Future then generic type must be equal to generic type of List,
+ * for instance:
+ * <pre>
+ *     Future<User> - return type of collapser method
+ *     List<User> - return type of batch command method
+ * </pre>
+ * <p/>
+ * Note: batch command method must be annotated with {@link HystrixCommand} annotation.
+ */
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface HystrixCollapser {
+
+    /**
+     * 请求合并的key.
+     * <p/>
+     * default => the name of annotated method.
+     *
+     * @return collapser key.
+     */
+    String collapserKey() default "";
+
+    /**
+     * Method name of batch command.
+     * <p/>
+     * Method must have the following signature:
+     * <pre>
+     *     java.util.List method(java.util.List)
+     * </pre>
+     * NOTE: batch method can have only one argument.
+     *
+     * @return method name of batch command
+     */
+    String batchMethod();
+
+    /**
+     * Defines what scope the collapsing should occur within.
+     * <p/>
+     * default => the {@link Scope#REQUEST}.
+     *
+     * @return {@link Scope}
+     */
+    Scope scope() default Scope.REQUEST;
+
+    /**
+     * Specifies collapser properties.
+     *
+     * @return collapser properties
+     */
+    HystrixProperty[] collapserProperties() default {};
+
+}
+```
+
+###### HystrixCommandAspect切面
+
+被注解修饰的方法将会被HystrixCommand包装执行，在Hystrix中通过Aspectj切面的方式来将被注解修饰的方法进行封装调用。
+
+```java
+@Aspect
+public class HystrixCommandAspect {
+
+    private static final Map<HystrixPointcutType, MetaHolderFactory> META_HOLDER_FACTORY_MAP;
+
+    static {
+        META_HOLDER_FACTORY_MAP = ImmutableMap.<HystrixPointcutType, MetaHolderFactory>builder()
+                .put(HystrixPointcutType.COMMAND, new CommandMetaHolderFactory())
+                .put(HystrixPointcutType.COLLAPSER, new CollapserMetaHolderFactory())
+                .build();
+    }
+	
+// 定义切点
+    @Pointcut("@annotation(com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand)")
+
+    public void hystrixCommandAnnotationPointcut() {
+    }
+
+    @Pointcut("@annotation(com.netflix.hystrix.contrib.javanica.annotation.HystrixCollapser)")
+    public void hystrixCollapserAnnotationPointcut() {
+    }
+	//定义切面
+    @Around("hystrixCommandAnnotationPointcut() || hystrixCollapserAnnotationPointcut()")
+    public Object methodsAnnotatedWithHystrixCommand(final ProceedingJoinPoint joinPoint) throws Throwable {
+        Method method = getMethodFromTarget(joinPoint);
+        Validate.notNull(method, "failed to get method from joinPoint: %s", joinPoint);
+        if (method.isAnnotationPresent(HystrixCommand.class) && method.isAnnotationPresent(HystrixCollapser.class)) {
+            throw new IllegalStateException("method cannot be annotated with HystrixCommand and HystrixCollapser " +
+                    "annotations at the same time");
+        }
+        // 通过工厂的方式构建metaHolder
+        MetaHolderFactory metaHolderFactory = META_HOLDER_FACTORY_MAP.get(HystrixPointcutType.of(method));
+        MetaHolder metaHolder = metaHolderFactory.create(joinPoint);
+        HystrixInvokable invokable = HystrixCommandFactory.getInstance().create(metaHolder);
+        ExecutionType executionType = metaHolder.isCollapserAnnotationPresent() ?
+                metaHolder.getCollapserExecutionType() : metaHolder.getExecutionType();
+
+        Object result;
+        try {
+            if (!metaHolder.isObservable()) {
+                result = CommandExecutor.execute(invokable, executionType, metaHolder);
+            } else {
+                result = executeObservable(invokable, executionType, metaHolder);
+            }
+        } catch (HystrixBadRequestException e) {
+            throw e.getCause();
+        } catch (HystrixRuntimeException e) {
+            throw hystrixRuntimeExceptionToThrowable(metaHolder, e);
+        }
+        return result;
+    }
+}
+
+```
+
+切面执行逻辑：
+
+1. 通过MetaHolderFactory构建出被注解修饰方法中用于构建HystrixCommand必要信息集合类MetaHolder
+2. 根据MetaHolder通过HystrixCommandFactory构建出合适的HystrixCommand。
+3. 委托CommandExecutor执行HystrixCommand，得到结果。
+
+MetaHolder持有用于构建HystrixCommand和与被包装方法相关的必要信息，如被注解的方法、失败回滚执行的方法和默认的命令键等属性。其属性代码如下所示：
+
+```java
+// 简单的不可变持有者，用于保存有关构建 Hystrix 命令的当前方法的所有必要信息
+@Immutable
+public final class MetaHolder {
+
+    private final HystrixCollapser hystrixCollapser;
+    private final HystrixCommand hystrixCommand;
+    private final DefaultProperties defaultProperties;
+
+    private final Method method; // 被注解的方法
+    private final Method cacheKeyMethod;
+    private final Method ajcMethod;
+    private final Method fallbackMethod; // 失败回滚执行的方法
+    private final Object obj;
+    private final Object proxyObj;
+    private final Object[] args;
+    private final Closure closure;
+    private final String defaultGroupKey; // 默认group键
+    private final String defaultCommandKey; // 默认执行命令
+    private final String defaultCollapserKey; // 默认合并请求键
+    private final String defaultThreadPoolKey; // 默认线程池键
+    private final ExecutionType executionType; // 执行类型
+    private final boolean extendedFallback;
+    private final ExecutionType collapserExecutionType;
+    private final ExecutionType fallbackExecutionType;
+    private final boolean fallback;
+    private boolean extendedParentFallback;
+    private final boolean defaultFallback;
+    private final JoinPoint joinPoint;
+    private final boolean observable;
+    private final ObservableExecutionMode observableExecutionMode;
+
+    private static final Function identityFun = new Function<Object, Object>() {
+        @Nullable
+        @Override
+        public Object apply(@Nullable Object input) {
+            return input;
+        }
+    };
+}
+```
+
+在HystrixCommandFactory类如下图所示：
+
+```java
+/**
+ * Created by dmgcodevil.
+ */
+public class HystrixCommandFactory {
+
+    private static final HystrixCommandFactory INSTANCE = new HystrixCommandFactory();
+
+    private HystrixCommandFactory() {
+
+    }
+
+    public static HystrixCommandFactory getInstance() {
+        return INSTANCE;
+    }
+
+    public HystrixInvokable create(MetaHolder metaHolder) {
+        HystrixInvokable executable;
+        // 构建合并请求命令
+        if (metaHolder.isCollapserAnnotationPresent()) {
+            executable = new CommandCollapser(metaHolder);
+        } else if (metaHolder.isObservable()) {
+            executable = new GenericObservableCommand(HystrixCommandBuilderFactory.getInstance().create(metaHolder));
+        } else {
+            executable = new GenericCommand(HystrixCommandBuilderFactory.getInstance().create(metaHolder));
+        }
+        return executable;
+    }
+
+    public HystrixInvokable createDelayed(MetaHolder metaHolder) {
+        HystrixInvokable executable;
+        if (metaHolder.isObservable()) {
+            executable = new GenericObservableCommand(HystrixCommandBuilderFactory.getInstance().create(metaHolder));
+        } else {
+            executable = new GenericCommand(HystrixCommandBuilderFactory.getInstance().create(metaHolder));
+        }
+        return executable;
+    }
+}
+```
+
+
+
+根据MetaHolder#isObservable方法返回属性的不同，将会构建不同的命令，比如HystrixCommand或者HystrixObservableCommand，前者将同步或者异步执行命令，后者异步回调执行命令。Hystrix根据被包装方法的返回值来决定命令的执行方式，判断代码如下
+
+```java
+/**
+ * Specifies executions types.
+ */
+public enum ExecutionType {
+
+    /**
+     * 异步执行命令
+     */
+    ASYNCHRONOUS,
+
+    /**
+     * 同步执行命令
+     */
+    SYNCHRONOUS,
+
+    /**
+     * 响应式执行命令
+     */
+    OBSERVABLE;
+
+    /**
+     * 根据方法返回类型对应的ExecutionType
+     */
+    public static ExecutionType getExecutionType(Class<?> type) {
+        // Future为异步执行
+        if (Future.class.isAssignableFrom(type)) {
+            return ExecutionType.ASYNCHRONOUS;
+        } else if (Observable.class.isAssignableFrom(type)) {
+          // 异步回调执行  
+            return ExecutionType.OBSERVABLE;
+        } else {
+           // 其他为同步执行
+            return ExecutionType.SYNCHRONOUS;
+        }
+    }
+
+}
+```
+
+根据被包装方法的返回值类型决定命令执行的ExecutionType，从而决定构建HystrixCommand还是HystrixObservableCommand。其中Future类型的返回值将会被异步执行，rx类型的返回值将会被异步回调执行，其他的类型将会被同步执行。
+
+CommandExecutor根据MetaHolder中ExecutionType执行类型的不同，选择同步执行、异步执行还是异步回调执行，返回不同的执行结果。同步执行，直接返回结果对象；异步执行，返回Future，封装了异步操作的结果；异步回调执行将返回Observable，封装响应式执行的结果，可以通过它对执行结果进行订阅，在执行结束后进行特定的操作
+
+[![2QDX26.png](https://z3.ax1x.com/2021/06/02/2QDX26.png)](https://imgtu.com/i/2QDX26)
+
+通过代码和类图，会发现上述类结构中使用了设计模式中的命令模式进行设计。这其中HystrixInvokable是HystrixCommand的标记接口，继承了该接口的类都是可以被执行的HystrixCommand。提供具体方法的接口为HystrixExecutable，用于同步执行和异步执行命令，HystrixObservable用于异步回调执行命令，它们对应命令模式中的Command和ConcreteCommand。CommandExecutor将调用HystrixInvokable执行命令，相当于命令模式中的Invoker。HystrixCommandFactory将生成命令，而HystrixCommandAspect相当于命令模式中的客户端情景类Client。CommandAction中持有Fallback方法或者被@HystrixCommand注解的远程调用方法，相当于命令模式中的Receiver。
+
+#####  HystrixCommand类结构
+
+[![2Qy8DU.png](https://z3.ax1x.com/2021/06/02/2Qy8DU.png)](https://imgtu.com/i/2Qy8DU)
+
+但是最终实现类只有三个，分别是同步或异步执行命令的GenericCommand；请求合并执行命令的BatchHystrixCommand，以及异步回调执行命令的GenericObservableCommand。以上三个类的关键实现都位于AbstractCommand抽象类中
+
+##### 异步回调执行命令
+
+###### 1.AbstractCommand#observe
+
+```java
+//通过订阅Observable用于异步执行带有回调的命令。
+//这会急切地开始执行与HystrixCommand.queue()和HystrixCommand.execute()相同的命令。
+//可以从toObservable()获得惰性Observable 。   
+public Observable<R> observe() {
+        // us a ReplaySubject to buffer the eagerly subscribed-to Observable
+        ReplaySubject<R> subject = ReplaySubject.create();
+        // eagerly kick off subscription
+        final Subscription sourceSubscription = toObservable().subscribe(subject);
+        // return the subject that can be subscribed to later while the execution has already started
+        return subject.doOnUnsubscribe(new Action0() {
+            @Override
+            public void call() {
+                sourceSubscription.unsubscribe();
+            }
+        });
+    }
+```
+
+在observe方法中，首先将创建一个方法ReplaySubject, rx中的Subject既是一个Observable也是一个Observer。接着调用toObservable方法获取到懒执行的Observable，通过创建的ReplaySubject订阅该Observable，启动Observable中相关命令，同时返回ReplaySubject给后续的观察者，用于订阅来获取执行结果（ReplaySubject会推送所有来自原始Observable的事件给观察者，无论它们是何时订阅的）。
+
+observe方法的实现主要依赖于toObservable。HystrixExecutable接口中的execute和queue方法实现依赖于#observe，从根本上讲也是通过toObservable实现。
+
+###### 2.AbstractCommand#toObservable
+
+```java
+    public Observable<R> toObservable() {
+        final AbstractCommand<R> _cmd = this;
+
+        //doOnCompleted handler already did all of the SUCCESS work
+        //doOnError handler already did all of the FAILURE/TIMEOUT/REJECTION/BAD_REQUEST work 命令结束时的回调方法，主要是通过命令调用后的清理工作，根据CommandState的执行状态，通过Metrics统计各种状态
+        final Action0 terminateCommandCleanup = new Action0() {
+
+            @Override
+            public void call() {
+                if (_cmd.commandState.compareAndSet(CommandState.OBSERVABLE_CHAIN_CREATED, CommandState.TERMINAL)) {
+                    handleCommandEnd(false); //user code never ran
+                } else if (_cmd.commandState.compareAndSet(CommandState.USER_CODE_EXECUTED, CommandState.TERMINAL)) {
+                    handleCommandEnd(true); //user code did run
+                }
+            }
+        };
+
+        //mark the command as CANCELLED and store the latency (in addition to standard cleanup) 命令取消订阅的清理回调方法
+        final Action0 unsubscribeCommandCleanup = new Action0() {
+            @Override
+            public void call() {
+                if (_cmd.commandState.compareAndSet(CommandState.OBSERVABLE_CHAIN_CREATED, CommandState.UNSUBSCRIBED)) {
+                    if (!_cmd.executionResult.containsTerminalEvent()) {
+                        _cmd.eventNotifier.markEvent(HystrixEventType.CANCELLED, _cmd.commandKey);
+                        try {
+                            executionHook.onUnsubscribe(_cmd);
+                        } catch (Throwable hookEx) {
+                            logger.warn("Error calling HystrixCommandExecutionHook.onUnsubscribe", hookEx);
+                        }
+                        _cmd.executionResultAtTimeOfCancellation = _cmd.executionResult
+                                .addEvent((int) (System.currentTimeMillis() - _cmd.commandStartTimestamp), HystrixEventType.CANCELLED);
+                    }
+                    handleCommandEnd(false); //user code never ran
+                } else if (_cmd.commandState.compareAndSet(CommandState.USER_CODE_EXECUTED, CommandState.UNSUBSCRIBED)) {
+                    if (!_cmd.executionResult.containsTerminalEvent()) {
+                        _cmd.eventNotifier.markEvent(HystrixEventType.CANCELLED, _cmd.commandKey);
+                        try {
+                            executionHook.onUnsubscribe(_cmd);
+                        } catch (Throwable hookEx) {
+                            logger.warn("Error calling HystrixCommandExecutionHook.onUnsubscribe", hookEx);
+                        }
+                        _cmd.executionResultAtTimeOfCancellation = _cmd.executionResult
+                                .addEvent((int) (System.currentTimeMillis() - _cmd.commandStartTimestamp), HystrixEventType.CANCELLED);
+                    }
+                    handleCommandEnd(true); //user code did run
+                }
+            }
+        };
+		// 构建执行命令，封装断路器，资源隔离逻辑
+        final Func0<Observable<R>> applyHystrixSemantics = new Func0<Observable<R>>() {
+            @Override
+            public Observable<R> call() {
+                // 如果没有订阅返回既不会开始也不会结束的observable
+                if (commandState.get().equals(CommandState.UNSUBSCRIBED)) {
+                    return Observable.never();
+                }
+                // 通过applyHystrixSemantics声明Observable
+                return applyHystrixSemantics(_cmd);
+            }
+        };
+
+        final Func1<R, R> wrapWithAllOnNextHooks = new Func1<R, R>() {
+            @Override
+            public R call(R r) {
+                R afterFirstApplication = r;
+
+                try {
+                    afterFirstApplication = executionHook.onComplete(_cmd, r);
+                } catch (Throwable hookEx) {
+                    logger.warn("Error calling HystrixCommandExecutionHook.onComplete", hookEx);
+                }
+
+                try {
+                    return executionHook.onEmit(_cmd, afterFirstApplication);
+                } catch (Throwable hookEx) {
+                    logger.warn("Error calling HystrixCommandExecutionHook.onEmit", hookEx);
+                    return afterFirstApplication;
+                }
+            }
+        };
+
+        final Action0 fireOnCompletedHook = new Action0() {
+            @Override
+            public void call() {
+                try {
+                    executionHook.onSuccess(_cmd);
+                } catch (Throwable hookEx) {
+                    logger.warn("Error calling HystrixCommandExecutionHook.onSuccess", hookEx);
+                }
+            }
+        };
+
+        return Observable.defer(new Func0<Observable<R>>() {
+            @Override
+            public Observable<R> call() {
+                 /* this is a stateful object so can only be used once */
+                // 执行状态转化有误，抛出异常
+                if (!commandState.compareAndSet(CommandState.NOT_STARTED, CommandState.OBSERVABLE_CHAIN_CREATED)) {
+                    IllegalStateException ex = new IllegalStateException("This instance can only be executed once. Please instantiate a new instance.");
+                    //TODO make a new error type for this
+                    throw new HystrixRuntimeException(FailureType.BAD_REQUEST_EXCEPTION, _cmd.getClass(), getLogMessagePrefix() + " command executed multiple times - this is not permitted.", ex, null);
+                }
+				// 记录命令开始时间
+                commandStartTimestamp = System.currentTimeMillis();
+
+                if (properties.requestLogEnabled().get()) {
+                    // log this command execution regardless of what happened
+                    if (currentRequestLog != null) {
+                        currentRequestLog.addExecutedCommand(_cmd);
+                    }
+                }
+
+                final boolean requestCacheEnabled = isRequestCachingEnabled();
+                final String cacheKey = getCacheKey();
+				// 尝试从缓存中获取结果
+                /* try from cache first */
+                if (requestCacheEnabled) {
+                    HystrixCommandResponseFromCache<R> fromCache = (HystrixCommandResponseFromCache<R>) requestCache.get(cacheKey);
+                    // 如果缓存不为空直接返回结果
+                    if (fromCache != null) {
+                        isResponseFromCache = true;
+                        return handleRequestCacheHitAndEmitValues(fromCache, _cmd);
+                    }
+                }
+
+                Observable<R> hystrixObservable =
+                        Observable.defer(applyHystrixSemantics)
+                                .map(wrapWithAllOnNextHooks);
+
+                Observable<R> afterCache;
+
+                // put in cache
+                if (requestCacheEnabled && cacheKey != null) {
+                    // wrap it for caching
+                    HystrixCachedObservable<R> toCache = HystrixCachedObservable.from(hystrixObservable, _cmd);
+                    HystrixCommandResponseFromCache<R> fromCache = (HystrixCommandResponseFromCache<R>) requestCache.putIfAbsent(cacheKey, toCache);
+                    if (fromCache != null) {
+                        // another thread beat us so we'll use the cached value instead
+                        toCache.unsubscribe();
+                        isResponseFromCache = true;
+                        return handleRequestCacheHitAndEmitValues(fromCache, _cmd);
+                    } else {
+                        // we just created an ObservableCommand so we cast and return it
+                        afterCache = toCache.toObservable();
+                    }
+                } else {
+                    afterCache = hystrixObservable;
+                }
+
+                return afterCache
+                        .doOnTerminate(terminateCommandCleanup)     // perform cleanup once (either on normal terminal state (this line), or unsubscribe (next line))
+                        .doOnUnsubscribe(unsubscribeCommandCleanup) // perform cleanup once
+                        .doOnCompleted(fireOnCompletedHook);
+            }
+        });
+    }
+```
+
+
+
+1. 首先通过Observable#defer方法来构建返回的Observable。以Observable#defer方式声明的Observable只有当有观察者订阅才会真正开始创建，并且是为每一个观察者创建一个新的Observable，这就保证了toObservable方法返回的Observable是纯净的，并没有开始执行命令。
+2. 在构建Observable过程中，先通过commandState查看当前的命令执行状态，保证命令未开始执行并且每条命令只能执行一次。
+3. 如果允许请求缓存并且缓存存在的话，将尝试从缓存中获取对应的执行结果，并直接返回结果。
+4. 如果无法获取缓存，通过applyHystrixSemantics方法构建用于返回的Observable。
+5. 如果允许请求缓存，将Observable放置到缓存中用于下一次调用。
+6. 最后为返回Observable添加提前定义好的回调方法。在上述的流程中，需要重点关注两个地方，一个是HystrixRequestCache，其内封装了缓存Observable的逻辑；另一个是applyHystrixSemantics回调方法，其内封装了断路、资源隔离等核心断路器逻辑。
+
+###### 3.HystrixRequestCache请求缓存
+
+HystrixRequestCache对Observable进行缓存操作，使用每个命令特有的cacheKey对Observable进行缓存，通过ConcurrentHashMap保存缓存结果以保证线程安全。
+
+HystrixRequestCache中缓存的并不是直接的Observable，而是被封装好的HystrixCachedObservable。在HystrixCachedObservable中，通过ReplaySubject订阅需要缓存的Observable，保证了缓存的Observable能够多次执行，代码如下所示
+
+```java
+public class HystrixCachedObservable<R> {
+    protected final Subscription originalSubscription;
+    protected final Observable<R> cachedObservable;
+    private volatile int outstandingSubscriptions = 0;
+
+    protected HystrixCachedObservable(final Observable<R> originalObservable) {
+        // 使用ReplaySubject订阅原始的Observable,并返回RepalySubject
+        // 保证其从缓存取出后订阅者依然 能够接受对应的事件，即命令依然能够执行。
+        ReplaySubject<R> replaySubject = ReplaySubject.create();
+        this.originalSubscription = originalObservable
+                .subscribe(replaySubject);
+
+        this.cachedObservable = replaySubject
+                .doOnUnsubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        outstandingSubscriptions--;
+                        if (outstandingSubscriptions == 0) {
+                            originalSubscription.unsubscribe();
+                        }
+                    }
+                })
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        outstandingSubscriptions++;
+                    }
+                });
+    }
+
+    public static <R> HystrixCachedObservable<R> from(Observable<R> o, AbstractCommand<R> originalCommand) {
+        return new HystrixCommandResponseFromCache<R>(o, originalCommand);
+    }
+
+    public static <R> HystrixCachedObservable<R> from(Observable<R> o) {
+        return new HystrixCachedObservable<R>(o);
+    }
+
+    public Observable<R> toObservable() {
+        return cachedObservable;
+    }
+
+    public void unsubscribe() {
+        originalSubscription.unsubscribe();
+    }
+}
+
+```
+
+###### 4.applyHystrixSemantics短路器判断与获取信号量
+
+在applyHystrixSemantics回调方法中，通过AbstractCommand#applyHystrixSemantics方法声明Observable。它主要工作是判断断路器是否打开，以及尝试获取信号量用于执行命令（仅在信号量隔离模式下生效）：
+
+```java
+// AbstractCommand#applyHystrixSemantics
+private Observable<R> applyHystrixSemantics(final AbstractCommand<R> _cmd) {
+        // mark that we're starting execution on the ExecutionHook
+        // if this hook throws an exception, then a fast-fail occurs with no fallback.  No state is left inconsistent
+    // 标记在ExecutionHook中执行
+        executionHook.onStart(_cmd);
+		// 判断HystrixCircuitBreaker判断命令是否可以执行
+        /* determine if we're allowed to execute */
+        if (circuitBreaker.allowRequest()) {
+            // 获取信号量
+            final TryableSemaphore executionSemaphore = getExecutionSemaphore();
+            final AtomicBoolean semaphoreHasBeenReleased = new AtomicBoolean(false);
+            // 释放信号量的回调方法
+            final Action0 singleSemaphoreRelease = new Action0() {
+                @Override
+                public void call() {
+                    if (semaphoreHasBeenReleased.compareAndSet(false, true)) {
+                        executionSemaphore.release();
+                    }
+                }
+            };
+			// 标记异常回调的方法，对异常进行推送
+            final Action1<Throwable> markExceptionThrown = new Action1<Throwable>() {
+                @Override
+                public void call(Throwable t) {
+                    eventNotifier.markEvent(HystrixEventType.EXCEPTION_THROWN, commandKey);
+                }
+            };
+			// 尝试获取信号量
+            if (executionSemaphore.tryAcquire()) {
+                try {
+                    /* used to track userThreadExecutionTime */
+                    // 标记executionResult开始时间
+                    executionResult = executionResult.setInvocationStartTime(System.currentTimeMillis());
+                    return executeCommandAndObserve(_cmd)
+                            .doOnError(markExceptionThrown)
+                            .doOnTerminate(singleSemaphoreRelease)
+                            .doOnUnsubscribe(singleSemaphoreRelease);
+                } catch (RuntimeException e) {
+                    return Observable.error(e);
+                }
+            } else {
+                return handleSemaphoreRejectionViaFallback();
+            }
+        } else {
+            return handleShortCircuitViaFallback();
+        }
+    }
+```
+
+在AbstractCommand#applyHystrixSemantics中，首先通过断路器HystrixCircuitBreaker检查链路中的断路器是否开启，如果开启的话，执行断路失败逻辑handleShortCircuitViaFallback方法。如果通过断路器的检查，将会尝试获取信号量。如果不能获取信号量，那么执行信号量获取失败逻辑handleSemaphoreRejectionViaFallback方法。当上述检查都通过了，才执行executeCommandAndObserve方法获取执行命令的Observable，并为该Observable配置回调操作，该回调操作在命令执行结束后以及取消订阅时用于释放信号量。
+
+在介绍executeCommandAndObserve方法之前，我们先了解ExecutionResult，它是一个用来记录命令执行中各种状态的类，主要记录以下属性
+
+```java
+public class ExecutionResult {
+    private final EventCounts eventCounts;
+    private final Exception failedExecutionException;
+    private final Exception executionException;
+    private final long startTimestamp;
+    private final int executionLatency; //time spent in run() method
+    private final int userThreadLatency; //time elapsed between caller thread submitting request and response being visible to it
+    private final boolean executionOccurred;
+    private final boolean isExecutedInThread;
+    private final HystrixCollapserKey collapserKey;
+
+    private static final HystrixEventType[] ALL_EVENT_TYPES = HystrixEventType.values();
+    private static final int NUM_EVENT_TYPES = ALL_EVENT_TYPES.length;
+    private static final BitSet EXCEPTION_PRODUCING_EVENTS = new BitSet(NUM_EVENT_TYPES);
+    private static final BitSet TERMINAL_EVENTS = new BitSet(NUM_EVENT_TYPES);
+}
+```
+
+通过ExecutionResult, Hystrix可以记录HystrixCommand在不同执行阶段的状态和相关执行记录，用于统计和分析。
+
+applyHystrixSemantics方法最后将委托executeCommandAndObserve方法为命令配置执行异常回调方法从而为命令的执行保驾护航。
+
+###### executeCommandAndObserve配置执行异常回调方法
+
+
+
+##### 异步执行命令和同步执行命令
+
+##### 短路器逻辑
+
+##### 资源隔离
+
+##### 请求超时监控
+
+##### 失败回滚
+
+
 
 ### 各组件深入之Spring Cloud Zuul（服务网关）
 
