@@ -1393,6 +1393,85 @@ services:
 
 访问 ： http://elasticsearchIP:9200/  查看是否成功
 
+但是这个版本的不支持kibana 重新配置一个：
+
+```yml
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:6.8.15
+    container_name: elasticsearch
+    environment:
+      - "cluster.name=elasticsearch"  #设置集群名称为elasticsearch
+      - "discovery.type=single-node"  #以单一节点模式启动
+      - "ES_JAVA_OPTS=-Xms4096m -Xmx4096m"  #设置使用jvm内存大小
+    volumes:
+      # 需要赋予这些文件权限 
+      - ./data/elasticsearch/plugins:/usr/share/elasticsearch/plugins #插件文件挂载
+      - ./data/elasticsearch/data:/usr/share/elasticsearch/data #数据文件挂载
+      - ./data/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml #配置文件挂载
+    ports:
+      - 9200:9200
+      - 9300:9300
+  kibana:
+    image: kibana:6.8.15
+    container_name: kibana
+    depends_on:
+      - elasticsearch #kibana在elasticsearch启动之后再启动
+    environment:
+      - "elasticsearch.hosts=http://127.0.0.1:9200" #设置访问elasticsearch的地址
+    # volumes: 配置数据卷有问题，这里就不配置了
+      #- /data/kibana/config:/usr/share/kibana/config #配置文件挂载
+    ports:
+      - 5601:5601
+```
+
+需要配置：
+
+vim  ./data/elasticsearch/config/elasticsearch.yml
+
+```
+cluster.name: "elasticsearch"
+# 允许外部网络访问
+network.host: 0.0.0.0
+#支持跨域
+http.cors.enabled: true
+#支持所有域名
+http.cors.allow-origin: "*"
+# 关闭xpack安全校验，在kibana中使用就不需要输入账号密码
+xpack.security.enabled: false
+```
+
+启动会报错：
+
+[![29FIUS.png](https://z3.ax1x.com/2021/05/26/29FIUS.png)](https://imgtu.com/i/29FIUS)
+
+需要授予权限：chmod 777 ./data/elasticsearch/data   再次启动可以启动
+
+cd  ./data/kibana/config   
+
+vim kibana.yml
+
+```
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: [ "http://localhost:9200" ]
+i18n.locale: "zh-CN"
+```
+
+*vim kibana.yml 后kibana的配置了数据卷，导致出现问题，所以上面的docker-compose文件去除 这个数据卷。*
+
+安装ik分词器：下载zip包上传到：/data/elasticsearch/plugins 目录下 创建个名称为ik文件夹：
+将docker-compose.yml进行配置ik的插件：
+
+```
+  - ./data/elasticsearch/plugins/ik:/usr/share/elasticsearch/plugins/ik #插件文件挂载
+```
+
+看下请求：
+
+[![29j7Dg.png](https://z3.ax1x.com/2021/05/26/29j7Dg.png)](https://imgtu.com/i/29j7Dg)
+
 ###  Docker compose編排容器
 
 一般使用先进行安装环境然后通过docker-compose.yml进行编排启动各个服务。
