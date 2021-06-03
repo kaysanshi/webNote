@@ -58,7 +58,7 @@
 
   ##### CAP权衡：
 
-​                C 必须保证。网络发生故障宁可停止服务，这是保证 CA，舍弃 P。貌似这几年国内银行业发生了不下 10 起事故，但影响面不大，报到也不多，广大群众知道的少。
+​        C 必须保证。网络发生故障宁可停止服务，这是保证 CA，舍弃 P。貌似这几年国内银行业发生了不下 10 起事故，但影响面不大，报到也不多，广大群众知道的少。
 
 ​		还有一种是保证 CP，舍弃 A。例如网络故障是只读不写。孰优孰略，没有定论，只能根据场景定夺，适合的才是最好的   
 
@@ -203,7 +203,7 @@
 >   		后台服务贯彻 Single Responsibility Principle（单一职责原则）
 >   		VM -> Docker
 >   		DevOps
->					
+>						
 >   		springCloud 基于springboot的技术技术框架；
 >   		java原生云开发=springCloud+spring boot
 
@@ -4632,7 +4632,7 @@ Hystrix在以下几种情况下会走降级逻辑：
 - 当请求服务提供者出现服务拒绝、超时和短路（多个服务提供者依次顺序请求，前面的服务提供者请求失败，后面的请求将不会发出）等情况时，执行其Fallback方法，服务降级。
 -  提供接近实时的监控和配置变更服务
 
-#### Hystrix源码解析、
+#### Hystrix源码解析
 
 Hystrix通过HystrixCommand或者HystrixObservableCommand将对所有第三方依赖、服务调用进行封装，整个封装对象是运行在一个单独的线程之中。我们先看下HystrixCommand的执行流程。
 
@@ -5268,7 +5268,7 @@ public class HystrixCachedObservable<R> {
 
 ```
 
-###### 4.applyHystrixSemantics短路器判断与获取信号量
+###### 4.AbstractCommand#applyHystrixSemantics短路器判断与获取信号量
 
 在applyHystrixSemantics回调方法中，通过AbstractCommand#applyHystrixSemantics方法声明Observable。它主要工作是判断断路器是否打开，以及尝试获取信号量用于执行命令（仅在信号量隔离模式下生效）：
 
@@ -5350,19 +5350,971 @@ public class ExecutionResult {
 
 applyHystrixSemantics方法最后将委托executeCommandAndObserve方法为命令配置执行异常回调方法从而为命令的执行保驾护航。
 
-###### executeCommandAndObserve配置执行异常回调方法
+###### 5.AbstractCommand#executeCommandAndObserve配置执行异常回调方法
 
+executeCommandAndObserve方法主要用于为执行命令Observable配置执行失败的回调方法，对执行失败的结果进行记录和处理。
 
+```java
+// AbstractCommand.java
+// 这围绕 run() Observable 装饰了“Hystrix”功能
+private Observable<R> executeCommandAndObserve(final AbstractCommand<R> _cmd) {
+        final HystrixRequestContext currentRequestContext = HystrixRequestContext.getContextForCurrentThread();
+		// 标记命令开始执行的回调方法
+        final Action1<R> markEmits = new Action1<R>() {
+            @Override
+            public void call(R r) {
+                if (shouldOutputOnNextEvents()) {
+                    executionResult = executionResult.addEvent(HystrixEventType.EMIT);
+                    eventNotifier.markEvent(HystrixEventType.EMIT, commandKey);
+                }
+                if (commandIsScalar()) {
+                    long latency = System.currentTimeMillis() - executionResult.getStartTimestamp();
+                    eventNotifier.markCommandExecution(getCommandKey(), properties.executionIsolationStrategy().get(), (int) latency, executionResult.getOrderedList());
+                    eventNotifier.markEvent(HystrixEventType.SUCCESS, commandKey);
+                    executionResult = executionResult.addEvent((int) latency, HystrixEventType.SUCCESS);
+                    circuitBreaker.markSuccess();
+                }
+            }
+        };
+		// 标记命令执行结束的回调的方法
+        final Action0 markOnCompleted = new Action0() {
+            @Override
+            public void call() {
+                if (!commandIsScalar()) {
+                    long latency = System.currentTimeMillis() - executionResult.getStartTimestamp();
+                    eventNotifier.markCommandExecution(getCommandKey(), properties.executionIsolationStrategy().get(), (int) latency, executionResult.getOrderedList());
+                    eventNotifier.markEvent(HystrixEventType.SUCCESS, commandKey);
+                    executionResult = executionResult.addEvent((int) latency, HystrixEventType.SUCCESS);
+                    circuitBreaker.markSuccess();
+                }
+            }
+        };
+		// 失败回滚逻辑
+        final Func1<Throwable, Observable<R>> handleFallback = new Func1<Throwable, Observable<R>>() {
+            @Override
+            public Observable<R> call(Throwable t) {
+                // 获取异常
+                Exception e = getExceptionFromThrowable(t);
+                executionResult = executionResult.setExecutionException(e);
+                if (e instanceof RejectedExecutionException) {
+                    return handleThreadPoolRejectionViaFallback(e);
+                } else if (t instanceof HystrixTimeoutException) {
+                    return handleTimeoutViaFallback();
+                } else if (t instanceof HystrixBadRequestException) {
+                    return handleBadRequestByEmittingError(e);
+                } else {
+                    /*
+                     * Treat HystrixBadRequestException from ExecutionHook like a plain HystrixBadRequestException.
+                     */
+                    if (e instanceof HystrixBadRequestException) {
+                        eventNotifier.markEvent(HystrixEventType.BAD_REQUEST, commandKey);
+                        return Observable.error(e);
+                    }
+
+                    return handleFailureViaFallback(e);
+                }
+            }
+        };
+
+        final Action1<Notification<? super R>> setRequestContext = new Action1<Notification<? super R>>() {
+            @Override
+            public void call(Notification<? super R> rNotification) {
+                setRequestContextIfNeeded(currentRequestContext);
+            }
+        };
+
+        Observable<R> execution;
+        if (properties.executionTimeoutEnabled().get()) {
+            // 执行配置资源隔离和添加超时控制
+            execution = executeCommandWithSpecifiedIsolation(_cmd)
+                    .lift(new HystrixObservableTimeoutOperator<R>(_cmd));
+        } else {
+            // 执行配置资源隔离和添加超时控制
+            execution = executeCommandWithSpecifiedIsolation(_cmd);
+        }
+
+        return execution.doOnNext(markEmits)
+                .doOnCompleted(markOnCompleted)
+                .onErrorResumeNext(handleFallback)
+                .doOnEach(setRequestContext);
+    }
+```
+
+######  6.AbstractCommand#executeCommandWithSpecifiedIsolation配置线程隔离和超时控制
+
+executeCommandWithSpecifiedIsolation方法为命令构造了隔离的执行环境，提供两种资源隔离的方式，线程隔离和信号量隔离；如果Hystrix配置中开启了超时控制，还会通过Observable#lift方法将现有的Observable转化为添加了超时检查的Observable。
+
+executeCommandWithSpecifiedIsolation方法根据配置中的隔离策略对命令执行采用了不同的资源隔离方式：ExecutionIsolationStrategy.THREAD将使用线程隔离的方式，ExecutionIsolationStrategy.SEMAPHORE将使用信号量隔离的方式
+
+```java
+// // AbstractCommand.java
+private Observable<R> executeCommandWithSpecifiedIsolation(final AbstractCommand<R> _cmd) {
+        if (properties.executionIsolationStrategy().get() == ExecutionIsolationStrategy.THREAD) {
+            // mark that we are executing in a thread (even if we end up being rejected we still were a THREAD execution and not SEMAPHORE)
+            // 标记我们正在一个线程中执行（即使我们最终被拒绝，我们仍然是一个线程执行而不是 SEMAPHORE）
+            return Observable.defer(new Func0<Observable<R>>() {
+                @Override
+                public Observable<R> call() {
+                    executionResult = executionResult.setExecutionOccurred();
+                    if (!commandState.compareAndSet(CommandState.OBSERVABLE_CHAIN_CREATED, CommandState.USER_CODE_EXECUTED)) {
+                        return Observable.error(new IllegalStateException("execution attempted while in state : " + commandState.get().name()));
+                    }
+					// 标记命令是通过线程隔离资源执行
+                    metrics.markCommandStart(commandKey, threadPoolKey, ExecutionIsolationStrategy.THREAD);
+
+                    if (isCommandTimedOut.get() == TimedOutStatus.TIMED_OUT) {
+                     
+                        // 该命令在包装线程中超时，因此我们将立即返回.并且不会增加下面的任何计数器或其他此类逻辑
+                        return Observable.error(new RuntimeException("timed out before executing run()"));
+                    }
+                    if (threadState.compareAndSet(ThreadState.NOT_USING_THREAD, ThreadState.STARTED)) {
+                        //we have not been unsubscribed, so should proceed
+                        // 我们还没有退订，所以应该继续，标记线程已经执行
+                        HystrixCounters.incrementGlobalConcurrentThreads();
+                        threadPool.markThreadExecution();
+                        // store the command that is being run
+                        // 存储正在运行的命令
+                        endCurrentThreadExecutingCommand = Hystrix.startCurrentThreadExecutingCommand(getCommandKey());
+                        // 记录使用线程隔离执行的
+                        executionResult = executionResult.setExecutedInThread();
+                        /**
+                         * If any of these hooks throw an exception, then it appears as if the actual execution threw an error
+                         */
+                        try {
+                            executionHook.onThreadStart(_cmd);
+                            executionHook.onRunStart(_cmd);
+                            executionHook.onExecutionStart(_cmd);
+                            return getUserExecutionObservable(_cmd);
+                        } catch (Throwable ex) {
+                            return Observable.error(ex);
+                        }
+                    } else {
+                        //command has already been unsubscribed, so return immediately
+                        return Observable.error(new RuntimeException("unsubscribed before executing run()"));
+                    }
+                }
+            }).doOnTerminate(new Action0() {
+                @Override
+                public void call() {
+                    if (threadState.compareAndSet(ThreadState.STARTED, ThreadState.TERMINAL)) {
+                        handleThreadEnd(_cmd);
+                    }
+                    if (threadState.compareAndSet(ThreadState.NOT_USING_THREAD, ThreadState.TERMINAL)) {
+                        //if it was never started and received terminal, then no need to clean up (I don't think this is possible)
+                        //如果它从未启动并接收到终端，则无需清理（我认为这是不可能的）
+                    }
+                    //if it was unsubscribed, then other cleanup handled it
+                }
+            }).doOnUnsubscribe(new Action0() {
+                @Override
+                public void call() {
+                    if (threadState.compareAndSet(ThreadState.STARTED, ThreadState.UNSUBSCRIBED)) {
+                        handleThreadEnd(_cmd);
+                    }
+                    if (threadState.compareAndSet(ThreadState.NOT_USING_THREAD, ThreadState.UNSUBSCRIBED)) {
+                        //if it was never started and was cancelled, then no need to clean up
+                    }
+                    //if it was terminal, then other cleanup handled it
+                }
+                // 指令在哪个线程执行
+            }).subscribeOn(threadPool.getScheduler(new Func0<Boolean>() {
+                @Override
+                public Boolean call() {
+                    return properties.executionIsolationThreadInterruptOnTimeout().get() && _cmd.isCommandTimedOut.get() == TimedOutStatus.TIMED_OUT;
+                }
+            }));
+        } else {
+            return Observable.defer(new Func0<Observable<R>>() {
+                @Override
+                public Observable<R> call() {
+                    executionResult = executionResult.setExecutionOccurred();
+                    if (!commandState.compareAndSet(CommandState.OBSERVABLE_CHAIN_CREATED, CommandState.USER_CODE_EXECUTED)) {
+                        return Observable.error(new IllegalStateException("execution attempted while in state : " + commandState.get().name()));
+                    }
+					// 标记命令是通过信号量隔离执行
+                    metrics.markCommandStart(commandKey, threadPoolKey, ExecutionIsolationStrategy.SEMAPHORE);
+                    // semaphore isolated
+                    // store the command that is being run
+                    endCurrentThreadExecutingCommand = Hystrix.startCurrentThreadExecutingCommand(getCommandKey());
+                    try {
+                        executionHook.onRunStart(_cmd);
+                        executionHook.onExecutionStart(_cmd);
+                        //getUserExecutionObservable 方法已经包装了同步异常，所以这不应该抛出
+                        return getUserExecutionObservable(_cmd);  
+                    } catch (Throwable ex) {
+                        //If the above hooks throw, then use that as the result of the run method
+                        return Observable.error(ex);
+                    }
+                }
+            });
+        }
+    }
+```
+
+当以线程的方式隔离资源时，需要指定命令在哪一个线程执行，主要通过HystrixThreadPool#getScheduler方法获取相应的线程调度。信号量的获取在AbstractCommand #applyHystrixSemantics方法中执行。最后，executeCommandWithSpecifiedIsolation通过getUserExecutionObservable方法拿到了被封装的远程调用方法，在Hystrix的重重保护下执行远程方法以获取结果。
+
+###### 7.HystrixCommand#getExecutionObservable配置被封装的远程调用方法
+
+getUserExecutionObservable方法将为命令获取在声明HystrixCommand时被包装的具体远程调用方法。在AbstactCommand#getUserExecutionObservable方法中，**通过getExecutionObservable抽象方法将具体实现延迟到子类中**。getExecutionObservable方法在HystrixCommand中的相关实现如下所示
+
+```java
+ //   AbstractCommand#getUserExecutionObservable
+private Observable<R> getUserExecutionObservable(final AbstractCommand<R> _cmd) {
+        Observable<R> userObservable;
+
+        try {
+            userObservable = getExecutionObservable();
+        } catch (Throwable ex) {
+            // the run() method is a user provided implementation so can throw instead of using Observable.onError
+            // so we catch it here and turn it into Observable.error
+            userObservable = Observable.error(ex);
+        }
+
+        return userObservable
+                .lift(new ExecutionHookApplication(_cmd))
+                .lift(new DeprecatedOnRunHookApplication(_cmd));
+    }
+// HystrixCommand.java	
+@Override
+    final protected Observable<R> getExecutionObservable() {
+        return Observable.defer(new Func0<Observable<R>>() {
+            @Override
+            public Observable<R> call() {
+                try {
+                    return Observable.just(run());
+                } catch (Throwable ex) {
+                    return Observable.error(ex);
+                }
+            }
+        }).doOnSubscribe(new Action0() {
+            @Override
+            public void call() {
+                // Save thread on which we get subscribed so that we can interrupt it later if needed
+                executionThread.set(Thread.currentThread());
+            }
+        });
+    }
+```
+
+在上述代码中，run方法也是延迟到子类中实现，在高级应用中，我们将尝试直接继承HystrixCommand和HystrixObservableCommand构建对应的HystrixCommand，在HystrixCommand的默认实现GenericCommand中，run方法是通过创建HystrixCommand时传递的CommandActions提供具体实现。CommandActions持有commandAction和fallbackAction，分别对应HystrixCommand中远程调用方法和失败回滚方法.
 
 ##### 异步执行命令和同步执行命令
 
-##### 短路器逻辑
+###### 1.HystrixCommand#queue
+
+```java
+//用于异步执行命令。
+//这将在线程池上排队命令，并在完成后返回一个Future以获取结果。
+//注意：如果配置为不在单独的线程中运行，这将与execute()具有相同的效果并会阻塞。
+//我们不会抛出异常，而只是切换到同步执行，因此无需更改代码即可将命令从在单独线程上运行切换到调用线程
+public Future<R> queue() {
+       // Observable.toBlocking().toFuture()返回的Future没有实现当Future.cancel(boolean)的“mayInterrupt”标志设置为true时执行线程的*中断； * 因此，为了遵守 Future 的合约，我们必须环绕它。
+        final Future<R> delegate = toObservable().toBlocking().toFuture();
+    	
+        final Future<R> f = new Future<R>() {
+
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                if (delegate.isCancelled()) {
+                    return false;
+                }
+
+                if (HystrixCommand.this.getProperties().executionIsolationThreadInterruptOnFutureCancel().get()) {
+                   //这里唯一有效的转换是 false -> true。如果有两个futures，比如 f1 和 f2，由这个命令 创建（这很奇怪，但从未被禁止），并且调用 f1.cancel(true) 和 f2.cancel(false) 被 发出对于不同的线程，不清楚在检查 mayInterruptOnCancel 时将使用什么值。 处理这种情况的最一致的方法是说，如果*任何*取消被中断调用，*则不能收回该中断请求。
+                    interruptOnFutureCancel.compareAndSet(false, mayInterruptIfRunning);
+        		}
+
+                final boolean res = delegate.cancel(interruptOnFutureCancel.get());
+
+                if (!isExecutionComplete() && interruptOnFutureCancel.get()) {
+                    final Thread t = executionThread.get();
+                    if (t != null && !t.equals(Thread.currentThread())) {
+                        t.interrupt();
+                    }
+                }
+
+                return res;
+			}
+
+            @Override
+            public boolean isCancelled() {
+                return delegate.isCancelled();
+			}
+
+            @Override
+            public boolean isDone() {
+                return delegate.isDone();
+			}
+
+            @Override
+            public R get() throws InterruptedException, ExecutionException {
+                return delegate.get();
+            }
+
+            @Override
+            public R get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+                return delegate.get(timeout, unit);
+            }
+        	
+        };
+
+        /* 立即抛出的错误状态的特殊处理 */
+        if (f.isDone()) {
+            try {
+                f.get();
+                return f;
+            } catch (Exception e) {
+                Throwable t = decomposeException(e);
+                if (t instanceof HystrixBadRequestException) {
+                    return f;
+                } else if (t instanceof HystrixRuntimeException) {
+                    HystrixRuntimeException hre = (HystrixRuntimeException) t;
+                    switch (hre.getFailureType()) {
+					case COMMAND_EXCEPTION:
+					case TIMEOUT:
+						// 我们不会从 queue() 只从 queue().get() 中抛出这些类型，因为它们是执行错误
+						return f;
+					default:
+						// 这些是我们从 queue() 抛出的错误，作为是拒绝类型错误
+						throw hre;
+					}
+                } else {
+                    throw Exceptions.sneakyThrow(t);
+                }
+            }
+        }
+
+        return f;
+    }
+```
+
+queue方法中将AbstractCommand#toObservable获取到的Observable通过toBlocking转化为具备阻塞功能的BlockingObservable，再通过toFuture方法获取到能够执行run抽象方法的Future，最后通过Future得到正在异步执行的命令的执行结果
+
+###### 2.HystrixCommand#Execute
+
+```java
+ public R execute() {
+        try {
+            return queue().get();
+        } catch (Exception e) {
+            throw Exceptions.sneakyThrow(decomposeException(e));
+        }
+    }
+```
+
+exeute方法通过queue获取到Future，使用Future#get方法获取到命令的执行结果，它将一直阻塞线程直到有执行结果返回。
+
+##### 断路器逻辑（在hystrix-core-1.5.18下面的不成立，有些已经废弃）
+
+HystrixCircuitBreaker是Hystrix提供断路器逻辑的核心接口，它通过HystrixCommandKey（由@HystrixCommand的commandKey构造而成）与每一个HystrixCommand绑定。
+
+在HystrixCircuitBreaker.Factory中使用ConcurrentHashMap维持了基于HystrixCommandKey的HystrixCircuitBreaker的单例映射表，保证具备相同CommandKey的HystrixCommand对应同一个断路器。
+
+我们看下核心接口HystrixCircuitBreaker代码：
+
+```java
+public interface HystrixCircuitBreaker {
+
+    // 是否允许执行命令
+    public boolean allowRequest();
+
+   // 断路器是否打开
+    public boolean isOpen();
+	// 在半开的状态作为命令执行成功反馈
+    void markSuccess();
+    ...
+}
+```
+
+attemptExecution方法在命令构建执行的过程中（AbstractCommand#applyHystrixSemantics方法中）用于判断断路器是否打开，它的功能基本与allowRequest方法类似，但是它可能会修改断路器的状态，如将其从打开状态修改到半开状态。HystrixCircuitBreaker有两个默认实现，一个是NoOpCircuitBreaker，顾名思义即空实现，不会发挥任何断路器的功能，另一个实现为HystrixCircuitBreakerImpl，为断路器的真正实现
+
+###### HystrixCircuitBreakerImpl断路器具体实现
+
+在HystrixCircuitBreakerImpl中定义了三种状态：关闭、开启、半开，与在Hystrix原理中介绍的断路器的三种状态相对应，如下所示：
+
+```
+
+```
+
+allowRequest()方法如下所示：
+
+```java
+// HystrixCircuitBreakerImpl.java
+
+```
+
+断路器强制开始和关闭的相关配置可以通过配置中心的方式动态修改，这样就可以人为干预断路器的状态，方便调试。断路器打开的时候将会记录一个打开时间，用于判断断路器是否打开，通过它与配置中的circuitBreakerSleepWindowInMilliseconds重置时间结合判断：在断路器打开一段时间后（重置时间结束），允许尝试执行命令，检查远程调用是否恢复到可使用的状态.
+
+attemptExecution方法
+
+```java
+// HystrixCircuitBreakerImpl.java
+```
+
+attemptExecution方法与#allowRequest方法基本一致，但是在第一次发现重置时间结束时，会尝试将断路器的状态从打开修改为半开，方便在命令执行正常或者失败后关闭断路器或者重新打开断路器。.
+
+markSuccess与#markNonSuccess方法代码如下所示：
+
+```java
+// HystrixCircuitBreakerImpl.java
+```
+
+markSuccess方法在命令执行成功后进行调用，将断路器从半开状态转换为关闭状态，同时重置断路器在HystrixCommandMetrics的统计记录和设置断路器打开时间为-1（即关闭断路器）。markNonSuccess方法在命令执行失败后将断路器从半开状态转换为打开状态，同时重置断路器的打开时间，用于下一次的attemptExecution方法的执行。
+
+###### HystrixCommandMetrics统计命令执行逻辑
+
+断路器通过向HystrixCommandMetrics中的请求执行统计Observable发起订阅来完成断路器自动打开的相关逻辑。
+
+HystrixCommandMetrics统计了同一HystrixCommand请求的指标数据，包括链路健康统计流HealthCountsStream。HealthCountsStream中使用滑动窗口的方式对各项数据（HealthCounts）进行统计，在一个滑动窗口时间中又划分了若干个bucket（滑动窗口时间与bucket成整数倍关系），滑动窗口的移动是以bucket为单位，每个bucket仅统计该时间间隔内的请求数据。最后按照滑动窗口的大小对每个bucket中的统计数据进行聚合，得到周期时间内的统计数据HealthCounts。
+
+
 
 ##### 资源隔离
 
+在AbstractCommand#applyHystrixSemantics方法中，如果发现断路器关闭，将会尝试获取信号量。在Hystrix中，主要有两种策略进行资源隔离，一种是信号量隔离的策略，另一种是线程隔离的策略。
+
+###### 信号量隔离策略
+
+AbstractCommand中的接口类：TryableSemaphore
+
+```java
+static interface TryableSemaphore {
+
+        /**
+         * Use like this:
+         * <p>
+         * 
+         * <pre>
+         * if (s.tryAcquire()) {
+         * try {
+         * // do work that is protected by 's'
+         * } finally {
+         * s.release();
+         * }
+         * }
+         * </pre>
+         * 尝试获取信号量
+         * @return boolean
+         */
+        public abstract boolean tryAcquire();
+
+        /**
+         * ONLY call release if tryAcquire returned true.
+         * <p>
+         * 
+         * <pre>
+         * if (s.tryAcquire()) {
+         * try {
+         * // do work that is protected by 's'
+         * } finally {
+         * s.release();
+         * }
+         * }
+         * </pre>
+         * 释放信号量
+         */
+        public abstract void release();
+		// 获取已被使用信号量数量
+        public abstract int getNumberOfPermitsUsed();
+
+    }
+```
+
+它有两个实现类，其中一个是TryableSemaphoreNoOp，顾名思义即不进行信号量隔离，当采取线程隔离策略的时候将会注入该实现到HystrixCommand中，此时信号量隔离形同虚设；另一个具体的实现为TryableSemaphoreActual，如果采用信号量的隔离策略时，将会注入TryableSemaphoreActual的实现，但此时命令的执行将无法进行超时控制和异步化执行，因为信号量资源隔离策略无法指定命令在特定的线程执行，命令执行的线程将由rx控制，Hystrix无法在命令执行超时后获取到对应的线程进行强制中断。
+
+TryableSemaphoreActual的实现相当简单，通过AtomicInteger记录当前请求信号量的线程数，与初始化设置的允许最大信号量数numberOfPermits（可以动态调整）进行比较，判断是否允许获取信号量。这种轻量级的实现，保证TryableSemaphoreActual无阻塞的操作方式。实现代码如下所示：
+
+```java
+static class TryableSemaphoreActual implements TryableSemaphore {
+        protected final HystrixProperty<Integer> numberOfPermits;
+        private final AtomicInteger count = new AtomicInteger(0);
+
+        public TryableSemaphoreActual(HystrixProperty<Integer> numberOfPermits) {
+            this.numberOfPermits = numberOfPermits;
+        }
+
+        @Override
+        public boolean tryAcquire() {
+            // 获取信号量
+            int currentCount = count.incrementAndGet();
+            if (currentCount > numberOfPermits.get()) {
+                // 信号量已满，无法获取
+                count.decrementAndGet();
+                return false;
+            } else {
+                // 信号量未满，可以获取
+                return true;
+            }
+        }
+
+        @Override
+        public void release() {
+            // 释放信号量
+            count.decrementAndGet();
+        }
+
+        @Override
+        public int getNumberOfPermitsUsed() {
+            return count.get();
+        }
+
+    }
+```
+
+这其中每一个TryableSemaphore通过CommandKey与HystrixCommand一一绑定，这在AbstractCommand#getExecutionSemaphore方法中有所体现。如果采用信号量隔离的策略，将尝试从缓存中获取该命令的CommandKey对应的TryableSemaphoreActual（缓存中不存在则创建一个新的，并与CommandKey绑定放置到缓存中），否则返回TryableSemaphoreNoOp，不进行信号量隔离相关操作。
+
+######  线程隔离策略
+
+在AbstractCommand#executeCommandWithSpecifiedIsolation的方法中，线程隔离策略与信号量隔离策略的主要区别是，线程隔离策略将Observable的执行线程通过HystrixThreadPool# getScheduler方法进行了指定。
+
+HystrixThreadPool的作用是将HystrixCommand#run方法指定到隔离的线程中执行。HystrixThreadPool是由HystrixThreadPool.Factory生成和管理的，通过ThreadPoolKey（由@HystrixCommand中threadPoolKey指定）与HystrixCommand进行绑定，它的默认实现为HystrixThreadPoolDefault。HystrixThreadPoolDefault中的线程池ThreadPoolExecutor通过HystrixConcurrencyStrategy类策略生成，生成方法代码如下所示：
+
+```java
+// HystrixConcurrencyStrategy.java
+public ThreadPoolExecutor getThreadPool(final HystrixThreadPoolKey threadPoolKey, HystrixThreadPoolProperties threadPoolProperties) {
+        final ThreadFactory threadFactory = getThreadFactory(threadPoolKey);
+
+        final boolean allowMaximumSizeToDivergeFromCoreSize = threadPoolProperties.getAllowMaximumSizeToDivergeFromCoreSize().get();
+        final int dynamicCoreSize = threadPoolProperties.coreSize().get();
+        final int keepAliveTime = threadPoolProperties.keepAliveTimeMinutes().get();
+        final int maxQueueSize = threadPoolProperties.maxQueueSize().get();
+        final BlockingQueue<Runnable> workQueue = getBlockingQueue(maxQueueSize);
+
+        if (allowMaximumSizeToDivergeFromCoreSize) {
+            // 如果允许配置的maximumSize生效
+            final int dynamicMaximumSize = threadPoolProperties.maximumSize().get();
+            // 比较dynamicCoreSize和dynamicMaximumSize的大小，决定线程池的最大线程数
+            if (dynamicCoreSize > dynamicMaximumSize) {
+                logger.error("Hystrix ThreadPool configuration at startup for : " + threadPoolKey.name() + " is trying to set coreSize = " +
+                        dynamicCoreSize + " and maximumSize = " + dynamicMaximumSize + ".  Maximum size will be set to " +
+                        dynamicCoreSize + ", the coreSize value, since it must be equal to or greater than the coreSize value");
+                return new ThreadPoolExecutor(dynamicCoreSize, dynamicCoreSize, keepAliveTime, TimeUnit.MINUTES, workQueue, threadFactory);
+            } else {
+                return new ThreadPoolExecutor(dynamicCoreSize, dynamicMaximumSize, keepAliveTime, TimeUnit.MINUTES, workQueue, threadFactory);
+            }
+        } else {
+            return new ThreadPoolExecutor(dynamicCoreSize, dynamicCoreSize, keepAliveTime, TimeUnit.MINUTES, workQueue, threadFactory);
+        }
+    }
+```
+
+如果允许配置的maximumSize生效的话（即配置中allowMaximumSizeToDivergeFromCoreSize为true），在coreSize小于maximumSize时，会创建一个线程数最大值为maximumSize的线程池，但会在非活跃期返回多余的线程到系统。否则就只应用coreSize来定义线程池中线程的数量。dynamic**前缀说明这些配置都可以在运行时动态修改，如通过配置中心的方式进行运行时修改。
+
+HystrixThreadPool.java下的HystrixThreadPoolDefault类
+
+```java
+ @Override
+        public Scheduler getScheduler() {
+            //by default, interrupt underlying threads on timeout
+            // 默认在超时可中断线程
+            return getScheduler(new Func0<Boolean>() {
+                @Override
+                public Boolean call() {
+                    return true;
+                }
+            });
+        }
+@Override
+        public Scheduler getScheduler(Func0<Boolean> shouldInterruptThread) {
+            // touchConfig方法通过刷新配置的方式，动态调整线程池线程大小、线程存活时间等线程池的关键配置
+            touchConfig();
+            return new HystrixContextScheduler(HystrixPlugins.getInstance().getConcurrencyStrategy(), this, shouldInterruptThread);
+        }
+
+        // allow us to change things via fast-properties by setting it each time
+        private void touchConfig() {
+            final int dynamicCoreSize = properties.coreSize().get();
+            final int configuredMaximumSize = properties.maximumSize().get();
+            int dynamicMaximumSize = properties.actualMaximumSize();
+            final boolean allowSizesToDiverge = properties.getAllowMaximumSizeToDivergeFromCoreSize().get();
+            boolean maxTooLow = false;
+
+            if (allowSizesToDiverge && configuredMaximumSize < dynamicCoreSize) {
+                //if user sets maximum < core (or defaults get us there), we need to maintain invariant of core <= maximum
+                dynamicMaximumSize = dynamicCoreSize;
+                maxTooLow = true;
+            }
+
+            // In JDK 6, setCorePoolSize and setMaximumPoolSize will execute a lock operation. Avoid them if the pool size is not changed.
+            if (threadPool.getCorePoolSize() != dynamicCoreSize || (allowSizesToDiverge && threadPool.getMaximumPoolSize() != dynamicMaximumSize)) {
+                if (maxTooLow) {
+                    logger.error("Hystrix ThreadPool configuration for : " + metrics.getThreadPoolKey().name() + " is trying to set coreSize = " +
+                            dynamicCoreSize + " and maximumSize = " + configuredMaximumSize + ".  Maximum size will be set to " +
+                            dynamicMaximumSize + ", the coreSize value, since it must be equal to or greater than the coreSize value");
+                }
+                threadPool.setCorePoolSize(dynamicCoreSize);
+                threadPool.setMaximumPoolSize(dynamicMaximumSize);
+            }
+
+            threadPool.setKeepAliveTime(properties.keepAliveTimeMinutes().get(), TimeUnit.MINUTES);
+        }
+```
+
+touchConfig方法通过刷新配置的方式，动态调整线程池线程大小、线程存活时间等线程池的关键配置，以便在应用程序的相关配置发生改变时动态改变线程池配置。
+
+HystrixContextScheduler是Hystrix对rx中Scheduler调度器的重写，主要为了实现在Observable被退订时，不从线程池中获取线程执行命令，以及提供在命令执行过程中中断命令执行的能力（如在命令执行超时时中断命令执行）:
+
+```java
+private static class ThreadPoolWorker extends Worker {
+
+        private final HystrixThreadPool threadPool;
+        private final CompositeSubscription subscription = new CompositeSubscription();
+        private final Func0<Boolean> shouldInterruptThread;
+
+        public ThreadPoolWorker(HystrixThreadPool threadPool, Func0<Boolean> shouldInterruptThread) {
+            this.threadPool = threadPool;
+            this.shouldInterruptThread = shouldInterruptThread;
+        }
+
+        @Override
+        public void unsubscribe() {
+            subscription.unsubscribe();
+        }
+
+        @Override
+        public boolean isUnsubscribed() {
+            return subscription.isUnsubscribed();
+        }
+
+        @Override
+        public Subscription schedule(final Action0 action) {
+            // 如果Observable被退订，取消执行，不分配线程
+            if (subscription.isUnsubscribed()) {
+                // don't schedule, we are unsubscribed
+                return Subscriptions.unsubscribed();
+            }
+
+            // This is internal RxJava API but it is too useful.
+            ScheduledAction sa = new ScheduledAction(action);
+
+            subscription.add(sa);
+            sa.addParent(subscription);
+			// 分配线程提交任务
+            ThreadPoolExecutor executor = (ThreadPoolExecutor) threadPool.getExecutor();
+            FutureTask<?> f = (FutureTask<?>) executor.submit(sa);
+            // 添加一个订阅者用于在取消任务时释放线程
+            sa.add(new FutureCompleterWithConfigurableInterrupt(f, shouldInterruptThread, executor));
+
+            return sa;
+        }
+
+        @Override
+        public Subscription schedule(Action0 action, long delayTime, TimeUnit unit) {
+            throw new IllegalStateException("Hystrix does not support delayed scheduling");
+        }
+    }
+```
+
+如果Observable被退订，ThreadPoolWorker将取消任务的执行，返回被退订的Subscription；如果Observable没被退订，ThreadPoolWorker将为命令分配线程提交任务。注意在提交任务的过程中有可能会出现线程池中的线程已被占满，导致抛出RejectedExecutionException异常，拒绝任务提交。添加订阅者FutureCompleterWithConfigurableInterrupt是为了在取消任务的时候释放任务执行的线程。
+
+我们能再看FutureCompleterWithConfigurableInterrupt类：
+
+```java
+private static class FutureCompleterWithConfigurableInterrupt implements Subscription {
+        private final FutureTask<?> f;
+        private final Func0<Boolean> shouldInterruptThread;
+        private final ThreadPoolExecutor executor;
+
+        private FutureCompleterWithConfigurableInterrupt(FutureTask<?> f, Func0<Boolean> shouldInterruptThread, ThreadPoolExecutor executor) {
+            this.f = f;
+            this.shouldInterruptThread = shouldInterruptThread;
+            this.executor = executor;
+        }
+
+        @Override
+        public void unsubscribe() {
+            // 释放线程
+            executor.remove(f);
+            // 是否强制中断任务执行
+            if (shouldInterruptThread.call()) {
+                f.cancel(true);
+            } else {
+                f.cancel(false);
+            }
+        }
+
+        @Override
+        public boolean isUnsubscribed() {
+            return f.isCancelled();
+        }
+    }
+```
+
+取消任务的时候将从线程池中移除任务，释放线程，同时根据配置决定是否强制中断任务的执行。通过线程隔离的方式，可以将调用线程与执行命令的线程分隔开来，避免了调用线程被阻塞。同时通过线程池的方式对每种命令的并发线程数量进行控制，避免了一种命令的阻塞影响系统的其他请求的执行，很好地保护了服务调用者的线程资源。
+
 ##### 请求超时监控
 
+在AbstractCommand#executeCommandAndObserve方法中，如果命令开启了执行超时控制的相关配置，Hystrix将会为Observable配置超时监控，主要通过lift（new HystrixObservableTimeoutOperator<R>（_cmd））方法将现有的Observable转化为添加了超时检查的Observable。超时控制的主要实现逻辑位于HystrixObservableTimeoutOperator中。
+
+在AbstractCommand内部类中的HystrixObservableTimeoutOperator类中定义了一个超时监听器TimerListener.
+
+```java
+// 在AbstractCommand内部类中的HystrixObservableTimeoutOperator类
+private static class HystrixObservableTimeoutOperator<R> implements Operator<R, R> {
+
+        final AbstractCommand<R> originalCommand;
+
+        public HystrixObservableTimeoutOperator(final AbstractCommand<R> originalCommand) {
+            this.originalCommand = originalCommand;
+        }
+
+        @Override
+        public Subscriber<? super R> call(final Subscriber<? super R> child) {
+            final CompositeSubscription s = new CompositeSubscription();
+            // if the child unsubscribes we unsubscribe our parent as well
+            child.add(s);
+
+            /*
+             * Define the action to perform on timeout outside of the TimerListener to it can capture the HystrixRequestContext
+             * of the calling thread which doesn't exist on the Timer thread.
+             */
+            final HystrixContextRunnable timeoutRunnable = new HystrixContextRunnable(originalCommand.concurrencyStrategy, new Runnable() {
+
+                @Override
+                public void run() {
+                    child.onError(new HystrixTimeoutException());
+                }
+            });
+			// 监听器
+            TimerListener listener = new TimerListener() {
+
+                @Override
+                public void tick() {
+                    // if we can go from NOT_EXECUTED to TIMED_OUT then we do the timeout codepath
+                    // otherwise it means we lost a race and the run() execution completed or did not start
+                    // 命令执行超时
+                    if (originalCommand.isCommandTimedOut.compareAndSet(TimedOutStatus.NOT_EXECUTED, TimedOutStatus.TIMED_OUT)) {
+                        // 取消命令的执行
+                        // report timeout failure
+                        originalCommand.eventNotifier.markEvent(HystrixEventType.TIMEOUT, originalCommand.commandKey);
+						// 关闭请求
+                        // shut down the original request
+                        s.unsubscribe();
+
+                        timeoutRunnable.run();
+                        //if it did not start, then we need to mark a command start for concurrency metrics, and then issue the timeout
+                    }
+                }
+
+                @Override
+                public int getIntervalTimeInMilliseconds() {
+                    return originalCommand.properties.executionTimeoutInMilliseconds().get();
+                }
+            };
+			// 添加一个HystrixTimer的listener
+            final Reference<TimerListener> tl = HystrixTimer.getInstance().addTimerListener(listener);
+
+            // set externally so execute/queue can see this
+            originalCommand.timeoutTimer.set(tl);
+
+            /**
+             * If this subscriber receives values it means the parent succeeded/completed
+             * 如果此订阅者收到值，则表示父级成功/完成
+             *对原来的Observable添加了一个Subscriber订阅者，监听Observable执行结果，在命令执行结束后清理TimerListener
+             */
+            Subscriber<R> parent = new Subscriber<R>() {
+				// 执行结束且未超时
+                @Override
+                public void onCompleted() {
+                    if (isNotTimedOut()) {
+                        // 清理TimerListener
+                        // stop timer and pass notification through
+                        tl.clear();
+                        child.onCompleted();
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    // 执行错误且未超时
+                    if (isNotTimedOut()) {
+                        // stop timer and pass notification through
+                        // 清理TimerListener
+                        tl.clear();
+                        child.onError(e);
+                    }
+                }
+
+                @Override
+                public void onNext(R v) {
+                    // 传递订阅者且未超时
+                    if (isNotTimedOut()) {
+                        child.onNext(v);
+                    }
+                }
+				// 检查命令执行是否超时
+                private boolean isNotTimedOut() {
+                    // if already marked COMPLETED (by onNext) or succeeds in setting to COMPLETED
+                    return originalCommand.isCommandTimedOut.get() == TimedOutStatus.COMPLETED ||
+                            originalCommand.isCommandTimedOut.compareAndSet(TimedOutStatus.NOT_EXECUTED, TimedOutStatus.COMPLETED);
+                }
+
+            };
+
+            // if s is unsubscribed we want to unsubscribe the parent
+            s.add(parent);
+
+            return parent;
+        }
+
+    }
+// 在AbstractCommand定义了TimedOutStatus具有三种状态，分别是未执行，执行结束已经执行超时
+protected enum TimedOutStatus {
+ NOT_EXECUTED, COMPLETED, TIMED_OUT
+}
+```
+
+执行TimerListener的代码在HystrixTimer类中：
+
+```java
+
+// 添加一个HystrixTimer的listener
+            final Reference<TimerListener> tl = HystrixTimer.getInstance().addTimerListener(listener);
+
+//添加一个HystrixTimer.TimerListener ，它将被执行，直到它被垃圾收集或通过清除返回的Reference删除。
+// 注意：通过此方法添加侦听器以在完成时清除此侦听器是代码的责任
+//  // add a TimerListener 
+// Reference<TimerListener> listener = HystrixTimer.getInstance().addTimerListener(listenerImpl); 
+ // sometime later, often in a thread shutdown, request cleanup, servlet filter or something similar the listener must be shutdown via the clear() method
+ listener.clear();
+// HystrixTimer#addTimerListener
+public Reference<TimerListener> addTimerListener(final TimerListener listener) {
+        startThreadIfNeeded();
+        // add the listener
+
+        Runnable r = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    // 检查是否超时以及进行超时处理
+                    listener.tick();
+                } catch (Exception e) {
+                    logger.error("Failed while ticking TimerListener", e);
+                }
+            }
+        };
+		// 启动超时监控的定时任务
+        ScheduledFuture<?> f = executor.get().getThreadPool().scheduleAtFixedRate(r, listener.getIntervalTimeInMilliseconds(), listener.getIntervalTimeInMilliseconds(), TimeUnit.MILLISECONDS);
+        return new TimerReference(listener, f);
+    }
+```
+
+通过ScheduledThreadPoolExecutor#scheduleAtFixedRate的方式启动定时任务，使tick方法能够在命令执行超时时执行，取消超时命令的执行并抛出超时异常。
+
 ##### 失败回滚
+
+Hystrix中执行失败回滚的逻辑主要封装在AbstractCommand#executeCommandAndObserve #handleFallback的异常回调方法中，根据执行过程中抛出的异常调用不同的方法对其进行处理，返回带有失败回滚逻辑的Observable。
+
+在handleFallback方法中对不同的执行错误调用不同的处理方法，主要有：
+
+- 对线程获取失败处理的handleThreadPoolRejectionViaFallback方法。
+-  执行超时处理的handleTimeoutViaFallback方法。
+- 远程调用请求失败处理的handleBadRequestByEmittingError方法。
+-  Hystrix自身执行异常处理的handleFailureViaFallback方法。除此之外，在applyHystrixSemantics中包括了断路失败处理方法和获取信号量失败处理方法：
+- 断路失败处理的handleShortCircuitViaFallback方法。
+-  获取信号量失败处理的#handleSemaphoreRejectionViaFallback方法。
+
+这些方法的处理过程大同小异，最终都是通过AbstractCommand#getFallbackOrThrow Exception获取到包含失败逻辑的Observable或者异常Observable（没有配置失败回滚逻辑的情况下）
+
+
+
+#### Hystirx请求合并
+
+Hystrix还提供了请求合并的功能。多个请求被合并为一个请求进行一次性处理，可以有效减少网络通信和线程池资源。请求合并之后，一个请求原本可能在6毫秒之内能够结束，现在必须等待请求合并周期后（10毫秒）才能发送请求，增加了请求的时间（16毫秒）。但是请求合并在处理高并发和高延迟命令上效果极佳。
+
+它提供两种方式进行请求合并：request-scoped收集一个HystrixRequestContext中的请求集合成一个批次；而globally-scoped将多个HystrixRequestContext中的请求集合成一个批次，这需要应用的下游依赖能够支持在一个命令调用中处理多个HystrixRequestContext。
+
+HystrixRequestContext中包含和管理着HystrixRequestVariableDefault,HystrixRequestVariableDefault中提供了请求范围内的相关变量，所以在同一请求中的多个线程可以分享状态，HystrixRequestContext也可以通过HystrixRequestVariableDefault收集到请求范围内相同的HystrixCommand进行合并。
+
+##### 通过注解方式进行请求合并
+
+单个请求需要使用@HystrixCollapser注解修饰，并指明batchMethod方法，这里我们设置请求合并的周期为100秒。由于请求合并中不能同步等待结果，所以单个请求返回的结果为Future，即需要异步等待结果。batchMethod方法需要被@HystrixCommand注解，说明这是一个被HystrixCommand封装的方法，其内是一个批量的请求接口，为了方便展示，例中就直接虚假地构建了本地数据，同时有日志打印批量方法被执行。具体代码如下所示：
+
+```java
+@Service
+public class ProductService
+｛
+    /**
+     * @param null
+     * @description: 1.@HystrixCollapser:该注解的作用是标识当前的方法是一个的合并请求的方法，并且此方法内的逻辑是不会被执行的
+     * batchMethod:请求合并完毕的后触发的方法
+     * scope：请求合并的模式
+     * collapserProperties：请求合并的设置
+     * timerDelayInMilliseconds：请求合并的等待的时间
+     * maxRequestsInBatch：指定时间内对请求合并的请求的最大数
+     * @retun: Future:注意请求的合并的方法的返回值必须为Future
+     */
+    @HystrixCollapser(batchMethod = "batchMethod", scope = com.netflix.hystrix.HystrixCollapser.Scope.GLOBAL,
+            //请求时间间隔在 20ms 之内的请求会被合并为一个请求,默认为 10ms
+            collapserProperties = {
+                    @HystrixProperty(name = "timerDelayInMilliseconds", value = "20"),
+                    //设置触发批处理执行之前，在批处理中允许的最大请求数。
+                    @HystrixProperty(name = "maxRequestsInBatch", value = "200")
+            })
+    public Future<Product> mergeRequest(Integer id)
+    {
+        System.out.println("========+" + id + "+======");
+        return null;
+    }
+
+
+    /**
+     * 1.@HystrixCommand:表示当前的方法开启熔断
+       2.请求合并完毕后触发的方法，要和batchMethod 内的名字一致
+       3.在请求合并完毕后会将合并的参数的使用list集合的方式进行传递
+     *
+     * @return
+     */
+    @HystrixCommand
+    public List<Product> batchMethod(List<Integer> ids)
+    {
+        for (Integer id : ids)
+        {
+            System.out.println(ids + "batchMethod------------");
+        }
+        //相当于调用了Provider返回的数据
+        List<Product> list = Arrays.asList(new Product("电视", 1), new Product("电视", 2), new Product("电视", 3), new Product("电视", 4));
+        return list;
+    }
+}
+////////////////////
+// 测试
+//////////////////
+@Controller
+public class ProductController{
+
+    @Autowired
+    private ProductService productService;
+
+
+    /**
+     * 模拟测试请求的合并
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+  @GetMapping(value = "/customer")
+public String setProductService() throws Exception{
+    Future<Product> productFuture1 = this.productService.mergeRequest(1);
+    Future<Product> productFuture2 = this.productService.mergeRequest(2);
+    Future<Product> productFuture3 = this.productService.mergeRequest(3);
+    Future<Product> productFuture4 = this.productService.mergeRequest(4);
+
+    System.out.println(productFuture1.get().toString());
+    System.out.println(productFuture2.get().toString());
+    System.out.println(productFuture3.get().toString());
+    System.out.println(productFuture4.get().toString());
+
+    return "";
+    }
+}
+```
+
+
+
+##### 继承HystrixCollapser
+
+参考：[江南一点雨Hystrix请求合并](https://blog.csdn.net/u012702547/article/details/78213270?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_baidulandingword-0&spm=1001.2101.3001.4242)
 
 
 
