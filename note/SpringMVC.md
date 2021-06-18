@@ -1,33 +1,69 @@
 ## SpringMVC：
 
-​	Spring web MVC 提供了模型-视图-控制体系结构来灵活的开发，松散耦合的web的应用的组件 。MVC 模式导致了应用程序的不同方面(输入逻辑、业务逻辑和 UI 逻辑)的分离，同时提供了在这些元素之间的松散耦合。模型封装了应用程序数据，并且通常它们由 POJO 组成。视图主要用于呈现模型数据，并且通常它生成客户端的浏览器可以解释的 HTML 输出。控制器主要用于处理用户请求，并且构建合适的模型并将其传递到视图呈现。
+Spring web MVC 提供了模型-视图-控制体系结构来灵活的开发，松散耦合的web的应用的组件 。MVC 模式导致了应用程序的不同方面(输入逻辑、业务逻辑和 UI 逻辑)的分离，同时提供了在这些元素之间的松散耦合。模型封装了应用程序数据，并且通常它们由 POJO 组成。视图主要用于呈现模型数据，并且通常它生成客户端的浏览器可以解释的 HTML 输出。控制器主要用于处理用户请求，并且构建合适的模型并将其传递到视图呈现。
+
+### spring mvc架构：
+
+​	主要就是DispatcherServlet进行对各个组件的调用以及各个组件对DispatcherSevlet的响应
+
+> 包括组件有：DispatcherServlet:相当于mvc中的contol,是整个流程控制的中心，由他调用其他组件，降低了组件之间的耦合，
+
+​		`HandlerMapping:`处理映射器根据url找到Handler处理器
+
+​		`Handler:` 是后端控制器在前端控制器下对用户处理请求，需要自己开发里面的业务逻辑
+
+​		`HandlAdaptcher:` 这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行
+
+​		`ViewResolver:`视图解析器将结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户
+
+​		`View:`其中视图包括jstlView,fremarkerView,padfView,最常用的为jsp一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面
+
+在springmvc的各个组件中，处理器映射器、处理器适配器、视图解析器称为springmvc的三大组件。
+
+#### 架构流程：
+
+[![2yeYLV.png](https://z3.ax1x.com/2021/06/09/2yeYLV.png)](https://imgtu.com/i/2yeYLV)
+
+1. 请求--->前端控制器DispatcherServlet
+2. DispatcherServlet调用HandlerMapping处理器映射器
+3. 处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。
+4. DispatcherServlet通过HandlerAdapter处理器适配器调用处理器
+5. 执行处理器(Controller，也叫后端控制器)。
+6. Controller执行完成返回ModelAndView
+7. HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet
+8. DispatcherServlet将ModelAndView传给ViewReslover视图解析器
+9. ViewReslover解析后返回具体View
+10. DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）。
+11. DispatcherServlet响应用户
 
 ####  DispatcherServlet：
 
-Spring Web 模型-视图-控制（MVC）框架是围绕 DispatcherServlet 设计的，DispatcherServlet 用来处理所有的 HTTP 请求和响应。
+Spring Web 模型-视图-控制（MVC）框架是围绕 DispatcherServlet 设计的，DispatcherServlet 用来处理所有的 HTTP 请求和响应。DispatcherServlet是前置控制器，配置在web.xml文件中的。拦截匹配的请求，Servlet拦截匹配规则要自己定义，把拦截下来的请求，依据相应的规则分发到目标Controller来处理，是配置spring MVC的第一步。
 
-Spring Web MVC DispatcherServlet 的请求处理的工作流程如下图所示：
+DispatcherServlet是前端控制器设计模式的实现，提供Spring Web MVC的集中访问点，而且负责职责的分派，而且与Spring IoC容器无缝集成，从而可以获得Spring的所有好处。
 
-[![BU9gxS.png](https://s1.ax1x.com/2020/10/31/BU9gxS.png)](https://imgchr.com/i/BU9gxS)
+##### 主要职责
 
-​				request---->dipatcherSevlet:(handlerMapping,Controller,View Resolver, View)-------->respose;
+1. 文件上传解析，如果请求类型是multipart将通过MultipartResolver进行文件上传解析；
+2. 通过HandlerMapping，将请求映射到处理器（返回一个HandlerExecutionChain，它包括一个处理器、多个HandlerInterceptor拦截器）；
+3. 通过HandlerAdapter支持多种类型的处理器(HandlerExecutionChain中的处理器)；
+4. 通过ViewResolver解析逻辑视图名到具体视图实现；
+5. 本地化解析；
+6. 渲染具体的视图等；
+7. 如果执行过程中遇到异常将交给HandlerExceptionResolver来解析。
 
-> ​				1.收到一个 HTTP 请求后，DispatcherServlet 根据 HandlerMapping 来选择并且调用适当的控制器。
->
-> ​				2.控制器接受请求，并基于使用的 GET 或 POST 方法来调用适当的 service 方法。Service 方法将设置基于定义的业务逻辑的模型数据，并返回视图名称到 DispatcherServlet 中。
->
-> ​				3.DispatcherServlet 会从 ViewResolver 获取帮助，为请求检取定义视图。
->
-> ​				4.一旦确定视图，DispatcherServlet 将把模型数据传递给视图，最后呈现在浏览器中。
->
+**DispatcherServlet初始化主要做了如下两件事情：**
 
-​	上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。	
+1. 初始化SpringMVC使用的Web上下文，并且可能指定父容器为（ContextLoaderListener加载了根上下文）；
+2. 初始化DispatcherServlet使用的策略，如HandlerMapping、HandlerAdapter等。
+
+​	上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。
 
 #### 创建SpringMVC项目：
 
-​				1.导包
-​				2.在web.xml配置spring前端的控制器，指定读取的springMVC的配置文件，创建servlet的映射的
-​				
+1.导包
+
+2.在web.xml配置spring前端的控制器，指定读取的springMVC的配置文件，创建servlet的映射的		
 
 ```xml
 <!-- 配置SpringMVC前端控制器 -->
@@ -83,55 +119,6 @@ public class HelloSpringMVC {
 ```
 
 5.创建视图
-
-### spring mvc架构：
-
-​	主要就是DispatcherServlet进行对各个组件的调用以及各个组件对DispatcherSevlet的响应
-
-​	`包括组件有：DispatcherServlet:相当于mvc中的contol,是整个流程控制的中心，由他调用其他组件，降低了组件之间的耦合，`
-
-> ​		`HandlerMapping:`处理映射器根据url找到Handler处理器
->
-> ​		`Handler:` 是后端控制器在前端控制器下对用户处理请求，需要自己开发里面的业务逻辑
->
-> ​		`HandlAdaptcher:` 这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行
->
-> ​		`ViewResolver:`视图解析器将结果生成View视图，View Resolver首先根据逻辑视图名解析成物理视图名即具体的页面地址，再生成View视图对象，最后对View进行渲染将处理结果通过页面展示给用户
->
-> ​		`View:`其中视图包括jstlView,fremarkerView,padfView,最常用的为jsp一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开发具体的页面
->
-
-​		在springmvc的各个组件中，处理器映射器、处理器适配器、视图解析器称为springmvc的三大组件。
-​		
-
-#### 架构流程：
-
-> ​					1.请求--->前端控制器DispatcherServlet
->
-> ​					2.DispatcherServlet调用HandlerMapping处理器映射器
->
-> ​					3、	处理器映射器根据请求url找到具体的处理器，生成处理器对象及处理器拦截器(如果有则生成)一并返回给DispatcherServlet。
->
-> ​					4、	DispatcherServlet通过HandlerAdapter处理器适配器调用处理器
->
-> ​					5、	执行处理器(Controller，也叫后端控制器)。
->
-> ​					6、	Controller执行完成返回ModelAndView
->
-> ​					7、	HandlerAdapter将controller执行结果ModelAndView返回给DispatcherServlet
->
-> ​					8、	DispatcherServlet将ModelAndView传给ViewReslover视图解析器
->
-> ​					9、	ViewReslover解析后返回具体View
->
-> ​					10、DispatcherServlet对View进行渲染视图（即将模型数据填充至视图中）。
->
-> ​					11、DispatcherServlet响应用户
->
-
-
-
-[![BU9gxS.png](https://s1.ax1x.com/2020/10/31/BU9gxS.png)](https://imgchr.com/i/BU9gxS)
 
 
 
@@ -232,20 +219,20 @@ controller的方法：放入model参数的方法的使用：
 #### 集合类型的参数绑定
 
 ```java
-/**
-* 数组类型的：前台传参
-* var array=[]
-* array.push('1');
-* array.push("2")
-* 传参：array
-* curl -X GET  -i http://localhost:6006/user/file/testarray?list=bmd89x&list=bmd89x
-*/
-@RequestMaping("/array")
-public testArray(Integer[] userId){
-	for(int i: userId){
-        System.out.println(i)
+    /**
+    * 数组类型的：前台传参
+    * var array=[]
+    * array.push('1');
+    * array.push("2")
+    * 传参：array
+    * curl -X GET  -i http://localhost:6006/user/file/testarray?list=bmd89x&list=bmd89x
+    */
+    @RequestMaping("/array")
+    public testArray(Integer[] userId){
+        for(int i: userId){
+            System.out.println(i)
+        }
     }
-}
     /**
      * testList
      * @param list
@@ -316,12 +303,10 @@ public testArray(Integer[] userId){
 >
 > ​        2.5db.properties
 >
-> ​        2.6mapper映射xml
->
-
-​        2.1web.xml需要做以下配置：加载spring的配置文件，spring上下的监听器，配置前端控制器并读取springmvc配置文件，配置映射及拦截规则；   						 
+> ​        2.6mapper映射xml			 
 
 ```xml
+    2.1web.xml需要做以下配置：加载spring的配置文件，spring上下的监听器，配置前端控制器并读取springmvc配置文件，配置映射及拦截规则；   
 <!-- 加载spring的配置文件 -->
 <context-param>
     <param-name>contextConfigLocationn</param-name>
@@ -355,7 +340,9 @@ public testArray(Integer[] userId){
     <url-pattern>/</url-pattern>
 </servlet-mapping>
 </web-app>
+
 2.2：applicationContext.xml	：
+
 读取指定的数据源，配置连接池，注册mybatis工厂读取mybatis核心配置文件,mapper代理扫描包,注解事务开启aop事务，注入各个bean；
 <!-- 指定spring读取db.properties配置 -->
 <context:property-placeholder location="classpath:db.properties"  />
@@ -393,7 +380,9 @@ public testArray(Integer[] userId){
     <property name="sqlSessionFactory" ref="sqlSessionFactoryBean"></property>
 </bean>
 </beans>
+
 2.3springmvc-servlert.xml
+
 主要用于扫描控制器，注解驱动，配置视图解析器。
 <!-- 配置controller扫描包 ，多个包调用用","隔开
 扫描@Controller，@Service
@@ -414,8 +403,11 @@ public testArray(Integer[] userId){
 最终的jsp物理地址：前缀+逻辑视图+后缀 
 </bean>  -->
 </beans>
+
 2.4sqlMapConfig.xml：
+
 mybatis的配置文件，其实不用配置只需要相应的头文件就可以
+
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!DOCTYPE configuration
@@ -429,6 +421,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
     </typeAliases>
     <!-- 已经扫秒的包了，所以不用配置mapper的路径了 -->
 </configuration>
+
 2.5db.properties：配置数据库的属性
 
 2.6mapper映射xml：书写sql的配置文件，
@@ -470,10 +463,9 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 即 Representational State Transfer。（资源）表现层状态转化。是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用.
 
-> ​			@RequestHeader 绑定请求报头的属性值
+> @RequestHeader 绑定请求报头的属性值
 >
-> ​			@CookieValue 绑定请求中的 Cookie 值
->
+> @CookieValue 绑定请求中的 Cookie 值
 
 Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为该对象填充属性值。支持级联属性。如：dept.deptId、dept.address.tel 等,若希望在多个请求之间共用某个模型属性数据，则可以在控制器类上标注一个 @SessionAttributes, Spring MVC将在模型中对应的属性暂存到 HttpSession 中。
 
@@ -487,13 +479,13 @@ Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为
 > ​				– @SessionAttributes(types={User.class, Dept.class})
 >
 > ​				– @SessionAttributes(value={“user1”, “user2”},types={Dept.class})	
->
 
 ​		
 
 
 ```java
-1. 使用注解@RequestMapping("item/{id}")声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
+1. 使用注解@RequestMapping("item/{id}")
+   声明请求的url{xxx}叫做占位符，请求的URL可以是“item /1”或“item/2”
 
 2. 使用(@PathVariable() Integer id)获取url上的数据	
 
@@ -506,8 +498,8 @@ Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为
 @RequestMapping("item/{id}")
 @ResponseBody
 public Item queryItemById(@PathVariable() Integer id) {
-Item item = this.itemService.queryItemById(id);
-return item;
+    Item item = this.itemService.queryItemById(id);
+    return item;
 }
 1. @ PathVariable 是 获取 url 上数据 的。 @RequestParam获取请求参数的（包括post表单提交）
 
@@ -523,10 +515,9 @@ return item;
 ​	使用 @NumberFormat 注解
 
 ​	– JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式，
-如：”yyyy-MM-dd hh:mm:ss”等其他的
-​					<mvc:annotation-driven/> 默认创建的
+如：”yyyy-MM-dd hh:mm:ss”等其他的`<mvc:annotation-driven/>` 默认创建的
 
-​					ConversionService 实例即为 FormattingConversionServiceFactroyBean
+ConversionService 实例即为 FormattingConversionServiceFactroyBean
 
 #### springmvc处理json数据:
 
@@ -551,14 +542,12 @@ HttpMessageConverter<T>接口定义的方法： – Boolean canRead(Class<?> cla
 > ​		使用 @RequestBody / @ResponseBody 对处理方法进行标注
 >
 > > ​		使用 HttpEntity<T> / ResponseEntity<T> 作为处理方法的入参或返回值  当控制器处理方法使用到 @RequestBody/ @ResponseBody 或HttpEntity<T>/ResponseEntity<T> 时, Spring 首先根据请求头或响应头的Accept 属性选择匹配的 HttpMessageConverter, 进而根据参数类型或泛型类型的过滤得到匹配的 HttpMessageConverter, 若找不到可用的 HttpMessageConverter 将报错
-> >
 
 > ​		`@RequestBody 和 @ResponseBody 不需要成对出现`
 >
 > ​		`@RequestBody注解用于读取http请求的内容(字符串)，通过springmvc提供的HttpMessageConverter接口将读到的内容（json数据）转换为java对象并绑定到Controller方法的参数上。`
 >
 > ​       `​@ResponseBody注解用于将Controller的方法返回的对象，通过springmvc提供的HttpMessageConverter接口转换为指定格式的数据如：json,xml等，通过Response响应给客户端`
->
 
 这里都要配置注解驱动`。<mvc:annotation-driven/>`
 
@@ -566,7 +555,7 @@ HttpMessageConverter<T>接口定义的方法： – Boolean canRead(Class<?> cla
 
 Spring MVC 为文件上传提供了直接的支持，这种支持是通过即插即用的 MultipartResolver 实现的。Spring 用Jakarta Commons FileUpload 技术实现了一个MultipartResolver 实现类：CommonsMultipartResovler
 
-​		`Spring MVC 上下文中默认没有装配 MultipartResovler，因此默认情况下不能处理文件的上传工作，如果想使用 Spring的文件上传功能，需现在上下文中配置 MultipartResolver`
+​	Spring MVC 上下文中默认没有装配 MultipartResovler，因此默认情况下不能处理文件的上传工作，如果想使用 Spring的文件上传功能，需现在上下文中配置 MultipartResolver
 
 `​defaultEncoding: 必须和用户 JSP 的 pageEncoding 属性一致，以便正确解析表单的内容``​为了让 CommonsMultipartResovler 正确工作，必须先将 Jakarta Commons FileUpload 及 Jakarta Commons io的类包添加到类路径下。`	
 
@@ -581,8 +570,7 @@ Spring MVC 为文件上传提供了直接的支持，这种支持是通过即插
 代码如下：
 
 ```java
-public Map<String, Object> add(User user, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request
-                               , HttpServletResponse response) {
+public Map<String, Object> add(User user, @RequestParam(name = "file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
     System.out.println(file);
     Map<String, Object> map = new HashMap<>();
     if (user.getUsername() != null && user.getPassword() != null) {

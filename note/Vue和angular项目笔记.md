@@ -1,12 +1,20 @@
 ## Vue和angular项目：
 
-### Vue项目创建
+### Vue项目2.x创建
 
 - 安装nodejs
 - 使用cnpm :npm install -g cnpm --registry=https://registry.npm.taobao.org
 - 搭建vue环境： npm install --global vue-cli  /   cnpm install --global vue-cli 
 - 创建项目：vue init webpack 项目名称  ...一系列的操作
 - 运行： npm run dev
+
+### vue3.x创建
+
+1. npm uninstall -g vue-cli
+2. npm install -g @vue/cli
+3. vue create 项目名称
+
+https://blog.csdn.net/qq_43459332/article/details/102487268
 
 #### Vue项目目录：
 
@@ -104,7 +112,8 @@
    	import ScollPage from '@/components/mintUI/ScollPage'
    	
    	import vuexindex from '@/components/vuex-vue/index'
-   	
+
+
    	
    	
    	Vue.use(Router)
@@ -182,7 +191,7 @@
    	    }
    	  ]
    	})
-   	
+
 
 
 #### 使用elementUI和mintUI
@@ -207,32 +216,31 @@
 			import ElementUI from 'element-ui';
 			import 'element-ui/lib/theme-chalk/index.css';
 			Vue.use(ElementUI);
+		4、*webpack.config.js  配置file_loader      http://element.eleme.io/1.4/#/zh-CN/component/quickstart
+				  {
+					test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+					loader: 'file-loader'
+			          }
+			5.看文档直接使用。	
 
-
-​				
-​		
-​	
-​		4、*webpack.config.js  配置file_loader      http://element.eleme.io/1.4/#/zh-CN/component/quickstart
-​			  {
-​				test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
-​				loader: 'file-loader'
-​		          }
-​		5.看文档直接使用。
-​		
-​		## elementUI单独使用：
-​		import { Button, Select } from 'element-ui';
-​	
-		Vue.use(Button)
-		Vue.use(Select)
-
+##  elementUI单独使用：
 
 ​	
-​		引入对应的css
+
+			  ​	import { Button, Select } from 'element-ui';
+	​	
+	​		Vue.use(Button)
+	​		Vue.use(Select)
+
+
 ​	
-​			import 'element-ui/lib/theme-chalk/index.css';
-​	
-		如果报错： webpack.config.js  配置file_loader
-	
+		
+	​		引入对应的css
+	​	
+	​			import 'element-ui/lib/theme-chalk/index.css';
+	​	
+	​		如果报错： webpack.config.js  配置file_loader
+	​	
 			  {
 				test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
 				loader: 'file-loader'
