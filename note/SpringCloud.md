@@ -649,9 +649,9 @@ eureka:
 
 #### 熔断器防止服务雪崩：
 
-​    	在微服务架构中，根据业务来拆分成一个个的服务，服务与服务之间可以通过 RPC 相互调用，在 Spring Cloud 中可以用 RestTemplate + Ribbon 和 Feign 来调用。为了保证其高可用，单个服务通常会集群部署。
+在微服务架构中，根据业务来拆分成一个个的服务，服务与服务之间可以通过 RPC 相互调用，在 Spring Cloud 中可以用 RestTemplate + Ribbon 和 Feign 来调用。为了保证其高可用，单个服务通常会集群部署。
 
-​    	由于网络原因或者自身的原因，服务并不能保证 100% 可用，如果单个服务出现问题，调用这个服务就会出现线程阻塞，此时若有大量的请求涌入，Servlet 容器的线程资源会被消耗完毕，导致服务瘫痪。服务与服务之间的依赖性，故障会传播，会对整个微服务系统造成灾难性的严重后果，这就是服务故障的 “雪崩” 效应。
+由于网络原因或者自身的原因，服务并不能保证 100% 可用，如果单个服务出现问题，调用这个服务就会出现线程阻塞，此时若有大量的请求涌入，Servlet 容器的线程资源会被消耗完毕，导致服务瘫痪。服务与服务之间的依赖性，故障会传播，会对整个微服务系统造成灾难性的严重后果，这就是服务故障的 “雪崩” 效应。
 
 ##### 1.在feign中使用：        
 
@@ -677,6 +677,30 @@ public interface AdminService {
    	}
 }     
 ```
+
+**同时可以配置回退的原因的FallBackFactory.class,这个可以配置异常的原因**,
+
+```java
+@FeignClient(value = "cloud-shop-service-system", fallbackFactory = AdminServiceFallBackFactory.class)
+public interface AdminService {}
+
+/**
+ * user:kay三石
+ * time: 18:23
+ * desc: 配置回退的原因
+ **/
+@Component
+@Slf4j
+public class AdminServiceFallBackFactory implements FallbackFactory<AdminService> {
+    @Override
+    public AdminService create(Throwable throwable) {
+        log.info(throwable.getCause().getMessage());
+        return null;
+    }
+}
+```
+
+<font color="red"> 注意：上面的熔断的类都需要用spring来管理，加入@Component注解，否则开启熔断的配置加入回报错 no fallback ...</font>
 
 ##### 2.在ribbon中使用：
 
@@ -734,17 +758,17 @@ public class HystrixDashboardConfiguration {
 
 ​    测试熔断localhost:8764/hystrix
 
-##### hystrix触发fallback的方法：、
+##### hystrix触发fallback的方法：
 
-​        	timeout,SHORT_CIRCUITED:断路器打开不尝试执行，THREAD_POOL_REJECTED：线程池拒绝，不尝试执行，SEMAPHORE_REJECTED	信号量拒绝，不尝试执行	YES
+timeout,SHORT_CIRCUITED:断路器打开不尝试执行，THREAD_POOL_REJECTED：线程池拒绝，不尝试执行，SEMAPHORE_REJECTED	信号量拒绝，不尝试执行	YES
 
 #### 使用统一的网关访问接口zuul：
 
-​    		在 Spring Cloud 微服务系统中，一种常见的负载均衡方式是，客户端的请求首先经过负载均衡（Zuul、Ngnix），再到达服务网关（Zuul 集群），然后再到具体的服。 服务统一注册到高可用的服务注册中心集群，服务的所有的配置文件由配置服务管理，配置服务的配置文件放在 GIT 仓库，方便开发人员随时改配置    
+在 Spring Cloud 微服务系统中，一种常见的负载均衡方式是，客户端的请求首先经过负载均衡（Zuul、Ngnix），再到达服务网关（Zuul 集群），然后再到具体的服。 服务统一注册到高可用的服务注册中心集群，服务的所有的配置文件由配置服务管理，配置服务的配置文件放在 GIT 仓库，方便开发人员随时改配置    
 
 ##### zuul：
 
-​		 Zuul 的主要功能是路由转发和过滤器。路由功能是微服务的一部分，比如 /api/user 转发到到 User 服务，/api/shop 转发到到 Shop 服务。Zuul 默认和 Ribbon 结合实现了负载均衡的功能。
+Zuul 的主要功能是路由转发和过滤器。路由功能是微服务的一部分，比如 /api/user 转发到到 User 服务，/api/shop 转发到到 Shop 服务。Zuul 默认和 Ribbon 结合实现了负载均衡的功能。
 
 ######     **pom.xml中加入：** 
 
