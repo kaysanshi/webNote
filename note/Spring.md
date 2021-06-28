@@ -88,6 +88,92 @@ spring-webmvc.jar//
 Spring项目：<---Spring配置{jar包----->tlb标签库--->applicationContext.xml}
 ```
 
+### Spring最核心的两个类：
+
+#### DefaultListableBeanFactory
+
+XmlBeanFactory继承自DefaultListableBeanFactory，而DefaultListableBeanFactory是整个bean加载的核心部分，是Spring注册及加载bean的默认实现，而对于XmlBeanFactory与DefaultListableBeanFactory不同的地方其实是在XmlBeanFactory中使用了自定义的XML读取器XmlBeanDefinitionReader，实现了个性化的BeanDefinitionReader读取，DefaultListableBeanFactory继承了AbstractAutowireCapableBeanFactory并实现了ConfigurableListableBeanFactory以及BeanDefinitionRegistry接口。以下ConfigurableListableBeanFactory的层次结构图：
+
+![https://note.youdao.com/web/#/file/12fc37e835ef1f10c1a898069ce83c85/note/4d66dbf676d025f8148f4085f4b11519/](https://static.dingtalk.com/media/lALPDgfLOmTZhSvNAsDNBqo_1706_704.png_720x720q90g.jpg?bizType=im)
+
+● AliasRegistry：定义对alias的简单增删改等操作。
+
+● SimpleAliasRegistry：主要使用map作为alias的缓存，并对接口AliasRegistry进行实现。
+
+● SingletonBeanRegistry：定义对单例的注册及获取。
+
+● BeanFactory：定义获取bean及bean的各种属性。
+
+● DefaultSingletonBeanRegistry：对接口SingletonBeanRegistry各函数的实现。
+
+● HierarchicalBeanFactory：继承BeanFactory，也就是在BeanFactory定义的功能的基础上增加了对parentFactory的支持。
+
+● BeanDefinitionRegistry：定义对BeanDefinition的各种增删改操作。
+
+● FactoryBeanRegistrySupport：在DefaultSingletonBeanRegistry基础上增加了对FactoryBean的特殊处理功能。
+
+● ConfigurableBeanFactory：提供配置Factory的各种方法。
+
+● ListableBeanFactory：根据各种条件获取bean的配置清单。
+
+● AbstractBeanFactory：综合FactoryBeanRegistrySupport和ConfigurableBeanFactory的功能。
+
+● AutowireCapableBeanFactory：提供创建bean、自动注入、初始化以及应用bean的后处理器。
+
+● AbstractAutowireCapableBeanFactory：综合AbstractBeanFactory并对接口Autowire Capable BeanFactory进行实现。
+
+● ConfigurableListableBeanFactory：BeanFactory配置清单，指定忽略类型及接口等。
+
+● DefaultListableBeanFactory：综合上面所有功能，主要是对Bean注册后的处理。
+
+XmlBeanFactory对DefaultListableBeanFactory类进行了扩展，主要用于从XML文档中读取BeanDefinition，对于注册及获取Bean都是使用从父类DefaultListableBeanFactory继承的方法去实现，而唯独与父类不同的个性化实现就是增加了XmlBeanDefinitionReader类型的reader属性。在XmlBeanFactory中主要使用reader属性对资源文件进行读取和注册。
+
+```java
+/** @deprecated */
+@Deprecated
+public class XmlBeanFactory extends DefaultListableBeanFactory {
+    private final XmlBeanDefinitionReader reader;
+
+    public XmlBeanFactory(Resource resource) throws BeansException {
+        this(resource, (BeanFactory)null);
+    }
+
+    public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
+        super(parentBeanFactory);
+        this.reader = new XmlBeanDefinitionReader(this);
+        this.reader.loadBeanDefinitions(resource);
+    }
+}
+```
+
+#### XmlBeanDefinitionReader
+
+XML配置文件的读取是Spring中重要的功能，因为Spring的大部分功能都是以配置作为切入点的，那么我们可以从XmlBeanDefinitionReader中梳理一下资源文件读取、解析及注册的大致脉络，首先我们看看各个类的功能。
+
+● ResourceLoader：定义资源加载器，主要应用于根据给定的资源文件地址返回对应的Resource。
+
+● BeanDefinitionReader：主要定义资源文件读取并转换为BeanDefinition的各个功能
+
+● EnvironmentCapable：定义获取Environment方法。
+
+● DocumentLoader：定义从资源文件加载到转换为Document的功能。
+
+● AbstractBeanDefinitionReader：对EnvironmentCapable、BeanDefinitionReader类定义的功能进行实现。
+
+● BeanDefinitionDocumentReader：定义读取Docuemnt并注册BeanDefinition功能。
+
+● BeanDefinitionParserDelegate：定义解析Element的各种方法。经过以上分析，我们可以梳理出整个XML配置文件读取的大致流程如下所示：
+
+[![RNiYse.png](https://z3.ax1x.com/2021/06/28/RNiYse.png)](https://imgtu.com/i/RNiYse)
+
+在XmlBeanDifinitionReader中主要包含以下几步的处理.
+
+（1）通过继承自AbstractBeanDefinitionReader中的方法，来使用ResourLoader将资源文件路径转换为对应的Resource文件。
+
+（2）通过DocumentLoader对Resource文件进行转换，将Resource文件转换为Document文件。
+
+（3）通过实现接口BeanDefinitionDocumentReader的DefaultBeanDefinitionDocumentReader类对Document进行解析，并使用BeanDefinitionParserDelegate对Element进行解析。
+
 ### IOC 容器
 
 IoC即控制反转，他使得组件或类之间尽量的形成一种松的耦合结构，创建类都是Ioc容器来干，Spring 容器是 Spring 框架的核心。容器将创建对象，把它们连接在一起，配置它们，并管理他们的整个生命周期从创建到销毁。把对象的创建、初始化、销毁交给 spring 来管理，而不是由开发者控制，实现控制反转。
@@ -1555,6 +1641,8 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 
 9. **类型转换**。程序到这里返回bean后已经基本结束了，通常对该方法的调用参数requiredType是为空的，但是可能会存在这样的情况，返回的bean其实是个String，但是requiredType却传入Integer类型，那么这时候本步骤就会起作用了，它的功能是将返回的bean转换为requiredType所指定的类型。当然，String转换为Integer是最简单的一种转换，在Spring中提供了各种各样的转换器，用户也可以自己扩展转换器来满足需求
 
+[![RNaR0g.jpg](https://z3.ax1x.com/2021/06/28/RNaR0g.jpg)](https://imgtu.com/i/RNaR0g)
+
 #### FactoryBean
 
 Spring通过反射机制利用bean的class属性指定实现类来实例化bean.实例化bean过程比较复杂，如果按照传统的方式，则需要在<bean>中提供大量的配置信息，配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。Spring为此提供了一个org.Springframework.bean.factory.FactoryBean的工厂类接口，用户可以通过实现该接口定制实例化bean的逻辑.看下FactoryBean的源码：
@@ -1648,12 +1736,16 @@ protected Object getObjectForBeanInstance(
 			object = getCachedObjectForFactoryBean(beanName);
 		}
 		if (object == null) {
+            // 已经明确知道beanInstance一定是FactoryBean类型
 			// Return bean instance from factory.
 			FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
 			// Caches object obtained from FactoryBean if it is a singleton.
+            // containsBeanDefinition检测beanDefinitionMap中在又有已经加载的类中检测是否定义beanName
 			if (mbd == null && containsBeanDefinition(beanName)) {
+                // 将储存XML配置文件的GenericBeanDefinition转换位RootBeanDefinition,如果指定BeanName是子Bean的话会同时合并父类的相关属性
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
+            // 是否用户定义的而不是应用程序本身的定义
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
@@ -1673,6 +1765,8 @@ protected Object getObjectForBeanInstance(
 （3）对bean进行转换。
 
 （4）将从Factory中解析bean的工作委托给getObjectFromFactoryBean
+
+在getObjectFromFactoryBean这个方法中只做了一件事就是返回的bean是单例的话就必须保证全局唯一，同时也因为单例不必重复创建，可以使用缓存提高性能，最总会调用doGetObjectFromFactoryBean()方法。在doGetObjectFromFactoryBean方法中我们终于看到了我们想要看到的方法，也就是object =factory.getObject()。但是得到我们想要的结果后并没有直接返回，而是接下来又做了些后处理的操作。调用AbstractAutowireCapableBeanFactory#postProcessObjectFromFactoryBean()方法
 
 #### 获取单例（当缓存中没有bean的实例）
 
@@ -1750,8 +1844,8 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 （3）加载单例前记录加载状态。
 
 ```java
-/**
-	 * Callback before singleton creation.
+	/**
+	 *	创建单例前的回调.
 	 * <p>The default implementation register the singleton as currently in creation.
 	 * @param beanName the name of the singleton about to be created
 	 * @see #isSingletonCurrentlyInCreation
@@ -1763,7 +1857,7 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 	}
 
 	/**
-	 * Callback after singleton creation.
+	 * .创建单例后回调
 	 * <p>The default implementation marks the singleton as not in creation anymore.
 	 * @param beanName the name of the singleton that has been created
 	 * @see #isSingletonCurrentlyInCreation
@@ -1783,7 +1877,7 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 
 ```java
 	/**
-	 * Add the given singleton object to the singleton cache of this factory.
+	 * .将给定的单例对象添加到此工厂的单例缓存
 	 * <p>To be called for eager registration of singletons.
 	 * @param beanName the name of the bean
 	 * @param singletonObject the singleton object
@@ -1804,17 +1898,17 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 
 ```java
 sharedInstance = getSingleton(beanName, () -> {
-						try {
-							return createBean(beanName, mbd, args);
-						}
-						catch (BeansException ex) {
-							// Explicitly remove instance from singleton cache: It might have been put there
-							// eagerly by the creation process, to allow for circular reference resolution.
-							// Also remove any beans that received a temporary reference to the bean.
-							destroySingleton(beanName);
-							throw ex;
-						}
-					});
+    try {
+        return createBean(beanName, mbd, args);
+    }
+    catch (BeansException ex) {
+        // Explicitly remove instance from singleton cache: It might have been put there
+        // eagerly by the creation process, to allow for circular reference resolution.
+        // Also remove any beans that received a temporary reference to the bean.
+        destroySingleton(beanName);
+        throw ex;
+    }
+});
 ```
 
 #### 准备创建bean
@@ -1889,7 +1983,7 @@ sharedInstance = getSingleton(beanName, () -> {
 
 （1）根据设置的class属性或者根据className来解析Class。
 
-（2）对override属性进行标记及验证。很多读者可能会不知道这个方法的作用，因为在Spring的配置里面根本就没有诸如override-method之类的配置，那么这个方法到底是干什么用的呢？其实在Spring中确实没有override-method这样的配置，但是如果读过前面的部分，可能会有所发现，在Spring配置中是存在lookup-method和replace-method的，而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，而这个函数的操作其实也就是针对于这两个配置的。
+（2）对override属性进行标记及验证。在Spring中没有override-method这样的配置，但是，在Spring配置中是存在lookup-method和replace-method的，而这两个配置的加载其实就是将配置统一存放在BeanDefinition中的methodOverrides属性里，而这个函数的操作其实也就是针对于这两个配置的。
 
 （3）应用初始化前的后处理器，解析指定bean是否存在初始化前的短路操作。
 
@@ -1947,11 +2041,11 @@ if(bean !=null){
 }
 ```
 
-当经过前置处理后返回的结果如果不为空，那么会直接略过后续的Bean的创建而直接返回结果。这一特性虽然很容易被忽略，但是却起着至关重要的作用，我们熟知的AOP功能就是基于这里的判断的。
+当经过前置处理后返回的结果如果不为空，那么会直接略过后续的Bean的创建而直接返回结果。这一特性虽然很容易被忽略，但是却起着至关重要的作用，**我们熟知的AOP功能就是基于这里的判断的**。
 
 ```java
 @Nullable
-	protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
+protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
 		Object bean = null;
         // 如果尚未被解析
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
@@ -2022,7 +2116,8 @@ bean的实例化前调用，也就是将AbsractBeanDefinition转换为BeanWrappe
 
 [![gDP9PI.png](https://z3.ax1x.com/2021/05/13/gDP9PI.png)](https://imgtu.com/i/gDP9PI)
 
-
+> 对于“singleton”作用域bean，可以通过“setAllowCircularReferences(false）；”来禁用循环引用
+>
 
 #### 创建bean
 
@@ -2047,11 +2142,12 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 		if (beanType != NullBean.class) {
 			mbd.resolvedTargetType = beanType;
 		}
-
+		// 允许后处理器修改合并的bean定义
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
+                    // 应用MergedBeanDefinitionPostProcessors合并bean的定义
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -2061,7 +2157,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 				mbd.postProcessed = true;
 			}
 		}
-		// 需要提早曝光，单例&允许循环依赖&当前bean正在创建中，检查循环依赖
+		// 是否需要提早曝光，单例&允许循环依赖&当前bean正在创建中，检查循环依赖
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
@@ -2072,6 +2168,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 						"' to allow for resolving potential circular references");
 			}
             // 为避免后期循环依赖，可以在bean初始化完成前将创建实例的ObjectFactory加入工厂
+            // 对bean再一次依赖引用，AOP就是在这里将advice动态织入bean中，如果没则返回bean,不做任何处理
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -2110,6 +2207,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 							actualDependentBeans.add(dependentBean);
 						}
 					}
+                    // 因为bean创建后其所依赖的bean一定是已经创建的，actualDependentBeans不为空则表示当前bean创建后其依赖的bean却没有全部的创建完，也就是存在循环依赖
 					if (!actualDependentBeans.isEmpty()) {
 						throw new BeanCurrentlyInCreationException(beanName,
 								"Bean with name '" + beanName + "' has been injected into other beans [" +
@@ -2143,11 +2241,11 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 
 （2）实例化bean，将BeanDefinition转换为BeanWrapper。转换是一个复杂的过程，但是我们可以尝试概括大致的功能，如下所示。
 
-● 如果存在工厂方法则使用工厂方法进行初始化。
+​	● 如果存在工厂方法则使用工厂方法进行初始化。
 
-● 一个类有多个构造函数，每个构造函数都有不同的参数，所以需要根据参数锁定构造函数并进行初始化。
+​	● 一个类有多个构造函数，每个构造函数都有不同的参数，所以需要根据参数锁定构造函数并进行初始化。
 
-● 如果既不存在工厂方法也不存在带有参数的构造函数，则使用默认的构造函数进行bean的实例化。
+​	● 如果既不存在工厂方法也不存在带有参数的构造函数，则使用默认的构造函数进行bean的实例化。
 
 （3）MergedBeanDefinitionPostProcessor的应用。bean合并后的处理，Autowired注解正是通过此方法实现诸如类型的预解析。
 
@@ -2166,6 +2264,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 ```java
 //// AbstractAutowireCapableBeanFactory.java
 protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
+    	// 解析class
 		// Make sure bean class is actually resolved at this point.
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
 
@@ -2173,12 +2272,12 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
 			throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 					"Bean class isn't public, and non-public access not allowed: " + beanClass.getName());
 		}
-
+		
 		Supplier<?> instanceSupplier = mbd.getInstanceSupplier();
 		if (instanceSupplier != null) {
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
-
+	//	如果工厂方法不为空则使用工厂方法初始化策略
 		if (mbd.getFactoryMethodName() != null)  {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
@@ -2188,29 +2287,34 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
 		boolean autowireNecessary = false;
 		if (args == null) {
 			synchronized (mbd.constructorArgumentLock) {
+                // 一个类有多个构造函数，每个构造函数都有不同的参数，所以调用前需要先根据参数锁定，构造函数或对应的工厂方法
 				if (mbd.resolvedConstructorOrFactoryMethod != null) {
 					resolved = true;
 					autowireNecessary = mbd.constructorArgumentsResolved;
 				}
 			}
 		}
+    	// 如果已经解析过，则使用解析好的构造函数方法不需要再次锁定
 		if (resolved) {
 			if (autowireNecessary) {
+                // 构造函数自动注入
 				return autowireConstructor(beanName, mbd, null, null);
 			}
 			else {
+                // 使用默认的构造函数
 				return instantiateBean(beanName, mbd);
 			}
 		}
-
+		// 需要根据参数解析构造函数
 		// Need to determine the constructor...
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null ||
 				mbd.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args))  {
+            // 构造函数自动注入
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
-
+		// 使用默认构造函数构造
 		// No special handling: simply use no-arg constructor.
 		return instantiateBean(beanName, mbd);
 	}
@@ -2325,6 +2429,7 @@ public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefi
 					break;
 				}
 				if (paramTypes.length < minNrOfArgs) {
+                    // 参数个数不相同
 					continue;
 				}
 
@@ -2343,13 +2448,12 @@ public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefi
 							}
 						}
                         // 根据名称和数据类型创建参数持有者
-						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
-								getUserDeclaredConstructor(candidate), autowiring);
+						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,getUserDeclaredConstructor(candidate), autowiring);
 					}
 					catch (UnsatisfiedDependencyException ex) {
 						if (this.beanFactory.logger.isTraceEnabled()) {
 							this.beanFactory.logger.trace(
-									"Ignoring constructor [" + candidate + "] of bean '" + beanName + "': " + ex);
+			"Ignoring constructor [" + candidate + "] of bean '" + beanName + "': " + ex);
 						}
 						// Swallow and try next constructor.
 						if (causes == null) {
@@ -2427,7 +2531,7 @@ public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefi
 			else {
 				beanInstance = strategy.instantiate(mbd, beanName, this.beanFactory, constructorToUse, argsToUse);
 			}
-
+			// 将构建的实例加入BeanWrapper中
 			bw.setBeanInstance(beanInstance);
 			return bw;
 		}
@@ -2438,23 +2542,337 @@ public BeanWrapper autowireConstructor(final String beanName, final RootBeanDefi
 	}
 ```
 
-包含：属性注入，
+1. 构造函数参数的确定。
+2. 构造函数的确定。
+3. 根据确定的构造函数转换对应的参数类型
+4. 构造函数不确定性的验证
+5. 根据实例化策略以及得到的构造函数及构造函数参数实例化Bean
+
+**instatiateBean(beanName, mbd)**
+
+不带参数的构造函数的实例化过程
+
+```java
+//AbstractAutowireCableBeanFactory.java
+protected BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {
+		try {
+			Object beanInstance;
+			if (System.getSecurityManager() != null) {
+				beanInstance = AccessController.doPrivileged(
+						(PrivilegedAction<Object>) () -> getInstantiationStrategy().instantiate(mbd, beanName, this),
+						getAccessControlContext());
+			}
+			else {
+				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
+			}
+			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
+			initBeanWrapper(bw);
+			return bw;
+		}
+		catch (Throwable ex) {
+			throw new BeanCreationException(
+					mbd.getResourceDescription(), beanName, "Instantiation of bean failed", ex);
+		}
+	}
+```
+
+**实例化策略**
+
+在实例化测路中首先判断如果beanDefinition.getMethodOverrides()为空也就是用户没有使用replace或者lookup的配置方法，那么直接使用反射的方式，简单快捷，但是如果使用了这两个特性，在直接使用反射的方式创建实例就不妥了，因为需要将这两个配置提供的功能切入进去，所以就必须要使用动态代理的方式将包含两个特性所对应的逻辑的拦截增强器设置进去，这样才可以保证在调用方法的时候会被相应的拦截器增强，返回值为包含拦截器的代理实例。代码如下：
+
+```java
+ // SimpleInstantiationStrategry.java
+@Override
+	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
+        // 如果没有覆盖，不要用 CGLIB 覆盖类。如果有需要覆盖或动态替换的方法则使用cglib进行动态代理，可以在创建代理的同时将方法植入到类中
+		// Don't override the class with CGLIB if no overrides.
+		if (!bd.hasMethodOverrides()) {
+			Constructor<?> constructorToUse;
+			synchronized (bd.constructorArgumentLock) {
+				constructorToUse = (Constructor<?>) bd.resolvedConstructorOrFactoryMethod;
+				if (constructorToUse == null) {
+					final Class<?> clazz = bd.getBeanClass();
+					if (clazz.isInterface()) {
+						throw new BeanInstantiationException(clazz, "Specified class is an interface");
+					}
+					try {
+						if (System.getSecurityManager() != null) {
+							constructorToUse = AccessController.doPrivileged(
+									(PrivilegedExceptionAction<Constructor<?>>) clazz::getDeclaredConstructor);
+						}
+						else {
+							constructorToUse = clazz.getDeclaredConstructor();
+						}
+						bd.resolvedConstructorOrFactoryMethod = constructorToUse;
+					}
+					catch (Throwable ex) {
+						throw new BeanInstantiationException(clazz, "No default constructor found", ex);
+					}
+				}
+			}
+			return BeanUtils.instantiateClass(constructorToUse);
+		}
+		else {
+			// Must generate CGLIB subclass.
+			return instantiateWithMethodInjection(bd, beanName, owner);
+		}
+	}
+
+// SimpleInstantiationStrategry的子类CglibSubclassingInstantiationStrategy#instantiate方法
+// 创建动态生成的子类的新实例，实现所需的查找。
+public Object instantiate(@Nullable Constructor<?> ctor, Object... args) {
+			Class<?> subclass = createEnhancedSubclass(this.beanDefinition);
+			Object instance;
+			if (ctor == null) {
+				instance = BeanUtils.instantiateClass(subclass);
+			}
+			else {
+				try {
+					Constructor<?> enhancedSubclassConstructor = subclass.getConstructor(ctor.getParameterTypes());
+					instance = enhancedSubclassConstructor.newInstance(args);
+				}
+				catch (Exception ex) {
+					throw new BeanInstantiationException(this.beanDefinition.getBeanClass(),
+							"Failed to invoke constructor for CGLIB enhanced subclass [" + subclass.getName() + "]", ex);
+				}
+			}
+			// SPR-10785：直接在实例上而不是在增强类中设置回调（通过增强器）以避免内存泄漏
+			Factory factory = (Factory) instance;
+			factory.setCallbacks(new Callback[] {NoOp.INSTANCE,
+					new LookupOverrideMethodInterceptor(this.beanDefinition, this.owner),
+					new ReplaceOverrideMethodInterceptor(this.beanDefinition, this.owner)});
+			return instance;
+		}
+```
+
+上面涉及的Aop的实现，具体的可以看AOP的实现。
+
+##### 记录创建bean的ObjectFactory
+
+```java
+// 是否需要提早曝光，单例&允许循环依赖&当前bean正在创建中，检查循环依赖
+		// Eagerly cache singletons to be able to resolve circular references
+		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
+				isSingletonCurrentlyInCreation(beanName));
+		if (earlySingletonExposure) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Eagerly caching bean '" + beanName +
+						"' to allow for resolving potential circular references");
+			}
+            // 为避免后期循环依赖，可以在bean初始化完成前将创建实例的ObjectFactory加入工厂
+            // 对bean再一次依赖引用，AOP就是在这里将advice动态织入bean中，如果没则返回bean,不做任何处理
+			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
+		}
+```
+
+-  earlySingletonExposure：从字面的意思理解就是提早曝光的单例，我们暂不定义它的学名叫什么，我们感兴趣的是有哪些条件影响这个值。
+-  mbd.isSingleton()：没有太多可以解释的，此RootBeanDefinition代表的是否是单例。
+- this.allowCircularReferences：是否允许循环依赖，很抱歉，并没有找到在配置文件中如何配置，但是在AbstractRefreshableApplicationContext中提供了设置函数，可以通过硬编码的方式进行设置或者可以通过自定义命名空间进行配置，其中硬编码的方式代码如下。
+- isSingletonCurrentlyInCreation(beanName)：该bean是否在创建中。在Spring中，会有个专门的属性默认为DefaultSingletonBeanRegistry的singletonsCurrentlyInCreation来记录bean的加载状态，在bean开始创建前会将beanName记录在属性中，在bean创建结束后会将beanName从属性中移除
+
+```java
+// AbstractAutowireCapableBeanFactory.java
+protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
+		Object exposedObject = bean;
+		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
+			for (BeanPostProcessor bp : getBeanPostProcessors()) {
+				if (bp instanceof SmartInstantiationAwareBeanPostProcessor) {
+					SmartInstantiationAwareBeanPostProcessor ibp = (SmartInstantiationAwareBeanPostProcessor) bp;
+					exposedObject = ibp.getEarlyBeanReference(exposedObject, beanName);
+				}
+			}
+		}
+		return exposedObject;
+	}
+```
+
+基本可以理清Spring处理循环依赖的解决办法，在B中创建依赖A时通过ObjectFactory提供的实例化方法来中断A中的属性填充，使B中持有的A仅仅是刚刚初始化并没有填充任何属性的A，而这正初始化A的步骤还是在最开始创建A的时候进行的，但是因为A与B中的A所表示的属性地址是一样的，所以在A中创建好的属性填充自然可以通过B中的A获取，这样就解决了循环依赖的问题.
+
+##### 属性注入
+
+使用 bean 定义中的属性值填充给定 BeanWrapper 中的 bean 实例
+
+```java
+//AbstractAutowrieCapableBeanFactory.java
+protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
+		if (bw == null) {
+			if (mbd.hasPropertyValues()) {
+				throw new BeanCreationException(
+						mbd.getResourceDescription(), beanName, "Cannot apply property values to null instance");
+			}
+			else {
+				// Skip property population phase for null instance.
+				return;
+			}
+		}
+
+		// 给 InstantiationAwareBeanPostProcessors 最后一次机会在属性设置前改变bean
+    	// 如：可以用来支持属性注入的类型
+		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
+			for (BeanPostProcessor bp : getBeanPostProcessors()) {
+				if (bp instanceof InstantiationAwareBeanPostProcessor) {
+					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+                    // 返回值为是否填充bean
+					if (!ibp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
+						return;
+					}
+				}
+			}
+		}
+		// 如果后置处理器发出停止填充命令则终止后续的执行。
+		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
+
+		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
+		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
+			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
+			// Add property values based on autowire by name if applicable.
+            // 根据名称自动注入
+			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
+				autowireByName(beanName, mbd, bw, newPvs);
+			}
+			// Add property values based on autowire by type if applicable.
+            // 根据类型自动注入
+			if (resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
+				autowireByType(beanName, mbd, bw, newPvs);
+			}
+			pvs = newPvs;
+		}
+		// 后置处理器已经初始化
+		boolean hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
+    	// 需要依赖检查
+		boolean needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
+
+		PropertyDescriptor[] filteredPds = null;
+		if (hasInstAwareBpps) {
+			if (pvs == null) {
+				pvs = mbd.getPropertyValues();
+			}
+			for (BeanPostProcessor bp : getBeanPostProcessors()) {
+				if (bp instanceof InstantiationAwareBeanPostProcessor) {
+					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
+					if (pvsToUse == null) {
+						if (filteredPds == null) {
+							filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
+						}
+                        // 对所有需要依赖检查的属性进行后置处理
+						pvsToUse = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
+						if (pvsToUse == null) {
+							return;
+						}
+					}
+					pvs = pvsToUse;
+				}
+			}
+		}
+		if (needsDepCheck) {
+			if (filteredPds == null) {
+				filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
+			}
+            // 依赖检查对应depends-on属性，3.0已经弃用这个属性
+			checkDependencies(beanName, mbd, filteredPds, pvs);
+		}
+
+		if (pvs != null) {
+            // 将属性应用到bean中
+			applyPropertyValues(beanName, mbd, bw, pvs);
+		}
+	}
+```
+
+在populateBean函数中提供了这样的处理流程。
+
+1. InstantiationAwareBeanPostProcessor处理器的postProcessAfterInstantiation函数的应用，此函数可以控制程序是否继续进行属性填充。
+2. 根据注入类型（byName/byType），提取依赖的bean，并统一存入PropertyValues中。
+3. 应用InstantiationAwareBeanPostProcessor处理器的postProcessPropertyValues方法，对属性获取完毕填充前对属性的再次处理，典型应用是RequiredAnnotationBeanPostProcessor类中对属性的验证。
+4. 将所有PropertyValues中的属性填充至BeanWrapper中。
+
+**autowireByName**，**autowireByType**，**applyPropertyValues** 的解析和应用到BeanDefinitionValueResolver的过程不做叙述了。
+
+##### 初始化bean
+
+在bean配置时bean中有一个init-method的属性，这个属性的作用是在bean实例化前调用init-method指定的方法来根据用户业务进行相应的实例化。我们现在就已经进入这个方法了，首先看一下这个方法的执行位置，Spring中程序已经执行过bean的实例化，并且进行了属性的填充，而就在这时将会调用用户设定的初始化方法
+
+```java
+protected Object initializeBean(String beanName, Object bean, @Nullable RootBeanDefinition mbd) {
+		if (System.getSecurityManager() != null) {
+			AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+				invokeAwareMethods(beanName, bean);
+				return null;
+			}, getAccessControlContext());
+		}
+		else {
+            // 对特殊的bean处理：Aware,BeanClassLoaderAware,BeanFactoryAware
+			invokeAwareMethods(beanName, bean);
+		}
+
+		Object wrappedBean = bean;
+		if (mbd == null || !mbd.isSynthetic()) {
+            // 应用后置处理器
+			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+		}
+
+		try {
+            // 激活用户定义的init方法
+			invokeInitMethods(beanName, wrappedBean, mbd);
+		}
+		catch (Throwable ex) {
+			throw new BeanCreationException(
+					(mbd != null ? mbd.getResourceDescription() : null),
+					beanName, "Invocation of init method failed", ex);
+		}
+		if (mbd == null || !mbd.isSynthetic()) {
+            // 应用后置处理器
+			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+		}
+
+		return wrappedBean;
+	}
+```
+
+
+
+##### 注册DisposableBean
+
+Spring中不但提供了对于初始化方法的扩展入口，同样也提供了销毁方法的扩展入口，对于销毁方法的扩展，除了我们熟知的配置属性destroy-method方法外，用户还可以注册后处理器DestructionAwareBeanPostProcessor来统一处理bean的销毁方法.
+
+```java
+// AbstractBeanFactory.java
+//将给定的 bean 添加到此工厂中的一次性 bean 列表中，注册其 DisposableBean 接口和/或在工厂关闭时调用的给定销毁方法（如果适用）。 仅适用于单例模式。
+protected void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd) {
+		AccessControlContext acc = (System.getSecurityManager() != null ? getAccessControlContext() : null);
+		if (!mbd.isPrototype() && requiresDestruction(bean, mbd)) {
+			if (mbd.isSingleton()) {
+				// Register a DisposableBean implementation that performs all destruction
+				// work for the given bean: DestructionAwareBeanPostProcessors,
+				// DisposableBean interface, custom destroy method.
+                // 注册一个 DisposableBean 实现，它为给定的 bean 执行所有销毁工作DestructionAwareBeanPostProcessors， 
+                // DisposableBean 接口，自定义销毁方法。
+				registerDisposableBean(beanName,
+						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+			}
+			else {
+                // 自定义scope的处理
+				// A bean with a custom scope...
+				Scope scope = this.scopes.get(mbd.getScope());
+				if (scope == null) {
+					throw new IllegalStateException("No Scope registered for scope name '" + mbd.getScope() + "'");
+				}
+				scope.registerDestructionCallback(beanName,
+						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+			}
+		}
+	}
+```
 
 ### 自动装配Bean
 
 **自动装配：**
 
-​			`<bean>元素来声明 bean 和通过使用 XML 配置文件中的<constructor-arg>和<property>元素来注入 。`
+​	`<bean>`元素来声明 bean 和通过使用 XML 配置文件中的`<constructor-arg>`和`<property>`元素来注入 。
 
-​			`Spring 容器可以在不使用<constructor-arg>和<property> 元素的情况下自动装配相互协作的 bean 之间的关系，这有助于减少编写一个大的基于 Spring 的应用程序的 XML 配置的数量`
-
-​			使用自动装配无法从配置文件中读懂JavaBean需要哪些属性
-
-​			当自动装配始终在同一个项目中使用时，它的效果最好。如果通常不使用自动装配，它可能会使开发人员混淆的使用它来连接只有一个或两个 bean 定义。
-
-​			不过，自动装配可以显著减少需要指定的属性或构造器参数，但你应该在使用它们之前考虑到自动装配的局限性和缺点。
-
-​			你可以使用<bean>元素的 autowire 属性为一个 bean 定义指定自动装配模式;
+​	Spring 容器可以在不使用`<constructor-arg>`和`<property>` 元素的情况下自动装配相互协作的 bean 之间的关系，这有助于减少编写一个大的基于 Spring 的应用程序的 XML 配置的数量。使用自动装配无法从配置文件中读懂JavaBean需要哪些属性。当自动装配始终在同一个项目中使用时，它的效果最好。如果通常不使用自动装配，它可能会使开发人员混淆的使用它来连接只有一个或两个 bean 定义。不过，自动装配可以显著减少需要指定的属性或构造器参数，但你应该在使用它们之前考虑到自动装配的局限性和缺点。你可以使用<bean>元素的 autowire 属性为一个 bean 定义指定自动装配模式;
 
 **`<bean id="customer" class="com.yiibai.common.Customer" autowire="byName" />`**
 
@@ -2793,92 +3211,7 @@ return new Result().success("Aaaa");
 
 
 
-### Spring最核心的两个类：
 
-#### DefaultListableBeanFactory
-
-XmlBeanFactory继承自DefaultListableBeanFactory，而DefaultListableBeanFactory是整个bean加载的核心部分，是Spring注册及加载bean的默认实现，而对于XmlBeanFactory与DefaultListableBeanFactory不同的地方其实是在XmlBeanFactory中使用了自定义的XML读取器XmlBeanDefinitionReader，实现了个性化的BeanDefinitionReader读取，DefaultListableBeanFactory继承了AbstractAutowireCapableBeanFactory并实现了ConfigurableListableBeanFactory以及BeanDefinitionRegistry接口。以下ConfigurableListableBeanFactory的层次结构图：
-
-![https://note.youdao.com/web/#/file/12fc37e835ef1f10c1a898069ce83c85/note/4d66dbf676d025f8148f4085f4b11519/](https://static.dingtalk.com/media/lALPDgfLOmTZhSvNAsDNBqo_1706_704.png_720x720q90g.jpg?bizType=im)
-
-● AliasRegistry：定义对alias的简单增删改等操作。
-
-● SimpleAliasRegistry：主要使用map作为alias的缓存，并对接口AliasRegistry进行实现。
-
-● SingletonBeanRegistry：定义对单例的注册及获取。
-
-● BeanFactory：定义获取bean及bean的各种属性。
-
-● DefaultSingletonBeanRegistry：对接口SingletonBeanRegistry各函数的实现。
-
-● HierarchicalBeanFactory：继承BeanFactory，也就是在BeanFactory定义的功能的基础上增加了对parentFactory的支持。
-
-● BeanDefinitionRegistry：定义对BeanDefinition的各种增删改操作。
-
-● FactoryBeanRegistrySupport：在DefaultSingletonBeanRegistry基础上增加了对FactoryBean的特殊处理功能。
-
-● ConfigurableBeanFactory：提供配置Factory的各种方法。
-
-● ListableBeanFactory：根据各种条件获取bean的配置清单。
-
-● AbstractBeanFactory：综合FactoryBeanRegistrySupport和ConfigurableBeanFactory的功能。
-
-● AutowireCapableBeanFactory：提供创建bean、自动注入、初始化以及应用bean的后处理器。
-
-● AbstractAutowireCapableBeanFactory：综合AbstractBeanFactory并对接口Autowire Capable BeanFactory进行实现。
-
-● ConfigurableListableBeanFactory：BeanFactory配置清单，指定忽略类型及接口等。
-
-● DefaultListableBeanFactory：综合上面所有功能，主要是对Bean注册后的处理。
-
-XmlBeanFactory对DefaultListableBeanFactory类进行了扩展，主要用于从XML文档中读取BeanDefinition，对于注册及获取Bean都是使用从父类DefaultListableBeanFactory继承的方法去实现，而唯独与父类不同的个性化实现就是增加了XmlBeanDefinitionReader类型的reader属性。在XmlBeanFactory中主要使用reader属性对资源文件进行读取和注册。
-
-```java
-
-/** @deprecated */
-@Deprecated
-public class XmlBeanFactory extends DefaultListableBeanFactory {
-    private final XmlBeanDefinitionReader reader;
-
-    public XmlBeanFactory(Resource resource) throws BeansException {
-        this(resource, (BeanFactory)null);
-    }
-
-    public XmlBeanFactory(Resource resource, BeanFactory parentBeanFactory) throws BeansException {
-        super(parentBeanFactory);
-        this.reader = new XmlBeanDefinitionReader(this);
-        this.reader.loadBeanDefinitions(resource);
-    }
-}
-```
-
-#### XmlBeanDefinitionReader
-
-配置文件的读取是Spring中重要的功能，因为Spring的大部分功能都是以配置作为切入点的，那么我们可以从XmlBeanDefinitionReader中梳理一下资源文件读取、解析及注册的大致脉络，首先我们看看各个类的功能。
-
-● ResourceLoader：定义资源加载器，主要应用于根据给定的资源文件地址返回对应的Resource。
-
-● BeanDefinitionReader：主要定义资源文件读取并转换为BeanDefinition的各个功能
-
-● EnvironmentCapable：定义获取Environment方法。
-
-● DocumentLoader：定义从资源文件加载到转换为Document的功能。
-
-● AbstractBeanDefinitionReader：对EnvironmentCapable、BeanDefinitionReader类定义的功能进行实现。
-
-● BeanDefinitionDocumentReader：定义读取Docuemnt并注册BeanDefinition功能。
-
-● BeanDefinitionParserDelegate：定义解析Element的各种方法。经过以上分析，我们可以梳理出整个XML配置文件读取的大致流程如下所示：
-
-![](https://static.dingtalk.com/media/lALPDg7mN66My63NARTNA8s_971_276.png_720x720q90g.jpg?bizType=im)
-
-在XmlBeanDifinitionReader中主要包含以下几步的处理。
-
-（1）通过继承自AbstractBeanDefinitionReader中的方法，来使用ResourLoader将资源文件路径转换为对应的Resource文件。
-
-（2）通过DocumentLoader对Resource文件进行转换，将Resource文件转换为Document文件。
-
-（3）通过实现接口BeanDefinitionDocumentReader的DefaultBeanDefinitionDocumentReader类对Document进行解析，并使用BeanDefinitionParserDelegate对Element进行解析。
 
 ### Spring启动流程
 
