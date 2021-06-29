@@ -1645,7 +1645,7 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 
 #### FactoryBean
 
-Spring通过反射机制利用bean的class属性指定实现类来实例化bean.实例化bean过程比较复杂，如果按照传统的方式，则需要在<bean>中提供大量的配置信息，配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。Spring为此提供了一个org.Springframework.bean.factory.FactoryBean的工厂类接口，用户可以通过实现该接口定制实例化bean的逻辑.看下FactoryBean的源码：
+Spring通过反射机制利用bean的class属性指定实现类来实例化bean.实例化bean过程比较复杂，如果按照传统的方式，则需要在`<bean>`中提供大量的配置信息，配置方式的灵活性是受限的，这时采用编码的方式可能会得到一个简单的方案。Spring为此提供了一个org.Springframework.bean.factory.FactoryBean的工厂类接口，用户可以通过实现该接口定制实例化bean的逻辑.看下FactoryBean的源码：
 
 ```java
 package org.Springframework.beans.factory;
@@ -2117,7 +2117,6 @@ bean的实例化前调用，也就是将AbsractBeanDefinition转换为BeanWrappe
 [![gDP9PI.png](https://z3.ax1x.com/2021/05/13/gDP9PI.png)](https://imgtu.com/i/gDP9PI)
 
 > 对于“singleton”作用域bean，可以通过“setAllowCircularReferences(false）；”来禁用循环引用
->
 
 #### 创建bean
 
