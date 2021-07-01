@@ -190,8 +190,8 @@ Spring的IoC容器在完成这些底层工作的基础上，还提供了Bean实�
 
 BeanFactory是Spring最核心的接口，他提供了高级的IoC配置机制。BeanFactory使管理不同类型的java对象成为了可能，应用上下文(ApplicationContext)建立在BeanFactory的基础之上。它还提供了国际化支持和框架事件体系，更易于创建实际应用。一般称BeanFactory为IoC容器，而称ApplicationContext为应用上下文。但有时为了行文方便，也将ApplicationContext称为Spring容器。
 
-它主要的功能是为依赖注入 （DI） 提供支持，这个容器接口在 org.springframework.beans.factory.BeanFactor 中被定义。
-`BeanFactory 和相关的接口，比如BeanFactoryAware、 DisposableBean、InitializingBean，仍旧保留在 Spring 中，主要目的是向后兼容已经存在的和那些 Spring 整合在一起的第三方框架实现了IoC控制，可以称为IoC容器通过xml配置文件或.properties中读取Javabean的定义，来实现Javabean配置和管理创建。`
+它主要的功能是为依赖注入 （DI） 提供支持，这个容器接口在 `org.springframework.beans.factory.BeanFactory `中被定义。
+BeanFactory 和相关的接口，比如` BeanFactoryAware`、 `DisposableBean`、`InitializingBean`，仍旧保留在 Spring 中，主要目的是向后兼容已经存在的和那些 Spring 整合在一起的第三方框架实现了IoC控制，可以称为IoC容器通过xml配置文件或.properties中读取Javabean的定义，来实现Javabean配置和管理创建。
 
 可以通过BeanFactory接口方法getBean来使用Bean名字，从而当获取Bean时，如果需要获取的Bean是prototype类型的，用户还可以为这个prototype类型的Bean生成指定构造函数的对应参数。这使得在一定程度上可以控制生成prototype类型的Bean。有了BeanFactory的定义，用户可以执行以下操作：
 
@@ -222,11 +222,11 @@ BeanFactory是Spring最核心的接口，他提供了高级的IoC配置机制。
 Resource re=new ClassPathResource("applicationContext.xml");
 BeanFactory factory=new XmlBeanFactory(re);
 Test test =factory.getBean("test");
-> 在xml文件中配置如下：
-> <！引入beans.dtd>
-> <beans>
-> < bean id="test" class="com.test.Test">
-> </beans>
+// 在xml文件中配置如下：
+<！引入beans.dtd>
+<beans>
+ < bean id="test" class="com.test.Test">
+</beans>
 ```
 
 XmlBeanFactory通过Resource装载Spring配置信息并启动IoC容器，然后就可以通过BeanFactory#getBean(beanName)方法从IoC容器中获取Bean了。通过BeanFactory启动IoC容器时，并不会初始化配置文件中定义的Bean。初始化动作发生在第一个调用时，对于单实例（singleton）的Bean来说，BeanFactory会缓存Bean实例，所以第二次使用getBean()获取Bean时，将直接从IoC容器的缓存中获取Bean实例。
@@ -772,7 +772,8 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 
 		this.delegate = parent;
 	}
-... 省略了createDelegate()方法的解析。整个过程包含parseBeanDefinitionElement()
+// ... 省略了createDelegate()方法的解析。整个过程包含
+	parseBeanDefinitionElement()
     parsePropertyElements(Element beanEle,BeanDefinition bd)
     parsePropertySubElement(Element ele,@Nullable BeanDefinition bd, ...)
     parseListElement(Element collections,@Nullable BeanDefinition bd)

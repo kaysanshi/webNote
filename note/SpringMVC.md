@@ -506,18 +506,119 @@ public Item queryItemById(@PathVariable() Integer id) {
 2. 如果加上@ResponseBody注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
 ```
 
+### springMVC类型转换器
+
+前端传入的值，从表单中传入的值，都是字符串或者是字符串数组的形式传入的，在后端需要进行手动的转换类型，然后才能正确的使用。 框架一般对常见的数据类型的转换进行了封装提供，如字符串转换成数字等。我们使用的SpringMVC就是提供了一些内置的转换器。我们先来看下都有哪些类型转换器。
+
+| 名称                           | 说明                                     |
+| ------------------------------ | ---------------------------------------- |
+| ObjectToStringConverter        | java.lang.Boolean -> java.lang.String    |
+| CharacterToNumberFactory       | java.lang.Character -> java.lang.Number  |
+| ObjectToStringConverter        | java.lang.Character -> java.lang.String  |
+| EnumToStringConverter          | java.lang.Enum -> java.lang.String       |
+| NumberToCharacterConverter     | java.lang.Number -> java.lang.Character  |
+| NumberToNumberConverterFactory | java.lang.Number -> java.lang.Number     |
+| ObjectToStringConverter        | java.lang.Number -> java.lang.String     |
+| StringToBooleanConverter       | java.lang.String -> java.lang.Boolean    |
+| StringToCharacterConverter     | java.lang.String -> java.lang.Character  |
+| StringToEnumConverterFactory   | java.lang.String -> java.lang.Enum       |
+| StringToNumberConverterFactory | java.lang.String -> java.lang.Number     |
+| StringToLocaleConverter        | java.lang.String -> java.util.Locale     |
+| StringToPropertiesConverter    | java.lang.String -> java.util.Properties |
+| StringToUUIDConverter          | java.lang.String -> java.util.UUID       |
+| ObjectToStringConverter        | java.util.Locale -> java.lang.String     |
+| PropertiesToStringConverter    | java.util.Properties -> java.lang.String |
+
+同样还包含一些集合类型的转换器，这里我就截个图看下吧。
+
+[![RrAuSe.png](https://z3.ax1x.com/2021/07/01/RrAuSe.png)
+
+https://imgtu.com/i/RrAuSe)
+
+- **ConversionService** 是 Spring 类型转换体系的核心接口。 
+- 可以利用 **ConversionServiceFactoryBean** 在 Spring 的 IOC 容器中定义一个 ConversionService. **Spring** 将自动识别出**IOC** **容器中的** **ConversionService**，并在 **Bean** **属性配置及****Spring MVC** 处理方法入参绑定等场合使用它**进行数据的转换**
+- **可通过 ConversionServiceFactoryBean** **的** **converters** **属性** **注册自定义的类型转换器**		
+
+Spring 定义了 3 种类型的转换器接口，实现任意一个转换器接口都可以作为自定义转换器注册到
+
+**ConversionServiceFactroyBean 中：**
+
+- **Converter<S,T>**：将 S 类型对象转为 T 类型对象 
+- **ConverterFactory**：将相同系列多个 “同质” Converter 封装在一 起。如果希望将一种类型的对象转换为另一种类型及其子类的对象（例如将 String 转换为 Number 及 Number 子类 （Integer、Long、Double 等）对象）可使用该转换器工厂类
+- **GenericConverter**：会根据源类对象及目标类对象所在的宿主类 中的上下文信息进行类型转换
+
+```xml
+<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
+	<!-- 配置conversionService -->
+	<beans:bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<beans:property name="converters">
+			<beans:set>
+				<beans:ref bean="userConverter"/>
+			</beans:set>
+		</beans:property>
+	</beans:bean>
+```
+
+编写转换器：
+
+```java
+
+@Component
+public class UserConverter implements Converter<String, User> {
+ 
+	@Override
+	public User convert(String src) {
+		if(src !=null){
+			String[] vals= src.split("-");
+			if(vals !=null && vals.length ==3){
+				Integer id =Integer.parseInt(vals[0]);
+				String username =vals[1];
+				String password =vals[2];
+				User user =new User();
+				user.setId(id);
+				user.setUsername(username);
+				user.setPassword(password);
+				return user;
+			}
+		}
+		return null;
+	}
+}
+
+```
+
+使用
+
+```java
+@RequestMapping("/testConverter")
+public String testConverter(@RequestParam("user") User user){
+    System.out.println(user);
+    return "result";
+}
+```
+
+但是我们一般不会直接使用上面的类型转换器进行操作。这里说下`<mvc:annotation-drivern/>`
+
+`<mvc:annotation-driven />` 会自动注 册**RequestMappingHandlerMapping**,**RequestMappingHandlerAdapter** 与**ExceptionHandlerExceptionResolver** 三个bean。还提供了以下支持：
+
+- 支持ConversionService实例对表单参数的进行类型转换
+- 支持使用@NumberFormat,@DatimeFormat注解完成数据类型格式化
+- 支持使用@Valid注解进行javaBean的的验证
+- 支持使用@RequestBoay和@ResponseBody注解
+
 ### springMVC数据格式化：
 
-​	FormattingConversionServiceFactroyBean 内部已经注册了 :
+对属性对象的输入/输出进行格式化，从其本质上讲依然 属于 “类型转换” 的范畴。Spring 在格式化模块中定义了一个实现 ConversionService 接口的**FormattingConversionService** 实现类，该实现类扩展 了 GenericConversionService，因此它**既具有类型转换的功能，又具有格式化的功能**
 
-​	NumberFormatAnnotationFormatterFactroy：支持对数字类型的属性
+FormattingConversionService 拥有一个 **FormattingConversionServiceFactroyBean** 工厂类，后者用于在 Spring 上下文中构造前者。
 
-​	使用 @NumberFormat 注解
+- FormattingConversionServiceFactroyBean 内部已经注册
+  - NumberFormatAnnotationFormatterFactroy：支持对数字类型的属性使用 @NumberFormat 注解
+  -  JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类的属性使用 @DateTimeFormat 注解 ；
 
-​	– JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式，
-如：”yyyy-MM-dd hh:mm:ss”等其他的`<mvc:annotation-driven/>` 默认创建的
+- 装配了 FormattingConversionServiceFactroyBean 后，就可 以在 Spring MVC 入参绑定及模型数据输出时使用注解驱动了。`<mvc:annotation-driven/>` 默认创建的ConversionService 实例即为 FormattingConversionServiceFactroyBean
 
-ConversionService 实例即为 FormattingConversionServiceFactroyBean
+  
 
 #### springmvc处理json数据:
 
