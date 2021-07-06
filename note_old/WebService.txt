@@ -411,9 +411,7 @@ Apach CXF:Apache CXF = Celtix + XFire，开始叫 Apache CeltiXfire，后来更�
        return Response.status(200)  
         .entity("getDate is called, year/month/day : " + date)  
         .build();  
-    }  //原文出自【易百教程】，商业转载请联系作者获得授权，非商业请保留原文链接：https://www.yiibai.com/web_service/jax-rs-annotations-example.html
-
-
+    }  
 	<?xml version="1.0" encoding="UTF-8"?>
 	<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
 	<servlet>

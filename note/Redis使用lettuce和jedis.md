@@ -2,7 +2,7 @@
 
 
 
-###配置lettuce连接器
+### 配置lettuce连接器
 
 Lettuce是一个基于Netty的开源连接器，由Spring Data Redis通过org.springframework.data.redis.connection.lettuce包支持。以下示例显示如何创建新的Lettuce连接工厂
 
