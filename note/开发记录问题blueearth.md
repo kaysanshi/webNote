@@ -1,5 +1,3 @@
-<font color="blue" size="10px">&copy;&reg;&trade;</font>
-
 ### Properties
 
 ```
