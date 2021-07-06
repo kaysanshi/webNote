@@ -1,120 +1,120 @@
-MQ:ÊÇÒ»¸öÏûÏ¢ÖĞ¼ä¼ş£¬ActiveMQ,RabbitMQ,kafka
-	ActiveMQ ÊÇApache³öÆ·£¬×îÁ÷ĞĞµÄ£¬ÄÜÁ¦Ç¿¾¢µÄ¿ªÔ´ÏûÏ¢×ÜÏß¡£ActiveMQ ÊÇÒ»¸öÍêÈ«Ö§³ÖJMS1.1ºÍJ2EE 1.4¹æ·¶µÄ JMS ProviderÊµÏÖ,¾¡¹ÜJMS¹æ·¶³öÌ¨ÒÑ¾­ÊÇºÜ¾ÃµÄÊÂÇéÁË,µ«ÊÇJMSÔÚµ±½ñµÄJ2EEÓ¦ÓÃÖĞ¼äÈÔÈ»°çÑİ×ÅÌØÊâµÄµØÎ»¡£
-				Ö÷ÒªÌØµã£º
-				1. ¶àÖÖÓïÑÔºÍĞ­Òé±àĞ´¿Í»§¶Ë¡£ÓïÑÔ: Java, C, C++, C#, Ruby, Perl, Python, PHP¡£Ó¦ÓÃĞ­Òé: OpenWire,Stomp REST,WS Notification,XMPP,AMQP
-				2. ÍêÈ«Ö§³ÖJMS1.1ºÍJ2EE 1.4¹æ·¶ (³Ö¾Ã»¯,XAÏûÏ¢,ÊÂÎñ)
-				3. ¶ÔSpringµÄÖ§³Ö,ActiveMQ¿ÉÒÔºÜÈİÒ×ÄÚÇ¶µ½Ê¹ÓÃSpringµÄÏµÍ³ÀïÃæÈ¥,¶øÇÒÒ²Ö§³ÖSpring2.0µÄÌØĞÔ
-				4. Í¨¹ıÁË³£¼ûJ2EE·şÎñÆ÷(Èç Geronimo,JBoss 4, GlassFish,WebLogic)µÄ²âÊÔ,ÆäÖĞÍ¨¹ıJCA 1.5 resource adaptorsµÄÅäÖÃ,¿ÉÒÔÈÃActiveMQ¿ÉÒÔ×Ô¶¯µÄ²¿Êğµ½ÈÎºÎ¼æÈİJ2EE 1.4 ÉÌÒµ·şÎñÆ÷ÉÏ
-				5. Ö§³Ö¶àÖÖ´«ËÍĞ­Òé:in-VM,TCP,SSL,NIO,UDP,JGroups,JXTA
-				6. Ö§³ÖÍ¨¹ıJDBCºÍjournalÌá¹©¸ßËÙµÄÏûÏ¢³Ö¾Ã»¯
-				7. ´ÓÉè¼ÆÉÏ±£Ö¤ÁË¸ßĞÔÄÜµÄ¼¯Èº,¿Í»§¶Ë-·şÎñÆ÷,µã¶Ôµã
-				8. Ö§³ÖAjax
-				9. Ö§³ÖÓëAxisµÄÕûºÏ
-				10. ¿ÉÒÔºÜÈİÒ×µÃµ÷ÓÃÄÚÇ¶JMS provider,½øĞĞ²âÊÔ
+MQ:æ˜¯ä¸€ä¸ªæ¶ˆæ¯ä¸­é—´ä»¶ï¼ŒActiveMQ,RabbitMQ,kafka
+	ActiveMQ æ˜¯Apacheå‡ºå“ï¼Œæœ€æµè¡Œçš„ï¼Œèƒ½åŠ›å¼ºåŠ²çš„å¼€æºæ¶ˆæ¯æ€»çº¿ã€‚ActiveMQ æ˜¯ä¸€ä¸ªå®Œå…¨æ”¯æŒJMS1.1å’ŒJ2EE 1.4è§„èŒƒçš„ JMS Providerå®ç°,å°½ç®¡JMSè§„èŒƒå‡ºå°å·²ç»æ˜¯å¾ˆä¹…çš„äº‹æƒ…äº†,ä½†æ˜¯JMSåœ¨å½“ä»Šçš„J2EEåº”ç”¨ä¸­é—´ä»ç„¶æ‰®æ¼”ç€ç‰¹æ®Šçš„åœ°ä½ã€‚
+		ä¸»è¦ç‰¹ç‚¹ï¼š
+			1. å¤šç§è¯­è¨€å’Œåè®®ç¼–å†™å®¢æˆ·ç«¯ã€‚è¯­è¨€: Java, C, C++, C#, Ruby, Perl, Python, PHPã€‚åº”ç”¨åè®®: OpenWire,Stomp REST,WS Notification,XMPP,AMQP
+			2. å®Œå…¨æ”¯æŒJMS1.1å’ŒJ2EE 1.4è§„èŒƒ (æŒä¹…åŒ–,XAæ¶ˆæ¯,äº‹åŠ¡)
+			3. å¯¹Springçš„æ”¯æŒ,ActiveMQå¯ä»¥å¾ˆå®¹æ˜“å†…åµŒåˆ°ä½¿ç”¨Springçš„ç³»ç»Ÿé‡Œé¢å»,è€Œä¸”ä¹Ÿæ”¯æŒSpring2.0çš„ç‰¹æ€§
+			4. é€šè¿‡äº†å¸¸è§J2EEæœåŠ¡å™¨(å¦‚ Geronimo,JBoss 4, GlassFish,WebLogic)çš„æµ‹è¯•,å…¶ä¸­é€šè¿‡JCA 1.5 resource adaptorsçš„é…ç½®,å¯ä»¥è®©ActiveMQå¯ä»¥è‡ªåŠ¨çš„éƒ¨ç½²åˆ°ä»»ä½•å…¼å®¹J2EE 1.4 å•†ä¸šæœåŠ¡å™¨ä¸Š
+			5. æ”¯æŒå¤šç§ä¼ é€åè®®:in-VM,TCP,SSL,NIO,UDP,JGroups,JXTA
+			6. æ”¯æŒé€šè¿‡JDBCå’Œjournalæä¾›é«˜é€Ÿçš„æ¶ˆæ¯æŒä¹…åŒ–
+			7. ä»è®¾è®¡ä¸Šä¿è¯äº†é«˜æ€§èƒ½çš„é›†ç¾¤,å®¢æˆ·ç«¯-æœåŠ¡å™¨,ç‚¹å¯¹ç‚¹
+			8. æ”¯æŒAjax
+			9. æ”¯æŒä¸Axisçš„æ•´åˆ
+			10. å¯ä»¥å¾ˆå®¹æ˜“å¾—è°ƒç”¨å†…åµŒJMS provider,è¿›è¡Œæµ‹è¯•
 
-				10.2.	ActiveMQµÄÏûÏ¢ĞÎÊ½
-				¶ÔÓÚÏûÏ¢µÄ´«µİÓĞÁ½ÖÖÀàĞÍ£º
-				Ò»ÖÖÊÇµã¶ÔµãµÄ£¬¼´Ò»¸öÉú²úÕßºÍÒ»¸öÏû·ÑÕßÒ»Ò»¶ÔÓ¦£»
-				ÁíÒ»ÖÖÊÇ·¢²¼/¶©ÔÄÄ£Ê½£¬¼´Ò»¸öÉú²úÕß²úÉúÏûÏ¢²¢½øĞĞ·¢ËÍºó£¬¿ÉÒÔÓÉ¶à¸öÏû·ÑÕß½øĞĞ½ÓÊÕ¡£
-				JMS¶¨ÒåÁËÎåÖÖ²»Í¬µÄÏûÏ¢ÕıÎÄ¸ñÊ½£¬ÒÔ¼°µ÷ÓÃµÄÏûÏ¢ÀàĞÍ£¬ÔÊĞíÄã·¢ËÍ²¢½ÓÊÕÒÔÒ»Ğ©²»Í¬ĞÎÊ½µÄÊı¾İ£¬Ìá¹©ÏÖÓĞÏûÏ¢¸ñÊ½µÄÒ»Ğ©¼¶±ğµÄ¼æÈİĞÔ¡£
-				¡¡¡¡¡¤ StreamMessage -- JavaÔ­Ê¼ÖµµÄÊı¾İÁ÷
-				¡¡¡¡¡¤ MapMessage--Ò»Ì×Ãû³Æ-Öµ¶Ô
-				¡¡¡¡¡¤ TextMessage--Ò»¸ö×Ö·û´®¶ÔÏó
-				¡¡¡¡¡¤ ObjectMessage--Ò»¸öĞòÁĞ»¯µÄ Java¶ÔÏó
-				¡¡¡¡¡¤ BytesMessage--Ò»¸ö×Ö½ÚµÄÊı¾İÁ÷
-				11.1.	°²×°»·¾³£º
-				1¡¢ĞèÒªjdk
-				2¡¢°²×°LinuxÏµÍ³¡£Éú²ú»·¾³¶¼ÊÇLinuxÏµÍ³¡£
+			10.2.	ActiveMQçš„æ¶ˆæ¯å½¢å¼
+				å¯¹äºæ¶ˆæ¯çš„ä¼ é€’æœ‰ä¸¤ç§ç±»å‹ï¼š
+					ä¸€ç§æ˜¯ç‚¹å¯¹ç‚¹çš„ï¼Œå³ä¸€ä¸ªç”Ÿäº§è€…å’Œä¸€ä¸ªæ¶ˆè´¹è€…ä¸€ä¸€å¯¹åº”ï¼›
+					å¦ä¸€ç§æ˜¯å‘å¸ƒ/è®¢é˜…æ¨¡å¼ï¼Œå³ä¸€ä¸ªç”Ÿäº§è€…äº§ç”Ÿæ¶ˆæ¯å¹¶è¿›è¡Œå‘é€åï¼Œå¯ä»¥ç”±å¤šä¸ªæ¶ˆè´¹è€…è¿›è¡Œæ¥æ”¶ã€‚
+					JMSå®šä¹‰äº†äº”ç§ä¸åŒçš„æ¶ˆæ¯æ­£æ–‡æ ¼å¼ï¼Œä»¥åŠè°ƒç”¨çš„æ¶ˆæ¯ç±»å‹ï¼Œå…è®¸ä½ å‘é€å¹¶æ¥æ”¶ä»¥ä¸€äº›ä¸åŒå½¢å¼çš„æ•°æ®ï¼Œæä¾›ç°æœ‰æ¶ˆæ¯æ ¼å¼çš„ä¸€äº›çº§åˆ«çš„å…¼å®¹æ€§ã€‚
+					ã€€ã€€Â· StreamMessage -- JavaåŸå§‹å€¼çš„æ•°æ®æµ
+					ã€€ã€€Â· MapMessage--ä¸€å¥—åç§°-å€¼å¯¹
+					ã€€ã€€Â· TextMessage--ä¸€ä¸ªå­—ç¬¦ä¸²å¯¹è±¡
+					ã€€ã€€Â· ObjectMessage--ä¸€ä¸ªåºåˆ—åŒ–çš„ Javaå¯¹è±¡
+					ã€€ã€€Â· BytesMessage--ä¸€ä¸ªå­—èŠ‚çš„æ•°æ®æµ
+			11.1.	å®‰è£…ç¯å¢ƒï¼š
+				1ã€éœ€è¦jdk
+				2ã€å®‰è£…Linuxç³»ç»Ÿã€‚ç”Ÿäº§ç¯å¢ƒéƒ½æ˜¯Linuxç³»ç»Ÿã€‚
 
-				11.2.	°²×°²½Öè
-				µÚÒ»²½£º °ÑActiveMQ µÄÑ¹Ëõ°üÉÏ´«µ½LinuxÏµÍ³¡£
-				µÚ¶ş²½£º½âÑ¹Ëõ¡£
-				µÚÈı²½£ºÆô¶¯¡£
-				Ê¹ÓÃbinÄ¿Â¼ÏÂµÄactivemqÃüÁîÆô¶¯£º
+			11.2.	å®‰è£…æ­¥éª¤
+				ç¬¬ä¸€æ­¥ï¼š æŠŠActiveMQ çš„å‹ç¼©åŒ…ä¸Šä¼ åˆ°Linuxç³»ç»Ÿã€‚
+				ç¬¬äºŒæ­¥ï¼šè§£å‹ç¼©ã€‚
+				ç¬¬ä¸‰æ­¥ï¼šå¯åŠ¨ã€‚
+				ä½¿ç”¨binç›®å½•ä¸‹çš„activemqå‘½ä»¤å¯åŠ¨ï¼š
 				[root@localhost bin]# ./activemq start
-				¹Ø±Õ£º
+				å…³é—­ï¼š
 				[root@localhost bin]# ./activemq stop
-				²é¿´×´Ì¬£º
+				æŸ¥çœ‹çŠ¶æ€ï¼š
 				[root@localhost bin]# ./activemq status
 
-				×¢Òâ£ºÈç¹ûActiveMQÕûºÏspringÊ¹ÓÃ²»ÒªÊ¹ÓÃactivemq-all-5.12.0.jar°ü¡£½¨ÒéÊ¹ÓÃ5.11.2
+				æ³¨æ„ï¼šå¦‚æœActiveMQæ•´åˆspringä½¿ç”¨ä¸è¦ä½¿ç”¨activemq-all-5.12.0.jaråŒ…ã€‚å»ºè®®ä½¿ç”¨5.11.2
 
-				½øÈë¹ÜÀíºóÌ¨£º
+				è¿›å…¥ç®¡ç†åå°ï¼š
 				http://192.168.25.168:8161/admin
-				ÓÃ»§Ãû£ºadmin 
-				ÃÜÂë£ºadmin
-ActiveMQµÄÊ¹ÓÃ·½·¨£º
+				ç”¨æˆ·åï¼šadmin 
+				å¯†ç ï¼šadmin
+ActiveMQçš„ä½¿ç”¨æ–¹æ³•ï¼š
 		Producer--->Topic--->consumer
 		Producer---->queue--->Consumer
 		Producer
-		Éú²úÕß£ºÉú²úÏûÏ¢£¬·¢ËÍ¶Ë¡£
-		°Ñjar°üÌí¼Óµ½¹¤³ÌÖĞ¡£Ê¹ÓÃ5.11.2°æ±¾µÄjar°ü¡£
+		ç”Ÿäº§è€…ï¼šç”Ÿäº§æ¶ˆæ¯ï¼Œå‘é€ç«¯ã€‚
+		æŠŠjaråŒ…æ·»åŠ åˆ°å·¥ç¨‹ä¸­ã€‚ä½¿ç”¨5.11.2ç‰ˆæœ¬çš„jaråŒ…ã€‚
 		 
-		µÚÒ»²½£º´´½¨ConnectionFactory¶ÔÏó£¬ĞèÒªÖ¸¶¨·şÎñ¶Ëip¼°¶Ë¿ÚºÅ¡£
-		µÚ¶ş²½£ºÊ¹ÓÃConnectionFactory¶ÔÏó´´½¨Ò»¸öConnection¶ÔÏó¡£
-		µÚÈı²½£º¿ªÆôÁ¬½Ó£¬µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
-		µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
-		µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó£¨topic¡¢queue£©£¬´Ë´¦´´½¨Ò»¸öQueue¶ÔÏó¡£
-		µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öProducer¶ÔÏó¡£
-		µÚÆß²½£º´´½¨Ò»¸öMessage¶ÔÏó£¬´´½¨Ò»¸öTextMessage¶ÔÏó¡£
-		µÚ°Ë²½£ºÊ¹ÓÃProducer¶ÔÏó·¢ËÍÏûÏ¢¡£
-		µÚ¾Å²½£º¹Ø±Õ×ÊÔ´¡£
+		ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºConnectionFactoryå¯¹è±¡ï¼Œéœ€è¦æŒ‡å®šæœåŠ¡ç«¯ipåŠç«¯å£å·ã€‚
+		ç¬¬äºŒæ­¥ï¼šä½¿ç”¨ConnectionFactoryå¯¹è±¡åˆ›å»ºä¸€ä¸ªConnectionå¯¹è±¡ã€‚
+		ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ï¼Œè°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
+		ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
+		ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ï¼ˆtopicã€queueï¼‰ï¼Œæ­¤å¤„åˆ›å»ºä¸€ä¸ªQueueå¯¹è±¡ã€‚
+		ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªProducerå¯¹è±¡ã€‚
+		ç¬¬ä¸ƒæ­¥ï¼šåˆ›å»ºä¸€ä¸ªMessageå¯¹è±¡ï¼Œåˆ›å»ºä¸€ä¸ªTextMessageå¯¹è±¡ã€‚
+		ç¬¬å…«æ­¥ï¼šä½¿ç”¨Producerå¯¹è±¡å‘é€æ¶ˆæ¯ã€‚
+		ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æºã€‚
 		@Test
 			public void testQueueProducer() throws Exception {
-				// µÚÒ»²½£º´´½¨ConnectionFactory¶ÔÏó£¬ĞèÒªÖ¸¶¨·şÎñ¶Ëip¼°¶Ë¿ÚºÅ¡£
-				//brokerURL·şÎñÆ÷µÄip¼°¶Ë¿ÚºÅ
+				// ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºConnectionFactoryå¯¹è±¡ï¼Œéœ€è¦æŒ‡å®šæœåŠ¡ç«¯ipåŠç«¯å£å·ã€‚
+				//brokerURLæœåŠ¡å™¨çš„ipåŠç«¯å£å·
 				ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.25.168:61616");
-				// µÚ¶ş²½£ºÊ¹ÓÃConnectionFactory¶ÔÏó´´½¨Ò»¸öConnection¶ÔÏó¡£
+				// ç¬¬äºŒæ­¥ï¼šä½¿ç”¨ConnectionFactoryå¯¹è±¡åˆ›å»ºä¸€ä¸ªConnectionå¯¹è±¡ã€‚
 				Connection connection = connectionFactory.createConnection();
-				// µÚÈı²½£º¿ªÆôÁ¬½Ó£¬µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
+				// ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ï¼Œè°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
 				connection.start();
-				// µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
-				//µÚÒ»¸ö²ÎÊı£ºÊÇ·ñ¿ªÆôÊÂÎñ¡£true£º¿ªÆôÊÂÎñ£¬µÚ¶ş¸ö²ÎÊıºöÂÔ¡£
-				//µÚ¶ş¸ö²ÎÊı£ºµ±µÚÒ»¸ö²ÎÊıÎªfalseÊ±£¬²ÅÓĞÒâÒå¡£ÏûÏ¢µÄÓ¦´ğÄ£Ê½¡£1¡¢×Ô¶¯Ó¦´ğ2¡¢ÊÖ¶¯Ó¦´ğ¡£Ò»°ãÊÇ×Ô¶¯Ó¦´ğ¡£
+				// ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
+				//ç¬¬ä¸€ä¸ªå‚æ•°ï¼šæ˜¯å¦å¼€å¯äº‹åŠ¡ã€‚trueï¼šå¼€å¯äº‹åŠ¡ï¼Œç¬¬äºŒä¸ªå‚æ•°å¿½ç•¥ã€‚
+				//ç¬¬äºŒä¸ªå‚æ•°ï¼šå½“ç¬¬ä¸€ä¸ªå‚æ•°ä¸ºfalseæ—¶ï¼Œæ‰æœ‰æ„ä¹‰ã€‚æ¶ˆæ¯çš„åº”ç­”æ¨¡å¼ã€‚1ã€è‡ªåŠ¨åº”ç­”2ã€æ‰‹åŠ¨åº”ç­”ã€‚ä¸€èˆ¬æ˜¯è‡ªåŠ¨åº”ç­”ã€‚
 				Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-				// µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó£¨topic¡¢queue£©£¬´Ë´¦´´½¨Ò»¸öQueue¶ÔÏó¡£
-				//²ÎÊı£º¶ÓÁĞµÄÃû³Æ¡£
+				// ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ï¼ˆtopicã€queueï¼‰ï¼Œæ­¤å¤„åˆ›å»ºä¸€ä¸ªQueueå¯¹è±¡ã€‚
+				//å‚æ•°ï¼šé˜Ÿåˆ—çš„åç§°ã€‚
 				Queue queue = session.createQueue("test-queue");
-				// µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öProducer¶ÔÏó¡£
+				// ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªProducerå¯¹è±¡ã€‚
 				MessageProducer producer = session.createProducer(queue);
-				// µÚÆß²½£º´´½¨Ò»¸öMessage¶ÔÏó£¬´´½¨Ò»¸öTextMessage¶ÔÏó¡£
+				// ç¬¬ä¸ƒæ­¥ï¼šåˆ›å»ºä¸€ä¸ªMessageå¯¹è±¡ï¼Œåˆ›å»ºä¸€ä¸ªTextMessageå¯¹è±¡ã€‚
 				/*TextMessage message = new ActiveMQTextMessage();
 				message.setText("hello activeMq,this is my first test.");*/
 				TextMessage textMessage = session.createTextMessage("hello activeMq,this is my first test.");
-				// µÚ°Ë²½£ºÊ¹ÓÃProducer¶ÔÏó·¢ËÍÏûÏ¢¡£
+				// ç¬¬å…«æ­¥ï¼šä½¿ç”¨Producerå¯¹è±¡å‘é€æ¶ˆæ¯ã€‚
 				producer.send(textMessage);
-				// µÚ¾Å²½£º¹Ø±Õ×ÊÔ´¡£
+				// ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æºã€‚
 				producer.close();
 				session.close();
 				connection.close();
 			}
 
 			Consumer
-			Ïû·ÑÕß£º½ÓÊÕÏûÏ¢¡£
-			µÚÒ»²½£º´´½¨Ò»¸öConnectionFactory¶ÔÏó¡£
-			µÚ¶ş²½£º´ÓConnectionFactory¶ÔÏóÖĞ»ñµÃÒ»¸öConnection¶ÔÏó¡£
-			µÚÈı²½£º¿ªÆôÁ¬½Ó¡£µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
-			µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
-			µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó¡£ºÍ·¢ËÍ¶Ë±£³ÖÒ»ÖÂqueue£¬²¢ÇÒ¶ÓÁĞµÄÃû³ÆÒ»ÖÂ¡£
-			µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öConsumer¶ÔÏó¡£
-			µÚÆß²½£º½ÓÊÕÏûÏ¢¡£
-			µÚ°Ë²½£º´òÓ¡ÏûÏ¢¡£
-			µÚ¾Å²½£º¹Ø±Õ×ÊÔ´
+			æ¶ˆè´¹è€…ï¼šæ¥æ”¶æ¶ˆæ¯ã€‚
+			ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºä¸€ä¸ªConnectionFactoryå¯¹è±¡ã€‚
+			ç¬¬äºŒæ­¥ï¼šä»ConnectionFactoryå¯¹è±¡ä¸­è·å¾—ä¸€ä¸ªConnectionå¯¹è±¡ã€‚
+			ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ã€‚è°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
+			ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
+			ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ã€‚å’Œå‘é€ç«¯ä¿æŒä¸€è‡´queueï¼Œå¹¶ä¸”é˜Ÿåˆ—çš„åç§°ä¸€è‡´ã€‚
+			ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªConsumerå¯¹è±¡ã€‚
+			ç¬¬ä¸ƒæ­¥ï¼šæ¥æ”¶æ¶ˆæ¯ã€‚
+			ç¬¬å…«æ­¥ï¼šæ‰“å°æ¶ˆæ¯ã€‚
+			ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æº
 			@Test
 				public void testQueueConsumer() throws Exception {
-					// µÚÒ»²½£º´´½¨Ò»¸öConnectionFactory¶ÔÏó¡£
+					// ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºä¸€ä¸ªConnectionFactoryå¯¹è±¡ã€‚
 					ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.25.168:61616");
-					// µÚ¶ş²½£º´ÓConnectionFactory¶ÔÏóÖĞ»ñµÃÒ»¸öConnection¶ÔÏó¡£
+					// ç¬¬äºŒæ­¥ï¼šä»ConnectionFactoryå¯¹è±¡ä¸­è·å¾—ä¸€ä¸ªConnectionå¯¹è±¡ã€‚
 					Connection connection = connectionFactory.createConnection();
-					// µÚÈı²½£º¿ªÆôÁ¬½Ó¡£µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
+					// ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ã€‚è°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
 					connection.start();
-					// µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
+					// ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
 					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-					// µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó¡£ºÍ·¢ËÍ¶Ë±£³ÖÒ»ÖÂqueue£¬²¢ÇÒ¶ÓÁĞµÄÃû³ÆÒ»ÖÂ¡£
+					// ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ã€‚å’Œå‘é€ç«¯ä¿æŒä¸€è‡´queueï¼Œå¹¶ä¸”é˜Ÿåˆ—çš„åç§°ä¸€è‡´ã€‚
 					Queue queue = session.createQueue("test-queue");
-					// µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öConsumer¶ÔÏó¡£
+					// ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªConsumerå¯¹è±¡ã€‚
 					MessageConsumer consumer = session.createConsumer(queue);
-					// µÚÆß²½£º½ÓÊÕÏûÏ¢¡£
+					// ç¬¬ä¸ƒæ­¥ï¼šæ¥æ”¶æ¶ˆæ¯ã€‚
 					consumer.setMessageListener(new MessageListener() {
 						
 						@Override
@@ -122,18 +122,18 @@ ActiveMQµÄÊ¹ÓÃ·½·¨£º
 							try {
 								TextMessage textMessage = (TextMessage) message;
 								String text = null;
-								//È¡ÏûÏ¢µÄÄÚÈİ
+								//å–æ¶ˆæ¯çš„å†…å®¹
 								text = textMessage.getText();
-								// µÚ°Ë²½£º´òÓ¡ÏûÏ¢¡£
+								// ç¬¬å…«æ­¥ï¼šæ‰“å°æ¶ˆæ¯ã€‚
 								System.out.println(text);
 							} catch (JMSException e) {
 								e.printStackTrace();
 							}
 						}
 					});
-					//µÈ´ı¼üÅÌÊäÈë
+					//ç­‰å¾…é”®ç›˜è¾“å…¥
 					System.in.read();
-					// µÚ¾Å²½£º¹Ø±Õ×ÊÔ´
+					// ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æº
 					consumer.close();
 					session.close();
 					connection.close();
@@ -141,75 +141,75 @@ ActiveMQµÄÊ¹ÓÃ·½·¨£º
 
 				Topic
 					Producer
-				Ê¹ÓÃ²½Öè£º
-				µÚÒ»²½£º´´½¨ConnectionFactory¶ÔÏó£¬ĞèÒªÖ¸¶¨·şÎñ¶Ëip¼°¶Ë¿ÚºÅ¡£
-				µÚ¶ş²½£ºÊ¹ÓÃConnectionFactory¶ÔÏó´´½¨Ò»¸öConnection¶ÔÏó¡£
-				µÚÈı²½£º¿ªÆôÁ¬½Ó£¬µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
-				µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
-				µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó£¨topic¡¢queue£©£¬´Ë´¦´´½¨Ò»¸öTopic¶ÔÏó¡£
-				µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öProducer¶ÔÏó¡£
-				µÚÆß²½£º´´½¨Ò»¸öMessage¶ÔÏó£¬´´½¨Ò»¸öTextMessage¶ÔÏó¡£
-				µÚ°Ë²½£ºÊ¹ÓÃProducer¶ÔÏó·¢ËÍÏûÏ¢¡£
-				µÚ¾Å²½£º¹Ø±Õ×ÊÔ´¡£
+				ä½¿ç”¨æ­¥éª¤ï¼š
+				ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºConnectionFactoryå¯¹è±¡ï¼Œéœ€è¦æŒ‡å®šæœåŠ¡ç«¯ipåŠç«¯å£å·ã€‚
+				ç¬¬äºŒæ­¥ï¼šä½¿ç”¨ConnectionFactoryå¯¹è±¡åˆ›å»ºä¸€ä¸ªConnectionå¯¹è±¡ã€‚
+				ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ï¼Œè°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
+				ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
+				ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ï¼ˆtopicã€queueï¼‰ï¼Œæ­¤å¤„åˆ›å»ºä¸€ä¸ªTopicå¯¹è±¡ã€‚
+				ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªProducerå¯¹è±¡ã€‚
+				ç¬¬ä¸ƒæ­¥ï¼šåˆ›å»ºä¸€ä¸ªMessageå¯¹è±¡ï¼Œåˆ›å»ºä¸€ä¸ªTextMessageå¯¹è±¡ã€‚
+				ç¬¬å…«æ­¥ï¼šä½¿ç”¨Producerå¯¹è±¡å‘é€æ¶ˆæ¯ã€‚
+				ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æºã€‚
 
 				@Test
 					public void testTopicProducer() throws Exception {
-						// µÚÒ»²½£º´´½¨ConnectionFactory¶ÔÏó£¬ĞèÒªÖ¸¶¨·şÎñ¶Ëip¼°¶Ë¿ÚºÅ¡£
-						// brokerURL·şÎñÆ÷µÄip¼°¶Ë¿ÚºÅ
+						// ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºConnectionFactoryå¯¹è±¡ï¼Œéœ€è¦æŒ‡å®šæœåŠ¡ç«¯ipåŠç«¯å£å·ã€‚
+						// brokerURLæœåŠ¡å™¨çš„ipåŠç«¯å£å·
 						ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.25.168:61616");
-						// µÚ¶ş²½£ºÊ¹ÓÃConnectionFactory¶ÔÏó´´½¨Ò»¸öConnection¶ÔÏó¡£
+						// ç¬¬äºŒæ­¥ï¼šä½¿ç”¨ConnectionFactoryå¯¹è±¡åˆ›å»ºä¸€ä¸ªConnectionå¯¹è±¡ã€‚
 						Connection connection = connectionFactory.createConnection();
-						// µÚÈı²½£º¿ªÆôÁ¬½Ó£¬µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
+						// ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ï¼Œè°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
 						connection.start();
-						// µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
-						// µÚÒ»¸ö²ÎÊı£ºÊÇ·ñ¿ªÆôÊÂÎñ¡£true£º¿ªÆôÊÂÎñ£¬µÚ¶ş¸ö²ÎÊıºöÂÔ¡£
-						// µÚ¶ş¸ö²ÎÊı£ºµ±µÚÒ»¸ö²ÎÊıÎªfalseÊ±£¬²ÅÓĞÒâÒå¡£ÏûÏ¢µÄÓ¦´ğÄ£Ê½¡£1¡¢×Ô¶¯Ó¦´ğ2¡¢ÊÖ¶¯Ó¦´ğ¡£Ò»°ãÊÇ×Ô¶¯Ó¦´ğ¡£
+						// ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
+						// ç¬¬ä¸€ä¸ªå‚æ•°ï¼šæ˜¯å¦å¼€å¯äº‹åŠ¡ã€‚trueï¼šå¼€å¯äº‹åŠ¡ï¼Œç¬¬äºŒä¸ªå‚æ•°å¿½ç•¥ã€‚
+						// ç¬¬äºŒä¸ªå‚æ•°ï¼šå½“ç¬¬ä¸€ä¸ªå‚æ•°ä¸ºfalseæ—¶ï¼Œæ‰æœ‰æ„ä¹‰ã€‚æ¶ˆæ¯çš„åº”ç­”æ¨¡å¼ã€‚1ã€è‡ªåŠ¨åº”ç­”2ã€æ‰‹åŠ¨åº”ç­”ã€‚ä¸€èˆ¬æ˜¯è‡ªåŠ¨åº”ç­”ã€‚
 						Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-						// µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó£¨topic¡¢queue£©£¬´Ë´¦´´½¨Ò»¸ötopic¶ÔÏó¡£
-						// ²ÎÊı£º»°ÌâµÄÃû³Æ¡£
+						// ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ï¼ˆtopicã€queueï¼‰ï¼Œæ­¤å¤„åˆ›å»ºä¸€ä¸ªtopicå¯¹è±¡ã€‚
+						// å‚æ•°ï¼šè¯é¢˜çš„åç§°ã€‚
 						Topic topic = session.createTopic("test-topic");
-						// µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öProducer¶ÔÏó¡£
+						// ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªProducerå¯¹è±¡ã€‚
 						MessageProducer producer = session.createProducer(topic);
-						// µÚÆß²½£º´´½¨Ò»¸öMessage¶ÔÏó£¬´´½¨Ò»¸öTextMessage¶ÔÏó¡£
+						// ç¬¬ä¸ƒæ­¥ï¼šåˆ›å»ºä¸€ä¸ªMessageå¯¹è±¡ï¼Œåˆ›å»ºä¸€ä¸ªTextMessageå¯¹è±¡ã€‚
 						/*
 						 * TextMessage message = new ActiveMQTextMessage(); message.setText(
 						 * "hello activeMq,this is my first test.");
 						 */
 						TextMessage textMessage = session.createTextMessage("hello activeMq,this is my topic test");
-						// µÚ°Ë²½£ºÊ¹ÓÃProducer¶ÔÏó·¢ËÍÏûÏ¢¡£
+						// ç¬¬å…«æ­¥ï¼šä½¿ç”¨Producerå¯¹è±¡å‘é€æ¶ˆæ¯ã€‚
 						producer.send(textMessage);
-						// µÚ¾Å²½£º¹Ø±Õ×ÊÔ´¡£
+						// ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æºã€‚
 						producer.close();
 						session.close();
 						connection.close();
 					}
 
 					Consumer
-				Ïû·ÑÕß£º½ÓÊÕÏûÏ¢¡£
-				µÚÒ»²½£º´´½¨Ò»¸öConnectionFactory¶ÔÏó¡£
-				µÚ¶ş²½£º´ÓConnectionFactory¶ÔÏóÖĞ»ñµÃÒ»¸öConnection¶ÔÏó¡£
-				µÚÈı²½£º¿ªÆôÁ¬½Ó¡£µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
-				µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
-				µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó¡£ºÍ·¢ËÍ¶Ë±£³ÖÒ»ÖÂtopic£¬²¢ÇÒ»°ÌâµÄÃû³ÆÒ»ÖÂ¡£
-				µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öConsumer¶ÔÏó¡£
-				µÚÆß²½£º½ÓÊÕÏûÏ¢¡£
-				µÚ°Ë²½£º´òÓ¡ÏûÏ¢¡£
-				µÚ¾Å²½£º¹Ø±Õ×ÊÔ´
+				æ¶ˆè´¹è€…ï¼šæ¥æ”¶æ¶ˆæ¯ã€‚
+				ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºä¸€ä¸ªConnectionFactoryå¯¹è±¡ã€‚
+				ç¬¬äºŒæ­¥ï¼šä»ConnectionFactoryå¯¹è±¡ä¸­è·å¾—ä¸€ä¸ªConnectionå¯¹è±¡ã€‚
+				ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ã€‚è°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
+				ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
+				ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ã€‚å’Œå‘é€ç«¯ä¿æŒä¸€è‡´topicï¼Œå¹¶ä¸”è¯é¢˜çš„åç§°ä¸€è‡´ã€‚
+				ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªConsumerå¯¹è±¡ã€‚
+				ç¬¬ä¸ƒæ­¥ï¼šæ¥æ”¶æ¶ˆæ¯ã€‚
+				ç¬¬å…«æ­¥ï¼šæ‰“å°æ¶ˆæ¯ã€‚
+				ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æº
 				@Test
 					public void testTopicConsumer() throws Exception {
-						// µÚÒ»²½£º´´½¨Ò»¸öConnectionFactory¶ÔÏó¡£
+						// ç¬¬ä¸€æ­¥ï¼šåˆ›å»ºä¸€ä¸ªConnectionFactoryå¯¹è±¡ã€‚
 						ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://192.168.25.168:61616");
-						// µÚ¶ş²½£º´ÓConnectionFactory¶ÔÏóÖĞ»ñµÃÒ»¸öConnection¶ÔÏó¡£
+						// ç¬¬äºŒæ­¥ï¼šä»ConnectionFactoryå¯¹è±¡ä¸­è·å¾—ä¸€ä¸ªConnectionå¯¹è±¡ã€‚
 						Connection connection = connectionFactory.createConnection();
-						// µÚÈı²½£º¿ªÆôÁ¬½Ó¡£µ÷ÓÃConnection¶ÔÏóµÄstart·½·¨¡£
+						// ç¬¬ä¸‰æ­¥ï¼šå¼€å¯è¿æ¥ã€‚è°ƒç”¨Connectionå¯¹è±¡çš„startæ–¹æ³•ã€‚
 						connection.start();
-						// µÚËÄ²½£ºÊ¹ÓÃConnection¶ÔÏó´´½¨Ò»¸öSession¶ÔÏó¡£
+						// ç¬¬å››æ­¥ï¼šä½¿ç”¨Connectionå¯¹è±¡åˆ›å»ºä¸€ä¸ªSessionå¯¹è±¡ã€‚
 						Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-						// µÚÎå²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öDestination¶ÔÏó¡£ºÍ·¢ËÍ¶Ë±£³ÖÒ»ÖÂtopic£¬²¢ÇÒ»°ÌâµÄÃû³ÆÒ»ÖÂ¡£
+						// ç¬¬äº”æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªDestinationå¯¹è±¡ã€‚å’Œå‘é€ç«¯ä¿æŒä¸€è‡´topicï¼Œå¹¶ä¸”è¯é¢˜çš„åç§°ä¸€è‡´ã€‚
 						Topic topic = session.createTopic("test-topic");
-						// µÚÁù²½£ºÊ¹ÓÃSession¶ÔÏó´´½¨Ò»¸öConsumer¶ÔÏó¡£
+						// ç¬¬å…­æ­¥ï¼šä½¿ç”¨Sessionå¯¹è±¡åˆ›å»ºä¸€ä¸ªConsumerå¯¹è±¡ã€‚
 						MessageConsumer consumer = session.createConsumer(topic);
-						// µÚÆß²½£º½ÓÊÕÏûÏ¢¡£
+						// ç¬¬ä¸ƒæ­¥ï¼šæ¥æ”¶æ¶ˆæ¯ã€‚
 						consumer.setMessageListener(new MessageListener() {
 
 							@Override
@@ -217,19 +217,19 @@ ActiveMQµÄÊ¹ÓÃ·½·¨£º
 								try {
 									TextMessage textMessage = (TextMessage) message;
 									String text = null;
-									// È¡ÏûÏ¢µÄÄÚÈİ
+									// å–æ¶ˆæ¯çš„å†…å®¹
 									text = textMessage.getText();
-									// µÚ°Ë²½£º´òÓ¡ÏûÏ¢¡£
+									// ç¬¬å…«æ­¥ï¼šæ‰“å°æ¶ˆæ¯ã€‚
 									System.out.println(text);
 								} catch (JMSException e) {
 									e.printStackTrace();
 								}
 							}
 						});
-						System.out.println("topicµÄÏû·Ñ¶Ë03¡£¡£¡£¡£¡£");
-						// µÈ´ı¼üÅÌÊäÈë
+						System.out.println("topicçš„æ¶ˆè´¹ç«¯03ã€‚ã€‚ã€‚ã€‚ã€‚");
+						// ç­‰å¾…é”®ç›˜è¾“å…¥
 						System.in.read();
-						// µÚ¾Å²½£º¹Ø±Õ×ÊÔ´
+						// ç¬¬ä¹æ­¥ï¼šå…³é—­èµ„æº
 						consumer.close();
 						session.close();
 						connection.close();

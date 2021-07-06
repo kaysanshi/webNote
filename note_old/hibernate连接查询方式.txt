@@ -1,15 +1,15 @@
-hibernate£º
-Á¬½Ó²éÑ¯
-1. ÄÚÁ¬½Ó
-ÔÚHQLÖĞ£¬inner join¹Ø¼ü×Ö±íÊ¾ÄÚÁ¬½Ó£¨inner¹Ø¼ü×Ö¿ÉÒÔÊ¡ÂÔ£¬µ¥¶ÀÊ¹ÓÃjoinÄ¬ÈÏ±íÊ¾ÄÚÁ¬½Ó£©¡£Ö»ÒªÁ½¸ö³Ö¾Ã»¯Àà¶ÔÓ¦µÄ±íµÄ¹ØÁª×Ö¶ÎÖ®¼äÓĞÏà·ûµÄÖµ£¬ÄÚÁ¬½Ó¾Í»á×éºÏÁ½¸ö±íÖĞµÄÁ¬½Ó¡£ÄÚÁ¬½ÓÔÚÒ»¶Ô¶à»ò¶à¶ÔÒ»µÄ¹ØÁªÖĞ±È½Ï³£¼û¡£
-ÏÂÊö´úÂëÓÃÓÚÊµÏÖÈÎÎñÃèÊö6.D.9£¬ÔÚCustomer.hbm.xmlÎÄ¼şÖĞ¶Ôorders¼¯ºÏÉèÖÃÁËÑÓ³Ù¼ìË÷²ßÂÔ£¬ÀûÓÃHQLµÄinner joinÀ´²éÑ¯ÓÃ»§ÃûÒÔ¡°z¡±¿ªÍ·µÄCustomer¶ÔÏóµÄËùÓĞ¶©µ¥±àºÅ¡£
-¡¾ÃèÊö6.D.9¡¿HQLÄÚÁ¬½Ó
+hibernateï¼š
+è¿æ¥æŸ¥è¯¢
+1. å†…è¿æ¥
+åœ¨HQLä¸­ï¼Œinner joinå…³é”®å­—è¡¨ç¤ºå†…è¿æ¥ï¼ˆinnerå…³é”®å­—å¯ä»¥çœç•¥ï¼Œå•ç‹¬ä½¿ç”¨joiné»˜è®¤è¡¨ç¤ºå†…è¿æ¥ï¼‰ã€‚åªè¦ä¸¤ä¸ªæŒä¹…åŒ–ç±»å¯¹åº”çš„è¡¨çš„å…³è”å­—æ®µä¹‹é—´æœ‰ç›¸ç¬¦çš„å€¼ï¼Œå†…è¿æ¥å°±ä¼šç»„åˆä¸¤ä¸ªè¡¨ä¸­çš„è¿æ¥ã€‚å†…è¿æ¥åœ¨ä¸€å¯¹å¤šæˆ–å¤šå¯¹ä¸€çš„å…³è”ä¸­æ¯”è¾ƒå¸¸è§ã€‚
+ä¸‹è¿°ä»£ç ç”¨äºå®ç°ä»»åŠ¡æè¿°6.D.9ï¼Œåœ¨Customer.hbm.xmlæ–‡ä»¶ä¸­å¯¹ordersé›†åˆè®¾ç½®äº†å»¶è¿Ÿæ£€ç´¢ç­–ç•¥ï¼Œåˆ©ç”¨HQLçš„inner joinæ¥æŸ¥è¯¢ç”¨æˆ·åä»¥â€œzâ€å¼€å¤´çš„Customerå¯¹è±¡çš„æ‰€æœ‰è®¢å•ç¼–å·ã€‚
+ã€æè¿°6.D.9ã€‘HQLå†…è¿æ¥
 public static void findCustomerByJoin() {
     Session session = HibernateUtils.getSession();
     String hql = "from Customer c inner join c.orders o where c.userName like :name";
     Query query = session.createQuery(hql);
     query.setString("name", "z%");
-    //list¶ÔÏóÖĞ°üº¬¶à¸öObject[]¶ÔÏó£¬Ã¿¸öObject[]µÄ³¤¶ÈÎª2
+    //listå¯¹è±¡ä¸­åŒ…å«å¤šä¸ªObject[]å¯¹è±¡ï¼Œæ¯ä¸ªObject[]çš„é•¿åº¦ä¸º2
     List<Object[]> list = query.list();
     for (Object[] objs : list) {
         Customer customer = (Customer)objs[0];
@@ -19,16 +19,16 @@ public static void findCustomerByJoin() {
         System.out.println();
     }
 }
-ÉÏÊö½á¹ûÖĞ£¬·Ö±ğÔÚ¿ØÖÆÌ¨´òÓ¡ÁËCustomerµÄuserNameºÍOrderµÄorderNoĞÅÏ¢£¬½á¹ûÖĞ´òÓ¡ÁËÁ½´Î¡°1¡±£¬ËµÃ÷ÕâÁ½×éObject[]¶ÔÏóÊı×éÖØ¸´ÒıÓÃOIDÎª1µÄCustomer¶ÔÏó¡£´ËÍâ£¬ÓÉÓÚÔÚCustomer.hbm.xmlÎÄ¼şÖĞ¶Ôorders¼¯ºÏÅäÖÃÁËÑÓ³Ù¼ìË÷²ßÂÔ£¬Òò´Ë£¬orders¼¯ºÏ²¢Ã»ÓĞ±»³õÊ¼»¯¡£Ö»ÓĞµ±³ÌĞòµÚÒ»´Îµ÷ÓÃOIDÎª1µÄCustomer¶ÔÏóµÄgetOrders().iterator()·½·¨Ê±£¬²Å»á³õÊ¼»¯Customer¶ÔÏóµÄorders¼¯ºÏ¡£
-Èç¹ûÒªÇóQueryµÄlist()·½·¨·µ»ØµÄ¼¯ºÏÖĞ½ö°üº¬Customer¶ÔÏó£¬¿ÉÒÔÔÚHQLÓï¾äÖĞÊ¹ÓÃselect¹Ø¼ü×Ö£¬HQLÓï¾äÈçÏÂËùÊ¾¡£
+ä¸Šè¿°ç»“æœä¸­ï¼Œåˆ†åˆ«åœ¨æ§åˆ¶å°æ‰“å°äº†Customerçš„userNameå’ŒOrderçš„orderNoä¿¡æ¯ï¼Œç»“æœä¸­æ‰“å°äº†ä¸¤æ¬¡â€œ1â€ï¼Œè¯´æ˜è¿™ä¸¤ç»„Object[]å¯¹è±¡æ•°ç»„é‡å¤å¼•ç”¨OIDä¸º1çš„Customerå¯¹è±¡ã€‚æ­¤å¤–ï¼Œç”±äºåœ¨Customer.hbm.xmlæ–‡ä»¶ä¸­å¯¹ordersé›†åˆé…ç½®äº†å»¶è¿Ÿæ£€ç´¢ç­–ç•¥ï¼Œå› æ­¤ï¼Œordersé›†åˆå¹¶æ²¡æœ‰è¢«åˆå§‹åŒ–ã€‚åªæœ‰å½“ç¨‹åºç¬¬ä¸€æ¬¡è°ƒç”¨OIDä¸º1çš„Customerå¯¹è±¡çš„getOrders().iterator()æ–¹æ³•æ—¶ï¼Œæ‰ä¼šåˆå§‹åŒ–Customerå¯¹è±¡çš„ordersé›†åˆã€‚
+å¦‚æœè¦æ±‚Queryçš„list()æ–¹æ³•è¿”å›çš„é›†åˆä¸­ä»…åŒ…å«Customerå¯¹è±¡ï¼Œå¯ä»¥åœ¨HQLè¯­å¥ä¸­ä½¿ç”¨selectå…³é”®å­—ï¼ŒHQLè¯­å¥å¦‚ä¸‹æ‰€ç¤ºã€‚
 
 String hql = "select c from Customer c inner join c.orders o where c.userName like :name";
-´ËÊ±£¬ÔÚQueryµÄlist()·½·¨·µ»ØµÄlist¶ÔÏóÖĞ£¬Ö»°üº¬CustomerÀàĞÍµÄÊı¾İ¡£
-×¢Òâ Èç¹ûÔÚCustomer.hbm.xmlÓ³ÉäÎÄ¼şÖĞ£¬¶Ôorders¼¯ºÏÉèÖÃÁËÁ¢¼´¼ìË÷²ßÂÔ£¬HQLÔÚÖ´ĞĞinner joinµÄÍ¬Ê±£¬»á°ÑCustomer¶ÔÏóµÄorders¼¯ºÏÊôĞÔ³õÊ¼»¯¡£
-2. Ô¤ÏÈ×¥È¡ÄÚÁ¬½Ó
-ÔÚHQL²éÑ¯Óï¾äÖĞ£¬¡°inner join fetch¡±±íÊ¾Ô¤ÏÈ×¥È¡ÄÚÁ¬½Ó£¬¡°inner join¡±ÔÚÄ¬ÈÏÇé¿öÏÂÊÇÑÓ³Ù¼ÓÔØµÄ£¬¶øÊ¹ÓÃ¡°fetch¡±¹Ø¼ü×Öºó»áÒ»´ÎĞÔÈ¡³öµ±Ç°¶ÔÏóºÍ¸Ã¶ÔÏóµÄ¹ØÁªÊµÀı»ò¹ØÁª¼¯ºÏ£¬ÕâÖÖÇé¿ö¾ÍÊÇ¡°Ô¤ÏÈ×¥È¡£¨Ô¤ÏÈ¼ÓÔØ£©¡±¡£
-ÏÂÊö´úÂëÓÃÓÚÊµÏÖÈÎÎñÃèÊö6.D.9£¬ÀûÓÃHQLµÄinner join fetch²éÑ¯ÓÃ»§ÃûÒÔ¡°z¡±¿ªÍ·µÄCustomer¶ÔÏóµÄËùÓĞ¶©µ¥±àºÅ¡£
-¡¾ÃèÊö6.D.9¡¿HQLÔ¤ÏÈ×¥È¡ÄÚÁ¬½Ó
+æ­¤æ—¶ï¼Œåœ¨Queryçš„list()æ–¹æ³•è¿”å›çš„listå¯¹è±¡ä¸­ï¼ŒåªåŒ…å«Customerç±»å‹çš„æ•°æ®ã€‚
+æ³¨æ„ å¦‚æœåœ¨Customer.hbm.xmlæ˜ å°„æ–‡ä»¶ä¸­ï¼Œå¯¹ordersé›†åˆè®¾ç½®äº†ç«‹å³æ£€ç´¢ç­–ç•¥ï¼ŒHQLåœ¨æ‰§è¡Œinner joinçš„åŒæ—¶ï¼Œä¼šæŠŠCustomerå¯¹è±¡çš„ordersé›†åˆå±æ€§åˆå§‹åŒ–ã€‚
+2. é¢„å…ˆæŠ“å–å†…è¿æ¥
+åœ¨HQLæŸ¥è¯¢è¯­å¥ä¸­ï¼Œâ€œinner join fetchâ€è¡¨ç¤ºé¢„å…ˆæŠ“å–å†…è¿æ¥ï¼Œâ€œinner joinâ€åœ¨é»˜è®¤æƒ…å†µä¸‹æ˜¯å»¶è¿ŸåŠ è½½çš„ï¼Œè€Œä½¿ç”¨â€œfetchâ€å…³é”®å­—åä¼šä¸€æ¬¡æ€§å–å‡ºå½“å‰å¯¹è±¡å’Œè¯¥å¯¹è±¡çš„å…³è”å®ä¾‹æˆ–å…³è”é›†åˆï¼Œè¿™ç§æƒ…å†µå°±æ˜¯â€œé¢„å…ˆæŠ“å–ï¼ˆé¢„å…ˆåŠ è½½ï¼‰â€ã€‚
+ä¸‹è¿°ä»£ç ç”¨äºå®ç°ä»»åŠ¡æè¿°6.D.9ï¼Œåˆ©ç”¨HQLçš„inner join fetchæŸ¥è¯¢ç”¨æˆ·åä»¥â€œzâ€å¼€å¤´çš„Customerå¯¹è±¡çš„æ‰€æœ‰è®¢å•ç¼–å·ã€‚
+ã€æè¿°6.D.9ã€‘HQLé¢„å…ˆæŠ“å–å†…è¿æ¥
 public static void findCustomerByFetchJoin() {
     Session session = HibernateUtils.getSession();
     String hql = "from Customer c inner join fetch c.orders o where c.userName
@@ -45,10 +45,10 @@ like :name";
         System.out.println();
     }
 }
-×óÍâÁ¬½Ó
-ÔÚHQLÖĞ£¬left outer join¹Ø¼ü×Ö±íÊ¾×óÍâÁ¬½Ó£¨¿ÉÒÔÊ¡ÂÔouter¹Ø¼ü×Ö£¬left joinÄ¬ÈÏÎª×óÍâÁ¬½Ó£©¡£ÔÚÊ¹ÓÃ×óÍâÁ¬½Ó²éÑ¯Ê±£¬½«¸ù¾İÓ³ÉäÎÄ¼şµÄÅäÖÃÀ´¾ö¶¨orders¼¯ºÏµÄ¼ìË÷²ßÂÔ¡£
-ÏÂÊö´úÂëÓÃÓÚÊµÏÖÈÎÎñÃèÊö6.D.9£¬ÔÚCustomer.hbm.xmlÎÄ¼şÖĞ¶Ôorders¼¯ºÏÉèÖÃÁËÑÓ³Ù¼ìË÷²ßÂÔ£¬ÀûÓÃHQLµÄleft outer joinÀ´²éÑ¯ÄêÁä´óÓÚ18µÄCustomer¶ÔÏóµÄËùÓĞ¶©µ¥±àºÅ¡£
-¡¾ÃèÊö6.D.9¡¿HQL×óÍâÁ¬½Ó
+å·¦å¤–è¿æ¥
+åœ¨HQLä¸­ï¼Œleft outer joinå…³é”®å­—è¡¨ç¤ºå·¦å¤–è¿æ¥ï¼ˆå¯ä»¥çœç•¥outerå…³é”®å­—ï¼Œleft joiné»˜è®¤ä¸ºå·¦å¤–è¿æ¥ï¼‰ã€‚åœ¨ä½¿ç”¨å·¦å¤–è¿æ¥æŸ¥è¯¢æ—¶ï¼Œå°†æ ¹æ®æ˜ å°„æ–‡ä»¶çš„é…ç½®æ¥å†³å®šordersé›†åˆçš„æ£€ç´¢ç­–ç•¥ã€‚
+ä¸‹è¿°ä»£ç ç”¨äºå®ç°ä»»åŠ¡æè¿°6.D.9ï¼Œåœ¨Customer.hbm.xmlæ–‡ä»¶ä¸­å¯¹ordersé›†åˆè®¾ç½®äº†å»¶è¿Ÿæ£€ç´¢ç­–ç•¥ï¼Œåˆ©ç”¨HQLçš„left outer joinæ¥æŸ¥è¯¢å¹´é¾„å¤§äº18çš„Customerå¯¹è±¡çš„æ‰€æœ‰è®¢å•ç¼–å·ã€‚
+ã€æè¿°6.D.9ã€‘HQLå·¦å¤–è¿æ¥
 
 public static void findCustomerByLeftJoin() {
         int age = 17;
@@ -62,27 +62,27 @@ public static void findCustomerByLeftJoin() {
             System.out.print(customer.getId() + " " + customer.getUserName()
                       + " ");
             Order order = (Order) objs[1];
-            if(objs[1]£¡= null)
+            if(objs[1]ï¼= null)
                 System.out.print(order.getOrderNo());
             System.out.println();
         }
     }
-ÉÏÊö´úÂëÖĞ£¬¶ÔCustomerºÍOrderÀàÊ¹ÓÃÁË×óÍâÁ¬½ÓµÄ²éÑ¯·½Ê½£¬Í¨¹ıQuery¶ÔÏóµÄlist()·½·¨·µ»ØÂú×ãÌõ¼şµÄÔªËØ¼¯ºÏ£¬Ã¿¸öÔªËØ¶ÔÓ¦²éÑ¯½á¹ûÖĞµÄÒ»Ìõ¼ÇÂ¼£¬¶¼ÊÇObject[]ÀàĞÍ£¬²¢ÇÒÆä³¤¶ÈÎª2¡£Ã¿¸öObject[]Êı×éÖĞ¶¼´æ·ÅÁËÒ»¶ÔCustomerºÍOrder¶ÔÏó¡£ÓëÄÚÁ¬½Ó²éÑ¯²»Í¬µÄÊÇ£¬Èç¹ûCustomer¶ÔÏóÂú×ãÌõ¼ş£¬¶ø¸Ã¶ÔÏóÃ»ÓĞ¶ÔÓ¦µÄOrder¶ÔÏó£¬ÕâÊ±HibernateÈÔÈ»½«¸Ã¶ÔÏó¼ìË÷³öÀ´£¬Ö»²»¹ıobjs[1]µÄÖµÎªnull¡£Ö´ĞĞ½á¹ûÈçÏÂËùÊ¾¡£
+ä¸Šè¿°ä»£ç ä¸­ï¼Œå¯¹Customerå’ŒOrderç±»ä½¿ç”¨äº†å·¦å¤–è¿æ¥çš„æŸ¥è¯¢æ–¹å¼ï¼Œé€šè¿‡Queryå¯¹è±¡çš„list()æ–¹æ³•è¿”å›æ»¡è¶³æ¡ä»¶çš„å…ƒç´ é›†åˆï¼Œæ¯ä¸ªå…ƒç´ å¯¹åº”æŸ¥è¯¢ç»“æœä¸­çš„ä¸€æ¡è®°å½•ï¼Œéƒ½æ˜¯Object[]ç±»å‹ï¼Œå¹¶ä¸”å…¶é•¿åº¦ä¸º2ã€‚æ¯ä¸ªObject[]æ•°ç»„ä¸­éƒ½å­˜æ”¾äº†ä¸€å¯¹Customerå’ŒOrderå¯¹è±¡ã€‚ä¸å†…è¿æ¥æŸ¥è¯¢ä¸åŒçš„æ˜¯ï¼Œå¦‚æœCustomerå¯¹è±¡æ»¡è¶³æ¡ä»¶ï¼Œè€Œè¯¥å¯¹è±¡æ²¡æœ‰å¯¹åº”çš„Orderå¯¹è±¡ï¼Œè¿™æ—¶Hibernateä»ç„¶å°†è¯¥å¯¹è±¡æ£€ç´¢å‡ºæ¥ï¼Œåªä¸è¿‡objs[1]çš„å€¼ä¸ºnullã€‚æ‰§è¡Œç»“æœå¦‚ä¸‹æ‰€ç¤ºã€‚
 
 1 zhangsan 20100706
 1 zhangsan 20100712
 2 lisi
-ÉÏÊö½á¹ûÖĞ£¬·Ö±ğÔÚ¿ØÖÆÌ¨´òÓ¡ÁËCustomerµÄuserNameºÍOrderµÄorderNoĞÅÏ¢£¬Êä³ö½á¹ûÖĞ´òÓ¡ÁËÁ½´Î¡°1¡±ºÍÒ»´Î¡°2¡±£¬ËµÃ÷Ç°Á½×éObject[]¶ÔÏóÊı×éÒıÓÃOIDÎª1µÄÍ¬Ò»¸öCustomer¶ÔÏó¡£¶ø¶ÔÓÚOIDÎª2µÄCustomer¶ÔÏó£¬ÓÉÓÚÃ»ÓĞ¶ÔÓ¦µÄOrder¶ÔÏó£¬ËùÒÔÆäÃ»ÓĞ¶ÔÓ¦µÄ¶©µ¥ĞÅÏ¢¡£
-´ËÍâ£¬ÓÉÓÚÔÚCustomer.hbm.xmlÎÄ¼şÖĞ¶Ôorders¼¯ºÏÅäÖÃÁËÑÓ³Ù¼ìË÷²ßÂÔ£¬Òò´Ëorders¼¯ºÏ²¢Ã»ÓĞ±»³õÊ¼»¯¡£Ö»ÓĞµ±³ÌĞòµÚÒ»´Îµ÷ÓÃOIDÎª1µÄCustomer¶ÔÏóµÄgetOrders().iterator()·½·¨Ê±£¬²Å»á³õÊ¼»¯Customer¶ÔÏóµÄorders¼¯ºÏ¡£
-Èç¹ûÒªÇóQueryµÄlist()·½·¨Ö»·µ»ØCustomer¶ÔÏó£¬¿ÉÒÔÔÚHQLÓï¾äÖĞÊ¹ÓÃselect¹Ø¼ü×Ö£¬HQLÓï¾äÈçÏÂËùÊ¾¡£
+ä¸Šè¿°ç»“æœä¸­ï¼Œåˆ†åˆ«åœ¨æ§åˆ¶å°æ‰“å°äº†Customerçš„userNameå’ŒOrderçš„orderNoä¿¡æ¯ï¼Œè¾“å‡ºç»“æœä¸­æ‰“å°äº†ä¸¤æ¬¡â€œ1â€å’Œä¸€æ¬¡â€œ2â€ï¼Œè¯´æ˜å‰ä¸¤ç»„Object[]å¯¹è±¡æ•°ç»„å¼•ç”¨OIDä¸º1çš„åŒä¸€ä¸ªCustomerå¯¹è±¡ã€‚è€Œå¯¹äºOIDä¸º2çš„Customerå¯¹è±¡ï¼Œç”±äºæ²¡æœ‰å¯¹åº”çš„Orderå¯¹è±¡ï¼Œæ‰€ä»¥å…¶æ²¡æœ‰å¯¹åº”çš„è®¢å•ä¿¡æ¯ã€‚
+æ­¤å¤–ï¼Œç”±äºåœ¨Customer.hbm.xmlæ–‡ä»¶ä¸­å¯¹ordersé›†åˆé…ç½®äº†å»¶è¿Ÿæ£€ç´¢ç­–ç•¥ï¼Œå› æ­¤ordersé›†åˆå¹¶æ²¡æœ‰è¢«åˆå§‹åŒ–ã€‚åªæœ‰å½“ç¨‹åºç¬¬ä¸€æ¬¡è°ƒç”¨OIDä¸º1çš„Customerå¯¹è±¡çš„getOrders().iterator()æ–¹æ³•æ—¶ï¼Œæ‰ä¼šåˆå§‹åŒ–Customerå¯¹è±¡çš„ordersé›†åˆã€‚
+å¦‚æœè¦æ±‚Queryçš„list()æ–¹æ³•åªè¿”å›Customerå¯¹è±¡ï¼Œå¯ä»¥åœ¨HQLè¯­å¥ä¸­ä½¿ç”¨selectå…³é”®å­—ï¼ŒHQLè¯­å¥å¦‚ä¸‹æ‰€ç¤ºã€‚
 
 String hql = "select c from Customer c left outer join c.orders o where c.age> ?;
-´ËÊ±£¬ÔÚQueryµÄlist()·½·¨·µ»ØµÄlist¶ÔÏóÖĞ£¬Ö»°üº¬CustomerÀàĞÍµÄÊı¾İ¡£
-×¢Òâ Èç¹ûÔÚCustomer.hbm.xmlÓ³ÉäÎÄ¼şÖĞ£¬¶Ôorders¼¯ºÏÉèÖÃÁËÁ¢¼´¼ìË÷²ßÂÔ£¬HQLÔÚÖ´ĞĞleft outer joinµÄÍ¬Ê±£¬»á°ÑCustomer¶ÔÏóµÄorders¼¯ºÏÊôĞÔ³õÊ¼»¯¡£
-Ô¤ÏÈ×¥È¡×óÍâÁ¬½Ó
-ÔÚHQL²éÑ¯Óï¾äÖĞ£¬left outer join fetch±íÊ¾Ô¤ÏÈ×¥È¡×óÍâÁ¬½Ó£¬Ò²¿ÉÒÔÊ¡ÂÔÎªleft join fetch¡£
-ÏÂÊö´úÂëÓÃÓÚÊµÏÖÈÎÎñÃèÊö6.D.9£¬ÀûÓÃHQLµÄleft outer join fetchÀ´²éÑ¯ÄêÁä´óÓÚ18µÄCustomer¶ÔÏóµÄËùÓĞ¶©µ¥±àºÅ¡£
-¡¾ÃèÊö6.D.9¡¿HQLÔ¤ÏÈ×¥È¡×óÍâÁ¬½Ó
+æ­¤æ—¶ï¼Œåœ¨Queryçš„list()æ–¹æ³•è¿”å›çš„listå¯¹è±¡ä¸­ï¼ŒåªåŒ…å«Customerç±»å‹çš„æ•°æ®ã€‚
+æ³¨æ„ å¦‚æœåœ¨Customer.hbm.xmlæ˜ å°„æ–‡ä»¶ä¸­ï¼Œå¯¹ordersé›†åˆè®¾ç½®äº†ç«‹å³æ£€ç´¢ç­–ç•¥ï¼ŒHQLåœ¨æ‰§è¡Œleft outer joinçš„åŒæ—¶ï¼Œä¼šæŠŠCustomerå¯¹è±¡çš„ordersé›†åˆå±æ€§åˆå§‹åŒ–ã€‚
+é¢„å…ˆæŠ“å–å·¦å¤–è¿æ¥
+åœ¨HQLæŸ¥è¯¢è¯­å¥ä¸­ï¼Œleft outer join fetchè¡¨ç¤ºé¢„å…ˆæŠ“å–å·¦å¤–è¿æ¥ï¼Œä¹Ÿå¯ä»¥çœç•¥ä¸ºleft join fetchã€‚
+ä¸‹è¿°ä»£ç ç”¨äºå®ç°ä»»åŠ¡æè¿°6.D.9ï¼Œåˆ©ç”¨HQLçš„left outer join fetchæ¥æŸ¥è¯¢å¹´é¾„å¤§äº18çš„Customerå¯¹è±¡çš„æ‰€æœ‰è®¢å•ç¼–å·ã€‚
+ã€æè¿°6.D.9ã€‘HQLé¢„å…ˆæŠ“å–å·¦å¤–è¿æ¥
 public static void findCustomerByLeftFetch() {
     int age = 17;
     Session session = HibernateUtils.getSession();
@@ -99,10 +99,10 @@ public static void findCustomerByLeftFetch() {
         System.out.println();
     }
 }
-ÉÏÊö´úÂëÖĞ£¬Ê¹ÓÃÁËÔ¤ÏÈ×¥È¡×óÍâÁ¬½ÓµÄ²éÑ¯·½Ê½£¬Query¶ÔÏóµÄlist()·½·¨·µ»ØµÄ¼¯ºÏÖĞ°üº¬ÁËÂú×ãÌõ¼şµÄÔªËØ£¬Ã¿¸öÔªËØ¶¼ÊÇCustomerÀàĞÍµÄ£¬²¢ÇÒÃ¿¸öCustomerÀàĞÍµÄ¶ÔÏóÖĞµÄorders¼¯ºÏÒÑ¾­±»³õÊ¼»¯¡£
-ÔÚHibernateÖĞ£¬»¹¿ÉÒÔÍ¨¹ıÊ¹ÓÃProjection½Ó¿ÚÊµÏÖCriteriaµÄ·½Ê½À´½øĞĞ·Ö×éÓëÍ³¼Æ²éÑ¯¡£Projection½Ó¿ÚÀàÎ»ÓÚorg.hibernate.criterion°üÖĞ£¬Í¨¹ıCriteria¶ÔÏóµÄsetProjection()·½·¨½«Í¶Ó°Ó¦ÓÃµ½Ò»¸ö²éÑ¯ÖĞ¡£´ËÍâ£¬Í¨¹ıProjection½Ó¿ÚµÄ¹¤³§ÀàProjections»ñÈ¡³£ÓÃµÄÍ³¼Æº¯Êı£¬ProjectionsÀàºÍProjection½Ó¿ÚÎ»ÓÚÍ¬Ò»°üÖĞ¡£
-ÀıÈç£º
-·Ö×éÅÅĞòÊ±£º
+ä¸Šè¿°ä»£ç ä¸­ï¼Œä½¿ç”¨äº†é¢„å…ˆæŠ“å–å·¦å¤–è¿æ¥çš„æŸ¥è¯¢æ–¹å¼ï¼ŒQueryå¯¹è±¡çš„list()æ–¹æ³•è¿”å›çš„é›†åˆä¸­åŒ…å«äº†æ»¡è¶³æ¡ä»¶çš„å…ƒç´ ï¼Œæ¯ä¸ªå…ƒç´ éƒ½æ˜¯Customerç±»å‹çš„ï¼Œå¹¶ä¸”æ¯ä¸ªCustomerç±»å‹çš„å¯¹è±¡ä¸­çš„ordersé›†åˆå·²ç»è¢«åˆå§‹åŒ–ã€‚
+åœ¨Hibernateä¸­ï¼Œè¿˜å¯ä»¥é€šè¿‡ä½¿ç”¨Projectionæ¥å£å®ç°Criteriaçš„æ–¹å¼æ¥è¿›è¡Œåˆ†ç»„ä¸ç»Ÿè®¡æŸ¥è¯¢ã€‚Projectionæ¥å£ç±»ä½äºorg.hibernate.criterionåŒ…ä¸­ï¼Œé€šè¿‡Criteriaå¯¹è±¡çš„setProjection()æ–¹æ³•å°†æŠ•å½±åº”ç”¨åˆ°ä¸€ä¸ªæŸ¥è¯¢ä¸­ã€‚æ­¤å¤–ï¼Œé€šè¿‡Projectionæ¥å£çš„å·¥å‚ç±»Projectionsè·å–å¸¸ç”¨çš„ç»Ÿè®¡å‡½æ•°ï¼ŒProjectionsç±»å’ŒProjectionæ¥å£ä½äºåŒä¸€åŒ…ä¸­ã€‚
+ä¾‹å¦‚ï¼š
+åˆ†ç»„æ’åºæ—¶ï¼š
 public static void groupByCustomer2(){
     Session session = HibernateUtils.getSession();
     Criteria criteria = session.createCriteria(Customer.class);
@@ -112,182 +112,182 @@ public static void groupByCustomer2(){
     criteria.setProjection(p);
     List<Object[]> list = criteria.list();
     for (Object[] objs : list) {
-        System.out.println("ÓÃ»§Ãû£º"+objs[0]+",¸öÊı: "+objs[1]);
+        System.out.println("ç”¨æˆ·åï¼š"+objs[0]+",ä¸ªæ•°: "+objs[1]);
     }
 }
-QBC¶¯Ì¬²éÑ¯
+QBCåŠ¨æ€æŸ¥è¯¢
 public static List<Customer> findCustomersByCriteria(String name,
         Integer age) {
     Session session = HibernateUtils.getSession();
     Criteria criteria = session.createCriteria(Customer.class);
-    if (name£¡= null) {
+    if (nameï¼= null) {
         criteria.add(Restrictions.ilike("userName", name,
                   MatchMode.ANYWHERE));
     }
-    if (age£¡= null && age£¡= 0) {
+    if (ageï¼= null && ageï¼= 0) {
         criteria.add(Restrictions.eq("age", age));
     }
     return criteria.list();
 }
-ÉÏÊö´úÂëÖĞ£¬ÀûÓÃQBCÀ´¶¯Ì¬Éú³É²éÑ¯Óï¾ä£¬ÔÚ´úÂëµÄ±àĞ´¹ı³ÌÖĞ£¬²»ĞèÒª¿¼ÂÇHQLÓï¾ä¸´ÔÓµÄÆ´´Õ£¬Ö»ĞèÒª°ÑÂú×ãÌõ¼şµÄCriterion¶ÔÏó·ÅÈëCriteria¶ÔÏóÖĞ¼´¿É¡£ÓëHQLÏà±È´úÂë¼òµ¥ÁËĞí¶à¡£
-DetachedCriteriaÀëÏß²éÑ¯
+ä¸Šè¿°ä»£ç ä¸­ï¼Œåˆ©ç”¨QBCæ¥åŠ¨æ€ç”ŸæˆæŸ¥è¯¢è¯­å¥ï¼Œåœ¨ä»£ç çš„ç¼–å†™è¿‡ç¨‹ä¸­ï¼Œä¸éœ€è¦è€ƒè™‘HQLè¯­å¥å¤æ‚çš„æ‹¼å‡‘ï¼Œåªéœ€è¦æŠŠæ»¡è¶³æ¡ä»¶çš„Criterionå¯¹è±¡æ”¾å…¥Criteriaå¯¹è±¡ä¸­å³å¯ã€‚ä¸HQLç›¸æ¯”ä»£ç ç®€å•äº†è®¸å¤šã€‚
+DetachedCriteriaç¦»çº¿æŸ¥è¯¢
 
 public class BusniessService {
     public static void main(String[] args) {
         DetachedCriteria cri = DetachedCriteria.forClass(Customer.class);
-        // ¸ù¾İÓÃ»§µÄ¶¯Ì¬²éÑ¯Ìõ¼ş£¬´´½¨DetachedCriteria¶ÔÏó
+        // æ ¹æ®ç”¨æˆ·çš„åŠ¨æ€æŸ¥è¯¢æ¡ä»¶ï¼Œåˆ›å»ºDetachedCriteriaå¯¹è±¡
         cri.add(Restrictions.eq("age", 18));
         cri.add(Restrictions.ilike("userName", "z", MatchMode.ANYWHERE));
         List<Customer> list = findCustomers(cri);
-        //½á¹û×îÖÕ»áÔÚ±íÊ¾²ãÏÔÊ¾
+        //ç»“æœæœ€ç»ˆä¼šåœ¨è¡¨ç¤ºå±‚æ˜¾ç¤º
         for (Customer customer : list) {
             System.out.println(customer.getUserName());
         }
     }
-    // ÔÚÒµÎñÂß¼­²ã°ÑDetachedCriteria¶ÔÏóÓëSession¶ÔÏó°ó¶¨£¬²¢·µ»Ø²éÑ¯½á¹û
+    // åœ¨ä¸šåŠ¡é€»è¾‘å±‚æŠŠDetachedCriteriaå¯¹è±¡ä¸Sessionå¯¹è±¡ç»‘å®šï¼Œå¹¶è¿”å›æŸ¥è¯¢ç»“æœ
     public static List<Customer> findCustomers(DetachedCriteria      detachedCriteria) {
         Session session = HibernateUtils.getSession();
         Criteria criteria = detachedCriteria.getExecutableCriteria(session);
         return criteria.list();
     }
 }
-ÉÏÊö´úÂëÖĞ£¬ÀûÓÃDetachedCriteriaµÄ¾²Ì¬·½·¨forClass()À´´´½¨»ùÓÚCustomerÀàµÄDetachedCriteria¶ÔÏó£¬È»ºó°Ñ²éÑ¯Ìõ¼ş¼ÓÈëµ½¸Ã¶ÔÏóÖĞ£¬½Ó×Å½«¸Ã¶ÔÏó´«µİµ½findCustomers()·½·¨ÖĞ¡£×¢Òâ DetachedCriteriaÔÚµ×²ãÒÀÀµÓÚCriteria¶ÔÏó£¬Òò´Ë£¬²Ù×÷DetachedCriteria¶ÔÏóµÄÒ»Ğ©·½·¨Ê±£¬Èçadd()·½·¨£¬Êµ¼ÊÉÏ²Ù×÷µÄÊÇCriteria¶ÔÏóÖĞµÄadd()·½·¨£¬¶ÔÓÚDetachedCriteriaµÄÆäËû·½·¨Ò²ÓëCriteriaÖĞµÄÀàËÆ¡£ÓëCriteria²»Í¬µÄÊÇ£¬DetachedCriteria¶ÔÏó¿ÉÒÔ¶ÀÁ¢ÓÚSession¶ÔÏóÀ´´´½¨£¬µ«ÔÚÌõ¼ş²éÑ¯Ê±Ôò±ØĞëÓëSession¶ÔÏó°ó¶¨À´ÊµÏÖ²éÑ¯¡£
-AOP°ÑÈí¼şÏµÍ³·ÖÎªÁ½¸ö²¿·Ö£ººËĞÄ¹Ø×¢µãºÍºáÇĞ¹Ø×¢µã¡£ºËĞÄ¹Ø×¢µãÊÇÒµÎñ´¦ÀíµÄÖ÷ÒªÁ÷³Ì£¬¶øºáÇĞ¹Ø×¢µãÊÇÓëºËĞÄÒµÎñÎŞ¹ØµÄ²¿·Ö£¬Ëü³£³£·¢ÉúÔÚºËĞÄ¹Ø×¢µãµÄÖÜÎ§²¢ÇÒ´úÂëÀàËÆ»òÏàÍ¬£¬ÈçÈÕÖ¾¡¢È¨ÏŞµÈ¡£
-ºáÇĞ¹Ø×¢µãËäÈ»ÓëºËĞÄÒµÎñµÄÊµÏÖÎŞ¹Ø£¬µ«È´ÊÇÒ»ÖÖ¸üÎªÍ¨ÓÃµÄÒµÎñ£¬¸÷¸öºáÇĞ¹Ø×¢µãÀëÉ¢µØ´©²åÓÚºËĞÄÒµÎñÖ®ÖĞ£¬µ¼ÖÂÏµÍ³ÖĞµÄÃ¿Ò»¸öÄ£¿é¶¼ÓëÕâĞ©ÒµÎñ¾ßÓĞºÜÇ¿µÄÒÀÀµĞÔ¡£ºáÇĞ¹Ø×¢µãËù´ú±íµÄĞĞÎª¾ÍÊÇ¡°ÇĞÃæ¡±¡£
-×ÜÖ®£¬OOPÌá¸ßÁË´úÂëµÄÖØÓÃ£¬¶øAOP½«·ÖÉ¢ÔÚ¸÷¸öÒµÎñÂß¼­ÖĞµÄÏàÍ¬´úÂë£¬Í¨¹ıºáÏòÇĞ¸îµÄ·½Ê½³éÈ¡³ÉÒ»¸ö¶ÀÁ¢µÄÄ£¿é£¬Ê¹µÃÒµÎñÂß¼­Àà¸ü¼Ó¼ò½àÃ÷ÁË
-ÔÚAOP±à³Ì¹ı³ÌÖĞ£¬ĞèÒª¿ª·¢ÈËÔ±²ÎÓëµÄÓĞÈı¸ö·½Ãæ¡£
-¶¨ÒåÆÕÍ¨ÒµÎñÀà£»
-¶¨ÒåÇĞÈëµã£¬Ò»¸öÇĞÈëµã¿ÉÄÜºáÇĞ¶à¸öÒµÎñ×é¼ş£»
-¶¨ÒåÔöÇ¿£¬ÔöÇ¿¾ÍÊÇÔÚAOP¿ò¼ÜÎªÆÕÍ¨ÒµÎñ×é¼şÖ¯ÈëµÄ´¦ÀíÂß¼­¡£
-¶ÔÓÚAOP±à³Ì¶øÑÔ£¬×î¹Ø¼üµÄ¾ÍÊÇ¶¨ÒåÇĞÈëµãºÍÔöÇ¿£¬Ò»µ©¶¨ÒåÁËºÏÊÊµÄÇĞÈëµãºÍÔöÇ¿£¬AOP¿ò¼Ü»á×Ô¶¯Éú³ÉAOP´úÀí¡£
+ä¸Šè¿°ä»£ç ä¸­ï¼Œåˆ©ç”¨DetachedCriteriaçš„é™æ€æ–¹æ³•forClass()æ¥åˆ›å»ºåŸºäºCustomerç±»çš„DetachedCriteriaå¯¹è±¡ï¼Œç„¶åæŠŠæŸ¥è¯¢æ¡ä»¶åŠ å…¥åˆ°è¯¥å¯¹è±¡ä¸­ï¼Œæ¥ç€å°†è¯¥å¯¹è±¡ä¼ é€’åˆ°findCustomers()æ–¹æ³•ä¸­ã€‚æ³¨æ„ DetachedCriteriaåœ¨åº•å±‚ä¾èµ–äºCriteriaå¯¹è±¡ï¼Œå› æ­¤ï¼Œæ“ä½œDetachedCriteriaå¯¹è±¡çš„ä¸€äº›æ–¹æ³•æ—¶ï¼Œå¦‚add()æ–¹æ³•ï¼Œå®é™…ä¸Šæ“ä½œçš„æ˜¯Criteriaå¯¹è±¡ä¸­çš„add()æ–¹æ³•ï¼Œå¯¹äºDetachedCriteriaçš„å…¶ä»–æ–¹æ³•ä¹Ÿä¸Criteriaä¸­çš„ç±»ä¼¼ã€‚ä¸Criteriaä¸åŒçš„æ˜¯ï¼ŒDetachedCriteriaå¯¹è±¡å¯ä»¥ç‹¬ç«‹äºSessionå¯¹è±¡æ¥åˆ›å»ºï¼Œä½†åœ¨æ¡ä»¶æŸ¥è¯¢æ—¶åˆ™å¿…é¡»ä¸Sessionå¯¹è±¡ç»‘å®šæ¥å®ç°æŸ¥è¯¢ã€‚
+AOPæŠŠè½¯ä»¶ç³»ç»Ÿåˆ†ä¸ºä¸¤ä¸ªéƒ¨åˆ†ï¼šæ ¸å¿ƒå…³æ³¨ç‚¹å’Œæ¨ªåˆ‡å…³æ³¨ç‚¹ã€‚æ ¸å¿ƒå…³æ³¨ç‚¹æ˜¯ä¸šåŠ¡å¤„ç†çš„ä¸»è¦æµç¨‹ï¼Œè€Œæ¨ªåˆ‡å…³æ³¨ç‚¹æ˜¯ä¸æ ¸å¿ƒä¸šåŠ¡æ— å…³çš„éƒ¨åˆ†ï¼Œå®ƒå¸¸å¸¸å‘ç”Ÿåœ¨æ ¸å¿ƒå…³æ³¨ç‚¹çš„å‘¨å›´å¹¶ä¸”ä»£ç ç±»ä¼¼æˆ–ç›¸åŒï¼Œå¦‚æ—¥å¿—ã€æƒé™ç­‰ã€‚
+æ¨ªåˆ‡å…³æ³¨ç‚¹è™½ç„¶ä¸æ ¸å¿ƒä¸šåŠ¡çš„å®ç°æ— å…³ï¼Œä½†å´æ˜¯ä¸€ç§æ›´ä¸ºé€šç”¨çš„ä¸šåŠ¡ï¼Œå„ä¸ªæ¨ªåˆ‡å…³æ³¨ç‚¹ç¦»æ•£åœ°ç©¿æ’äºæ ¸å¿ƒä¸šåŠ¡ä¹‹ä¸­ï¼Œå¯¼è‡´ç³»ç»Ÿä¸­çš„æ¯ä¸€ä¸ªæ¨¡å—éƒ½ä¸è¿™äº›ä¸šåŠ¡å…·æœ‰å¾ˆå¼ºçš„ä¾èµ–æ€§ã€‚æ¨ªåˆ‡å…³æ³¨ç‚¹æ‰€ä»£è¡¨çš„è¡Œä¸ºå°±æ˜¯â€œåˆ‡é¢â€ã€‚
+æ€»ä¹‹ï¼ŒOOPæé«˜äº†ä»£ç çš„é‡ç”¨ï¼Œè€ŒAOPå°†åˆ†æ•£åœ¨å„ä¸ªä¸šåŠ¡é€»è¾‘ä¸­çš„ç›¸åŒä»£ç ï¼Œé€šè¿‡æ¨ªå‘åˆ‡å‰²çš„æ–¹å¼æŠ½å–æˆä¸€ä¸ªç‹¬ç«‹çš„æ¨¡å—ï¼Œä½¿å¾—ä¸šåŠ¡é€»è¾‘ç±»æ›´åŠ ç®€æ´æ˜äº†
+åœ¨AOPç¼–ç¨‹è¿‡ç¨‹ä¸­ï¼Œéœ€è¦å¼€å‘äººå‘˜å‚ä¸çš„æœ‰ä¸‰ä¸ªæ–¹é¢ã€‚
+å®šä¹‰æ™®é€šä¸šåŠ¡ç±»ï¼›
+å®šä¹‰åˆ‡å…¥ç‚¹ï¼Œä¸€ä¸ªåˆ‡å…¥ç‚¹å¯èƒ½æ¨ªåˆ‡å¤šä¸ªä¸šåŠ¡ç»„ä»¶ï¼›
+å®šä¹‰å¢å¼ºï¼Œå¢å¼ºå°±æ˜¯åœ¨AOPæ¡†æ¶ä¸ºæ™®é€šä¸šåŠ¡ç»„ä»¶ç»‡å…¥çš„å¤„ç†é€»è¾‘ã€‚
+å¯¹äºAOPç¼–ç¨‹è€Œè¨€ï¼Œæœ€å…³é”®çš„å°±æ˜¯å®šä¹‰åˆ‡å…¥ç‚¹å’Œå¢å¼ºï¼Œä¸€æ—¦å®šä¹‰äº†åˆé€‚çš„åˆ‡å…¥ç‚¹å’Œå¢å¼ºï¼ŒAOPæ¡†æ¶ä¼šè‡ªåŠ¨ç”ŸæˆAOPä»£ç†ã€‚
  <aop:config proxy-target-class="true">
         <aop:aspect id="adviceAspect" ref="aspectBean">
-    <£¡-- ÅäÖÃBeforeÔöÇ¿£¬ÒÔÇĞÃæBeanÖĞµÄcheckAuth()·½·¨×÷ÎªÔöÇ¿´¦Àí·½·¨ -->
+    <ï¼-- é…ç½®Beforeå¢å¼ºï¼Œä»¥åˆ‡é¢Beanä¸­çš„checkAuth()æ–¹æ³•ä½œä¸ºå¢å¼ºå¤„ç†æ–¹æ³• -->
             <aop:before method="checkAuth"
                   pointcut="execution(* com..*.*Service.*(..))" />
-    <£¡-- ÅäÖÃAfterReturningÔöÇ¿£¬ÒÔÇĞÃæÖĞµÄlog()·½·¨×÷ÎªÔöÇ¿´¦Àí·½·¨ -->
+    <ï¼-- é…ç½®AfterReturningå¢å¼ºï¼Œä»¥åˆ‡é¢ä¸­çš„log()æ–¹æ³•ä½œä¸ºå¢å¼ºå¤„ç†æ–¹æ³• -->
             <aop:after-returning method="log"
                   pointcut="execution(* com..*.*Service.select(..))"
                   returning="result" />
-    <£¡-- ÅäÖÃAfterThrowingÔöÇ¿£¬ÒÔÇĞÃæÖĞµÄprocessException·½·¨×÷ÎªÔöÇ¿´¦Àí·½·¨-->
+    <ï¼-- é…ç½®AfterThrowingå¢å¼ºï¼Œä»¥åˆ‡é¢ä¸­çš„processExceptionæ–¹æ³•ä½œä¸ºå¢å¼ºå¤„ç†æ–¹æ³•-->
             <aop:after-throwing method="processException"
                 pointcut="execution(* com..*.*Service.*(..))"
                 throwing="ex" />
-    <£¡-- ÅäÖÃAroundÔöÇ¿£¬ÒÔÇĞÃæÖĞµÄprocessTrans()·½·¨×÷ÎªÔöÇ¿´¦Àí·½·¨ -->
+    <ï¼-- é…ç½®Aroundå¢å¼ºï¼Œä»¥åˆ‡é¢ä¸­çš„processTrans()æ–¹æ³•ä½œä¸ºå¢å¼ºå¤„ç†æ–¹æ³• -->
             <aop:around method="proceedInTrans"
                 pointcut="execution(* com..*.*Service.*(..))" />
-    <£¡-- ÅäÖÃAfterÔöÇ¿£¬ÒÔÇĞÃæBeanÖĞµÄrelease()·½·¨×÷ÎªÔöÇ¿´¦Àí·½·¨ -->
+    <ï¼-- é…ç½®Afterå¢å¼ºï¼Œä»¥åˆ‡é¢Beanä¸­çš„release()æ–¹æ³•ä½œä¸ºå¢å¼ºå¤„ç†æ–¹æ³• -->
             <aop:after method="release"
                 pointcut="execution(* com..*.*Service.*(..))" />
         </aop:aspect>
     </aop:config>
-    <£¡-- ÅäÖÃÈÕÖ¾ÇĞÃæ -->
+    <ï¼-- é…ç½®æ—¥å¿—åˆ‡é¢ -->
     <bean id="aspectBean" class="com.haiersoft.ch08.aspect.AspectBean" />
-    <£¡-- ÅäÖÃUserServiceÀà -->
+    <ï¼-- é…ç½®UserServiceç±» -->
     <bean id="userService" class="com.haiersoft.ch08.service.UserServiceImpl" />
-¡­¡­Ê¡ÂÔ
-ÉÏÊöÅäÖÃÖĞ£¬ÅäÖÃÁËBeforeÔöÇ¿¡¢AfterReturningÔöÇ¿¡¢AfterThrowingÔöÇ¿¡¢AroundÔöÇ¿ºÍAfterÔöÇ¿¡£ÔÚÃ¿¸öÔöÇ¿ÔªËØÖĞmethodÊôĞÔÖµ¶¼Éè¶¨ÎªÇĞÃæÖĞµÄ·½·¨£¬ÀıÈç£¬ÔÚBeforeÔöÇ¿ÖĞmethodÊôĞÔÖµÎª¡°checkAuth¡±£¬¶ÔÓ¦ÇĞÃæAspectBeanÖĞµÄcheckAuth()·½·¨£¬±íÊ¾µ±Âú×ãÌõ¼şÊ±»áµ÷ÓÃÇĞÃæAspectBeanµÄcheckAuth()·½·¨£»pointcutÊôĞÔµÄÖµÎªÇĞÈëµã±í´ïÊ½£º
+â€¦â€¦çœç•¥
+ä¸Šè¿°é…ç½®ä¸­ï¼Œé…ç½®äº†Beforeå¢å¼ºã€AfterReturningå¢å¼ºã€AfterThrowingå¢å¼ºã€Aroundå¢å¼ºå’ŒAfterå¢å¼ºã€‚åœ¨æ¯ä¸ªå¢å¼ºå…ƒç´ ä¸­methodå±æ€§å€¼éƒ½è®¾å®šä¸ºåˆ‡é¢ä¸­çš„æ–¹æ³•ï¼Œä¾‹å¦‚ï¼Œåœ¨Beforeå¢å¼ºä¸­methodå±æ€§å€¼ä¸ºâ€œcheckAuthâ€ï¼Œå¯¹åº”åˆ‡é¢AspectBeanä¸­çš„checkAuth()æ–¹æ³•ï¼Œè¡¨ç¤ºå½“æ»¡è¶³æ¡ä»¶æ—¶ä¼šè°ƒç”¨åˆ‡é¢AspectBeançš„checkAuth()æ–¹æ³•ï¼›pointcutå±æ€§çš„å€¼ä¸ºåˆ‡å…¥ç‚¹è¡¨è¾¾å¼ï¼š
 
 execution(* com..*.*Service.*(..))
-±íÊ¾¡°com¡±°ü»òÆä×ÓËï°üÖĞ£¬Ãû³ÆÒÔ¡°Service¡±½áÎ²µÄ½Ó¿Ú/ÀàÖĞÈÎÒâµÄ·½·¨£¬Èç¹û±»µ÷ÓÃµÄ·½·¨Âú×ãÉÏÊöÌõ¼ş£¬Ôò»á±»ÔöÇ¿£¬¼´ÔÚµ÷ÓÃµÄ¹ı³ÌÖĞÊ×ÏÈ»á±»¼ì²éÊÇ·ñ¾ß±¸µ÷ÓÃ¸Ã·½·¨µÄÈ¨ÏŞ¡£
-×¢Òâ µ±<aop:config¡­/>ÖĞproxy-target-classÊôĞÔÖµÉèÖÃÎªtrueÊ±£¬±íÊ¾ÆäÖĞÉùÃ÷µÄÇĞÃæ¾ùÊ¹ÓÃCGLib¶¯Ì¬´úÀí¼¼Êõ£»µ±ÉèÖÃÎªfalseÊ±£¬Ê¹ÓÃJDK¶¯Ì¬´úÀí¼¼Êõ£¬Ò»¸öÅäÖÃÎÄ¼ş¿ÉÒÔÍ¬Ê±¶¨Òå¶à¸ö<aop:config¡­/>£¬²»Í¬µÄ<aop:config¡­/>¿ÉÒÔ²ÉÓÃ²»Í¬µÄ´úÀí¼¼Êõ¡£
-ÇĞÈëµã±í´ïÊ½£ºexecution(* com.haiersoft..*(..))&&args(com.haiersoft.ch08.pojos.User)
-¿ÉÒÔÊ¹ÓÃ¡°*¡±ºÍ¡°..¡±Í¨Åä·ûÀ´±íÊ¾·½·¨µÄĞÎ²Î£¬ÆäÖĞ¡°*¡±±íÊ¾ÈÎÒâÀàĞÍµÄ²ÎÊı£»
-¶ø¡°..¡±±íÊ¾ÈÎÒâÀàĞÍ²ÎÊıÇÒ²ÎÊı¸öÊıÊÇ0¸ö»ò¶à¸ö¡£
-Ê¹ÓÃ×¢½âÅäÖÃÍ¨Öª£º
+è¡¨ç¤ºâ€œcomâ€åŒ…æˆ–å…¶å­å­™åŒ…ä¸­ï¼Œåç§°ä»¥â€œServiceâ€ç»“å°¾çš„æ¥å£/ç±»ä¸­ä»»æ„çš„æ–¹æ³•ï¼Œå¦‚æœè¢«è°ƒç”¨çš„æ–¹æ³•æ»¡è¶³ä¸Šè¿°æ¡ä»¶ï¼Œåˆ™ä¼šè¢«å¢å¼ºï¼Œå³åœ¨è°ƒç”¨çš„è¿‡ç¨‹ä¸­é¦–å…ˆä¼šè¢«æ£€æŸ¥æ˜¯å¦å…·å¤‡è°ƒç”¨è¯¥æ–¹æ³•çš„æƒé™ã€‚
+æ³¨æ„ å½“<aop:configâ€¦/>ä¸­proxy-target-classå±æ€§å€¼è®¾ç½®ä¸ºtrueæ—¶ï¼Œè¡¨ç¤ºå…¶ä¸­å£°æ˜çš„åˆ‡é¢å‡ä½¿ç”¨CGLibåŠ¨æ€ä»£ç†æŠ€æœ¯ï¼›å½“è®¾ç½®ä¸ºfalseæ—¶ï¼Œä½¿ç”¨JDKåŠ¨æ€ä»£ç†æŠ€æœ¯ï¼Œä¸€ä¸ªé…ç½®æ–‡ä»¶å¯ä»¥åŒæ—¶å®šä¹‰å¤šä¸ª<aop:configâ€¦/>ï¼Œä¸åŒçš„<aop:configâ€¦/>å¯ä»¥é‡‡ç”¨ä¸åŒçš„ä»£ç†æŠ€æœ¯ã€‚
+åˆ‡å…¥ç‚¹è¡¨è¾¾å¼ï¼šexecution(* com.haiersoft..*(..))&&args(com.haiersoft.ch08.pojos.User)
+å¯ä»¥ä½¿ç”¨â€œ*â€å’Œâ€œ..â€é€šé…ç¬¦æ¥è¡¨ç¤ºæ–¹æ³•çš„å½¢å‚ï¼Œå…¶ä¸­â€œ*â€è¡¨ç¤ºä»»æ„ç±»å‹çš„å‚æ•°ï¼›
+è€Œâ€œ..â€è¡¨ç¤ºä»»æ„ç±»å‹å‚æ•°ä¸”å‚æ•°ä¸ªæ•°æ˜¯0ä¸ªæˆ–å¤šä¸ªã€‚
+ä½¿ç”¨æ³¨è§£é…ç½®é€šçŸ¥ï¼š
 @Aspect
 public class AspectBean {
     /**
-    * Ä£Äâ½øĞĞÈ¨ÏŞ¼ì²é
+    * æ¨¡æ‹Ÿè¿›è¡Œæƒé™æ£€æŸ¥
     */
     @Before("execution(* com..*.*Service.*(..))")
     public void checkAuth() {
-        System.out.println("È¨ÏŞ¼ì²é...");
+        System.out.println("æƒé™æ£€æŸ¥...");
     }
     /**
-    * Ä£ÄâÊÍ·Å×ÊÔ´
+    * æ¨¡æ‹Ÿé‡Šæ”¾èµ„æº
     */
     @After("execution(* com..*.*Service.*(..))")
     public void release() {
-        System.out.println("×îºóÊÍ·Å×ÊÔ´...");
+        System.out.println("æœ€åé‡Šæ”¾èµ„æº...");
     }
     /**
-    *ÈÕÖ¾¼ÇÂ¼¹¦ÄÜ
+    *æ—¥å¿—è®°å½•åŠŸèƒ½
     */
     @AfterReturning(returning="result",pointcut="execution(*
     com..*.*Service.select(..))")
     public void log(Object result) {
         if (result == null) {
-            System.out.println("Êı¾İ¿âÖĞÎŞ½á¹û£¡");
+            System.out.println("æ•°æ®åº“ä¸­æ— ç»“æœï¼");
         } else {
-            System.out.println("Êı¾İ¿âÖĞÓĞ½á¹û£¡");
+            System.out.println("æ•°æ®åº“ä¸­æœ‰ç»“æœï¼");
         }
     }
     /**
-      * Ä£ÄâÒì³£´¦Àí
+      * æ¨¡æ‹Ÿå¼‚å¸¸å¤„ç†
       */
     @AfterThrowing(
 pointcut="execution(* com..*.*Service.*(..))",throwing="ex")
     public void processException(Throwable ex) {
-        System.out.println("Òì³£ĞÅÏ¢Îª:" + ex.getMessage());
+        System.out.println("å¼‚å¸¸ä¿¡æ¯ä¸º:" + ex.getMessage());
     }
     /**
-      * Ä£Äâ½øĞĞÊÂÎñ²Ù×÷
+      * æ¨¡æ‹Ÿè¿›è¡Œäº‹åŠ¡æ“ä½œ
       */
     @Around("execution(* com..*.*Service.*(..))")
     public void proceedInTrans(ProceedingJoinPoint joinpoint)
     throws Throwable {
-        System.out.println("¿ªÊ¼ÊÂÎñ...");
+        System.out.println("å¼€å§‹äº‹åŠ¡...");
         joinpoint.proceed();
-        System.out.println("Ìá½»ÊÂÎñ...");
+        System.out.println("æäº¤äº‹åŠ¡...");
     }
 }
-ĞèÒªÔÚspringÅäÖÃÎÄ¼şÅäÖÃ
-<£¡-- Æô¶¯AspectJ×¢½âµÄÖ§³Ö -->
+éœ€è¦åœ¨springé…ç½®æ–‡ä»¶é…ç½®
+<ï¼-- å¯åŠ¨AspectJæ³¨è§£çš„æ”¯æŒ -->
     <aop:aspectj-autoproxy/>
-    <£¡-- ÅäÖÃÇĞÃæBean -->
+    <ï¼-- é…ç½®åˆ‡é¢Bean -->
     <bean id="aspectBean" class="com.haiersoft.ch08.aspect.AspectBean" />
-1. Quartz»ù´¡½á¹¹
-Quartz¶ÔÈÎÎñµ÷¶ÈµÄÁìÓòÎÊÌâ½øĞĞÁË¸ß¶È³éÏó£¬Ìá³öÁËµ÷¶ÈÆ÷¡¢ÈÎÎñºÍ´¥·¢Æ÷µÈºËĞÄ¸ÅÄî£¬²¢ÔÚorg.quartz°üÖĞÍ¨¹ı½Ó¿ÚºÍÀà¶ÔºËĞÄ¸ÅÄî½øĞĞÃèÊö¡£
-¨€ Job£º¸Ã½Ó¿ÚÖ»ÓĞÒ»¸övoid excute(JobExecutionContext context)·½·¨£¬¿ª·¢ÕßÍ¨¹ıÊµÏÖ¸Ã½Ó¿ÚÀ´¶¨ÒåÔËĞĞÈÎÎñ£¬JobExecutionContextÀàÌá¹©ÁËµ÷¶ÈÉÏÏÂÎÄµÄ¸÷ÖÖĞÅÏ¢¡£
-¨€ JobDetail£ºQuartzÔÚÃ¿´ÎÖ´ĞĞJobÊ±£¬¶¼ÖØĞÂ´´½¨Ò»¸öJobÊµÀı£¬ËùÒÔËü²¢²»Ö±½Ó½ÓÊÜÒ»¸öJobµÄÊµÀı£¬Ïà·´Ëü½ÓÊÜÒ»¸öJobÊµÏÖÀàÒÔ±ãÍ¨¹ınewInstance()·´Éä»úÖÆÊµÀı»¯Job¡£JobDetailÀà¸ºÔğÃèÊöJobµÄÊµÏÖÀà¼°ÆäËûÏà¹ØĞÅÏ¢£¬ÈçJobÃû³Æ¡¢ÃèÊöºÍ¹ØÁª¼àÌıÆ÷µÈĞÅÏ¢£¬JobDetailÀàµÄ¹¹Ôì·½·¨ÎªJobDetail(java.lang.String name,java.lang.String group,java.lang.Class jobClass)£¬¸Ã¹¹Ôì·½·¨Ö¸¶¨ÁËJobµÄÊµÏÖÀàÒÔ¼°ÈÎÎñÔÚSchedulerÖĞµÄ×éÃûºÍJobÃû³Æ¡£
-¨€ Trigger£º¸ÃÀàÃèÊö´¥·¢JobÖ´ĞĞÊ±µÄÊ±¼ä´¥·¢¹æÔò£¬Ö÷ÒªÓĞSimpleTriggerºÍCronTriggerÁ½¸ö×ÓÀà¡£Èç¹ûĞèÒª´¥·¢Ò»´Î»òÕßÒÔ¹Ì¶¨Ê±¼ä¼ä¸ôÖÜÆÚÖ´ĞĞ£¬ÔòÊ¹ÓÃSimpleTrigger£»Èç¹ûÖ´ĞĞ½Ï¸´ÔÓÊ±¼ä¹æÔòµÄµ÷¶È·½°¸£¬Ôò²ÉÓÃCronTrigger¡£
-¨€ Scheduler£º±íÊ¾Ò»¸öQuartzµÄ¶ÀÁ¢ÔËĞĞÈİÆ÷£¬TriggerºÍJobDetail¿ÉÒÔ×¢²áµ½SchedulerÖĞ£¬µ«Á½ÕßµÄ×é¼°Ãû³Æ±ØĞëÎ¨Ò»¡£Scheduler¶¨ÒåÁË¶à¸ö½Ó¿Ú·½·¨£¬³ÌĞò¿ÉÒÔÍ¨¹ı×é¼°Ãû³Æ·ÃÎÊºÍ¿ØÖÆÈİÆ÷ÖĞµÄTriggerºÍJobDetail¡£Scheduler¿ÉÒÔ½«Trigger°ó¶¨µ½Ä³Ò»JobDetailÖĞ£¬ÕâÑùµ±Trigger´¥·¢Ê±£¬¶ÔÓ¦µÄJob¾Í±»Ö´ĞĞ¡£Ò»¸öJob¿ÉÒÔ¶ÔÓ¦¶à¸öTrigger£¬µ«Ò»¸öTriggerÖ¸¶¨¶ÔÓ¦Ò»¸öJob¡£
-¨€ ThreadPool£ºSchedulerÊ¹ÓÃÒ»¸öÏß³Ì³Ø×÷ÎªÈÎÎñµ÷¶ÈµÄÈİÆ÷£¬ÈÎÎñÍ¨¹ı¹²ÏíÏß³Ì³ØÖĞµÄÏß³ÌÌá¸ßÔËĞĞĞ§ÂÊ¡£
+1. QuartzåŸºç¡€ç»“æ„
+Quartzå¯¹ä»»åŠ¡è°ƒåº¦çš„é¢†åŸŸé—®é¢˜è¿›è¡Œäº†é«˜åº¦æŠ½è±¡ï¼Œæå‡ºäº†è°ƒåº¦å™¨ã€ä»»åŠ¡å’Œè§¦å‘å™¨ç­‰æ ¸å¿ƒæ¦‚å¿µï¼Œå¹¶åœ¨org.quartzåŒ…ä¸­é€šè¿‡æ¥å£å’Œç±»å¯¹æ ¸å¿ƒæ¦‚å¿µè¿›è¡Œæè¿°ã€‚
+â–ˆ Jobï¼šè¯¥æ¥å£åªæœ‰ä¸€ä¸ªvoid excute(JobExecutionContext context)æ–¹æ³•ï¼Œå¼€å‘è€…é€šè¿‡å®ç°è¯¥æ¥å£æ¥å®šä¹‰è¿è¡Œä»»åŠ¡ï¼ŒJobExecutionContextç±»æä¾›äº†è°ƒåº¦ä¸Šä¸‹æ–‡çš„å„ç§ä¿¡æ¯ã€‚
+â–ˆ JobDetailï¼šQuartzåœ¨æ¯æ¬¡æ‰§è¡ŒJobæ—¶ï¼Œéƒ½é‡æ–°åˆ›å»ºä¸€ä¸ªJobå®ä¾‹ï¼Œæ‰€ä»¥å®ƒå¹¶ä¸ç›´æ¥æ¥å—ä¸€ä¸ªJobçš„å®ä¾‹ï¼Œç›¸åå®ƒæ¥å—ä¸€ä¸ªJobå®ç°ç±»ä»¥ä¾¿é€šè¿‡newInstance()åå°„æœºåˆ¶å®ä¾‹åŒ–Jobã€‚JobDetailç±»è´Ÿè´£æè¿°Jobçš„å®ç°ç±»åŠå…¶ä»–ç›¸å…³ä¿¡æ¯ï¼Œå¦‚Jobåç§°ã€æè¿°å’Œå…³è”ç›‘å¬å™¨ç­‰ä¿¡æ¯ï¼ŒJobDetailç±»çš„æ„é€ æ–¹æ³•ä¸ºJobDetail(java.lang.String name,java.lang.String group,java.lang.Class jobClass)ï¼Œè¯¥æ„é€ æ–¹æ³•æŒ‡å®šäº†Jobçš„å®ç°ç±»ä»¥åŠä»»åŠ¡åœ¨Schedulerä¸­çš„ç»„åå’ŒJobåç§°ã€‚
+â–ˆ Triggerï¼šè¯¥ç±»æè¿°è§¦å‘Jobæ‰§è¡Œæ—¶çš„æ—¶é—´è§¦å‘è§„åˆ™ï¼Œä¸»è¦æœ‰SimpleTriggerå’ŒCronTriggerä¸¤ä¸ªå­ç±»ã€‚å¦‚æœéœ€è¦è§¦å‘ä¸€æ¬¡æˆ–è€…ä»¥å›ºå®šæ—¶é—´é—´éš”å‘¨æœŸæ‰§è¡Œï¼Œåˆ™ä½¿ç”¨SimpleTriggerï¼›å¦‚æœæ‰§è¡Œè¾ƒå¤æ‚æ—¶é—´è§„åˆ™çš„è°ƒåº¦æ–¹æ¡ˆï¼Œåˆ™é‡‡ç”¨CronTriggerã€‚
+â–ˆ Schedulerï¼šè¡¨ç¤ºä¸€ä¸ªQuartzçš„ç‹¬ç«‹è¿è¡Œå®¹å™¨ï¼ŒTriggerå’ŒJobDetailå¯ä»¥æ³¨å†Œåˆ°Schedulerä¸­ï¼Œä½†ä¸¤è€…çš„ç»„åŠåç§°å¿…é¡»å”¯ä¸€ã€‚Schedulerå®šä¹‰äº†å¤šä¸ªæ¥å£æ–¹æ³•ï¼Œç¨‹åºå¯ä»¥é€šè¿‡ç»„åŠåç§°è®¿é—®å’Œæ§åˆ¶å®¹å™¨ä¸­çš„Triggerå’ŒJobDetailã€‚Schedulerå¯ä»¥å°†Triggerç»‘å®šåˆ°æŸä¸€JobDetailä¸­ï¼Œè¿™æ ·å½“Triggerè§¦å‘æ—¶ï¼Œå¯¹åº”çš„Jobå°±è¢«æ‰§è¡Œã€‚ä¸€ä¸ªJobå¯ä»¥å¯¹åº”å¤šä¸ªTriggerï¼Œä½†ä¸€ä¸ªTriggeræŒ‡å®šå¯¹åº”ä¸€ä¸ªJobã€‚
+â–ˆ ThreadPoolï¼šSchedulerä½¿ç”¨ä¸€ä¸ªçº¿ç¨‹æ± ä½œä¸ºä»»åŠ¡è°ƒåº¦çš„å®¹å™¨ï¼Œä»»åŠ¡é€šè¿‡å…±äº«çº¿ç¨‹æ± ä¸­çš„çº¿ç¨‹æé«˜è¿è¡Œæ•ˆç‡ã€‚
 public class MyJob implements Job {
-    // ÖØĞ´execute·½·¨
+    // é‡å†™executeæ–¹æ³•
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
-        // JobÃû³Æ
+        // Jobåç§°
         String jobName = context.getJobDetail().getFullName();
-        // Job×éÃû³Æ
+        // Jobç»„åç§°
         String jobGroupName = context.getJobDetail().getGroup();
-        // µ÷ÓÃTriggerµÄÃû³Æ¼°µ÷ÓÃÊ±¼ä
+        // è°ƒç”¨Triggerçš„åç§°åŠè°ƒç”¨æ—¶é—´
         String triggerName = context.getTrigger().getName();
-        //¸ñÊ½»¯Êä³öÊ±¼ä
+        //æ ¼å¼åŒ–è¾“å‡ºæ—¶é—´
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = format.format(new Date());
-        //´òÓ¡ĞÅÏ¢
-        System.out.println("JobÃû³Æ£º" + jobName);
-        System.out.println("´¥·¢Æ÷µÄÃû³Æ£º" + triggerName + " ;ÈÎÎñµ÷ÓÃÊ±¼ä£º" + date);
+        //æ‰“å°ä¿¡æ¯
+        System.out.println("Jobåç§°ï¼š" + jobName);
+        System.out.println("è§¦å‘å™¨çš„åç§°ï¼š" + triggerName + " ;ä»»åŠ¡è°ƒç”¨æ—¶é—´ï¼š" + date);
     }
 }
 public class CronTriggerTest {
     public static void main(String[] args)throws Exception {
-        // ¸ù¾İjobÃû³Æ¡¢×éÃûºÍJobÀàĞÍ´´½¨JobDetail¶ÔÏó
+        // æ ¹æ®jobåç§°ã€ç»„åå’ŒJobç±»å‹åˆ›å»ºJobDetailå¯¹è±¡
         JobDetail jobDetail = new JobDetail("job_1", "jGroup1", MyJob.class);
-        // ´´½¨Cron±í´ïÊ½
+        // åˆ›å»ºCronè¡¨è¾¾å¼
         String cron = "0/5 * * * * ?";
-        // ¸ù¾İtriggerÃû³ÆºÍ×éÃû´´½¨Trigger¶ÔÏó
+        // æ ¹æ®triggeråç§°å’Œç»„ååˆ›å»ºTriggerå¯¹è±¡
         CronTrigger cronTrigger = new CronTrigger("trigger_1", "tGroup1", cron);
-        //»ñÈ¡µ÷¶È¹¤³§¶ÔÏó
+        //è·å–è°ƒåº¦å·¥å‚å¯¹è±¡
         SchedulerFactory factory = new StdSchedulerFactory();
-        //»ñÈ¡µ÷¶ÈÊµÀı
+        //è·å–è°ƒåº¦å®ä¾‹
         Scheduler scheduler = factory.getScheduler();
-        //°ó¶¨JobºÍ´¥·¢Æ÷
+        //ç»‘å®šJobå’Œè§¦å‘å™¨
         scheduler.scheduleJob(jobDetail, cronTrigger);
         scheduler.start();
-        //±ØĞëÓĞÏÂÃæ´úÂë£¬·ñÔò£¬Ö÷Ïß³ÌÔËĞĞÍê±Ï£¬ÈÎÎñ²»»á±»µ÷ÓÃ
-        Thread.currentThread().sleep(100000);//ĞİÃß100Ãë
+        //å¿…é¡»æœ‰ä¸‹é¢ä»£ç ï¼Œå¦åˆ™ï¼Œä¸»çº¿ç¨‹è¿è¡Œå®Œæ¯•ï¼Œä»»åŠ¡ä¸ä¼šè¢«è°ƒç”¨
+        Thread.currentThread().sleep(100000);//ä¼‘çœ 100ç§’
     }
 }

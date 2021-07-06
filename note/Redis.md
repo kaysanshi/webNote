@@ -222,7 +222,31 @@ redis 127.0.0.1:6379> CONFIG GET loglevel
 | `logfile stdout`             | 日志记录方式，默认为标准输出，如果配置 Redis 为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给 /dev/null |
 | `databases 16`               | 设置数据库的数量，默认数据库为0，可以使用SELECT 命令在连接上指定数据库id |
 
+### Redis作为服务进行开机自启
 
+进入redis目录 我的redis是在/usr/local/src/redis-2.8.17/
+
+```
+[root@localhost redis-2.8.17]# mkdir /etc/redis
+[root@localhost redis-2.8.17]# mv redis.conf /etc/redis/6379.conf
+[root@localhost utils]# cp redis_init_script /etc/init.d/redis
+[root@localhost utils]# vim /etc/init.d/redis
+[root@localhost redis-2.8.17]# service redis start
+```
+
+修改vim /etc/init.d/redis
+
+```
+REDISPORT=6379
+EXEC=/usr/local/src/redis-2.8.17/src/redis-server
+CLIEXEC=/usr/local/src/redis-2.8.17/src/redis-cli
+
+PIDFILE=/var/run/redis_${REDISPORT}.pid
+CONF="/etc/redis/${REDISPORT}.conf"
+
+```
+
+然后启动。
 
 ### Redis基本数据类型：
 

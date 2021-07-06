@@ -2391,6 +2391,445 @@ public class SpringSecurityJjwtDemoApplicationTests {
 
 ### Spring Security Oauth2整合JWT
 
+实现一个客户端一个认证服务端，使用jwt
+
+#### 认证服务器
+
+##### pom.xml
+
+```xml
+<parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.kaysanshi</groupId>
+    <artifactId>spring-security-oauth2-jwt-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>spring-security-oauth2-jwt</name>
+    <description>是spring-security-oauth2-jwt-client的客户端</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+    </properties>
+
+    <dependencies>
+        <!---JWT依赖 用于解析Jwt生成的内容-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+```
+
+##### java代码
+
+```java
+package com.kaysanshi.oauth2.jwt.server.configure;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Description:
+ * author2配置
+ * AuthorizationServerConfigurerAdapter 包括：
+ * ClientDetailsServiceConfigurer：用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息。
+ * AuthorizationServerSecurityConfigurer：用来配置令牌端点(Token Endpoint)的安全约束.
+ * AuthorizationServerEndpointsConfigurer：用来配置授权（authorization）以及令牌（token）的访问端点和令牌服务(token services)。
+ *
+ * @date:2020/10/29 9:30
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableAuthorizationServer // 开启认证授权服务器
+public class AuthorizationServerConfigure extends AuthorizationServerConfigurerAdapter {
+
+    // 密码授权的操作就是通过这个对象把密码传入授权服务器的
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    @Qualifier("jwtTokenStore")
+    private TokenStore jwtTokenStore;
+
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
+
+    // 该对象将为刷新token提供支持
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // 引入JwtTokenEnhancer
+    @Autowired
+    private JwtTokenEnhancer jwtTokenEnhancer;
+
+
+    /**
+     * ClientDetailsServiceConfigurer
+     * 主要是注入ClientDetailsService实例对象（唯一配置注入）。其它地方可以通过ClientDetailsServiceConfigurer调用开发配置的ClientDetailsService。
+     * 系统提供的二个ClientDetailsService实现类：JdbcClientDetailsService、InMemoryClientDetailsService。
+     * 同时配置两个授权的路径
+     * @param clients
+     * @throws Exception
+     */
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients)
+            throws Exception {
+        // 配置一个基于password认证的。
+        clients.inMemory()
+                // 配置clientId
+                .withClient("admin")
+                // 配置client-secret
+                .secret(passwordEncoder.encode("112233"))
+                // 配置token过期时间
+                .accessTokenValiditySeconds(2630)
+                .refreshTokenValiditySeconds(864000)
+                // 配置 redirectUri，用于授权成功后跳转
+                .redirectUris("http://localhost:8081/login")
+                // 自动授权
+                .autoApprove(true)
+                // 配置申请的权限范围
+                .scopes("all")
+                // 配置grant_type 表示授权类型。 使用密码模式
+                .authorizedGrantTypes("password","refresh_token","authorization_code")
+                .and()
+                // 配置clientId
+                .withClient("admin2")
+                // 配置client-secret
+                .secret(passwordEncoder.encode("112233"))
+                // 配置token过期时间
+                .accessTokenValiditySeconds(2630)
+                .refreshTokenValiditySeconds(864000)
+                // 配置 redirectUri，用于授权成功后跳转
+                .redirectUris("http://localhost:8082/login")
+                // 自动授权
+                .autoApprove(true)
+                // 配置申请的权限范围
+                .scopes("all")
+                // 配置grant_type 表示授权类型。 使用密码模式
+                .authorizedGrantTypes("password","refresh_token","authorization_code");
+    }
+
+    /**
+     * 使用密码模式所需配置
+     * AuthorizationServerEndpointsConfigurer 访问端点配置 是一个装载类
+     * 装载Endpoints所有相关的类配置（AuthorizationServer、TokenServices、TokenStore、ClientDetailsService、UserDetailsService）。
+     * @param endpoints
+     */
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+       // 配置内容增强
+        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
+        List<TokenEnhancer> delegates = new ArrayList <>();
+        delegates.add(jwtTokenEnhancer);
+        delegates.add(jwtAccessTokenConverter);
+        enhancerChain.setTokenEnhancers(delegates);
+        //
+        endpoints.authenticationManager(authenticationManager)
+                .userDetailsService(userService)
+                // 配置存储令牌策略
+                .tokenStore(jwtTokenStore)
+                .accessTokenConverter(jwtAccessTokenConverter)
+                // 需要在这里进行配置
+                .tokenEnhancer(enhancerChain);
+    }
+
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        // 获取密钥需要身份认证,使用单点登录时必须配置
+        security.tokenKeyAccess("isAuthenticated()");
+    }
+}
+
+```
+
+jwttoken配置
+
+```java
+package com.kaysanshi.oauth2.jwt.server.configure;
+/**
+ * Jwt token 配置类配置存储
+ * @Author kay三石
+ * @date:2020/11/2
+ */
+@Configuration
+public class JwtTokenConfigure {
+
+    @Bean
+    public TokenStore jwtTokenStore(){
+        // 基于jWT实现的令牌
+        return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter(){
+        JwtAccessTokenConverter accessTokenConverter =new JwtAccessTokenConverter();
+        // 配置JWt的使用密钥
+        accessTokenConverter.setSigningKey("test_key");
+        return accessTokenConverter;
+    }
+
+    /**
+     * JWt增强实例化
+     * @return
+     */
+    @Bean
+    public JwtTokenEnhancer jwtTokenEnhancer(){
+        return new JwtTokenEnhancer();
+    }
+}
+
+```
+
+jwt内容增强器
+
+```
+public class JwtTokenEnhancer implements TokenEnhancer {
+    @Override
+    public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+        // 自定义内容增强
+        Map <String, Object> info = new HashMap <>();
+        info.put("enchancer", "info");
+        ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
+        return accessToken;
+    }
+}
+```
+
+资源配置
+
+```java
+/**
+ * Description:
+ * 配置资源服务器 : ResourceServerConfigurerAdapter
+ * ResourceServerConfigurerAdapter是默认情况下spring security oauth 的http配置。
+ * @date:2020/10/29 9:44
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableResourceServer
+public class ResourceServerConfigure extends ResourceServerConfigurerAdapter {
+    /**
+     * 配置响应资源的访问。
+     *
+     * @param http
+     * @throws Exception
+     */
+    // 配置 URL 访问权限
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .requestMatchers()
+                .antMatchers("/test/**");
+    }
+}
+```
+
+security配置
+
+```java
+package com.kaysanshi.oauth2.jwt.server.configure;
+/**
+ * Description:
+ * spring security配置
+ * WebSecurityConfigurerAdapter是默认情况下 Spring security的http配置
+ * 优先级高于ResourceServerConfigurer，用于保护oauth相关的endpoints，同时主要作用于用户的登录（form login，Basic auth）
+ *
+ * @date:2020/10/29 9:41
+ * @author: kaysanshi
+ **/
+@Configuration
+@EnableWebSecurity
+public class SecurityConfigure extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // 使用BCrypt强哈希函数加密方案（密钥迭代次数默认为10）
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 为了让认证配置类注入使用
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    /**
+     *
+     *
+     * @param http
+     * @throws Exception
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/oauth/**", "/login/**", "logout/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .formLogin()
+                .permitAll();
+    }
+}
+
+```
+
+#### 客户端
+
+##### pom.xml
+
+```xml
+<dependencies>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.3.3.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>2.2.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth.boot</groupId>
+            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
+            <version>2.1.2.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+```
+
+##### java代码
+
+###### application.properties
+
+```properties
+server.port=8081
+#防止cookie冲突，冲突会造成导致登录验证不通过
+server.servlet.session.cookie.name=OAUTH2-CLIENT-SESSIONID01
+#授权服务器地址
+oauth2-server-url=http://localhost:8080
+#与授权服务器对应的配置
+
+security.oauth2.client.client-id= admin
+security.oauth2.client.client-secret= 112233
+security.oauth2.client.user-authorization-uri=${oauth2-server-url}/oauth/authorize
+security.oauth2.client.access-token-uri=${oauth2-server-url}/oauth/token
+security.oauth2.resource.jwt.key-uri=${oauth2-server-url}/oauth/token_key
+```
+
+注解开启配置
+
+```java
+@SpringBootApplication
+// 开启单点登录
+@EnableOAuth2Sso
+public class SpringSecurityApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringSecurityApplication.class, args);
+    }
+
+}
+// 获取当前的用户
+@RequestMapping("/user")
+@RestController
+public class UserController {
+    /**
+     * 获取当前用户信息
+     * @param authentication
+     * @return
+     */
+    @GetMapping("getCurrentUser")
+    public Object getCurrentUser(Authentication authentication){
+       return authentication;
+    }
+}
+```
+
+
+
 ### Spring Security Oauth2整合单点登录
 
 

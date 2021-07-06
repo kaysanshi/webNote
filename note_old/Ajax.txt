@@ -1,196 +1,196 @@
-Ò»¡¢JavaScript»Ø¹Ë
-	EcmaScript -- ±ê×¼»¯×éÖ¯Ìá¹©½Å±¾ºËÐÄ´úÂë,ÆäÖÐ¶¨ÒåÁËJavaScriptµÄ»ù±¾µÄÓï·¨
-	Dom -- W3C Ìá¹©µÄÒ»Ì×ÓÃÀ´½â¶ÁÎÄµµ½á¹¹Ê÷µÄÒ»Ì×±ê×¼,Ä¿Ç°×¤ÁôµÄä¯ÀÀÆ÷¶¼Ö§³Ödom 
-	Bom -- ¸÷¸öä¯ÀÀÆ÷¸÷×Ô¶¨ÒåµÄÒ»Ð©Script·½·¨ 
+ä¸€ã€JavaScriptå›žé¡¾
+	EcmaScript -- æ ‡å‡†åŒ–ç»„ç»‡æä¾›è„šæœ¬æ ¸å¿ƒä»£ç ,å…¶ä¸­å®šä¹‰äº†JavaScriptçš„åŸºæœ¬çš„è¯­æ³•
+	Dom -- W3C æä¾›çš„ä¸€å¥—ç”¨æ¥è§£è¯»æ–‡æ¡£ç»“æž„æ ‘çš„ä¸€å¥—æ ‡å‡†,ç›®å‰é©»ç•™çš„æµè§ˆå™¨éƒ½æ”¯æŒdom 
+	Bom -- å„ä¸ªæµè§ˆå™¨å„è‡ªå®šä¹‰çš„ä¸€äº›Scriptæ–¹æ³• 
 
 	Apatana
-		µÚÒ»ÖÖÅäÖÃ·½Ê½£º
-		1.½âÑ¹Eclipse
-		2.ÔÚÈÎÒâÄ¿Â¼ÏÂ£¬ÍÆ¼ö¾ÍÔÚEclipse°²×°Ä¿Â¼ÏÂ£¨×¢Òâ°²×°Ä¿Â¼²»°üº¬ÖÐÎÄ¿Õ¸ñ£©ÐÂ½¨Ò»¸ömyplugins(Ëæ±ãÆðÃû)ÎÄ¼þ¼Ð£¬ÔÙÐÂ½¨Ò»¸öÎÄ¼þ¼Ðaptana(Ëæ±ãÆð)£¬ÔÚapatanaÎÄ¼þ¼ÐÖÐ´´½¨Ò»¸öÎÄ¼þ¼Ðeclipse(¹Ì¶¨Ãû×Ö)£¬½«aptanaÏà¹ØµÄÁ½¸öÎÄ¼þ¼Ðfeatures plugins ¿½±´µ½Õâ¸öÄ¿Â¼¡£
-		3.ÔÚeclipse°²×°Ä¿Â¼ÏÂ´´½¨linksÎÄ¼þ¼Ð£¬ÆäÖÐ´´½¨xxx.link ÎÄ¼þ£¬ÆäÖÐÊéÐ´ path=E:\\eclipse\\myplugins\\apatana Ö¸Ïò²å¼þËùÔÚµÄeclipseÄ¿Â¼
-		ÖØÆôeclipse¾Í¿ÉÒÔÁË
+		ç¬¬ä¸€ç§é…ç½®æ–¹å¼ï¼š
+		1.è§£åŽ‹Eclipse
+		2.åœ¨ä»»æ„ç›®å½•ä¸‹ï¼ŒæŽ¨èå°±åœ¨Eclipseå®‰è£…ç›®å½•ä¸‹ï¼ˆæ³¨æ„å®‰è£…ç›®å½•ä¸åŒ…å«ä¸­æ–‡ç©ºæ ¼ï¼‰æ–°å»ºä¸€ä¸ªmyplugins(éšä¾¿èµ·å)æ–‡ä»¶å¤¹ï¼Œå†æ–°å»ºä¸€ä¸ªæ–‡ä»¶å¤¹aptana(éšä¾¿èµ·)ï¼Œåœ¨apatanaæ–‡ä»¶å¤¹ä¸­åˆ›å»ºä¸€ä¸ªæ–‡ä»¶å¤¹eclipse(å›ºå®šåå­—)ï¼Œå°†aptanaç›¸å…³çš„ä¸¤ä¸ªæ–‡ä»¶å¤¹features plugins æ‹·è´åˆ°è¿™ä¸ªç›®å½•ã€‚
+		3.åœ¨eclipseå®‰è£…ç›®å½•ä¸‹åˆ›å»ºlinksæ–‡ä»¶å¤¹ï¼Œå…¶ä¸­åˆ›å»ºxxx.link æ–‡ä»¶ï¼Œå…¶ä¸­ä¹¦å†™ path=E:\\eclipse\\myplugins\\apatana æŒ‡å‘æ’ä»¶æ‰€åœ¨çš„eclipseç›®å½•
+		é‡å¯eclipseå°±å¯ä»¥äº†
 		
 		
-		µÚ¶þÖÖÅäÖÃ·½Ê½£º
-			ÔÚeclipse°²×°Ä¿Â¼ÏÂµÄdropinsÎÄ¼þ¼ÐÖÐ´´½¨aptana(ËæÒâÆðÃû×Ö)ÎÄ¼þ¼Ð£¬ÆäÖÐ´´½¨eclipse(¹Ì¶¨Ãû×Ö)ÎÄ¼þ¼Ð£¬½«aptanaÏà¹ØµÄÁ½¸öÎÄ¼þ¼Ðfeatures plugins ¿½±´½øÀ´¾Í¿ÉÒÔÁË
-			ÖØÆôeclipse¾Í¿ÉÒÔÁË
+		ç¬¬äºŒç§é…ç½®æ–¹å¼ï¼š
+			åœ¨eclipseå®‰è£…ç›®å½•ä¸‹çš„dropinsæ–‡ä»¶å¤¹ä¸­åˆ›å»ºaptana(éšæ„èµ·åå­—)æ–‡ä»¶å¤¹ï¼Œå…¶ä¸­åˆ›å»ºeclipse(å›ºå®šåå­—)æ–‡ä»¶å¤¹ï¼Œå°†aptanaç›¸å…³çš„ä¸¤ä¸ªæ–‡ä»¶å¤¹features plugins æ‹·è´è¿›æ¥å°±å¯ä»¥äº†
+			é‡å¯eclipseå°±å¯ä»¥äº†
 
-¶þ¡¢Jquery
-	1. dom¶ÔÏó -- Jquery¶ÔÏó
-		(1)dom¶ÔÏó×ªÎªjquery¶ÔÏó
-			jquery¶ÔÏóÊÇ$()ÕâÑùµÄ»ù±¾ÐÎÊ½
-			ÏëÒª½«dom¶ÔÏó×ª»»Îªjquery¶ÔÏó,Ö»ÐèÓÃ$(dom¶ÔÏó)°üÒ»ÏÂ¾Í¿ÉÒÔÁË
-		(2)jquery¶ÔÏó×ªÎªdom¶ÔÏó
-			~1.¿ÉÒÔÏò·ÃÎÊÊý×éÒ»ÑùÓÃ[index]µÄ·½Ê½½«jquery¶ÔÏó×ªÎªdom¶ÔÏó
-			~2.¿ÉÒÔµ÷ÓÃjquery¶ÔÏóµÄget(index)»ñÈ¡·â×°µÄdom¶ÔÏó
+äºŒã€Jquery
+	1. domå¯¹è±¡ -- Jqueryå¯¹è±¡
+		(1)domå¯¹è±¡è½¬ä¸ºjqueryå¯¹è±¡
+			jqueryå¯¹è±¡æ˜¯$()è¿™æ ·çš„åŸºæœ¬å½¢å¼
+			æƒ³è¦å°†domå¯¹è±¡è½¬æ¢ä¸ºjqueryå¯¹è±¡,åªéœ€ç”¨$(domå¯¹è±¡)åŒ…ä¸€ä¸‹å°±å¯ä»¥äº†
+		(2)jqueryå¯¹è±¡è½¬ä¸ºdomå¯¹è±¡
+			~1.å¯ä»¥å‘è®¿é—®æ•°ç»„ä¸€æ ·ç”¨[index]çš„æ–¹å¼å°†jqueryå¯¹è±¡è½¬ä¸ºdomå¯¹è±¡
+			~2.å¯ä»¥è°ƒç”¨jqueryå¯¹è±¡çš„get(index)èŽ·å–å°è£…çš„domå¯¹è±¡
 		
-	2.Ñ¡ÔñÆ÷:ÀûÓÃÑ¡ÔñÆ÷jquery¿ÉÒÔ¿ìËÙµÄÔÚÒ³ÃæÖÐÑ¡È¡½Úµã
-		(1)»ù±¾Ñ¡ÔñÆ÷
-			1¡¢#id     ÓÃ·¨: $(¡±#myDiv¡±);    ·µ»ØÖµ  µ¥¸öÔªËØµÄ×é³ÉµÄ¼¯ºÏ
-				ËµÃ÷: Õâ¸ö¾ÍÊÇÖ±½ÓÑ¡ÔñhtmlÖÐµÄid=¡±myDiv¡±
-			2¡¢Element       ÓÃ·¨: $(¡±div¡±)     ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: elementµÄÓ¢ÎÄ·­Òë¹ýÀ´ÊÇ¡±ÔªËØ¡±,ËùÒÔelementÆäÊµ¾ÍÊÇhtmlÒÑ¾­¶¨ÒåµÄ±êÇ©ÔªËØ,ÀýÈç div, input, aµÈµÈ.
+	2.é€‰æ‹©å™¨:åˆ©ç”¨é€‰æ‹©å™¨jqueryå¯ä»¥å¿«é€Ÿçš„åœ¨é¡µé¢ä¸­é€‰å–èŠ‚ç‚¹
+		(1)åŸºæœ¬é€‰æ‹©å™¨
+			1ã€#id     ç”¨æ³•: $(â€#myDivâ€);    è¿”å›žå€¼  å•ä¸ªå…ƒç´ çš„ç»„æˆçš„é›†åˆ
+				è¯´æ˜Ž: è¿™ä¸ªå°±æ˜¯ç›´æŽ¥é€‰æ‹©htmlä¸­çš„id=â€myDivâ€
+			2ã€Element       ç”¨æ³•: $(â€divâ€)     è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: elementçš„è‹±æ–‡ç¿»è¯‘è¿‡æ¥æ˜¯â€å…ƒç´ â€,æ‰€ä»¥elementå…¶å®žå°±æ˜¯htmlå·²ç»å®šä¹‰çš„æ ‡ç­¾å…ƒç´ ,ä¾‹å¦‚ div, input, aç­‰ç­‰.
 
-			3¡¢class          ÓÃ·¨: $(¡±.myClass¡±)      ·µ»ØÖµ  ¼¯ºÏÔªËØ
-				 ËµÃ÷: Õâ¸ö±êÇ©ÊÇÖ±½ÓÑ¡Ôñhtml´úÂëÖÐclass=¡±myClass¡±µÄÔªËØ»òÔªËØ×é(ÒòÎªÔÚÍ¬Ò»htmlÒ³ÃæÖÐclassÊÇ¿ÉÒÔ´æÔÚ¶à¸öÍ¬ÑùÖµµÄ).
-			4¡¢*          ÓÃ·¨: $(¡±*¡±)      ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: Æ¥ÅäËùÓÐÔªËØ,¶àÓÃÓÚ½áºÏÉÏÏÂÎÄÀ´ËÑË÷
-			5¡¢selector1, selector2, selectorN      
-			ÓÃ·¨: $(¡±div,span,p.myClass¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: ½«Ã¿Ò»¸öÑ¡ÔñÆ÷Æ¥Åäµ½µÄÔªËØºÏ²¢ºóÒ»Æð·µ»Ø.Äã¿ÉÒÔÖ¸¶¨ÈÎÒâ¶à¸öÑ¡ÔñÆ÷, ²¢½«Æ¥Åäµ½µÄÔªËØºÏ²¢µ½Ò»¸ö½á¹ûÄÚ.ÆäÖÐp.myClassÊÇ±íÊ¾Æ¥ÅäÔªËØ
-			 p class=¡±myClass¡±
-		(2)²ã´ÎÑ¡ÔñÆ÷
-			1 ¡¢ancestor descendant
-				ÓÃ·¨: $(¡±form input¡±) ;   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-				ËµÃ÷: ÔÚ¸ø¶¨µÄ×æÏÈÔªËØÏÂÆ¥ÅäËùÓÐºó´úÔªËØ.Õâ¸öÒªÏÂÃæ½²µÄ¡±parent > child¡±Çø·Ö¿ª.
+			3ã€class          ç”¨æ³•: $(â€.myClassâ€)      è¿”å›žå€¼  é›†åˆå…ƒç´ 
+				 è¯´æ˜Ž: è¿™ä¸ªæ ‡ç­¾æ˜¯ç›´æŽ¥é€‰æ‹©htmlä»£ç ä¸­class=â€myClassâ€çš„å…ƒç´ æˆ–å…ƒç´ ç»„(å› ä¸ºåœ¨åŒä¸€htmlé¡µé¢ä¸­classæ˜¯å¯ä»¥å­˜åœ¨å¤šä¸ªåŒæ ·å€¼çš„).
+			4ã€*          ç”¨æ³•: $(â€*â€)      è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å…ƒç´ ,å¤šç”¨äºŽç»“åˆä¸Šä¸‹æ–‡æ¥æœç´¢
+			5ã€selector1, selector2, selectorN      
+			ç”¨æ³•: $(â€div,span,p.myClassâ€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: å°†æ¯ä¸€ä¸ªé€‰æ‹©å™¨åŒ¹é…åˆ°çš„å…ƒç´ åˆå¹¶åŽä¸€èµ·è¿”å›ž.ä½ å¯ä»¥æŒ‡å®šä»»æ„å¤šä¸ªé€‰æ‹©å™¨, å¹¶å°†åŒ¹é…åˆ°çš„å…ƒç´ åˆå¹¶åˆ°ä¸€ä¸ªç»“æžœå†….å…¶ä¸­p.myClassæ˜¯è¡¨ç¤ºåŒ¹é…å…ƒç´ 
+			 p class=â€myClassâ€
+		(2)å±‚æ¬¡é€‰æ‹©å™¨
+			1 ã€ancestor descendant
+				ç”¨æ³•: $(â€form inputâ€) ;   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+				è¯´æ˜Ž: åœ¨ç»™å®šçš„ç¥–å…ˆå…ƒç´ ä¸‹åŒ¹é…æ‰€æœ‰åŽä»£å…ƒç´ .è¿™ä¸ªè¦ä¸‹é¢è®²çš„â€parent > childâ€åŒºåˆ†å¼€.
 			
-			2¡¢parent > childÓÃ·¨: $(¡±form > input¡±) ;    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			  ËµÃ÷: ÔÚ¸ø¶¨µÄ¸¸ÔªËØÏÂÆ¥ÅäËùÓÐ×ÓÔªËØ.×¢Òâ:ÒªÇø·ÖºÃºó´úÔªËØÓë×ÓÔªËØ
+			2ã€parent > childç”¨æ³•: $(â€form > inputâ€) ;    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			  è¯´æ˜Ž: åœ¨ç»™å®šçš„çˆ¶å…ƒç´ ä¸‹åŒ¹é…æ‰€æœ‰å­å…ƒç´ .æ³¨æ„:è¦åŒºåˆ†å¥½åŽä»£å…ƒç´ ä¸Žå­å…ƒç´ 
 			
-			3¡¢prev + next
-			      ÓÃ·¨: $(¡±label + input¡±) ;   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			      ËµÃ÷: Æ¥ÅäËùÓÐ½ô½ÓÔÚ prev ÔªËØºóµÄ next ÔªËØ
+			3ã€prev + next
+			      ç”¨æ³•: $(â€label + inputâ€) ;   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			      è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰ç´§æŽ¥åœ¨ prev å…ƒç´ åŽçš„ next å…ƒç´ 
 			
-			4¡¢prev ~ siblings
-			      ÓÃ·¨: $(¡±form ~ input¡±) ;    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			      ËµÃ÷: Æ¥Åä prev ÔªËØÖ®ºóµÄËùÓÐ siblings ÔªËØ.×¢Òâ:ÊÇÆ¥ÅäÖ®ºóµÄÔªËØ,²»°üº¬¸ÃÔªËØÔÚÄÚ,²¢ÇÒsiblingsÆ¥ÅäµÄÊÇºÍprevÍ¬±²µÄÔªËØ,Æäºó±²ÔªËØ²»±»Æ¥Åä.
+			4ã€prev ~ siblings
+			      ç”¨æ³•: $(â€form ~ inputâ€) ;    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			      è¯´æ˜Ž: åŒ¹é… prev å…ƒç´ ä¹‹åŽçš„æ‰€æœ‰ siblings å…ƒç´ .æ³¨æ„:æ˜¯åŒ¹é…ä¹‹åŽçš„å…ƒç´ ,ä¸åŒ…å«è¯¥å…ƒç´ åœ¨å†…,å¹¶ä¸”siblingsåŒ¹é…çš„æ˜¯å’ŒprevåŒè¾ˆçš„å…ƒç´ ,å…¶åŽè¾ˆå…ƒç´ ä¸è¢«åŒ¹é….
 			
-			5¡¢Ñ¡ÔñËùÓÐÐÖµÜÊ¹ÓÃsiblings·½·¨À´»ñÈ¡
+			5ã€é€‰æ‹©æ‰€æœ‰å…„å¼Ÿä½¿ç”¨siblingsæ–¹æ³•æ¥èŽ·å–
 				$("#two").siblings("div").css();
-	3.¹ýÂËÆ÷
-		(1)»ù´¡¹ýÂËÑ¡ÔñÆ÷
-			1¡¢:firstÓÃ·¨: $(¡±tr:first¡±) ;   ·µ»ØÖµ  µ¥¸öÔªËØµÄ×é³ÉµÄ¼¯ºÏ
-			ËµÃ÷: Æ¥ÅäÕÒµ½µÄµÚÒ»¸öÔªËØ
-			2¡¢:lastÓÃ·¨: $(¡±tr:last¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäÕÒµ½µÄ×îºóÒ»¸öÔªËØ.Óë :first Ïà¶ÔÓ¦.
-			3¡¢:not(selector)ÓÃ·¨: $(¡±input:not(:checked)¡±)·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: È¥³ýËùÓÐÓë¸ø¶¨Ñ¡ÔñÆ÷Æ¥ÅäµÄÔªËØ.ÓÐµãÀàËÆÓÚ¡±·Ç¡±,ÒâË¼ÊÇÃ»ÓÐ±»Ñ¡ÖÐµÄinput(µ±inputµÄtype=¡±checkbox¡±).
-			4¡¢:evenÓÃ·¨: $(¡±tr:even¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐË÷ÒýÖµÎªÅ¼ÊýµÄÔªËØ£¬´Ó 0 ¿ªÊ¼¼ÆÊý.jsµÄÊý×é¶¼ÊÇ´Ó0¿ªÊ¼¼ÆÊýµÄ.ÀýÈçÒªÑ¡ÔñtableÖÐµÄÐÐ,ÒòÎªÊÇ´Ó0¿ªÊ¼¼ÆÊý,ËùÒÔtableÖÐµÄµÚÒ»¸ötr¾ÍÎªÅ¼Êý0.
-			5¡¢: oddÓÃ·¨: $(¡±tr:odd¡±) ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐË÷ÒýÖµÎªÆæÊýµÄÔªËØ,ºÍ:even¶ÔÓ¦,´Ó 0 ¿ªÊ¼¼ÆÊý.
-			6¡¢:eq(index)ÓÃ·¨: $(¡±tr:eq(0)¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäÒ»¸ö
-			7¡¢:gt(index)ÓÃ·¨: $(¡±tr:gt(0)¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐ´óÓÚ¸ø¶¨Ë÷ÒýÖµµÄÔªËØ.
-			8¡¢:lt(index)ÓÃ·¨: $(¡±tr:lt(2)¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ  
-			      ËµÃ÷: Æ¥ÅäËùÓÐÐ¡ÓÚ¸ø¶¨Ë÷ÒýÖµµÄÔªËØ.
-			9¡¢:header(¹Ì¶¨Ð´·¨)ÓÃ·¨: $(¡±:header¡±).css(¡±background¡±, ¡°#EEE¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: Æ¥ÅäÈç h1, h2, h3Ö®ÀàµÄ±êÌâÔªËØ.Õâ¸öÊÇ×¨ÃÅÓÃÀ´»ñÈ¡h1,h2ÕâÑùµÄ±êÌâÔªËØ.
-			10¡¢:animated(¹Ì¶¨Ð´·¨)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐÕýÔÚÖ´ÐÐ¶¯»­Ð§¹ûµÄÔªËØ 
-		(2)ÄÚÈÝ¹ýÂËÑ¡ÔñÆ÷
-			1¡¢:contains(text)ÓÃ·¨: $(¡±div:contains(¡¯John¡¯)¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥Åä°üº¬¸ø¶¨ÎÄ±¾µÄÔªËØ.Õâ¸öÑ¡ÔñÆ÷±È½ÏÓÐÓÃ£¬µ±ÎÒÃÇÒªÑ¡ÔñµÄ²»ÊÇdom±êÇ©ÔªËØÊ±,Ëü¾ÍÅÉÉÏÁËÓÃ³¡ÁË,ËüµÄ×÷ÓÃÊÇ²éÕÒ±»±êÇ©¡±Î§¡±ÆðÀ´µÄÎÄ±¾ÄÚÈÝÊÇ·ñ·ûºÏÖ¸¶¨µÄÄÚÈÝµÄ.
-			2¡¢:emptyÓÃ·¨: $(¡±td:empty¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐ²»°üº¬×ÓÔªËØ»òÕßÎÄ±¾µÄ¿ÕÔªËØ
-			3¡¢:has(selector)
-		      ÓÃ·¨: $(¡±div:has(p)¡±).addClass(¡±test¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-		      ËµÃ÷: Æ¥Åäº¬ÓÐÑ¡ÔñÆ÷ËùÆ¥ÅäµÄÔªËØµÄÔªËØ.Õâ¸ö½âÊÍÐèÒªºÃºÃ×ÁÄ¥,µ«ÊÇÒ»µ©¿´ÁËÊ¹ÓÃµÄÀý×Ó¾ÍÍêÈ«Çå³þÁË:¸øËùÓÐ°üº¬pÔªËØµÄdiv±êÇ©¼ÓÉÏclass=¡±test¡±.
-			4¡¢:parentÓÃ·¨: $(¡±td:parent¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥Åäº¬ÓÐ×ÓÔªËØ»òÕßÎÄ±¾µÄÔªËØ.×¢Òâ:ÕâÀïÊÇ¡±:parent¡±,¿É²»ÊÇ¡±.parent¡±Å¶!¸Ð¾õÓëÉÏÃæ½²µÄ¡±:empty¡±ÐÎ³É·´Òå´Ê.
+	3.è¿‡æ»¤å™¨
+		(1)åŸºç¡€è¿‡æ»¤é€‰æ‹©å™¨
+			1ã€:firstç”¨æ³•: $(â€tr:firstâ€) ;   è¿”å›žå€¼  å•ä¸ªå…ƒç´ çš„ç»„æˆçš„é›†åˆ
+			è¯´æ˜Ž: åŒ¹é…æ‰¾åˆ°çš„ç¬¬ä¸€ä¸ªå…ƒç´ 
+			2ã€:lastç”¨æ³•: $(â€tr:lastâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰¾åˆ°çš„æœ€åŽä¸€ä¸ªå…ƒç´ .ä¸Ž :first ç›¸å¯¹åº”.
+			3ã€:not(selector)ç”¨æ³•: $(â€input:not(:checked)â€)è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŽ»é™¤æ‰€æœ‰ä¸Žç»™å®šé€‰æ‹©å™¨åŒ¹é…çš„å…ƒç´ .æœ‰ç‚¹ç±»ä¼¼äºŽâ€éžâ€,æ„æ€æ˜¯æ²¡æœ‰è¢«é€‰ä¸­çš„input(å½“inputçš„type=â€checkboxâ€).
+			4ã€:evenç”¨æ³•: $(â€tr:evenâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰ç´¢å¼•å€¼ä¸ºå¶æ•°çš„å…ƒç´ ï¼Œä»Ž 0 å¼€å§‹è®¡æ•°.jsçš„æ•°ç»„éƒ½æ˜¯ä»Ž0å¼€å§‹è®¡æ•°çš„.ä¾‹å¦‚è¦é€‰æ‹©tableä¸­çš„è¡Œ,å› ä¸ºæ˜¯ä»Ž0å¼€å§‹è®¡æ•°,æ‰€ä»¥tableä¸­çš„ç¬¬ä¸€ä¸ªtrå°±ä¸ºå¶æ•°0.
+			5ã€: oddç”¨æ³•: $(â€tr:oddâ€) è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰ç´¢å¼•å€¼ä¸ºå¥‡æ•°çš„å…ƒç´ ,å’Œ:evenå¯¹åº”,ä»Ž 0 å¼€å§‹è®¡æ•°.
+			6ã€:eq(index)ç”¨æ³•: $(â€tr:eq(0)â€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…ä¸€ä¸ª
+			7ã€:gt(index)ç”¨æ³•: $(â€tr:gt(0)â€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å¤§äºŽç»™å®šç´¢å¼•å€¼çš„å…ƒç´ .
+			8ã€:lt(index)ç”¨æ³•: $(â€tr:lt(2)â€)    è¿”å›žå€¼  é›†åˆå…ƒç´   
+			      è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å°äºŽç»™å®šç´¢å¼•å€¼çš„å…ƒç´ .
+			9ã€:header(å›ºå®šå†™æ³•)ç”¨æ³•: $(â€:headerâ€).css(â€backgroundâ€, â€œ#EEEâ€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: åŒ¹é…å¦‚ h1, h2, h3ä¹‹ç±»çš„æ ‡é¢˜å…ƒç´ .è¿™ä¸ªæ˜¯ä¸“é—¨ç”¨æ¥èŽ·å–h1,h2è¿™æ ·çš„æ ‡é¢˜å…ƒç´ .
+			10ã€:animated(å›ºå®šå†™æ³•)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰æ­£åœ¨æ‰§è¡ŒåŠ¨ç”»æ•ˆæžœçš„å…ƒç´  
+		(2)å†…å®¹è¿‡æ»¤é€‰æ‹©å™¨
+			1ã€:contains(text)ç”¨æ³•: $(â€div:contains(â€™Johnâ€™)â€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…åŒ…å«ç»™å®šæ–‡æœ¬çš„å…ƒç´ .è¿™ä¸ªé€‰æ‹©å™¨æ¯”è¾ƒæœ‰ç”¨ï¼Œå½“æˆ‘ä»¬è¦é€‰æ‹©çš„ä¸æ˜¯domæ ‡ç­¾å…ƒç´ æ—¶,å®ƒå°±æ´¾ä¸Šäº†ç”¨åœºäº†,å®ƒçš„ä½œç”¨æ˜¯æŸ¥æ‰¾è¢«æ ‡ç­¾â€å›´â€èµ·æ¥çš„æ–‡æœ¬å†…å®¹æ˜¯å¦ç¬¦åˆæŒ‡å®šçš„å†…å®¹çš„.
+			2ã€:emptyç”¨æ³•: $(â€td:emptyâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰ä¸åŒ…å«å­å…ƒç´ æˆ–è€…æ–‡æœ¬çš„ç©ºå…ƒç´ 
+			3ã€:has(selector)
+		      ç”¨æ³•: $(â€div:has(p)â€).addClass(â€testâ€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+		      è¯´æ˜Ž: åŒ¹é…å«æœ‰é€‰æ‹©å™¨æ‰€åŒ¹é…çš„å…ƒç´ çš„å…ƒç´ .è¿™ä¸ªè§£é‡Šéœ€è¦å¥½å¥½ç¢ç£¨,ä½†æ˜¯ä¸€æ—¦çœ‹äº†ä½¿ç”¨çš„ä¾‹å­å°±å®Œå…¨æ¸…æ¥šäº†:ç»™æ‰€æœ‰åŒ…å«på…ƒç´ çš„divæ ‡ç­¾åŠ ä¸Šclass=â€testâ€.
+			4ã€:parentç”¨æ³•: $(â€td:parentâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…å«æœ‰å­å…ƒç´ æˆ–è€…æ–‡æœ¬çš„å…ƒç´ .æ³¨æ„:è¿™é‡Œæ˜¯â€:parentâ€,å¯ä¸æ˜¯â€.parentâ€å“¦!æ„Ÿè§‰ä¸Žä¸Šé¢è®²çš„â€:emptyâ€å½¢æˆåä¹‰è¯.
 
-		(3)¿É¼û¶È¹ýÂËÑ¡ÔñÆ÷
-			1¡¢:hiddenÓÃ·¨: $(¡±tr:hidden¡±)  ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐµÄ²»¿É¼ûÔªËØ£¬input ÔªËØµÄ type ÊôÐÔÎª ¡°hidden¡± µÄ»°Ò²»á±»Æ¥Åäµ½.ÒâË¼ÊÇcssÖÐdisplay:noneºÍinput type=¡±hidden¡±µÄ¶¼»á±»Æ¥Åäµ½.Í¬Ñù,ÒªÔÚÄÔº£ÖÐ³¹µ×·ÖÇå³þÃ°ºÅ¡±:¡±, µãºÅ¡±.¡±ºÍ¶ººÅ¡±,¡±µÄÇø±ð.
+		(3)å¯è§åº¦è¿‡æ»¤é€‰æ‹©å™¨
+			1ã€:hiddenç”¨æ³•: $(â€tr:hiddenâ€)  è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰çš„ä¸å¯è§å…ƒç´ ï¼Œinput å…ƒç´ çš„ type å±žæ€§ä¸º â€œhiddenâ€ çš„è¯ä¹Ÿä¼šè¢«åŒ¹é…åˆ°.æ„æ€æ˜¯cssä¸­display:noneå’Œinput type=â€hiddenâ€çš„éƒ½ä¼šè¢«åŒ¹é…åˆ°.åŒæ ·,è¦åœ¨è„‘æµ·ä¸­å½»åº•åˆ†æ¸…æ¥šå†’å·â€:â€, ç‚¹å·â€.â€å’Œé€—å·â€,â€çš„åŒºåˆ«.
 			
-			2¡¢:visibleÓÃ·¨: $(¡±tr:visible¡±)  ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐµÄ¿É¼ûÔªËØ.
-		(4)ÊôÐÔ¹ýÂËÆ÷
-			1¡¢[attribute]ÓÃ·¨: $(¡±div[id]¡°) ;  ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥Åä°üº¬¸ø¶¨ÊôÐÔµÄÔªËØ. Àý×ÓÖÐÊÇÑ¡È¡ÁËËùÓÐ´ø¡±id¡±ÊôÐÔµÄdiv±êÇ©.
-			2¡¢[attribute=value]ÓÃ·¨: $(¡±input[name='newsletter']¡°).attr(¡±checked¡±, true);    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: Æ¥Åä¸ø¶¨µÄÊôÐÔÊÇÄ³¸öÌØ¶¨ÖµµÄÔªËØ.Àý×ÓÖÐÑ¡È¡ÁËËùÓÐ name ÊôÐÔÊÇ newsletter µÄ input ÔªËØ.
-			3¡¢[attribute!=value]ÓÃ·¨: $(¡±input[name!='newsletter']¡°).attr(¡±checked¡±, true);    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐ²»º¬ÓÐÖ¸¶¨µÄÊôÐÔ£¬»òÕßÊôÐÔ²»µÈÓÚÌØ¶¨ÖµµÄÔªËØ.´ËÑ¡ÔñÆ÷µÈ¼ÛÓÚ:not([attr=value]),ÒªÆ¥Åäº¬ÓÐÌØ¶¨ÊôÐÔµ«²»µÈÓÚÌØ¶¨ÖµµÄÔªËØ,ÇëÊ¹ÓÃ[attr]:not([attr=value]).Ö®Ç°¿´µ½µÄ :not ÅÉÉÏÁËÓÃ³¡.
-			4¡¢[attribute^=value]ÓÃ·¨: $(¡±input[name^=¡®news¡¯]¡°)  ·µ»ØÖµ  ¼¯ºÏÔªËØ 
-			  ËµÃ÷: Æ¥Åä¸ø¶¨µÄÊôÐÔÊÇÒÔÄ³Ð©Öµ¿ªÊ¼µÄÔªËØ.,ÎÒÃÇÓÖ¼ûµ½ÁËÕâ¼¸¸öÀàËÆÓÚÕýÔòÆ¥ÅäµÄ·ûºÅ.ÏÖÔÚÏëÍü¶¼Íü²»µôÁË°É?!
-			5¡¢[attribute$=value]ÓÃ·¨: $(¡±input[name$=¡®letter¡¯]¡°)  ·µ»ØÖµ  ¼¯ºÏÔªËØ 
-			ËµÃ÷: Æ¥Åä¸ø¶¨µÄÊôÐÔÊÇÒÔÄ³Ð©Öµ½áÎ²µÄÔªËØ.
-			6¡¢[attribute*=value]ÓÃ·¨: $(¡±input[name*=¡®man¡¯]¡°)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥Åä¸ø¶¨µÄÊôÐÔÊÇÒÔ°üº¬Ä³Ð©ÖµµÄÔªËØ.
-			7¡¢[attributeFilter1][attributeFilter2][attributeFilterN]ÓÃ·¨: $(¡±input[id][name$=¡®man¡¯]¡°)  ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: ¸´ºÏÊôÐÔÑ¡ÔñÆ÷,ÐèÒªÍ¬Ê±Âú×ã¶à¸öÌõ¼þÊ±Ê¹ÓÃ.ÓÖÊÇÒ»¸ö×éºÏ,ÕâÖÖÇé¿öÎÒÃÇÊµ¼ÊÊ¹ÓÃµÄÊ±ºòºÜ³£ÓÃ.Õâ¸öÀý×ÓÖÐÑ¡ÔñµÄÊÇËùÓÐº¬ÓÐ id ÊôÐÔ,²¢ÇÒËüµÄ name ÊôÐÔÊÇÒÔ man ½áÎ²µÄÔªËØ.
-		(5)×ÓÔªËØ¹ýÂËÑ¡ÔñÆ÷
-			1¡¢:nth-child(index/even/odd/equation)
-			ÓÃ·¨: $(¡±ul li:nth-child(2)¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäÆä¸¸ÔªËØÏÂµÄµÚN¸ö×Ó»òÆæÅ¼ÔªËØ.Õâ¸öÑ¡ÔñÆ÷ºÍÖ®Ç°ËµµÄ»ù´¡¹ýÂË(Basic Filters)ÖÐµÄ eq() ÓÐÐ©ÀàËÆ,²»Í¬µÄµØ·½¾ÍÊÇÇ°ÕßÊÇ´Ó0¿ªÊ¼,ºóÕßÊÇ´Ó1¿ªÊ¼.
+			2ã€:visibleç”¨æ³•: $(â€tr:visibleâ€)  è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰çš„å¯è§å…ƒç´ .
+		(4)å±žæ€§è¿‡æ»¤å™¨
+			1ã€[attribute]ç”¨æ³•: $(â€div[id]â€œ) ;  è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…åŒ…å«ç»™å®šå±žæ€§çš„å…ƒç´ . ä¾‹å­ä¸­æ˜¯é€‰å–äº†æ‰€æœ‰å¸¦â€idâ€å±žæ€§çš„divæ ‡ç­¾.
+			2ã€[attribute=value]ç”¨æ³•: $(â€input[name='newsletter']â€œ).attr(â€checkedâ€, true);    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: åŒ¹é…ç»™å®šçš„å±žæ€§æ˜¯æŸä¸ªç‰¹å®šå€¼çš„å…ƒç´ .ä¾‹å­ä¸­é€‰å–äº†æ‰€æœ‰ name å±žæ€§æ˜¯ newsletter çš„ input å…ƒç´ .
+			3ã€[attribute!=value]ç”¨æ³•: $(â€input[name!='newsletter']â€œ).attr(â€checkedâ€, true);    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰ä¸å«æœ‰æŒ‡å®šçš„å±žæ€§ï¼Œæˆ–è€…å±žæ€§ä¸ç­‰äºŽç‰¹å®šå€¼çš„å…ƒç´ .æ­¤é€‰æ‹©å™¨ç­‰ä»·äºŽ:not([attr=value]),è¦åŒ¹é…å«æœ‰ç‰¹å®šå±žæ€§ä½†ä¸ç­‰äºŽç‰¹å®šå€¼çš„å…ƒç´ ,è¯·ä½¿ç”¨[attr]:not([attr=value]).ä¹‹å‰çœ‹åˆ°çš„ :not æ´¾ä¸Šäº†ç”¨åœº.
+			4ã€[attribute^=value]ç”¨æ³•: $(â€input[name^=â€˜newsâ€™]â€œ)  è¿”å›žå€¼  é›†åˆå…ƒç´  
+			  è¯´æ˜Ž: åŒ¹é…ç»™å®šçš„å±žæ€§æ˜¯ä»¥æŸäº›å€¼å¼€å§‹çš„å…ƒç´ .,æˆ‘ä»¬åˆè§åˆ°äº†è¿™å‡ ä¸ªç±»ä¼¼äºŽæ­£åˆ™åŒ¹é…çš„ç¬¦å·.çŽ°åœ¨æƒ³å¿˜éƒ½å¿˜ä¸æŽ‰äº†å§?!
+			5ã€[attribute$=value]ç”¨æ³•: $(â€input[name$=â€˜letterâ€™]â€œ)  è¿”å›žå€¼  é›†åˆå…ƒç´  
+			è¯´æ˜Ž: åŒ¹é…ç»™å®šçš„å±žæ€§æ˜¯ä»¥æŸäº›å€¼ç»“å°¾çš„å…ƒç´ .
+			6ã€[attribute*=value]ç”¨æ³•: $(â€input[name*=â€˜manâ€™]â€œ)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…ç»™å®šçš„å±žæ€§æ˜¯ä»¥åŒ…å«æŸäº›å€¼çš„å…ƒç´ .
+			7ã€[attributeFilter1][attributeFilter2][attributeFilterN]ç”¨æ³•: $(â€input[id][name$=â€˜manâ€™]â€œ)  è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: å¤åˆå±žæ€§é€‰æ‹©å™¨,éœ€è¦åŒæ—¶æ»¡è¶³å¤šä¸ªæ¡ä»¶æ—¶ä½¿ç”¨.åˆæ˜¯ä¸€ä¸ªç»„åˆ,è¿™ç§æƒ…å†µæˆ‘ä»¬å®žé™…ä½¿ç”¨çš„æ—¶å€™å¾ˆå¸¸ç”¨.è¿™ä¸ªä¾‹å­ä¸­é€‰æ‹©çš„æ˜¯æ‰€æœ‰å«æœ‰ id å±žæ€§,å¹¶ä¸”å®ƒçš„ name å±žæ€§æ˜¯ä»¥ man ç»“å°¾çš„å…ƒç´ .
+		(5)å­å…ƒç´ è¿‡æ»¤é€‰æ‹©å™¨
+			1ã€:nth-child(index/even/odd/equation)
+			ç”¨æ³•: $(â€ul li:nth-child(2)â€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…å…¶çˆ¶å…ƒç´ ä¸‹çš„ç¬¬Nä¸ªå­æˆ–å¥‡å¶å…ƒç´ .è¿™ä¸ªé€‰æ‹©å™¨å’Œä¹‹å‰è¯´çš„åŸºç¡€è¿‡æ»¤(Basic Filters)ä¸­çš„ eq() æœ‰äº›ç±»ä¼¼,ä¸åŒçš„åœ°æ–¹å°±æ˜¯å‰è€…æ˜¯ä»Ž0å¼€å§‹,åŽè€…æ˜¯ä»Ž1å¼€å§‹.
 
 
-			2¡¢:first-child
-			ÓÃ·¨: $(¡±ul li:first-child¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ 
-			ËµÃ÷: Æ¥ÅäµÚÒ»¸ö×ÓÔªËØ.¡¯:first¡¯ Ö»Æ¥ÅäÒ»¸öÔªËØ,¶ø´ËÑ¡Ôñ·û½«ÎªÃ¿¸ö¸¸ÔªËØÆ¥ÅäÒ»¸ö×ÓÔªËØ.ÕâÀïÐèÒªÌØ±ðµãµÄ¼ÇÒäÏÂÇø±ð.
+			2ã€:first-child
+			ç”¨æ³•: $(â€ul li:first-childâ€)    è¿”å›žå€¼  é›†åˆå…ƒç´  
+			è¯´æ˜Ž: åŒ¹é…ç¬¬ä¸€ä¸ªå­å…ƒç´ .â€™:firstâ€™ åªåŒ¹é…ä¸€ä¸ªå…ƒç´ ,è€Œæ­¤é€‰æ‹©ç¬¦å°†ä¸ºæ¯ä¸ªçˆ¶å…ƒç´ åŒ¹é…ä¸€ä¸ªå­å…ƒç´ .è¿™é‡Œéœ€è¦ç‰¹åˆ«ç‚¹çš„è®°å¿†ä¸‹åŒºåˆ«.
 			
-			3¡¢:last-child
-			ÓÃ·¨: $(¡±ul li:last-child¡±)      ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥Åä×îºóÒ»¸ö×ÓÔªËØ.¡¯:last¡¯Ö»Æ¥ÅäÒ»¸öÔªËØ,¶ø´ËÑ¡Ôñ·û½«ÎªÃ¿¸ö¸¸ÔªËØÆ¥ÅäÒ»¸ö×ÓÔªËØ.
+			3ã€:last-child
+			ç”¨æ³•: $(â€ul li:last-childâ€)      è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æœ€åŽä¸€ä¸ªå­å…ƒç´ .â€™:lastâ€™åªåŒ¹é…ä¸€ä¸ªå…ƒç´ ,è€Œæ­¤é€‰æ‹©ç¬¦å°†ä¸ºæ¯ä¸ªçˆ¶å…ƒç´ åŒ¹é…ä¸€ä¸ªå­å…ƒç´ .
 			
-			4¡¢: only-child
-			ÓÃ·¨: $(¡±ul li:only-child¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ 
-			ËµÃ÷: Èç¹ûÄ³¸öÔªËØÊÇ¸¸ÔªËØÖÐÎ¨Ò»µÄ×ÓÔªËØ,ÄÇ½«»á±»Æ¥Åä.Èç¹û¸¸ÔªËØÖÐº¬ÓÐÆäËûÔªËØ,ÄÇ½«²»»á±»Æ¥Åä.ÒâË¼¾ÍÊÇ:Ö»ÓÐÒ»¸ö×ÓÔªËØµÄ²Å»á±»Æ¥Åä!
-		(6)±íµ¥¶ÔÏóÊôÐÔ¹ýÂËÑ¡ÔñÆ÷
-			1¡¢:enabled
-			ÓÃ·¨: $(¡±input:enabled¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐ¿ÉÓÃÔªËØ.ÒâË¼ÊÇ²éÕÒËùÓÐinputÖÐ²»´øÓÐdisabled=¡±disabled¡±µÄinput.²»Îªdisabled,µ±È»¾ÍÎªenabledÀ².
-			2¡¢:disabled
-			ÓÃ·¨: $(¡±input:disabled¡±)    ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐ²»¿ÉÓÃÔªËØ.ÓëÉÏÃæµÄÄÇ¸öÊÇÏà¶ÔÓ¦µÄ.
-			3¡¢:checkedÓÃ·¨: 
-			$(¡±input:checked¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐÑ¡ÖÐµÄ±»Ñ¡ÖÐÔªËØ(¸´Ñ¡¿ò¡¢µ¥Ñ¡¿òµÈ£¬²»°üÀ¨selectÖÐµÄoption).Õâ»°ËµÆðÀ´ÓÐÐ©ÈÆ¿Ú.
-			4¡¢:selectedÓÃ·¨: 
-			$(¡±select option:selected¡±)   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐÑ¡ÖÐµÄoptionÔªËØ.
+			4ã€: only-child
+			ç”¨æ³•: $(â€ul li:only-childâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´  
+			è¯´æ˜Ž: å¦‚æžœæŸä¸ªå…ƒç´ æ˜¯çˆ¶å…ƒç´ ä¸­å”¯ä¸€çš„å­å…ƒç´ ,é‚£å°†ä¼šè¢«åŒ¹é….å¦‚æžœçˆ¶å…ƒç´ ä¸­å«æœ‰å…¶ä»–å…ƒç´ ,é‚£å°†ä¸ä¼šè¢«åŒ¹é….æ„æ€å°±æ˜¯:åªæœ‰ä¸€ä¸ªå­å…ƒç´ çš„æ‰ä¼šè¢«åŒ¹é…!
+		(6)è¡¨å•å¯¹è±¡å±žæ€§è¿‡æ»¤é€‰æ‹©å™¨
+			1ã€:enabled
+			ç”¨æ³•: $(â€input:enabledâ€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å¯ç”¨å…ƒç´ .æ„æ€æ˜¯æŸ¥æ‰¾æ‰€æœ‰inputä¸­ä¸å¸¦æœ‰disabled=â€disabledâ€çš„input.ä¸ä¸ºdisabled,å½“ç„¶å°±ä¸ºenabledå•¦.
+			2ã€:disabled
+			ç”¨æ³•: $(â€input:disabledâ€)    è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰ä¸å¯ç”¨å…ƒç´ .ä¸Žä¸Šé¢çš„é‚£ä¸ªæ˜¯ç›¸å¯¹åº”çš„.
+			3ã€:checkedç”¨æ³•: 
+			$(â€input:checkedâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰é€‰ä¸­çš„è¢«é€‰ä¸­å…ƒç´ (å¤é€‰æ¡†ã€å•é€‰æ¡†ç­‰ï¼Œä¸åŒ…æ‹¬selectä¸­çš„option).è¿™è¯è¯´èµ·æ¥æœ‰äº›ç»•å£.
+			4ã€:selectedç”¨æ³•: 
+			$(â€select option:selectedâ€)   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰é€‰ä¸­çš„optionå…ƒç´ .
 
-		(7)±íµ¥Ñ¡ÔñÆ÷
-			1¡¢:input
-			ÓÃ·¨: $(¡±:input¡±) ;   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷:Æ¥ÅäËùÓÐ input, textarea, select ºÍ button ÔªËØ 
-			2¡¢:text
-			ÓÃ·¨: $(¡±:text¡±) ;  ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: Æ¥ÅäËùÓÐµÄµ¥ÐÐÎÄ±¾¿ò.
-			3¡¢:password
-			ÓÃ·¨: $(¡±:password¡±) ; ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐÃÜÂë¿ò.
-			4¡¢:radio
-			ÓÃ·¨: $(¡±:radio¡±) ; ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐµ¥Ñ¡°´Å¥.
-			5¡¢:checkbox
-			ÓÃ·¨: $(¡±:checkbox¡±) ; ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			 ËµÃ÷: Æ¥ÅäËùÓÐ¸´Ñ¡¿ò
-			6¡¢:submitÓÃ·¨:
-			$(¡±:submit¡±) ;   ·µ»ØÖµ  ¼¯ºÏÔªËØ
-			ËµÃ÷: Æ¥ÅäËùÓÐÌá½»°´Å¥.
-	4.Dom²Ù×÷
-		(1)ÄÚ²¿²åÈë
-			*   append(content) :ÏòÃ¿¸öÆ¥ÅäµÄÔªËØµÄÄÚ²¿µÄ½áÎ²´¦×·¼ÓÄÚÈÝ
-			*   appendTo(content) :½«Ã¿¸öÆ¥ÅäµÄÔªËØ×·¼Óµ½Ö¸¶¨µÄÔªËØÖÐµÄÄÚ²¿½áÎ²´¦
-			*   prepend(content):ÏòÃ¿¸öÆ¥ÅäµÄÔªËØµÄÄÚ²¿µÄ¿ªÊ¼´¦²åÈëÄÚÈÝ
-			*   prependTo(content) :½«Ã¿¸öÆ¥ÅäµÄÔªËØ²åÈëµ½Ö¸¶¨µÄÔªËØÄÚ²¿µÄ¿ªÊ¼´¦
-		(2)Íâ²¿²åÈë
-			*  after(content) :ÔÚÃ¿¸öÆ¥ÅäµÄÔªËØÖ®ºó²åÈëÄÚÈÝ 
-			*  insertAfter(content):°ÑËùÓÐÆ¥ÅäµÄÔªËØ²åÈëµ½ÁíÒ»¸ö¡¢Ö¸¶¨µÄÔªËØÔªËØ¼¯ºÏµÄºóÃæ 
-			*  before(content):ÔÚÃ¿¸öÆ¥ÅäµÄÔªËØÖ®Ç°²åÈëÄÚÈÝ 
-			*  insertBefore(content) :°ÑËùÓÐÆ¥ÅäµÄÔªËØ²åÈëµ½ÁíÒ»¸ö¡¢Ö¸¶¨µÄÔªËØÔªËØ¼¯ºÏµÄÇ°Ãæ 
-		(3)²éÕÒ½Úµã:ÀûÓÃÑ¡ÔñÆ÷¾Í¿ÉÒÔ²éÕÒ½Úµã
-			Èç¹ûÒª»ñÈ¡ÊôÐÔ,attr()
-		(4)´´½¨½Úµã:
-			´´½¨½Úµã: Ê¹ÓÃ jQuery µÄ¹¤³§º¯Êý $(): $(html)
-		(5)É¾³ý½Úµã:
+		(7)è¡¨å•é€‰æ‹©å™¨
+			1ã€:input
+			ç”¨æ³•: $(â€:inputâ€) ;   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž:åŒ¹é…æ‰€æœ‰ input, textarea, select å’Œ button å…ƒç´  
+			2ã€:text
+			ç”¨æ³•: $(â€:textâ€) ;  è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰çš„å•è¡Œæ–‡æœ¬æ¡†.
+			3ã€:password
+			ç”¨æ³•: $(â€:passwordâ€) ; è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å¯†ç æ¡†.
+			4ã€:radio
+			ç”¨æ³•: $(â€:radioâ€) ; è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å•é€‰æŒ‰é’®.
+			5ã€:checkbox
+			ç”¨æ³•: $(â€:checkboxâ€) ; è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			 è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰å¤é€‰æ¡†
+			6ã€:submitç”¨æ³•:
+			$(â€:submitâ€) ;   è¿”å›žå€¼  é›†åˆå…ƒç´ 
+			è¯´æ˜Ž: åŒ¹é…æ‰€æœ‰æäº¤æŒ‰é’®.
+	4.Domæ“ä½œ
+		(1)å†…éƒ¨æ’å…¥
+			*   append(content) :å‘æ¯ä¸ªåŒ¹é…çš„å…ƒç´ çš„å†…éƒ¨çš„ç»“å°¾å¤„è¿½åŠ å†…å®¹
+			*   appendTo(content) :å°†æ¯ä¸ªåŒ¹é…çš„å…ƒç´ è¿½åŠ åˆ°æŒ‡å®šçš„å…ƒç´ ä¸­çš„å†…éƒ¨ç»“å°¾å¤„
+			*   prepend(content):å‘æ¯ä¸ªåŒ¹é…çš„å…ƒç´ çš„å†…éƒ¨çš„å¼€å§‹å¤„æ’å…¥å†…å®¹
+			*   prependTo(content) :å°†æ¯ä¸ªåŒ¹é…çš„å…ƒç´ æ’å…¥åˆ°æŒ‡å®šçš„å…ƒç´ å†…éƒ¨çš„å¼€å§‹å¤„
+		(2)å¤–éƒ¨æ’å…¥
+			*  after(content) :åœ¨æ¯ä¸ªåŒ¹é…çš„å…ƒç´ ä¹‹åŽæ’å…¥å†…å®¹ 
+			*  insertAfter(content):æŠŠæ‰€æœ‰åŒ¹é…çš„å…ƒç´ æ’å…¥åˆ°å¦ä¸€ä¸ªã€æŒ‡å®šçš„å…ƒç´ å…ƒç´ é›†åˆçš„åŽé¢ 
+			*  before(content):åœ¨æ¯ä¸ªåŒ¹é…çš„å…ƒç´ ä¹‹å‰æ’å…¥å†…å®¹ 
+			*  insertBefore(content) :æŠŠæ‰€æœ‰åŒ¹é…çš„å…ƒç´ æ’å…¥åˆ°å¦ä¸€ä¸ªã€æŒ‡å®šçš„å…ƒç´ å…ƒç´ é›†åˆçš„å‰é¢ 
+		(3)æŸ¥æ‰¾èŠ‚ç‚¹:åˆ©ç”¨é€‰æ‹©å™¨å°±å¯ä»¥æŸ¥æ‰¾èŠ‚ç‚¹
+			å¦‚æžœè¦èŽ·å–å±žæ€§,attr()
+		(4)åˆ›å»ºèŠ‚ç‚¹:
+			åˆ›å»ºèŠ‚ç‚¹: ä½¿ç”¨ jQuery çš„å·¥åŽ‚å‡½æ•° $(): $(html)
+		(5)åˆ é™¤èŠ‚ç‚¹:
 			remove()
 			empty()
-		(6)¿ËÂ¡½Úµã
+		(6)å…‹éš†èŠ‚ç‚¹
 			clone()
-		(7)Ìæ»»½Úµã
+		(7)æ›¿æ¢èŠ‚ç‚¹
 			replaceWith
 			replaceAll
-		(8)²Ù×÷ÊôÐÔ
+		(8)æ“ä½œå±žæ€§
 			attr()
-		(9)ÑùÊ½²Ù×÷
-		×·¼ÓÑùÊ½: addClass() 
-		ÒÆ³ýÑùÊ½: removeClass() --- ´ÓÆ¥ÅäµÄÔªËØÖÐÉ¾³ýÈ«²¿»òÖ¸¶¨µÄ class
-		ÇÐ»»ÑùÊ½: toggleClass()  --- ¿ØÖÆÑùÊ½ÉÏµÄÖØ¸´ÇÐ»».Èç¹ûÀàÃû´æÔÚÔòÉ¾³ýËü, Èç¹ûÀàÃû²»´æÔÚÔòÌí¼ÓËü.
-		ÅÐ¶ÏÊÇ·ñº¬ÓÐÄ³¸öÑùÊ½: hasClass() --- ÅÐ¶ÏÔªËØÖÐÊÇ·ñº¬ÓÐÄ³¸ö class, Èç¹ûÓÐ, Ôò·µ»Ø true; ·ñÔò·µ»Ø false
+		(9)æ ·å¼æ“ä½œ
+		è¿½åŠ æ ·å¼: addClass() 
+		ç§»é™¤æ ·å¼: removeClass() --- ä»ŽåŒ¹é…çš„å…ƒç´ ä¸­åˆ é™¤å…¨éƒ¨æˆ–æŒ‡å®šçš„ class
+		åˆ‡æ¢æ ·å¼: toggleClass()  --- æŽ§åˆ¶æ ·å¼ä¸Šçš„é‡å¤åˆ‡æ¢.å¦‚æžœç±»åå­˜åœ¨åˆ™åˆ é™¤å®ƒ, å¦‚æžœç±»åä¸å­˜åœ¨åˆ™æ·»åŠ å®ƒ.
+		åˆ¤æ–­æ˜¯å¦å«æœ‰æŸä¸ªæ ·å¼: hasClass() --- åˆ¤æ–­å…ƒç´ ä¸­æ˜¯å¦å«æœ‰æŸä¸ª class, å¦‚æžœæœ‰, åˆ™è¿”å›ž true; å¦åˆ™è¿”å›ž false
 		
 		css()
 		height()
@@ -202,59 +202,59 @@
 		$().ready();
 
 
-		(10)±éÀú½Úµã
-			È¡µÃÆ¥ÅäÔªËØµÄËùÓÐ×ÓÔªËØ×é³ÉµÄ¼¯ºÏ: children(). ¸Ã·½·¨Ö»¿¼ÂÇ×ÓÔªËØ¶ø²»¿¼ÂÇÈÎºÎºó´úÔªËØ.
-			È¡µÃÆ¥ÅäÔªËØºóÃæ½ôÁÚµÄÍ¬±²ÔªËØµÄ¼¯ºÏ:next();
-			È¡µÃÆ¥ÅäÔªËØÇ°Ãæ½ôÁÚµÄÍ¬±²ÔªËØµÄ¼¯ºÏ:prev()
-			È¡µÃÆ¥ÅäÔªËØÇ°ºóËùÓÐµÄÍ¬±²ÔªËØ: siblings()
+		(10)éåŽ†èŠ‚ç‚¹
+			å–å¾—åŒ¹é…å…ƒç´ çš„æ‰€æœ‰å­å…ƒç´ ç»„æˆçš„é›†åˆ: children(). è¯¥æ–¹æ³•åªè€ƒè™‘å­å…ƒç´ è€Œä¸è€ƒè™‘ä»»ä½•åŽä»£å…ƒç´ .
+			å–å¾—åŒ¹é…å…ƒç´ åŽé¢ç´§é‚»çš„åŒè¾ˆå…ƒç´ çš„é›†åˆ:next();
+			å–å¾—åŒ¹é…å…ƒç´ å‰é¢ç´§é‚»çš„åŒè¾ˆå…ƒç´ çš„é›†åˆ:prev()
+			å–å¾—åŒ¹é…å…ƒç´ å‰åŽæ‰€æœ‰çš„åŒè¾ˆå…ƒç´ : siblings()
 			parent()
 
 
-¶þ¡¢Ajax
-	Í¬²½½»»¥/Òì²½½»»¥Òì²½´«Êä
-	²»ÓÃË¢ÐÂÒ³Ãæ¶ø»ñÈ¡ÐÂµÄÊý¾Ý,´Ó¶ø¾Ö²¿¸üÐÂÒ³Ãæ
+äºŒã€Ajax
+	åŒæ­¥äº¤äº’/å¼‚æ­¥äº¤äº’å¼‚æ­¥ä¼ è¾“
+	ä¸ç”¨åˆ·æ–°é¡µé¢è€ŒèŽ·å–æ–°çš„æ•°æ®,ä»Žè€Œå±€éƒ¨æ›´æ–°é¡µé¢
 
-	1.´«Í³·½Ê½ÊµÏÖajax
-		(1)»ñÈ¡XMlHttpRequest¶ÔÏó
-		(2)ÉèÖÃ¼àÌý,´¦ÀíÏìÓ¦
-		(3)¿ªÆôÁ¬½Ó
-		(4)·¢ËÍÇëÇó
-	2.ÀûÓÃjqueryÊµÏÖajax
+	1.ä¼ ç»Ÿæ–¹å¼å®žçŽ°ajax
+		(1)èŽ·å–XMlHttpRequestå¯¹è±¡
+		(2)è®¾ç½®ç›‘å¬,å¤„ç†å“åº”
+		(3)å¼€å¯è¿žæŽ¥
+		(4)å‘é€è¯·æ±‚
+	2.åˆ©ç”¨jqueryå®žçŽ°ajax
 		$.get()
 		$.post()
 	
-	3.ajax·µ»ØÊý¾ÝµÄ¸ñÊ½:xml/html/json
-		json:javascriptµÄÔ­Éú¸ñÊ½,javascriptÖ±½Ó¿ÉÒÔ·ÃÎÊÆäÖÐÊý¾Ý
+	3.ajaxè¿”å›žæ•°æ®çš„æ ¼å¼:xml/html/json
+		json:javascriptçš„åŽŸç”Ÿæ ¼å¼,javascriptç›´æŽ¥å¯ä»¥è®¿é—®å…¶ä¸­æ•°æ®
 	
 
-jsÔ­×°AjaxºÍjquery·â×°ºóµÄAjax
-	Í¬²½£º¿Í»§¶ËÇëÇóµ½·þÎñÆ÷£¬µ±·þÎñÆ÷»ØËÍÊý¾ÝÖ®Ç°¶¼ÊÇ´¦ÓÚµÈ´ý×´Ì¬
-		ÔÚÏìÓ¦ÆÚ¼ä²»ÄÜ²Ù×÷ÆäËû¶¯×÷
-	Òì²½£º¿Í»§¶ËÇëÇó·þÎñÆ÷£¬ÎÞÂÛ·þÎñÆ÷»ØËÍÊý¾Ý²»»áËÍ¿Í»§¶Ë¶¼¿ÉÒÔ×öÆäËûÊÂ¼þ
-		¾ÍÊÇÔÚÏìÓ¦ÆÚ¼ä¿ÉÒÔ²Ù×÷ÆäËûµÄ¶¯×÷
-	AjaxÔËÐÐÔ­Àí£º
-		Ò³ÃæÇëÇóÍ¨¹ýAjaxÒýÇæÀ´ÊµÏÖ£¬´æÔÚÓë¿Í»§¶ËÄÚºËÀïµÄ£¬ajaxÒýÇæ»áÌá½»ÇëÇó£¬ajaxÒýÇæ½ÓÊÜÊý¾ÝÁËÖ±½Ó¾Í´¥·¢ÊÂ¼þ
-	Ò³Ãæ·¢ÆðÇëÇó£¬»á½«ÇëÇó·¢ËÍ¸øä¯ÀÀÆ÷ÄÚºËÖÐµÄAjaxÒýÇæ£¬
-	AjaxÒýÇæ»áÌá½»ÇëÇóµ½·þÎñÆ÷¶Ë£¬
-	ÔÚÕâ¶ÎÊ±¼äÀï£¬¿Í»§¶Ë¿ÉÒÔÈÎÒâ½øÐÐÈÎÒâ²Ù×÷£¬Ö±µ½·þÎñÆ÷¶Ë½«Êý¾Ý·µ»Ø¸øAjaxÒýÇæºó£¬
-	»á´¥·¢ÄãÉèÖÃµÄÊÂ¼þ£¬´Ó¶øÖ´ÐÐ×Ô¶¨ÒåµÄjsÂß¼­´úÂëÍê³ÉÄ³ÖÖÒ³Ãæ1	¹¦ÄÜ¡£
+jsåŽŸè£…Ajaxå’Œjqueryå°è£…åŽçš„Ajax
+	åŒæ­¥ï¼šå®¢æˆ·ç«¯è¯·æ±‚åˆ°æœåŠ¡å™¨ï¼Œå½“æœåŠ¡å™¨å›žé€æ•°æ®ä¹‹å‰éƒ½æ˜¯å¤„äºŽç­‰å¾…çŠ¶æ€
+		åœ¨å“åº”æœŸé—´ä¸èƒ½æ“ä½œå…¶ä»–åŠ¨ä½œ
+	å¼‚æ­¥ï¼šå®¢æˆ·ç«¯è¯·æ±‚æœåŠ¡å™¨ï¼Œæ— è®ºæœåŠ¡å™¨å›žé€æ•°æ®ä¸ä¼šé€å®¢æˆ·ç«¯éƒ½å¯ä»¥åšå…¶ä»–äº‹ä»¶
+		å°±æ˜¯åœ¨å“åº”æœŸé—´å¯ä»¥æ“ä½œå…¶ä»–çš„åŠ¨ä½œ
+	Ajaxè¿è¡ŒåŽŸç†ï¼š
+		é¡µé¢è¯·æ±‚é€šè¿‡Ajaxå¼•æ“Žæ¥å®žçŽ°ï¼Œå­˜åœ¨ä¸Žå®¢æˆ·ç«¯å†…æ ¸é‡Œçš„ï¼Œajaxå¼•æ“Žä¼šæäº¤è¯·æ±‚ï¼Œajaxå¼•æ“ŽæŽ¥å—æ•°æ®äº†ç›´æŽ¥å°±è§¦å‘äº‹ä»¶
+	é¡µé¢å‘èµ·è¯·æ±‚ï¼Œä¼šå°†è¯·æ±‚å‘é€ç»™æµè§ˆå™¨å†…æ ¸ä¸­çš„Ajaxå¼•æ“Žï¼Œ
+	Ajaxå¼•æ“Žä¼šæäº¤è¯·æ±‚åˆ°æœåŠ¡å™¨ç«¯ï¼Œ
+	åœ¨è¿™æ®µæ—¶é—´é‡Œï¼Œå®¢æˆ·ç«¯å¯ä»¥ä»»æ„è¿›è¡Œä»»æ„æ“ä½œï¼Œç›´åˆ°æœåŠ¡å™¨ç«¯å°†æ•°æ®è¿”å›žç»™Ajaxå¼•æ“ŽåŽï¼Œ
+	ä¼šè§¦å‘ä½ è®¾ç½®çš„äº‹ä»¶ï¼Œä»Žè€Œæ‰§è¡Œè‡ªå®šä¹‰çš„jsé€»è¾‘ä»£ç å®ŒæˆæŸç§é¡µé¢1	åŠŸèƒ½ã€‚
 	
 
 
-jsÔ­ÉúAjax¼¼Êõ
+jsåŽŸç”ŸAjaxæŠ€æœ¯
 
 		
-		ËùÓÐµÄÒì²½·ÃÎÊ¶¼ÊÇajaxÒýÇæÊµÏÖ
+		æ‰€æœ‰çš„å¼‚æ­¥è®¿é—®éƒ½æ˜¯ajaxå¼•æ“Žå®žçŽ°
 	
-	AjaxÊÇXmlHttpRequest¶ÔÏóºÍjavaScript,xml,css,DomµÈ¼¼ÊõµÄ½áºÏ¡£
-	XmlHttpRequest¶ÔÏó£º
-			³õÊ¼»¯£º
+	Ajaxæ˜¯XmlHttpRequestå¯¹è±¡å’ŒjavaScript,xml,css,Domç­‰æŠ€æœ¯çš„ç»“åˆã€‚
+	XmlHttpRequestå¯¹è±¡ï¼š
+			åˆå§‹åŒ–ï¼š
 				
-				IEä¯ÀÀÆ÷£º
-				var http_request=new ActiveXObject("Msxml2.XMLHTTP");»òÕß£ºvar http_request=new ActiveXObject("Microsoft.XMLHTTP");
-				·ÇIEä¯ÀÀÆ÷£º
+				IEæµè§ˆå™¨ï¼š
+				var http_request=new ActiveXObject("Msxml2.XMLHTTP");æˆ–è€…ï¼švar http_request=new ActiveXObject("Microsoft.XMLHTTP");
+				éžIEæµè§ˆå™¨ï¼š
 				var http_request=new XMLHTTPRequest();
-			Ò»°ã¶¼ÊÇÈçÏÂÊ¹ÓÃ£º
+			ä¸€èˆ¬éƒ½æ˜¯å¦‚ä¸‹ä½¿ç”¨ï¼š
 				if(window.XMLHttpRequest){
 					http_request=new XMLHttpRequest();
 				}else if(window.ActiveXObject){
@@ -269,74 +269,74 @@ jsÔ­ÉúAjax¼¼Êõ
 					    }
 				    }
 				}
-		window.ActiveXObject½«·µ»ØÒ»¸ö¶ÔÏó£¬»òÕßÊÇnull£¬nullÎªfalse£»
+		window.ActiveXObjectå°†è¿”å›žä¸€ä¸ªå¯¹è±¡ï¼Œæˆ–è€…æ˜¯nullï¼Œnullä¸ºfalseï¼›
 
-	XmlHttpRequest¶ÔÏó³£ÓÃµÄ·½·¨£º
-		ÓÃÓÚÉèÖÃ½øÐÐÒì²½ÇëÇóµÄURL£¬ÇëÇóµÄ²ÎÊýÐÅÏ¢¡£
+	XmlHttpRequestå¯¹è±¡å¸¸ç”¨çš„æ–¹æ³•ï¼š
+		ç”¨äºŽè®¾ç½®è¿›è¡Œå¼‚æ­¥è¯·æ±‚çš„URLï¼Œè¯·æ±‚çš„å‚æ•°ä¿¡æ¯ã€‚
 		open("method","URL"[,asyncFlag[,"username"[,",password"]]]);
-			asyncFlag:¿ÉÑ¡²ÎÊý£¬Òì²½Îªtrue£¬Í¬²½Îªfalse£¬Ä¬ÈÏÒì²½£»
-		     ÀýÈç£ºhttp_request.open("GET","reqist.jsp",true);
+			asyncFlag:å¯é€‰å‚æ•°ï¼Œå¼‚æ­¥ä¸ºtrueï¼ŒåŒæ­¥ä¸ºfalseï¼Œé»˜è®¤å¼‚æ­¥ï¼›
+		     ä¾‹å¦‚ï¼šhttp_request.open("GET","reqist.jsp",true);
 		send();
-		send ÓÃÓÚÏò·þÎñÆ÷·¢ËÍÇëÇó£¬Òì²½Á¢¼´·µ»Ø£¬·ñÕßµÈ½ÓÊÜµ½ÏàÓ¦Îª×¼£¬
-		     ÀýÈç£ºsend(content);contentÎªÖÆ¶¨µÄÊý¾Ý¿ÉÒÔÎªDom£¬ÊäÈëÁ÷£¬×Ö·û´®£¬Ã»ÓÐ²ÎÊý¾ÍÎªnull;
-		sendRequestHeader("header","value")·½·¨£»
-		     header:ÎªHttpµÄÍ·£¬value ÎªhttpÍ·µÄÖµ£»
-		ÇëÇóÍ·£º
-			Accept: text/html,image/*    ¿Í»§¶Ë¿ÉÒÔ½ÓÊÜµÄÊý¾ÝÀàÐÍ
-			Accept-Charset: ISO-8859-1	¿Í»§¶Ë½ÓÊÜÊý¾ÝÐèÒªÊ¹ÓÃµÄ×Ö·û¼¯±àÂë
-			Accept-Encoding: gzip,compress ¿Í»§¶Ë¿ÉÒÔ½ÓÊÜµÄÊý¾ÝÑ¹Ëõ¸ñÊ½
-			Accept-Language: en-us,zh-cn  ¿É½ÓÊÜµÄÓïÑÔ»·¾³
-			Host: www.it315.org:80 ÏëÒª·ÃÎÊµÄÐéÄâÖ÷»úÃû
-			If-Modified-Since: Tue, 11 Jul 2000 18:23:51 GMT ÕâÊÇºÍ»º´æÏà¹ØµÄÒ»¸öÍ·£¬´ø×Å»º´æ×ÊÔ´µÄ×îºó»ñÈ¡Ê±¼ä
-			Referer: http://www.it315.org/index.jsp Õâ¸öÍ·±íÊ¾µ±Ç°µÄÇëÇóÀ´×ÔÄÄ¸öÁ´½Ó£¬Õâ¸öÍ·ºÍ·ÀµÁÁ´µÄ¹¦ÄÜÏà¹Ø
-			User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0) ¿Í»§¶ËµÄÒ»Ð©»ù±¾ÐÅÏ¢
-			Cookie »áÔÚºóÃæ½²»á»°¼¼ÊõµÄÊ±ºòµ¥½²
-			Connection: close/Keep-Alive Ö¸¶¨ÊÇ·ñ¼ÌÐø±£³ÖÁ¬½Ó
-			Date: Tue, 11 Jul 2000 18:23:51 GMT µ±Ç°Ê±¼ä
-		abort()·½·¨£º
-			ÓÃÓÚÍ£Ö¹»ò·ÅÆúµ±Ç°µÄÒì²½ÇëÇó£¬
-		getRequestHeader()·½·¨£º»ñÈ¡HttpÍ·ÐÅÏ¢
+		send ç”¨äºŽå‘æœåŠ¡å™¨å‘é€è¯·æ±‚ï¼Œå¼‚æ­¥ç«‹å³è¿”å›žï¼Œå¦è€…ç­‰æŽ¥å—åˆ°ç›¸åº”ä¸ºå‡†ï¼Œ
+		     ä¾‹å¦‚ï¼šsend(content);contentä¸ºåˆ¶å®šçš„æ•°æ®å¯ä»¥ä¸ºDomï¼Œè¾“å…¥æµï¼Œå­—ç¬¦ä¸²ï¼Œæ²¡æœ‰å‚æ•°å°±ä¸ºnull;
+		sendRequestHeader("header","value")æ–¹æ³•ï¼›
+		     header:ä¸ºHttpçš„å¤´ï¼Œvalue ä¸ºhttpå¤´çš„å€¼ï¼›
+		è¯·æ±‚å¤´ï¼š
+			Accept: text/html,image/*    å®¢æˆ·ç«¯å¯ä»¥æŽ¥å—çš„æ•°æ®ç±»åž‹
+			Accept-Charset: ISO-8859-1	å®¢æˆ·ç«¯æŽ¥å—æ•°æ®éœ€è¦ä½¿ç”¨çš„å­—ç¬¦é›†ç¼–ç 
+			Accept-Encoding: gzip,compress å®¢æˆ·ç«¯å¯ä»¥æŽ¥å—çš„æ•°æ®åŽ‹ç¼©æ ¼å¼
+			Accept-Language: en-us,zh-cn  å¯æŽ¥å—çš„è¯­è¨€çŽ¯å¢ƒ
+			Host: www.it315.org:80 æƒ³è¦è®¿é—®çš„è™šæ‹Ÿä¸»æœºå
+			If-Modified-Since: Tue, 11 Jul 2000 18:23:51 GMT è¿™æ˜¯å’Œç¼“å­˜ç›¸å…³çš„ä¸€ä¸ªå¤´ï¼Œå¸¦ç€ç¼“å­˜èµ„æºçš„æœ€åŽèŽ·å–æ—¶é—´
+			Referer: http://www.it315.org/index.jsp è¿™ä¸ªå¤´è¡¨ç¤ºå½“å‰çš„è¯·æ±‚æ¥è‡ªå“ªä¸ªé“¾æŽ¥ï¼Œè¿™ä¸ªå¤´å’Œé˜²ç›—é“¾çš„åŠŸèƒ½ç›¸å…³
+			User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0) å®¢æˆ·ç«¯çš„ä¸€äº›åŸºæœ¬ä¿¡æ¯
+			Cookie ä¼šåœ¨åŽé¢è®²ä¼šè¯æŠ€æœ¯çš„æ—¶å€™å•è®²
+			Connection: close/Keep-Alive æŒ‡å®šæ˜¯å¦ç»§ç»­ä¿æŒè¿žæŽ¥
+			Date: Tue, 11 Jul 2000 18:23:51 GMT å½“å‰æ—¶é—´
+		abort()æ–¹æ³•ï¼š
+			ç”¨äºŽåœæ­¢æˆ–æ”¾å¼ƒå½“å‰çš„å¼‚æ­¥è¯·æ±‚ï¼Œ
+		getRequestHeader()æ–¹æ³•ï¼šèŽ·å–Httpå¤´ä¿¡æ¯
 			getRequestHeader("headerLabel");
-		getAllRequestHeaders()·½·¨£º»ñÈ¡HttpÍêÕûµÄÍ·ÐÅÏ¢
-	XmlHttpRequest³£ÓÃµÄÊôÐÔ£º
-		1.onreadystatechangeÊôÐÔ£º
-			ÓÃÓÚÖ¸¶¨×´Ì¬¸Ä±äÊ±Ëù´¥·¢ÊÂ¼þ´¦ÀíÆ÷£¬Í¨³£»áµ÷ÓÃJavaScriptº¯Êý£»
-		    ÀýÈç£ºhttp_request.onreadystatechange=function(){
+		getAllRequestHeaders()æ–¹æ³•ï¼šèŽ·å–Httpå®Œæ•´çš„å¤´ä¿¡æ¯
+	XmlHttpRequestå¸¸ç”¨çš„å±žæ€§ï¼š
+		1.onreadystatechangeå±žæ€§ï¼š
+			ç”¨äºŽæŒ‡å®šçŠ¶æ€æ”¹å˜æ—¶æ‰€è§¦å‘äº‹ä»¶å¤„ç†å™¨ï¼Œé€šå¸¸ä¼šè°ƒç”¨JavaScriptå‡½æ•°ï¼›
+		    ä¾‹å¦‚ï¼šhttp_request.onreadystatechange=function(){
 		    
 		    };
-		 2.readyStateÊôÐÔ£º»ñÈ¡ÇëÇó×´Ì¬£º
-			0£ºÎ´³õÊ¼»¯£¬1£ºÕýÔÚ¼ÓÔØ£¬2:ÒÑ¼ÓÔØ£¬3£º½»»¥ÖÐ£¬4£ºÍê³É¡£
-		 3.responseTextÊôÐÔ£º»ñÈ¡ÏìÓ¦µÄ×Ö·û´®
-		 4.responseXMLÊôÐÔ£º»ñÈ¡·þÎñÆ÷µÄÏìÓ¦µÄxml¿ÉÒÔ½âÎöÎªdom¶ÔÏó
-		 5.status·µ»Ø×´Ì¬Âë£º200³É¹¦£»202£ºÇëÇó½ÓÊÜµ«Îª³É¹¦£¬400£º´íÎóµÄÇëÇó£¬404 500
-		 6.statusText·µ»ØHTTP×´Ì¬Âë¶ÔÓ¦µÃÎÄ±¾£¬Èçok notFound£»
+		 2.readyStateå±žæ€§ï¼šèŽ·å–è¯·æ±‚çŠ¶æ€ï¼š
+			0ï¼šæœªåˆå§‹åŒ–ï¼Œ1ï¼šæ­£åœ¨åŠ è½½ï¼Œ2:å·²åŠ è½½ï¼Œ3ï¼šäº¤äº’ä¸­ï¼Œ4ï¼šå®Œæˆã€‚
+		 3.responseTextå±žæ€§ï¼šèŽ·å–å“åº”çš„å­—ç¬¦ä¸²
+		 4.responseXMLå±žæ€§ï¼šèŽ·å–æœåŠ¡å™¨çš„å“åº”çš„xmlå¯ä»¥è§£æžä¸ºdomå¯¹è±¡
+		 5.statusè¿”å›žçŠ¶æ€ç ï¼š200æˆåŠŸï¼›202ï¼šè¯·æ±‚æŽ¥å—ä½†ä¸ºæˆåŠŸï¼Œ400ï¼šé”™è¯¯çš„è¯·æ±‚ï¼Œ404 500
+		 6.statusTextè¿”å›žHTTPçŠ¶æ€ç å¯¹åº”å¾—æ–‡æœ¬ï¼Œå¦‚ok notFoundï¼›
 
-	·¢ËÍÇëÇó£º
-	AjaxÍ¨¹ýXMLHttpRequest¶ÔÏó£¬ÊµÏÖÒì²½·¢ËÍÇëÇó£¬²½Öè£º
-		1.³õÊ¼»¯xmlHttpRequest¶ÔÏó£¬new 
-		2.ÎªxmlHttprequestÖ¸¶¨Ò»¸ö·µ»Ø½á¹ûµÄ´¦Àíº¯Êý£¬.onreadystatechange=function(){}
-		3.´´½¨Ò»¸öÓë·þÎñÆ÷µÄÁ¬½Ó£¬ÔÚ´´½¨Ê±ÐèÒªÖ¸¶¨ÇëÇó·½Ê½£¬ÊÇ·ñÒì²½:open()
-		4.Ïò·þÎñÆ÷·¢ËÍÇëÇó£¬.send()£ºgetÇëÇó£º.send(null);
-		postÇëÇó£ºvar param="user="+form1.user.value+"&pwd="+form1.pwd.value+"&email="+form1.email.value;
-		 ÔÚ·¢ËÍÇëÇóÐèÒªÕýÈ·µÄÉèÖÃÇëÇóÍ·£º
+	å‘é€è¯·æ±‚ï¼š
+	Ajaxé€šè¿‡XMLHttpRequestå¯¹è±¡ï¼Œå®žçŽ°å¼‚æ­¥å‘é€è¯·æ±‚ï¼Œæ­¥éª¤ï¼š
+		1.åˆå§‹åŒ–xmlHttpRequestå¯¹è±¡ï¼Œnew 
+		2.ä¸ºxmlHttprequestæŒ‡å®šä¸€ä¸ªè¿”å›žç»“æžœçš„å¤„ç†å‡½æ•°ï¼Œ.onreadystatechange=function(){}
+		3.åˆ›å»ºä¸€ä¸ªä¸ŽæœåŠ¡å™¨çš„è¿žæŽ¥ï¼Œåœ¨åˆ›å»ºæ—¶éœ€è¦æŒ‡å®šè¯·æ±‚æ–¹å¼ï¼Œæ˜¯å¦å¼‚æ­¥:open()
+		4.å‘æœåŠ¡å™¨å‘é€è¯·æ±‚ï¼Œ.send()ï¼šgetè¯·æ±‚ï¼š.send(null);
+		postè¯·æ±‚ï¼švar param="user="+form1.user.value+"&pwd="+form1.pwd.value+"&email="+form1.email.value;
+		 åœ¨å‘é€è¯·æ±‚éœ€è¦æ­£ç¡®çš„è®¾ç½®è¯·æ±‚å¤´ï¼š
 		http_request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 			 http_request.send(param);
-	´¦ÀíÏìÓ¦£º
-		·¢ËÍÇëÇóºó½ÓÏÂÀ´¾ÍÊÇ´¦Àí·þÎñÆ÷µÄÏìÓ¦£¬´¦ÀíÏìÓ¦µÄÊôÐÔÓÐ£ºresponseTestÊôÐÔ£¬responseXmlÊôÐÔ
-		1.´¦Àí×Ö·û´®µÄ
+	å¤„ç†å“åº”ï¼š
+		å‘é€è¯·æ±‚åŽæŽ¥ä¸‹æ¥å°±æ˜¯å¤„ç†æœåŠ¡å™¨çš„å“åº”ï¼Œå¤„ç†å“åº”çš„å±žæ€§æœ‰ï¼šresponseTestå±žæ€§ï¼ŒresponseXmlå±žæ€§
+		1.å¤„ç†å­—ç¬¦ä¸²çš„
 		   function getResult(){
 			if(http_request.readyState==4){
 			    if(http_request.status==200){
 				alter(http_request.responseText);
 			    }else{
-				alert(ÄãÇëÇóµÄÒ³ÃæÓÐÎó);
+				alert(ä½ è¯·æ±‚çš„é¡µé¢æœ‰è¯¯);
 			    }
 			
 			}
 		   
 		   }
-		2.´¦Àíxml
-			ºÍ´¦Àídom¶ÔÏó²Å²î²»¶à£¬Ö»ÊÇÐèÒªÓÐÌõ¼þÅÐ¶Ï
+		2.å¤„ç†xml
+			å’Œå¤„ç†domå¯¹è±¡æ‰å·®ä¸å¤šï¼Œåªæ˜¯éœ€è¦æœ‰æ¡ä»¶åˆ¤æ–­
 
 			function getresult(){
 				if(Http_request.readyState==4){
@@ -345,71 +345,71 @@ jsÔ­ÉúAjax¼¼Êõ
 					 var str="";
 					 for(i=0;i<xmldoc.getElementsByTagName("book").length;i++){
 					 	var book=xmldoc.getElementsByTagName("book").item(i);
-						str+="¡¶+"book.getElementsByTagName("title")[0].firstChild.data+"¡·ÓÉ¡±"+book.getElementByTagName("publisher")[0].firstChild.data+"";
+						str+="ã€Š+"book.getElementsByTagName("title")[0].firstChild.data+"ã€‹ç”±â€"+book.getElementByTagName("publisher")[0].firstChild.data+"";
 
 					 }
 					document.getElmentById("book").innerHTML=str;
 					}else{
-					alert ("ÄãÇëÇóµÄÒ³ÃæÓÐÎó");
+					alert ("ä½ è¯·æ±‚çš„é¡µé¢æœ‰è¯¯");
 					}
 				}
 			
 			}
 		<div id="book"></div>
-jsÔ­ÉúµÄAjaxµÄÊ¹ÓÃ£º
+jsåŽŸç”Ÿçš„Ajaxçš„ä½¿ç”¨ï¼š
 
 
 
 
-jsonÊý¾Ý¸ñÊ½£º
-	jsonÊÇÒ»ÖÖÓëÓïÑÔÎÞ¹ØµÄÊý¾Ý½»»»µÄ¸ñÊ½£¬×÷ÓÃ£º
-	Ê¹ÓÃajax½øÐÐÇ°ºóÌ¨Êý¾Ý½»»»
-	ÒÆ¶¯¶ËÓë·þÎñ¶ËµÄÊý¾Ý½»»»
-	jsonÊÇÒ»ÖÖÓëÓïÑÔÎÞ¹ØÊý¾Ý½»»»µÄ¸ñÊ½£¬
-	Ê¹ÓÃajax½øÐÐÇ°ºóÌ¨½»»»£¬
-	ÒÆ¶¯¶ËÓë·þÎñ¶ËÊý¾Ý½»»»
-1.jsonµÄ¸ñÊ½£º
-	¶ÔÏóÐÎÊ½£º
+jsonæ•°æ®æ ¼å¼ï¼š
+	jsonæ˜¯ä¸€ç§ä¸Žè¯­è¨€æ— å…³çš„æ•°æ®äº¤æ¢çš„æ ¼å¼ï¼Œä½œç”¨ï¼š
+	ä½¿ç”¨ajaxè¿›è¡Œå‰åŽå°æ•°æ®äº¤æ¢
+	ç§»åŠ¨ç«¯ä¸ŽæœåŠ¡ç«¯çš„æ•°æ®äº¤æ¢
+	jsonæ˜¯ä¸€ç§ä¸Žè¯­è¨€æ— å…³æ•°æ®äº¤æ¢çš„æ ¼å¼ï¼Œ
+	ä½¿ç”¨ajaxè¿›è¡Œå‰åŽå°äº¤æ¢ï¼Œ
+	ç§»åŠ¨ç«¯ä¸ŽæœåŠ¡ç«¯æ•°æ®äº¤æ¢
+1.jsonçš„æ ¼å¼ï¼š
+	å¯¹è±¡å½¢å¼ï¼š
 		{"key":"obj"}
-		ÀýÈç£º
-		user¶ÔÏó£º
+		ä¾‹å¦‚ï¼š
+		userå¯¹è±¡ï¼š
 			{"username":"zan","age":"28","password:"123"}
-			¶ÔÏóÇ¶Ì×¶ÔÏó
+			å¯¹è±¡åµŒå¥—å¯¹è±¡
 			{"username":"zan","age":"28","password:"123","account":{"money":"2000","time":""}}
-	Êý×éÐÎÊ½£º
-		¾ÍÊÇ°üº¬ºÜ¶à¶ÔÏó
+	æ•°ç»„å½¢å¼ï¼š
+		å°±æ˜¯åŒ…å«å¾ˆå¤šå¯¹è±¡
 	[{"username":"zan"},{"age":"28"},{},{}]
-	¶ÔÏóÐÎÊ½ºÍÊý×éÐÎÊ½¿ÉÒÔ»¥ÏàÇ¶Ì×
-	jsnoµÄ¿ÉÒÔ¿ÉÒÔÎª×Ö·û´®Ò²¿ÉÒÔÊÇ¶ÔÏó
-2£®JsonµÄ×ª»»²å¼þ
+	å¯¹è±¡å½¢å¼å’Œæ•°ç»„å½¢å¼å¯ä»¥äº’ç›¸åµŒå¥—
+	jsnoçš„å¯ä»¥å¯ä»¥ä¸ºå­—ç¬¦ä¸²ä¹Ÿå¯ä»¥æ˜¯å¯¹è±¡
+2ï¼ŽJsonçš„è½¬æ¢æ’ä»¶
 
-		½«javaµÄ¶ÔÏó»ò¼¯ºÏ×ª³ÉjsonÐÎÊ½×Ö·û´®
+		å°†javaçš„å¯¹è±¡æˆ–é›†åˆè½¬æˆjsonå½¢å¼å­—ç¬¦ä¸²
 
-		jsonµÄ×ª»»²å¼þÊÇÍ¨¹ýjavaµÄÒ»Ð©¹¤¾ß£¬Ö±½Ó½«java¶ÔÏó»ò¼¯ºÏ×ª»»³Éjson×Ö·û´®¡£
-		³£ÓÃµÄjson×ª»»¹¤¾ßÓÐÈçÏÂ¼¸ÖÖ£º
-		1£©jsonlib
-		2£©Gson£ºgoogle
-		3£©fastjson£º°¢Àï°Í°Í
-JqueryµÄAjax¼¼Êõ£¨ÖØµã£©
-		jqueryÊÇÒ»¸öÓÅÐãµÄjs¿ò¼Ü£¬×ÔÈ»¶ÔjsÔ­ÉúµÄajax½øÐÐÁË·â×°£¬·â×°ºóµÄajaxµÄ²Ù×÷·½·¨¸ü¼ò½à£¬¹¦ÄÜ¸üÇ¿´ó£¬
-		Óëajax²Ù×÷Ïà¹ØµÄjquery·½·¨ÓÐÈçÏÂ¼¸ÖÖ£¬µ«¿ª·¢ÖÐ¾­³£Ê¹ÓÃµÄÓÐÈýÖÖ
+		jsonçš„è½¬æ¢æ’ä»¶æ˜¯é€šè¿‡javaçš„ä¸€äº›å·¥å…·ï¼Œç›´æŽ¥å°†javaå¯¹è±¡æˆ–é›†åˆè½¬æ¢æˆjsonå­—ç¬¦ä¸²ã€‚
+		å¸¸ç”¨çš„jsonè½¬æ¢å·¥å…·æœ‰å¦‚ä¸‹å‡ ç§ï¼š
+		1ï¼‰jsonlib
+		2ï¼‰Gsonï¼šgoogle
+		3ï¼‰fastjsonï¼šé˜¿é‡Œå·´å·´
+Jqueryçš„AjaxæŠ€æœ¯ï¼ˆé‡ç‚¹ï¼‰
+		jqueryæ˜¯ä¸€ä¸ªä¼˜ç§€çš„jsæ¡†æž¶ï¼Œè‡ªç„¶å¯¹jsåŽŸç”Ÿçš„ajaxè¿›è¡Œäº†å°è£…ï¼Œå°è£…åŽçš„ajaxçš„æ“ä½œæ–¹æ³•æ›´ç®€æ´ï¼ŒåŠŸèƒ½æ›´å¼ºå¤§ï¼Œ
+		ä¸Žajaxæ“ä½œç›¸å…³çš„jqueryæ–¹æ³•æœ‰å¦‚ä¸‹å‡ ç§ï¼Œä½†å¼€å‘ä¸­ç»å¸¸ä½¿ç”¨çš„æœ‰ä¸‰ç§
 		
-		1£©$.get(url, [data], [callback], [type])
-		2£©$.post(url, [data], [callback], [type])
+		1ï¼‰$.get(url, [data], [callback], [type])
+		2ï¼‰$.post(url, [data], [callback], [type])
 
-		ÆäÖÐ£º
-		url£º´ú±íÇëÇóµÄ·þÎñÆ÷¶ËµØÖ·
-		data£º´ú±íÇëÇó·þÎñÆ÷¶ËµÄÊý¾Ý£¨¿ÉÒÔÊÇkey=valueÐÎÊ½Ò²¿ÉÒÔÊÇjson¸ñÊ½£©
-		callback£º±íÊ¾·þÎñÆ÷¶Ë³É¹¦ÏìÓ¦Ëù´¥·¢µÄº¯Êý£¨Ö»ÓÐÕý³£³É¹¦·µ»Ø²ÅÖ´ÐÐ£©
-		type£º±íÊ¾·þÎñÆ÷¶Ë·µ»ØµÄÊý¾ÝÀàÐÍ£¨jquery»á¸ù¾ÝÖ¸¶¨µÄÀàÐÍ×Ô¶¯ÀàÐÍ×ª»»£©
-		³£ÓÃµÄ·µ»ØÀàÐÍ£ºtext¡¢json¡¢htmlµÈ
+		å…¶ä¸­ï¼š
+		urlï¼šä»£è¡¨è¯·æ±‚çš„æœåŠ¡å™¨ç«¯åœ°å€
+		dataï¼šä»£è¡¨è¯·æ±‚æœåŠ¡å™¨ç«¯çš„æ•°æ®ï¼ˆå¯ä»¥æ˜¯key=valueå½¢å¼ä¹Ÿå¯ä»¥æ˜¯jsonæ ¼å¼ï¼‰
+		callbackï¼šè¡¨ç¤ºæœåŠ¡å™¨ç«¯æˆåŠŸå“åº”æ‰€è§¦å‘çš„å‡½æ•°ï¼ˆåªæœ‰æ­£å¸¸æˆåŠŸè¿”å›žæ‰æ‰§è¡Œï¼‰
+		typeï¼šè¡¨ç¤ºæœåŠ¡å™¨ç«¯è¿”å›žçš„æ•°æ®ç±»åž‹ï¼ˆjqueryä¼šæ ¹æ®æŒ‡å®šçš„ç±»åž‹è‡ªåŠ¨ç±»åž‹è½¬æ¢ï¼‰
+		å¸¸ç”¨çš„è¿”å›žç±»åž‹ï¼štextã€jsonã€htmlç­‰
 
-		3£©$.ajax( { option1:value1,option2:value2... } ); ---- ÒÔºóÔÚÕÆÎÕ
-		³£ÓÃµÄoptionÓÐÈçÏÂ£º
-		async£ºÊÇ·ñÒì²½£¬Ä¬ÈÏÊÇtrue´ú±íÒì²½
-		data£º·¢ËÍµ½·þÎñÆ÷µÄ²ÎÊý£¬½¨ÒéÊ¹ÓÃjson¸ñÊ½
-		dataType£º·þÎñÆ÷¶Ë·µ»ØµÄÊý¾ÝÀàÐÍ£¬³£ÓÃtextºÍjson
-		success£º³É¹¦ÏìÓ¦Ö´ÐÐµÄº¯Êý£¬¶ÔÓ¦µÄÀàÐÍÊÇfunctionÀàÐÍ
-		type£ºÇëÇó·½Ê½£¬POST/GET
-		url£ºÇëÇó·þÎñÆ÷¶ËµØÖ·
+		3ï¼‰$.ajax( { option1:value1,option2:value2... } ); ---- ä»¥åŽåœ¨æŽŒæ¡
+		å¸¸ç”¨çš„optionæœ‰å¦‚ä¸‹ï¼š
+		asyncï¼šæ˜¯å¦å¼‚æ­¥ï¼Œé»˜è®¤æ˜¯trueä»£è¡¨å¼‚æ­¥
+		dataï¼šå‘é€åˆ°æœåŠ¡å™¨çš„å‚æ•°ï¼Œå»ºè®®ä½¿ç”¨jsonæ ¼å¼
+		dataTypeï¼šæœåŠ¡å™¨ç«¯è¿”å›žçš„æ•°æ®ç±»åž‹ï¼Œå¸¸ç”¨textå’Œjson
+		successï¼šæˆåŠŸå“åº”æ‰§è¡Œçš„å‡½æ•°ï¼Œå¯¹åº”çš„ç±»åž‹æ˜¯functionç±»åž‹
+		typeï¼šè¯·æ±‚æ–¹å¼ï¼ŒPOST/GET
+		urlï¼šè¯·æ±‚æœåŠ¡å™¨ç«¯åœ°å€
 

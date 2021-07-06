@@ -124,15 +124,17 @@ public class HelloSpringMVC {
 
 ### Springmvc参数绑定：
 
+参数绑定的概念就是将URL中的的请求参数，进行类型转换（String或其他类型），将转换后的值在赋值给Controller方法形参中，然后Controller就可以直接使用该形参。
+
 #### 形参的绑定：
 
-​		修改，要传入形参绑定形参、或者在不通过request获得直接使用指定前台请求过来的参数类型和参数名要相同
-​		
-
 ```java
- public ModelAndView toEdit(Integer id,HttpServletRequest request,HttpServletResponse response,HttpSession session,Model model){
- // 用标签绑定,这是你前台传过来的参数与你这里的方法的参数名不相同时用标签的方法绑定
-public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue="1") Integer ids,HttpServletRequest request,HttpServletResponse response,HttpSession session,Model model){
+// 要传入形参绑定形参、或者在不通过request获得直接使用指定前台请求过来的参数类型和参数名要相同
+public ModelAndView toEdit(Integer id,HttpServletRequest request,HttpServletResponse response,HttpSession session,Model model){}
+
+// 用标签绑定,这是你前台传过来的参数与你这里的方法的参数名不相同时用标签的方法绑定
+public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue="1") Integer ids,HttpServletRequest request,HttpServletResponse response,HttpSession session,Model model){}
+// 采用request对象进行接收
    @RequestMapping(value="/item/toEdit")
    public ModelAndView toEdit(HttpServletRequest request,HttpServletResponse response,HttpSession session,Model model){
    //获得参数
@@ -152,9 +154,8 @@ public ModelAndView toEdit(@RequestParam(value="id",required=false,defaultValue=
 #### 对象类型的参数：
 
 ```java
-	/**
-提交修改，参数绑定为对象类型的，前台name属性与你的pojo类的字段必须相同updateitem.action
- 与形参没用任何关系
+/**
+*参数绑定为对象类型的，前台name属性与你的pojo类的字段必须相同,与形参没有关系
 */
 @RequestMapping(value="/item/updateitem.action")
 public ModelAndView updateItems(Items items){
@@ -172,8 +173,7 @@ public ModelAndView updateItems(Items items){
 
 ```java
 /**
-
-- - - 修改使用包装类pojo
+* 其实就是一个对象参数绑定	
  @param vo
  @return
  */
@@ -185,7 +185,7 @@ public ModelAndView updateitembyQ(QueryVo vo){
     mav.setViewName("success");
     return mav;	
 }
-使用list，array的使用必须要放到包装类型中
+
 /**
 
 - 在使用list，array时必须使用包装类如果不适用包装不能解析
@@ -200,20 +200,6 @@ public ModelAndView deletes(QueryVo vo){
     mav.setViewName("success");
     return mav;
 }
-controller的方法：放入model参数的方法的使用：
- /**
-- 1.ModelAndView  无敌的    带着数据  返回视图路径           不建议使用
-- 2.String    返回视图路径     model带数据      官方推荐此种方式   解耦   数据  视图  分离  MVC  建议使用  
-- 3.void       ajax  请求   合适   json格式数据 （response   异步请求使用
-- @return
-*/
-访问路径的使用：
-/**
- - 配置映射的访问路径
-- @return
- */
-@RequestMapping(value="/item/itemlist")
-
 ```
 
 #### 集合类型的参数绑定
@@ -491,13 +477,13 @@ Spring MVC 会按请求参数名和 POJO 属性名进行自动匹配，自动为
 
 /**
 * 使用RESTful风格开发接口，实现根据id查询商品
-* 如果不一致，例如"item/{ItemId}"则需要指定名称@PathVariable("itemId")。
+* 如果不一致，例如"item/{ItemId}"则需要指定名称@PathVariable。
 * @param id
 * @return
 */
 @RequestMapping("item/{id}")
 @ResponseBody
-public Item queryItemById(@PathVariable() Integer id) {
+public Item queryItemById(@PathVariable Integer id) {
     Item item = this.itemService.queryItemById(id);
     return item;
 }
@@ -506,6 +492,7 @@ public Item queryItemById(@PathVariable() Integer id) {
 2. 如果加上@ResponseBody注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
 ```
 
+<<<<<<< Updated upstream
 ### springMVC类型转换器
 
 前端传入的值，从表单中传入的值，都是字符串或者是字符串数组的形式传入的，在后端需要进行手动的转换类型，然后才能正确的使用。 框架一般对常见的数据类型的转换进行了封装提供，如字符串转换成数字等。我们使用的SpringMVC就是提供了一些内置的转换器。我们先来看下都有哪些类型转换器。
@@ -619,6 +606,89 @@ FormattingConversionService 拥有一个 **FormattingConversionServiceFactroyBea
 - 装配了 FormattingConversionServiceFactroyBean 后，就可 以在 Spring MVC 入参绑定及模型数据输出时使用注解驱动了。`<mvc:annotation-driven/>` 默认创建的ConversionService 实例即为 FormattingConversionServiceFactroyBean
 
   
+=======
+| /test/items   | GET    | 获取项目列表 |
+| ------------- | ------ | ------------ |
+| /test/items/1 | GET    | 获取项目     |
+| /test/items   | POST   | 创建项目     |
+| /test/items/1 | PUT    | 修改成员     |
+| /test/items   | PUT    | 批量修改     |
+| /test/items/1 | PATCH  | 修改属性     |
+| /test/items/1 | DELETE | 删除项目     |
+
+
+
+### springMVC数据格式化：
+
+#### 处理日期格式
+
+```xml
+<!-- 配置Conveter转换器，转换的工厂，可以转换（日期，。。。） -->
+<bean id="ConversionServiceFactoryBean" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+	<!-- 配置多个转换器  在list标签下可以提供多个bean-->
+	<property name="converters">
+	<list>
+		<bean  class="com.leo.spring.util.DateConveter"></bean>
+	</list>
+	</property>
+</bean>
+```
+
+**java配置代码**
+
+```java
+/**
+ * 转换日期
+ * S:页面传过来的s类型
+ * T:转换后的类型
+ * @author leoi555
+ *
+ */
+public class DateConveter implements Converter<String, Date> {
+
+	@Override
+	public Date convert(String arg0) {
+		// TODO Auto-generated method stub
+		if (null !=arg0) {
+			DateFormat dFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				return  dFormat.parse(arg0);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+}
+
+```
+
+**使用注解**
+
+支持对日期类的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式 需要配置`<mvc:annotation-driven/>`
+
+```java
+// 将入参格式话为date形式
+@DateTimeFormat(pattern="yyyy-MM-dd")
+// 将数据库中返回的数据格式化为指定的格式
+@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+private Date birthday;
+```
+
+#### 处理数字格式
+
+@NumberFormat 可对类似数字类型的属性进行标 注，它拥有两个互斥的属性：
+
+- style：类型为 NumberFormat.Style。用于指定样式类 型，包括三种：Style.NUMBER（正常数字类型）、 Style.CURRENCY（货币类型）、 Style.PERCENT（ 百分数类型）
+- pattern：类型为 String，自定义样式， 如patter="#,###"；
+
+```java
+@NumberFormat(pattern="#,###")
+private Integer salary;
+```
+>>>>>>> Stashed changes
 
 #### springmvc处理json数据:
 
@@ -636,21 +706,27 @@ HttpMessageConverter<T>接口定义的方法： – Boolean canRead(Class<?> cla
 
 ​		  `T  read(Class<? extends T> clazz,HttpInputMessage inputMessage)：`将请求信息流转换为 T 类型的对象。
 
-​		`– void write(T t,MediaType contnetType,HttpOutputMessgae outputMessage)`:将T类型的对象写到响应流中，同时指定相应的媒体类型为 contentType。使用 HttpMessageConverter<T> 将请求信息转化并绑定到处理方法的入参中或将响应结果转为对应类型的响应信息，
+​		`– void write(T t,MediaType contnetType,HttpOutputMessgae outputMessage)`:将T类型的对象写到响应流中，同时指定相应的媒体类型为 contentType。
 
-##### Spring 提供了两种途径：
+使用 HttpMessageConverter<T> 将请求信息转化并绑定到处理方法的入参中或将响应结果转为对应类型的响应信息，Spring 提供了两种途径：
 
-> ​		使用 @RequestBody / @ResponseBody 对处理方法进行标注
->
-> > ​		使用 HttpEntity<T> / ResponseEntity<T> 作为处理方法的入参或返回值  当控制器处理方法使用到 @RequestBody/ @ResponseBody 或HttpEntity<T>/ResponseEntity<T> 时, Spring 首先根据请求头或响应头的Accept 属性选择匹配的 HttpMessageConverter, 进而根据参数类型或泛型类型的过滤得到匹配的 HttpMessageConverter, 若找不到可用的 HttpMessageConverter 将报错
+- 使用 @RequestBody / @ResponseBody 对处理方法进行标注
 
-> ​		`@RequestBody 和 @ResponseBody 不需要成对出现`
+- 使用 HttpEntity<T> / ResponseEntity<T> 作为处理方法的入参或返回值
+
+  -  当控制器处理方法使用到 @RequestBody/ @ResponseBody 或HttpEntity<T>/ResponseEntity<T> 时, Spring 首先根据请求头或响应头的Accept 属性选择匹配的 HttpMessageConverter, 进而根据参数类型或泛型类型的过滤得到匹配的HttpMessageConverter, 若找不到可用的 HttpMessageConverter 将报错
+
+  - @RequestBody 和 @ResponseBody 不需要成对出现
+
+    ​	
+
+> @RequestBody注解用于读取http请求的内容(字符串)，通过springmvc提供的HttpMessageConverter接口将读到的内容（json数据）转换为java对象并绑定到Controller方法的参数上。
 >
-> ​		`@RequestBody注解用于读取http请求的内容(字符串)，通过springmvc提供的HttpMessageConverter接口将读到的内容（json数据）转换为java对象并绑定到Controller方法的参数上。`
->
-> ​       `​@ResponseBody注解用于将Controller的方法返回的对象，通过springmvc提供的HttpMessageConverter接口转换为指定格式的数据如：json,xml等，通过Response响应给客户端`
+> @ResponseBody注解用于将Controller的方法返回的对象，通过springmvc提供的HttpMessageConverter接口转换为指定格式的数据如：json,xml等，通过Response响应给客户端
 
 这里都要配置注解驱动`。<mvc:annotation-driven/>`
+
+​	
 
 ### springmvc文件上传：
 
@@ -780,9 +856,88 @@ public class HandlerInterceptor1 implements HandlerInterceptor {
 		
 ```
 
-### springMVC的异常处理：
+### SpringMVC的异常处理：
 
-​	Spring MVC 通过 HandlerExceptionResolver 处理程序的异常，包括 Handler 映射、数据绑定以及目标方法执行时发生的异常。SpringMVC 提供的 HandlerExceptionResolver 的实现类
+​	Spring MVC 通过 HandlerExceptionResolver 处理程序的异常，包括 Handler 映射、数据绑定以及目标方法执行时发生的异常。SpringMVC 提供的 HandlerExceptionResolver 的实现类.
+
+##### ExcepetionHandlerExceptionResolver
+
+- 主要处理 Handler 中用 **@ExceptionHandler** 注解定义的 方法。 
+- @ExceptionHandler 注解定义的方法优先级问题：例如发 生的是NullPointerException，但是声明的异常有 RuntimeException 和 Exception，此候会根据异常的最近 继承关系找到继承深度最浅的那个@ExceptionHandler 注解方法，即标记了 RuntimeException 的方法.
+- ExceptionHandlerMethodResolver 内部若找不 到@ExceptionHandler 注解的话，会找 @ControllerAdvice 中的**@ExceptionHandler** 注解方法.
+
+##### ResponseStatusExceptionResolver
+
+- 在异常及异常父类中找到 **@ResponseStatus** 注解，然 后使用这个注解的属性进行处理。
+
+- 定义一个 @ResponseStatus 注解修饰的异常类
+
+  ```java
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public class UnauthorizedException extends RuntimeException{}
+  ```
+
+- 若在处理器方法中抛出了上述异常： 若ExceptionHandlerExceptionResolver 不解析述异常。由于 触发的异常 UnauthorizedException 带有@ResponseStatus 注解。因此会被**ResponseStatusExceptionResolver** 解析 到。最后响应HttpStatus.UNAUTHORIZED 代码给客户 端。HttpStatus.UNAUTHORIZED 代表响应码401，无权限。 关于其他的响应码请参考 HttpStatus 枚举类型源码
+
+##### DefaultHandlerExceptionResolver
+
+对一些特殊的异常进行处理，比 如NoSuchRequestHandlingMethodException、HttpReques 
+
+tMethodNotSupportedException、HttpMediaTypeNotSuppo rtedException、HttpMediaTypeNotAcceptableException 等。
+
+##### SimpleMappingExceptionResolver
+
+如果希望对所有异常进行统一处理，可以使用 SimpleMappingExceptionResolver，它将异常类名映射为 
+
+视图名，即发生异常时使用对应的视图报告异常.
+
+```xml
+<!--  配置使用 SimpleMappingExceptionResolver 来映射异常  -->
+<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionAttribute" value="ex"/>
+        <property name="exceptionMappings">
+        <props>
+        <prop key="java.lang.ArrayIndexOutOfBoundsException">error</prop>
+        </props>
+    </property>
+</bean>
+```
+
+使用java进行对其操作
+
+```java
+// 当i位10时就会触发上面的异常	
+@RequestMapping("/testSimpleMappingExceptionResolver")
+	public String testSimpleMappingExceptionResolver(@RequestParam("i") int i){
+		String [] vals = new String[10];
+		System.out.println(vals[i]);
+		return "success";
+	}
+```
+
+
+
+##### 统一异常处理使用：
+
+```java
+/**
+ * user:kay三石
+ * time: 8:44
+ * desc: 公共的异常处理类
+ **/
+@ControllerAdvice
+public class BaseExceptionHandler {
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public BaseResult error(Exception e) {
+        e.printStackTrace();
+        System.out.println("调用了公共异常处理类");
+        return BaseResult.notOk(e.getMessage());
+    }
+}
+```
+
+
 
 ### SpringMVC对比Struts2：
 

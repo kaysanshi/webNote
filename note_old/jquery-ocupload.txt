@@ -1,4 +1,4 @@
-Ò»¼üÉÏ´«£º
+ä¸€é”®ä¸Šä¼ ï¼š
 jquery ocupload:
 		    $(function () {  
 				$(".uploadfile").upload({  
@@ -45,7 +45,7 @@ jquery ocupload:
 				    }  
 				});  
 			    });  
-½«±íµ¥ĞòÁĞ»¯Îªjson¶ÔÏó£º
+å°†è¡¨å•åºåˆ—åŒ–ä¸ºjsonå¯¹è±¡ï¼š
 				$.fn.serializeJson=function(){  
 					    var serializeObj={};  
 					    var array=this.serializeArray();

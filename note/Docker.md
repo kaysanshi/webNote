@@ -715,7 +715,7 @@ services:
 
 运行 compose 项目： docker-compose up
 
-### Docker compose的命令的使用：
+### Docker compose命令：
 
 	基本的命令的格式的：docker-compose [-f=<arg>...] [options] [COMMAND] [ARGS...]
 		命令选项：		
@@ -764,6 +764,16 @@ services:
 `停止：docker-compose stop`
 
 `停止并移除容器：docker-compose down`
+
+**开机自启：**
+
+```
+vim /etc/rc.d/rc.local 加入下面的代码
+
+/usr/local/bin/docker-compose -f /www/docker/trace_fecshop/docker-compose.yml up -d
+```
+
+
 
 ### Docker compose实战Nginx
 

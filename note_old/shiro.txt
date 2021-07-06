@@ -1,57 +1,57 @@
 shiro:
-	Apache ShiroÊÇÒ»¸öÇ¿´óÇÒÒ×ÓÃµÄJava°²È«¿ò¼Ü,Ö´ĞĞÉí·İÑéÖ¤¡¢ÊÚÈ¨¡¢ÃÜÂëºÍ»á»°¹ÜÀí¡£
-	Ê¹ÓÃShiroµÄÒ×ÓÚÀí½âµÄAPI,Äú¿ÉÒÔ¿ìËÙ¡¢ÇáËÉµØ»ñµÃÈÎºÎÓ¦ÓÃ³ÌĞò,´Ó×îĞ¡µÄÒÆ¶¯Ó¦ÓÃ³ÌĞòµ½×î´óµÄÍøÂçºÍÆóÒµÓ¦ÓÃ³ÌĞò¡£
-	µ¥µãµÇÂ¼£ºÈç¹ûÁ½¸öÍøÕ¾ÉÏÍ¨ÓÃÒ»¸öÕËºÅÀ´µÇÂ¼£¬ÄÇÃ´¾Í»á°ÑÕâÈÏÖ¤²Ù×÷È¥±£´æµ½Ò»¸öÖĞÑë·şÎñÆ÷ÖĞÈ¥²Ù×÷£¬Õâ¸öÖĞÑë·şÎñÆ÷¾ÍÊÇÎªÁËÊµÏÖÈÏÖ¤È¨ÏŞ
-				Éè¼ÆµÄ£¬µ±Äã·ÃÎÊµ½Ò»¸öÍøÕ¾Ê±£¬Õâ¸öÍøÕ¾»ØÈ¥ÖĞÑë·şÎñÆ÷ÖĞÈ¥ºË¶ÔÊı¾İÊÇ·ñÕıÈ·Èç¹ûÕıÈ·¾Í»á·¢ËÍÒ»¸öcookie ÁîÅÆ¸ø¿Í»§¶Ë£¬¿Í»§¶Ë±£´æÁËcookie
-				È»ºóÔÙÈ¥·ÃÎÊÌìÃ¨ÍøÊ±£¬ÕâÊ±Äã¾ÍÓĞÁËcookieÌìÃ¨»áÓÃÕâ¸öcookieÈ¥¶Ô±ÈÖĞÑë·şÎñÆäÖĞµÄÈç¹ûÆ¥Åä¾Í¿ÉÒÔ½øĞĞµÇÂ¼£¬È»ºó¾ÍÊµÏÖÁËµ¥µãµÇÂ¼¡£
+	Apache Shiroæ˜¯ä¸€ä¸ªå¼ºå¤§ä¸”æ˜“ç”¨çš„Javaå®‰å…¨æ¡†æ¶,æ‰§è¡Œèº«ä»½éªŒè¯ã€æˆæƒã€å¯†ç å’Œä¼šè¯ç®¡ç†ã€‚
+	ä½¿ç”¨Shiroçš„æ˜“äºç†è§£çš„API,æ‚¨å¯ä»¥å¿«é€Ÿã€è½»æ¾åœ°è·å¾—ä»»ä½•åº”ç”¨ç¨‹åº,ä»æœ€å°çš„ç§»åŠ¨åº”ç”¨ç¨‹åºåˆ°æœ€å¤§çš„ç½‘ç»œå’Œä¼ä¸šåº”ç”¨ç¨‹åºã€‚
+	å•ç‚¹ç™»å½•ï¼šå¦‚æœä¸¤ä¸ªç½‘ç«™ä¸Šé€šç”¨ä¸€ä¸ªè´¦å·æ¥ç™»å½•ï¼Œé‚£ä¹ˆå°±ä¼šæŠŠè¿™è®¤è¯æ“ä½œå»ä¿å­˜åˆ°ä¸€ä¸ªä¸­å¤®æœåŠ¡å™¨ä¸­å»æ“ä½œï¼Œè¿™ä¸ªä¸­å¤®æœåŠ¡å™¨å°±æ˜¯ä¸ºäº†å®ç°è®¤è¯æƒé™
+				è®¾è®¡çš„ï¼Œå½“ä½ è®¿é—®åˆ°ä¸€ä¸ªç½‘ç«™æ—¶ï¼Œè¿™ä¸ªç½‘ç«™å›å»ä¸­å¤®æœåŠ¡å™¨ä¸­å»æ ¸å¯¹æ•°æ®æ˜¯å¦æ­£ç¡®å¦‚æœæ­£ç¡®å°±ä¼šå‘é€ä¸€ä¸ªcookie ä»¤ç‰Œç»™å®¢æˆ·ç«¯ï¼Œå®¢æˆ·ç«¯ä¿å­˜äº†cookie
+				ç„¶åå†å»è®¿é—®å¤©çŒ«ç½‘æ—¶ï¼Œè¿™æ—¶ä½ å°±æœ‰äº†cookieå¤©çŒ«ä¼šç”¨è¿™ä¸ªcookieå»å¯¹æ¯”ä¸­å¤®æœåŠ¡å…¶ä¸­çš„å¦‚æœåŒ¹é…å°±å¯ä»¥è¿›è¡Œç™»å½•ï¼Œç„¶åå°±å®ç°äº†å•ç‚¹ç™»å½•ã€‚
 
 
-	Èı¸öºËĞÄ×é¼ş£ºSubject, SecurityManager ºÍ Realms.
-			Subject£º¼´¡°µ±Ç°²Ù×÷ÓÃ»§¡±¡£µ«ÊÇ£¬ÔÚShiroÖĞ£¬SubjectÕâÒ»¸ÅÄî²¢²»½ö½öÖ¸ÈË£¬Ò²¿ÉÒÔÊÇµÚÈı·½½ø³Ì¡¢ºóÌ¨ÕÊ»§£¨Daemon Account£©»òÆäËûÀàËÆÊÂÎï¡£
-			Ëü½ö½öÒâÎ¶×Å¡°µ±Ç°¸úÈí¼ş½»»¥µÄ¶«Î÷¡±¡£µ«¿¼ÂÇµ½´ó¶àÊıÄ¿µÄºÍÓÃÍ¾£¬Äã¿ÉÒÔ°ÑËüÈÏÎªÊÇShiroµÄ¡°ÓÃ»§¡±¸ÅÄî¡£
-¡¡¡¡		Subject´ú±íÁËµ±Ç°ÓÃ»§µÄ°²È«²Ù×÷£¬SecurityManagerÔò¹ÜÀíËùÓĞÓÃ»§µÄ°²È«²Ù×÷¡£
-¡¡¡¡		SecurityManager£ºËüÊÇShiro¿ò¼ÜµÄºËĞÄ£¬µäĞÍµÄFacadeÄ£Ê½£¬ShiroÍ¨¹ıSecurityManagerÀ´¹ÜÀíÄÚ²¿×é¼şÊµÀı£¬²¢Í¨¹ıËüÀ´Ìá¹©°²È«¹ÜÀíµÄ¸÷ÖÖ·şÎñ¡£
-¡¡¡¡		Realm£º Realm³äµ±ÁËShiroÓëÓ¦ÓÃ°²È«Êı¾İ¼äµÄ¡°ÇÅÁº¡±»òÕß¡°Á¬½ÓÆ÷¡±¡£Ò²¾ÍÊÇËµ£¬µ±¶ÔÓÃ»§Ö´ĞĞÈÏÖ¤£¨µÇÂ¼£©ºÍÊÚÈ¨£¨·ÃÎÊ¿ØÖÆ£©ÑéÖ¤Ê±£¬Shiro»á´ÓÓ¦ÓÃÅäÖÃµÄRealmÖĞ²éÕÒÓÃ»§¼°ÆäÈ¨ÏŞĞÅÏ¢¡£
-¡¡¡¡		´ÓÕâ¸öÒâÒåÉÏ½²£¬RealmÊµÖÊÉÏÊÇÒ»¸ö°²È«Ïà¹ØµÄDAO£ºËü·â×°ÁËÊı¾İÔ´µÄÁ¬½ÓÏ¸½Ú£¬²¢ÔÚĞèÒªÊ±½«Ïà¹ØÊı¾İÌá¹©¸øShiro¡£
-					µ±ÅäÖÃShiroÊ±£¬Äã±ØĞëÖÁÉÙÖ¸¶¨Ò»¸öRealm£¬ÓÃÓÚÈÏÖ¤ºÍ£¨»ò£©ÊÚÈ¨¡£ÅäÖÃ¶à¸öRealmÊÇ¿ÉÒÔµÄ£¬µ«ÊÇÖÁÉÙĞèÒªÒ»¸ö¡£
-¡¡¡¡		ShiroÄÚÖÃÁË¿ÉÒÔÁ¬½Ó´óÁ¿°²È«Êı¾İÔ´£¨ÓÖÃûÄ¿Â¼£©µÄRealm£¬ÈçLDAP¡¢¹ØÏµÊı¾İ¿â£¨JDBC£©¡¢ÀàËÆINIµÄÎÄ±¾ÅäÖÃ×ÊÔ´ÒÔ¼°ÊôĞÔÎÄ¼şµÈ¡£
-					Èç¹ûÈ±Ê¡µÄRealm²»ÄÜÂú×ãĞèÇó£¬Äã»¹¿ÉÒÔ²åÈë´ú±í×Ô¶¨ÒåÊı¾İÔ´µÄ×Ô¼ºµÄRealmÊµÏÖ¡£
+	ä¸‰ä¸ªæ ¸å¿ƒç»„ä»¶ï¼šSubject, SecurityManager å’Œ Realms.
+			Subjectï¼šå³â€œå½“å‰æ“ä½œç”¨æˆ·â€ã€‚ä½†æ˜¯ï¼Œåœ¨Shiroä¸­ï¼ŒSubjectè¿™ä¸€æ¦‚å¿µå¹¶ä¸ä»…ä»…æŒ‡äººï¼Œä¹Ÿå¯ä»¥æ˜¯ç¬¬ä¸‰æ–¹è¿›ç¨‹ã€åå°å¸æˆ·ï¼ˆDaemon Accountï¼‰æˆ–å…¶ä»–ç±»ä¼¼äº‹ç‰©ã€‚
+			å®ƒä»…ä»…æ„å‘³ç€â€œå½“å‰è·Ÿè½¯ä»¶äº¤äº’çš„ä¸œè¥¿â€ã€‚ä½†è€ƒè™‘åˆ°å¤§å¤šæ•°ç›®çš„å’Œç”¨é€”ï¼Œä½ å¯ä»¥æŠŠå®ƒè®¤ä¸ºæ˜¯Shiroçš„â€œç”¨æˆ·â€æ¦‚å¿µã€‚
+ã€€ã€€		Subjectä»£è¡¨äº†å½“å‰ç”¨æˆ·çš„å®‰å…¨æ“ä½œï¼ŒSecurityManageråˆ™ç®¡ç†æ‰€æœ‰ç”¨æˆ·çš„å®‰å…¨æ“ä½œã€‚
+ã€€ã€€		SecurityManagerï¼šå®ƒæ˜¯Shiroæ¡†æ¶çš„æ ¸å¿ƒï¼Œå…¸å‹çš„Facadeæ¨¡å¼ï¼ŒShiroé€šè¿‡SecurityManageræ¥ç®¡ç†å†…éƒ¨ç»„ä»¶å®ä¾‹ï¼Œå¹¶é€šè¿‡å®ƒæ¥æä¾›å®‰å…¨ç®¡ç†çš„å„ç§æœåŠ¡ã€‚
+ã€€ã€€		Realmï¼š Realmå……å½“äº†Shiroä¸åº”ç”¨å®‰å…¨æ•°æ®é—´çš„â€œæ¡¥æ¢â€æˆ–è€…â€œè¿æ¥å™¨â€ã€‚ä¹Ÿå°±æ˜¯è¯´ï¼Œå½“å¯¹ç”¨æˆ·æ‰§è¡Œè®¤è¯ï¼ˆç™»å½•ï¼‰å’Œæˆæƒï¼ˆè®¿é—®æ§åˆ¶ï¼‰éªŒè¯æ—¶ï¼ŒShiroä¼šä»åº”ç”¨é…ç½®çš„Realmä¸­æŸ¥æ‰¾ç”¨æˆ·åŠå…¶æƒé™ä¿¡æ¯ã€‚
+ã€€ã€€		ä»è¿™ä¸ªæ„ä¹‰ä¸Šè®²ï¼ŒRealmå®è´¨ä¸Šæ˜¯ä¸€ä¸ªå®‰å…¨ç›¸å…³çš„DAOï¼šå®ƒå°è£…äº†æ•°æ®æºçš„è¿æ¥ç»†èŠ‚ï¼Œå¹¶åœ¨éœ€è¦æ—¶å°†ç›¸å…³æ•°æ®æä¾›ç»™Shiroã€‚
+					å½“é…ç½®Shiroæ—¶ï¼Œä½ å¿…é¡»è‡³å°‘æŒ‡å®šä¸€ä¸ªRealmï¼Œç”¨äºè®¤è¯å’Œï¼ˆæˆ–ï¼‰æˆæƒã€‚é…ç½®å¤šä¸ªRealmæ˜¯å¯ä»¥çš„ï¼Œä½†æ˜¯è‡³å°‘éœ€è¦ä¸€ä¸ªã€‚
+ã€€ã€€		Shiroå†…ç½®äº†å¯ä»¥è¿æ¥å¤§é‡å®‰å…¨æ•°æ®æºï¼ˆåˆåç›®å½•ï¼‰çš„Realmï¼Œå¦‚LDAPã€å…³ç³»æ•°æ®åº“ï¼ˆJDBCï¼‰ã€ç±»ä¼¼INIçš„æ–‡æœ¬é…ç½®èµ„æºä»¥åŠå±æ€§æ–‡ä»¶ç­‰ã€‚
+					å¦‚æœç¼ºçœçš„Realmä¸èƒ½æ»¡è¶³éœ€æ±‚ï¼Œä½ è¿˜å¯ä»¥æ’å…¥ä»£è¡¨è‡ªå®šä¹‰æ•°æ®æºçš„è‡ªå·±çš„Realmå®ç°ã€‚
 		
-	shiroÈÏÖ¤Á÷³Ì£º
-			allipcation --->subject(µ±Ç°ÓÃ»§¶ÔÏó)--------->SecurityManager(°²È«¹ÜÀíÆ÷)--->Realm(ÆäÊµ¾ÍÊÇÒ»¸ödao²ã£¬¿ÉÒÔÖ±½Ó±àĞ´£¬Ò²¿ÉÒÔÓÃ¿ò¼ÜÌá¹©µÄĞÎÊ½)
-	SecutiyManager:°üÀ¨Authenticator:ÈÏÖ¤Æ÷£¬¸ºÔğÖ÷ÌåÈÏÖ¤µÄ£¬ÕâÊÇÒ»¸öÀ©Õ¹µã£¬Èç¹ûÓÃ»§¾õµÃShiroÄ¬ÈÏµÄ²»ºÃ£¬
-									¿ÉÒÔ×Ô¶¨ÒåÊµÏÖ£»ÆäĞèÒªÈÏÖ¤²ßÂÔ£¨Authentication Strategy£©£¬¼´Ê²Ã´Çé¿öÏÂËãÓÃ»§ÈÏÖ¤Í¨¹ıÁË£»
-						Authorizer:ÊÚÈ¨Æ÷£¬»òÕß·ÃÎÊ¿ØÖÆÆ÷£¬ÓÃÀ´¾ö¶¨Ö÷ÌåÊÇ·ñÓĞÈ¨ÏŞ½øĞĞÏàÓ¦µÄ²Ù×÷£»¼´¿ØÖÆ×ÅÓÃ»§ÄÜ·ÃÎÊÓ¦ÓÃÖĞµÄÄÄĞ©¹¦ÄÜ
-						sessionManager:»á»°¹ÜÀí£¬»á»°¹ÜÀí£¬¼´ÓÃ»§µÇÂ¼ºó¾ÍÊÇÒ»´Î»á»°£¬
-										ÔÚÃ»ÓĞÍË³öÖ®Ç°£¬ËüµÄËùÓĞĞÅÏ¢¶¼ÔÚ»á»°ÖĞ£»»á»°¿ÉÒÔÊÇÆÕÍ¨JavaSE»·¾³µÄ£¬Ò²¿ÉÒÔÊÇÈçWeb»·¾³µÄ
-						catche manager :»º´æ¿ØÖÆÆ÷£¬À´¹ÜÀíÈçÓÃ»§¡¢½ÇÉ«¡¢È¨ÏŞµÈµÄ»º´æµÄ£»ÒòÎªÕâĞ©Êı¾İ»ù±¾ÉÏºÜÉÙÈ¥¸Ä±ä£¬·Åµ½»º´æÖĞºó¿ÉÒÔÌá¸ß·ÃÎÊµÄĞÔÄÜ
-						sessionDao:±ÈÈçÎÒÃÇÏë°ÑSession±£´æµ½Êı¾İ¿â£¬ÄÇÃ´¿ÉÒÔÊµÏÖ×Ô¼ºµÄSessionDAO£¬Í¨¹ıÈçJDBCĞ´µ½Êı¾İ¿â£»±ÈÈçÏë°ÑSession·Åµ½MemcachedÖĞ£¬
-									¿ÉÒÔÊµÏÖ×Ô¼ºµÄMemcached SessionDAO£»ÁíÍâSessionDAOÖĞ¿ÉÒÔÊ¹ÓÃCache½øĞĞ»º´æ£¬ÒÔÌá¸ßĞÔÄÜ£»
-						Pluggable Realms(1...more)£º¾ÍÊÇÌá¹©Á¬½Ó¸÷ÖÖÊı¾İ¿âµÄ²Ù×÷
+	shiroè®¤è¯æµç¨‹ï¼š
+			allipcation --->subject(å½“å‰ç”¨æˆ·å¯¹è±¡)--------->SecurityManager(å®‰å…¨ç®¡ç†å™¨)--->Realm(å…¶å®å°±æ˜¯ä¸€ä¸ªdaoå±‚ï¼Œå¯ä»¥ç›´æ¥ç¼–å†™ï¼Œä¹Ÿå¯ä»¥ç”¨æ¡†æ¶æä¾›çš„å½¢å¼)
+	SecutiyManager:åŒ…æ‹¬Authenticator:è®¤è¯å™¨ï¼Œè´Ÿè´£ä¸»ä½“è®¤è¯çš„ï¼Œè¿™æ˜¯ä¸€ä¸ªæ‰©å±•ç‚¹ï¼Œå¦‚æœç”¨æˆ·è§‰å¾—Shiroé»˜è®¤çš„ä¸å¥½ï¼Œ
+									å¯ä»¥è‡ªå®šä¹‰å®ç°ï¼›å…¶éœ€è¦è®¤è¯ç­–ç•¥ï¼ˆAuthentication Strategyï¼‰ï¼Œå³ä»€ä¹ˆæƒ…å†µä¸‹ç®—ç”¨æˆ·è®¤è¯é€šè¿‡äº†ï¼›
+						Authorizer:æˆæƒå™¨ï¼Œæˆ–è€…è®¿é—®æ§åˆ¶å™¨ï¼Œç”¨æ¥å†³å®šä¸»ä½“æ˜¯å¦æœ‰æƒé™è¿›è¡Œç›¸åº”çš„æ“ä½œï¼›å³æ§åˆ¶ç€ç”¨æˆ·èƒ½è®¿é—®åº”ç”¨ä¸­çš„å“ªäº›åŠŸèƒ½
+						sessionManager:ä¼šè¯ç®¡ç†ï¼Œä¼šè¯ç®¡ç†ï¼Œå³ç”¨æˆ·ç™»å½•åå°±æ˜¯ä¸€æ¬¡ä¼šè¯ï¼Œ
+										åœ¨æ²¡æœ‰é€€å‡ºä¹‹å‰ï¼Œå®ƒçš„æ‰€æœ‰ä¿¡æ¯éƒ½åœ¨ä¼šè¯ä¸­ï¼›ä¼šè¯å¯ä»¥æ˜¯æ™®é€šJavaSEç¯å¢ƒçš„ï¼Œä¹Ÿå¯ä»¥æ˜¯å¦‚Webç¯å¢ƒçš„
+						catche manager :ç¼“å­˜æ§åˆ¶å™¨ï¼Œæ¥ç®¡ç†å¦‚ç”¨æˆ·ã€è§’è‰²ã€æƒé™ç­‰çš„ç¼“å­˜çš„ï¼›å› ä¸ºè¿™äº›æ•°æ®åŸºæœ¬ä¸Šå¾ˆå°‘å»æ”¹å˜ï¼Œæ”¾åˆ°ç¼“å­˜ä¸­åå¯ä»¥æé«˜è®¿é—®çš„æ€§èƒ½
+						sessionDao:æ¯”å¦‚æˆ‘ä»¬æƒ³æŠŠSessionä¿å­˜åˆ°æ•°æ®åº“ï¼Œé‚£ä¹ˆå¯ä»¥å®ç°è‡ªå·±çš„SessionDAOï¼Œé€šè¿‡å¦‚JDBCå†™åˆ°æ•°æ®åº“ï¼›æ¯”å¦‚æƒ³æŠŠSessionæ”¾åˆ°Memcachedä¸­ï¼Œ
+									å¯ä»¥å®ç°è‡ªå·±çš„Memcached SessionDAOï¼›å¦å¤–SessionDAOä¸­å¯ä»¥ä½¿ç”¨Cacheè¿›è¡Œç¼“å­˜ï¼Œä»¥æé«˜æ€§èƒ½ï¼›
+						Pluggable Realms(1...more)ï¼šå°±æ˜¯æä¾›è¿æ¥å„ç§æ•°æ®åº“çš„æ“ä½œ
 
-	×Ô¶¨ÒåRealm£º
+	è‡ªå®šä¹‰Realmï¼š
 	public class ShiroRealm extends AuthorizingRealm{}
-				1¡¢ShiroRealm¸¸ÀàAuthorizingRealm½«»ñÈ¡SubjectÏà¹ØĞÅÏ¢·Ö³ÉÁ½²½£º»ñÈ¡Éí·İÑéÖ¤ĞÅÏ¢£¨doGetAuthenticationInfo£©¼°ÊÚÈ¨ĞÅÏ¢£¨doGetAuthorizationInfo£©£»
-				2¡¢doGetAuthenticationInfo»ñÈ¡Éí·İÑéÖ¤Ïà¹ØĞÅÏ¢£ºÊ×ÏÈ¸ù¾İ´«ÈëµÄÓÃ»§Ãû»ñÈ¡UserĞÅÏ¢£»È»ºóÈç¹ûuserÎª¿Õ£¬ÄÇÃ´Å×³öÃ»ÕÒµ½ÕÊºÅÒì³£UnknownAccountException£»
-						Èç¹ûuserÕÒµ½µ«Ëø¶¨ÁËÅ×³öËø¶¨Òì³£LockedAccountException£»×îºóÉú³ÉAuthenticationInfoĞÅÏ¢£¬½»¸ø¼ä½Ó¸¸ÀàAuthenticatingRealmÊ¹ÓÃCredentialsMatcher½øĞĞÅĞ¶ÏÃÜÂëÊÇ·ñÆ¥Åä£¬Èç¹û²»Æ¥Åä½«Å×³öÃÜÂë´íÎóÒì³£IncorrectCredentialsException£»
-						ÁíÍâÈç¹ûÃÜÂëÖØÊÔ´Ë´¦Ì«¶à½«Å×³ö³¬³öÖØÊÔ´ÎÊıÒì³£ExcessiveAttemptsException£»ÔÚ×é×°SimpleAuthenticationInfoĞÅÏ¢Ê±£¬ĞèÒª´«Èë£º
-						Éí·İĞÅÏ¢£¨ÓÃ»§Ãû£©¡¢Æ¾¾İ£¨ÃÜÎÄÃÜÂë£©¡¢ÑÎ£¨username+salt£©£¬CredentialsMatcherÊ¹ÓÃÑÎ¼ÓÃÜ´«ÈëµÄÃ÷ÎÄÃÜÂëºÍ´Ë´¦µÄÃÜÎÄÃÜÂë½øĞĞÆ¥Åä¡£
-				3¡¢doGetAuthorizationInfo»ñÈ¡ÊÚÈ¨ĞÅÏ¢£ºPrincipalCollectionÊÇÒ»¸öÉí·İ¼¯ºÏ£¬ÒòÎªÎÒÃÇÏÖÔÚ¾ÍÒ»¸öRealm£¬ËùÒÔÖ±½Óµ÷ÓÃgetPrimaryPrincipalµÃµ½Ö®Ç°´«ÈëµÄÓÃ»§Ãû¼´¿É£»È»ºó¸ù¾İÓÃ»§Ãûµ÷ÓÃUserService½Ó¿Ú»ñÈ¡½ÇÉ«¼°È¨ÏŞĞÅÏ¢¡£
-	¹ıÂËÆ÷¼ò³Æ¼°¶ÔÓ¦µÄjavaÀà£º
-		anon£ºorg.apache.shiro.web.filter.authc.AnonymousFilter
-		authc£ºorg.apache.shiro.web.filter.authc.FormAuthenticationFilter
-		authcBasic£ºorg.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter
-		perms£ºorg.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter
-		port£ºorg.apache.shiro.web.filter.authz.PortFilter
-		rest£ºorg.apache.shiro.web.filter.authz.HttpMethodPermissionFilter
-		roles£ºorg.apache.shiro.web.filter.authz.RolesAuthorizationFilter
-		ssl£ºorg.apache.shiro.web.filter.authz.SslFilter
-		user£ºorg.apache.shiro.web.filter.authc.UserFilter
+				1ã€ShiroRealmçˆ¶ç±»AuthorizingRealmå°†è·å–Subjectç›¸å…³ä¿¡æ¯åˆ†æˆä¸¤æ­¥ï¼šè·å–èº«ä»½éªŒè¯ä¿¡æ¯ï¼ˆdoGetAuthenticationInfoï¼‰åŠæˆæƒä¿¡æ¯ï¼ˆdoGetAuthorizationInfoï¼‰ï¼›
+				2ã€doGetAuthenticationInfoè·å–èº«ä»½éªŒè¯ç›¸å…³ä¿¡æ¯ï¼šé¦–å…ˆæ ¹æ®ä¼ å…¥çš„ç”¨æˆ·åè·å–Userä¿¡æ¯ï¼›ç„¶åå¦‚æœuserä¸ºç©ºï¼Œé‚£ä¹ˆæŠ›å‡ºæ²¡æ‰¾åˆ°å¸å·å¼‚å¸¸UnknownAccountExceptionï¼›
+						å¦‚æœuseræ‰¾åˆ°ä½†é”å®šäº†æŠ›å‡ºé”å®šå¼‚å¸¸LockedAccountExceptionï¼›æœ€åç”ŸæˆAuthenticationInfoä¿¡æ¯ï¼Œäº¤ç»™é—´æ¥çˆ¶ç±»AuthenticatingRealmä½¿ç”¨CredentialsMatcherè¿›è¡Œåˆ¤æ–­å¯†ç æ˜¯å¦åŒ¹é…ï¼Œå¦‚æœä¸åŒ¹é…å°†æŠ›å‡ºå¯†ç é”™è¯¯å¼‚å¸¸IncorrectCredentialsExceptionï¼›
+						å¦å¤–å¦‚æœå¯†ç é‡è¯•æ­¤å¤„å¤ªå¤šå°†æŠ›å‡ºè¶…å‡ºé‡è¯•æ¬¡æ•°å¼‚å¸¸ExcessiveAttemptsExceptionï¼›åœ¨ç»„è£…SimpleAuthenticationInfoä¿¡æ¯æ—¶ï¼Œéœ€è¦ä¼ å…¥ï¼š
+						èº«ä»½ä¿¡æ¯ï¼ˆç”¨æˆ·åï¼‰ã€å‡­æ®ï¼ˆå¯†æ–‡å¯†ç ï¼‰ã€ç›ï¼ˆusername+saltï¼‰ï¼ŒCredentialsMatcherä½¿ç”¨ç›åŠ å¯†ä¼ å…¥çš„æ˜æ–‡å¯†ç å’Œæ­¤å¤„çš„å¯†æ–‡å¯†ç è¿›è¡ŒåŒ¹é…ã€‚
+				3ã€doGetAuthorizationInfoè·å–æˆæƒä¿¡æ¯ï¼šPrincipalCollectionæ˜¯ä¸€ä¸ªèº«ä»½é›†åˆï¼Œå› ä¸ºæˆ‘ä»¬ç°åœ¨å°±ä¸€ä¸ªRealmï¼Œæ‰€ä»¥ç›´æ¥è°ƒç”¨getPrimaryPrincipalå¾—åˆ°ä¹‹å‰ä¼ å…¥çš„ç”¨æˆ·åå³å¯ï¼›ç„¶åæ ¹æ®ç”¨æˆ·åè°ƒç”¨UserServiceæ¥å£è·å–è§’è‰²åŠæƒé™ä¿¡æ¯ã€‚
+	è¿‡æ»¤å™¨ç®€ç§°åŠå¯¹åº”çš„javaç±»ï¼š
+		anonï¼šorg.apache.shiro.web.filter.authc.AnonymousFilter
+		authcï¼šorg.apache.shiro.web.filter.authc.FormAuthenticationFilter
+		authcBasicï¼šorg.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter
+		permsï¼šorg.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter
+		portï¼šorg.apache.shiro.web.filter.authz.PortFilter
+		restï¼šorg.apache.shiro.web.filter.authz.HttpMethodPermissionFilter
+		rolesï¼šorg.apache.shiro.web.filter.authz.RolesAuthorizationFilter
+		sslï¼šorg.apache.shiro.web.filter.authz.SslFilter
+		userï¼šorg.apache.shiro.web.filter.authc.UserFilter
 		logout:org.apache.shiro.web.filter.authc.LogoutFilter
-shiroÕûºÏspring£º
-		web.xmlÖĞ£º
-			 <!-- ÅäÖÃspring¿ò¼ÜÌá¹©µÄÕûºÏshiro¿ò¼ÜµÄ¹ıÂËÆ÷ 
-					ÕâÀïÃüÃûÒªºÍspringÖĞÅäÖÃµÄbean ÖĞÌá¹©µÄÏàÍ¬
+shiroæ•´åˆspringï¼š
+		web.xmlä¸­ï¼š
+			 <!-- é…ç½®springæ¡†æ¶æä¾›çš„æ•´åˆshiroæ¡†æ¶çš„è¿‡æ»¤å™¨ 
+					è¿™é‡Œå‘½åè¦å’Œspringä¸­é…ç½®çš„bean ä¸­æä¾›çš„ç›¸åŒ
 			  -->
 			  <filter>
 					<filter-name>shiroFilter</filter-name>
@@ -61,10 +61,10 @@ shiroÕûºÏspring£º
 						<filter-name>shiroFilter</filter-name>
 						<url-pattern>/*</url-pattern>
 					</filter-mapping>
-		applicationContext.xml£º
-					<!-- ×¢²árealm -->
+		applicationContext.xmlï¼š
+					<!-- æ³¨å†Œrealm -->
 						<bean id="bosRealm" class="com.leo.bos.realm.BOSRealm"></bean>
-						<!-- ×¢Èë°²È«¹ÜÀíÆ÷ -->
+						<!-- æ³¨å…¥å®‰å…¨ç®¡ç†å™¨ -->
 						<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 							<property name="realm" ref="bosRealm"></property>
 							<!--  <property name="cacheManager" ref="cacheManager"></property>-->
@@ -72,26 +72,26 @@ shiroÕûºÏspring£º
 						<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
 							<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"></property>
 						</bean>
-					<!-- ÒıÈëfilterÌá¹©µÄ¹¤³§È»ºó½»¸øspring -->
+					<!-- å¼•å…¥filteræä¾›çš„å·¥å‚ç„¶åäº¤ç»™spring -->
 					<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-						<!-- ×¢Èë°²È«¹ÜÀí¶ÔÏó -->
+						<!-- æ³¨å…¥å®‰å…¨ç®¡ç†å¯¹è±¡ -->
 						<!-- 
-						securityManager£ºÕâ¸öÊôĞÔÊÇ±ØĞëµÄ¡£
-						loginUrl £ºÃ»ÓĞµÇÂ¼µÄÓÃ»§ÇëÇóĞèÒªµÇÂ¼µÄÒ³ÃæÊ±×Ô¶¯Ìø×ªµ½µÇÂ¼Ò³Ãæ£¬²»ÊÇ±ØĞëµÄÊôĞÔ£¬
-						²»ÊäÈëµØÖ·µÄ»°»á×Ô¶¯Ñ°ÕÒÏîÄ¿webÏîÄ¿µÄ¸ùÄ¿Â¼ÏÂµÄ¡±/login.jsp¡±Ò³Ãæ¡£
-						successUrl £ºµÇÂ¼³É¹¦Ä¬ÈÏÌø×ªÒ³Ãæ£¬²»ÅäÖÃÔòÌø×ªÖÁ¡±/¡±¡£Èç¹ûµÇÂ½Ç°µã»÷µÄÒ»¸öĞèÒªµÇÂ¼µÄÒ³Ãæ£¬
-						ÔòÔÚµÇÂ¼×Ô¶¯Ìø×ªµ½ÄÇ¸öĞèÒªµÇÂ¼µÄÒ³Ãæ
-						unauthorizedUrl £ºÃ»ÓĞÈ¨ÏŞÄ¬ÈÏÌø×ªµÄÒ³Ãæ
+						securityManagerï¼šè¿™ä¸ªå±æ€§æ˜¯å¿…é¡»çš„ã€‚
+						loginUrl ï¼šæ²¡æœ‰ç™»å½•çš„ç”¨æˆ·è¯·æ±‚éœ€è¦ç™»å½•çš„é¡µé¢æ—¶è‡ªåŠ¨è·³è½¬åˆ°ç™»å½•é¡µé¢ï¼Œä¸æ˜¯å¿…é¡»çš„å±æ€§ï¼Œ
+						ä¸è¾“å…¥åœ°å€çš„è¯ä¼šè‡ªåŠ¨å¯»æ‰¾é¡¹ç›®webé¡¹ç›®çš„æ ¹ç›®å½•ä¸‹çš„â€/login.jspâ€é¡µé¢ã€‚
+						successUrl ï¼šç™»å½•æˆåŠŸé»˜è®¤è·³è½¬é¡µé¢ï¼Œä¸é…ç½®åˆ™è·³è½¬è‡³â€/â€ã€‚å¦‚æœç™»é™†å‰ç‚¹å‡»çš„ä¸€ä¸ªéœ€è¦ç™»å½•çš„é¡µé¢ï¼Œ
+						åˆ™åœ¨ç™»å½•è‡ªåŠ¨è·³è½¬åˆ°é‚£ä¸ªéœ€è¦ç™»å½•çš„é¡µé¢
+						unauthorizedUrl ï¼šæ²¡æœ‰æƒé™é»˜è®¤è·³è½¬çš„é¡µé¢
 						 -->
 						<property name="securityManager" ref="securityManager"></property>
 						<property name="loginUrl" value="/login.jsp"></property>
 						<property name="successUrl" value="/index.jsp"></property>
 						<property name="unauthorizedUrl" value="unauthrized.jsp"></property>
-						<!-- ×¢ÈëurlÀ¹½Ø¹æÔò 
-							/css/**:css/.../...=anon¾ÍÊÇÄäÃû¿ÉÒÔ·ÃÎÊ
-							=perms["staff"]£º¼ì²éÊÇ·ñÓĞÕâ¸öÈ¨ÏŞ£¬
-							/admins/user/**=authc±íÊ¾ĞèÒªÈÏÖ¤(µÇÂ¼)²ÅÄÜÊ¹ÓÃ£¬Ã»ÓĞ²ÎÊı£ºµ«ÊÇÏÖÔÚ
-							ÓÃshiroÀ´ÅĞ¶ÏÊ±strutsÖĞµÄÅäÖÃ¾Í²»ĞĞÁË
+						<!-- æ³¨å…¥urlæ‹¦æˆªè§„åˆ™ 
+							/css/**:css/.../...=anonå°±æ˜¯åŒ¿åå¯ä»¥è®¿é—®
+							=perms["staff"]ï¼šæ£€æŸ¥æ˜¯å¦æœ‰è¿™ä¸ªæƒé™ï¼Œ
+							/admins/user/**=authcè¡¨ç¤ºéœ€è¦è®¤è¯(ç™»å½•)æ‰èƒ½ä½¿ç”¨ï¼Œæ²¡æœ‰å‚æ•°ï¼šä½†æ˜¯ç°åœ¨
+							ç”¨shiroæ¥åˆ¤æ–­æ—¶strutsä¸­çš„é…ç½®å°±ä¸è¡Œäº†
 						-->
 						<property name="filterChainDefinitions">
 							<value>
@@ -106,8 +106,8 @@ shiroÕûºÏspring£º
 							</value>
 						</property>
 					</bean>	
-		×Ô¶¨ÒåRealm£º
-			Ö÷ÒªÌá¹©ÁËÊÚÈ¨ºÍÈÏÖ¤Á½¸ö·½·¨:
+		è‡ªå®šä¹‰Realmï¼š
+			ä¸»è¦æä¾›äº†æˆæƒå’Œè®¤è¯ä¸¤ä¸ªæ–¹æ³•:
 						/**
 						 * 
 						 * @author leoi555
@@ -117,61 +117,61 @@ shiroÕûºÏspring£º
 							
 							@Autowired
 							private IUserDao userDao;
-							//ÊÚÈ¨·½·¨
+							//æˆæƒæ–¹æ³•
 							@Override
 							protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0) {
 								// TODO Auto-generated method stub
 								return null;
 							}
-							//ÈÏÖ¤·½·¨
+							//è®¤è¯æ–¹æ³•
 							@Override
 							protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken arg0) throws AuthenticationException {
 								// TODO Auto-generated method stub
-								System.out.println("·½·¨ÈÏÖ¤ÖĞ¡£¡£¡£¡£");
+								System.out.println("æ–¹æ³•è®¤è¯ä¸­ã€‚ã€‚ã€‚ã€‚");
 								UsernamePasswordToken passwordToken=(UsernamePasswordToken) arg0;
-								//»ñÈ¡Ò³ÃæÊäÈëµÄÓÃ»§Ãû
+								//è·å–é¡µé¢è¾“å…¥çš„ç”¨æˆ·å
 								String username=passwordToken.getUsername();
-								//¸ù¾İÓÃ»§Ãû²éÑ¯Êı¾İ¿âÖĞµÄÃÜÂë
+								//æ ¹æ®ç”¨æˆ·åæŸ¥è¯¢æ•°æ®åº“ä¸­çš„å¯†ç 
 								User user=userDao.findUserByUsername(username);
 								if (user==null) {
 									return null;
 								}
-								//¿ò¼Ü¸ºÕß±È¶ÔÊı¾İ¿âÖĞµÄÃÜÂëºÍÒ³ÃæÃÜÂëÊÇ·ñÊäÈëµÄÒ»ÖÂ
-								//¼òµ¥ÈÏÖ¤µÄ¶ÔÏó
+								//æ¡†æ¶è´Ÿè€…æ¯”å¯¹æ•°æ®åº“ä¸­çš„å¯†ç å’Œé¡µé¢å¯†ç æ˜¯å¦è¾“å…¥çš„ä¸€è‡´
+								//ç®€å•è®¤è¯çš„å¯¹è±¡
 								AuthenticationInfo info=new SimpleAuthenticationInfo(user, user.getPassword(), this.getName());
 								
 								return info;
 							}
 
 						}
-È¨ÏŞ¿ØÖÆ£º
-		1.Ê¹ÓÃshiro·½·¨×¢½â·½Ê½È¨ÏŞ¿ØÖÆ·½Ê½£º
-			1.ÔÚspringÅäÖÃÎÄ¼şÖĞ¿ªÆô×¢½âÖ§³Ö£º
+æƒé™æ§åˆ¶ï¼š
+		1.ä½¿ç”¨shiroæ–¹æ³•æ³¨è§£æ–¹å¼æƒé™æ§åˆ¶æ–¹å¼ï¼š
+			1.åœ¨springé…ç½®æ–‡ä»¶ä¸­å¼€å¯æ³¨è§£æ”¯æŒï¼š
 				<aop:config proxy-target-class="true"></aop:config>
 				<bean class="
 				org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
 				    <property name="securityManager" ref="securityManager"/>
 				</bean>
-				ÔÚapplication.xmlÅäÖÃµÄÊ±ºò£º
+				åœ¨application.xmlé…ç½®çš„æ—¶å€™ï¼š
 									<bean id="filtershior" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-						<!-- ×¢Èë°²È«¹ÜÀí¶ÔÏó -->
+						<!-- æ³¨å…¥å®‰å…¨ç®¡ç†å¯¹è±¡ -->
 						<!-- 
-						securityManager£ºÕâ¸öÊôĞÔÊÇ±ØĞëµÄ¡£
-						loginUrl £ºÃ»ÓĞµÇÂ¼µÄÓÃ»§ÇëÇóĞèÒªµÇÂ¼µÄÒ³ÃæÊ±×Ô¶¯Ìø×ªµ½µÇÂ¼Ò³Ãæ£¬²»ÊÇ±ØĞëµÄÊôĞÔ£¬
-						²»ÊäÈëµØÖ·µÄ»°»á×Ô¶¯Ñ°ÕÒÏîÄ¿webÏîÄ¿µÄ¸ùÄ¿Â¼ÏÂµÄ¡±/login.jsp¡±Ò³Ãæ¡£
-						successUrl £ºµÇÂ¼³É¹¦Ä¬ÈÏÌø×ªÒ³Ãæ£¬²»ÅäÖÃÔòÌø×ªÖÁ¡±/¡±¡£Èç¹ûµÇÂ½Ç°µã»÷µÄÒ»¸öĞèÒªµÇÂ¼µÄÒ³Ãæ£¬
-						ÔòÔÚµÇÂ¼×Ô¶¯Ìø×ªµ½ÄÇ¸öĞèÒªµÇÂ¼µÄÒ³Ãæ
-						unauthorizedUrl £ºÃ»ÓĞÈ¨ÏŞÄ¬ÈÏÌø×ªµÄÒ³Ãæ
+						securityManagerï¼šè¿™ä¸ªå±æ€§æ˜¯å¿…é¡»çš„ã€‚
+						loginUrl ï¼šæ²¡æœ‰ç™»å½•çš„ç”¨æˆ·è¯·æ±‚éœ€è¦ç™»å½•çš„é¡µé¢æ—¶è‡ªåŠ¨è·³è½¬åˆ°ç™»å½•é¡µé¢ï¼Œä¸æ˜¯å¿…é¡»çš„å±æ€§ï¼Œ
+						ä¸è¾“å…¥åœ°å€çš„è¯ä¼šè‡ªåŠ¨å¯»æ‰¾é¡¹ç›®webé¡¹ç›®çš„æ ¹ç›®å½•ä¸‹çš„â€/login.jspâ€é¡µé¢ã€‚
+						successUrl ï¼šç™»å½•æˆåŠŸé»˜è®¤è·³è½¬é¡µé¢ï¼Œä¸é…ç½®åˆ™è·³è½¬è‡³â€/â€ã€‚å¦‚æœç™»é™†å‰ç‚¹å‡»çš„ä¸€ä¸ªéœ€è¦ç™»å½•çš„é¡µé¢ï¼Œ
+						åˆ™åœ¨ç™»å½•è‡ªåŠ¨è·³è½¬åˆ°é‚£ä¸ªéœ€è¦ç™»å½•çš„é¡µé¢
+						unauthorizedUrl ï¼šæ²¡æœ‰æƒé™é»˜è®¤è·³è½¬çš„é¡µé¢
 						 -->
 						<property name="securityManager" ref="securityManager"></property>
 						<property name="loginUrl" value="/login.jsp"></property>
 						<property name="successUrl" value="/index.jsp"></property>
 						<property name="unauthorizedUrl" value="unauthrized.jsp"></property>
-						<!-- ×¢ÈëurlÀ¹½Ø¹æÔò 
-							/css/**:css/.../...=anon¾ÍÊÇÄäÃû¿ÉÒÔ·ÃÎÊ
-							=perms["staff"]£º¼ì²éÊÇ·ñÓĞÕâ¸öÈ¨ÏŞ£¬
-							/admins/user/**=authc±íÊ¾ĞèÒªÈÏÖ¤(µÇÂ¼)²ÅÄÜÊ¹ÓÃ£¬Ã»ÓĞ²ÎÊı£ºµ«ÊÇÏÖÔÚ
-							ÓÃshiroÀ´ÅĞ¶ÏÊ±strutsÖĞµÄÅäÖÃ¾Í²»ĞĞÁË
+						<!-- æ³¨å…¥urlæ‹¦æˆªè§„åˆ™ 
+							/css/**:css/.../...=anonå°±æ˜¯åŒ¿åå¯ä»¥è®¿é—®
+							=perms["staff"]ï¼šæ£€æŸ¥æ˜¯å¦æœ‰è¿™ä¸ªæƒé™ï¼Œ
+							/admins/user/**=authcè¡¨ç¤ºéœ€è¦è®¤è¯(ç™»å½•)æ‰èƒ½ä½¿ç”¨ï¼Œæ²¡æœ‰å‚æ•°ï¼šä½†æ˜¯ç°åœ¨
+							ç”¨shiroæ¥åˆ¤æ–­æ—¶strutsä¸­çš„é…ç½®å°±ä¸è¡Œäº†
 						-->
 						<property name="filterChainDefinitions">
 							<value>
@@ -187,62 +187,62 @@ shiroÕûºÏspring£º
 						</property>
 					</bean>	
 			
-		È¨ÏŞ×¢½â£º
+		æƒé™æ³¨è§£ï¼š
 			@RequiresAuthentication
-			±íÊ¾µ±Ç° Subject ÒÑ¾­Í¨¹ı login ½øĞĞÁËÉí·İÑéÖ¤£»¼´ Subject.isAuthenticated() ·µ»Ø true¡£
+			è¡¨ç¤ºå½“å‰ Subject å·²ç»é€šè¿‡ login è¿›è¡Œäº†èº«ä»½éªŒè¯ï¼›å³ Subject.isAuthenticated() è¿”å› trueã€‚
 			@RequiresUser
-			±íÊ¾µ±Ç° Subject ÒÑ¾­Éí·İÑéÖ¤»òÕßÍ¨¹ı¼Ç×¡ÎÒµÇÂ¼µÄ¡£
+			è¡¨ç¤ºå½“å‰ Subject å·²ç»èº«ä»½éªŒè¯æˆ–è€…é€šè¿‡è®°ä½æˆ‘ç™»å½•çš„ã€‚
 			@RequiresGuest
-			±íÊ¾µ±Ç° Subject Ã»ÓĞÉí·İÑéÖ¤»òÍ¨¹ı¼Ç×¡ÎÒµÇÂ¼¹ı£¬¼´ÊÇÓÎ¿ÍÉí·İ¡£
-			@RequiresRoles(value={¡°admin¡±, ¡°user¡±}, logical= Logical.AND)
-			±íÊ¾µ±Ç° Subject ĞèÒª½ÇÉ« admin ºÍ user¡£
-			@RequiresPermissions (value={¡°user:a¡±, ¡°user:b¡±}, logical= Logical.OR)
-			±íÊ¾µ±Ç° Subject ĞèÒªÈ¨ÏŞ user£ºa »ò user£ºb¡£
+			è¡¨ç¤ºå½“å‰ Subject æ²¡æœ‰èº«ä»½éªŒè¯æˆ–é€šè¿‡è®°ä½æˆ‘ç™»å½•è¿‡ï¼Œå³æ˜¯æ¸¸å®¢èº«ä»½ã€‚
+			@RequiresRoles(value={â€œadminâ€, â€œuserâ€}, logical= Logical.AND)
+			è¡¨ç¤ºå½“å‰ Subject éœ€è¦è§’è‰² admin å’Œ userã€‚
+			@RequiresPermissions (value={â€œuser:aâ€, â€œuser:bâ€}, logical= Logical.OR)
+			è¡¨ç¤ºå½“å‰ Subject éœ€è¦æƒé™ userï¼ša æˆ– userï¼šbã€‚
 		 @RequiresPermissions("staff-delete")
-			 ·½·¨Ãû£º(){
+			 æ–¹æ³•åï¼š(){
 			 }
-		2.Ê¹ÓÃshrioÌá¹©µÄ±êÇ©¿ØÖÆÈ¨ÏŞÔÚÒ³ÃæÖĞÊ¹ÓÃµÄ£º
-			ÒıÈë±êÇ©¿â,
-			Ê¹ÓÃshrioÌá¹©µÄ±êÇ©À´Ê¹ÓÃ£º
-				<!-- È¨ÏŞÈÏÖ¤  Óëweb.xmlÓĞ¹Ø-->
+		2.ä½¿ç”¨shrioæä¾›çš„æ ‡ç­¾æ§åˆ¶æƒé™åœ¨é¡µé¢ä¸­ä½¿ç”¨çš„ï¼š
+			å¼•å…¥æ ‡ç­¾åº“,
+			ä½¿ç”¨shrioæä¾›çš„æ ‡ç­¾æ¥ä½¿ç”¨ï¼š
+				<!-- æƒé™è®¤è¯  ä¸web.xmlæœ‰å…³-->
 				<shiro:hasPermission name="staff-delete">
-					<!-- ÕâÀïÃæÖ»Òª°ÑÏà¹ØµÄ´úÂëĞ´µ½ÕâÀïÃæ°ü¹üÏÂ¾Í¿ÉÒÔÖ±½ÓÊ¹ÓÃÁË -->
+					<!-- è¿™é‡Œé¢åªè¦æŠŠç›¸å…³çš„ä»£ç å†™åˆ°è¿™é‡Œé¢åŒ…è£¹ä¸‹å°±å¯ä»¥ç›´æ¥ä½¿ç”¨äº† -->
 				</shiro:hasPermission>
-		3.ÔÚ·½·¨ÖĞÖ±½ÓÊ¹ÓÃ£º
-		//ÁíÒ»ÖÖ·½Ê½£º
+		3.åœ¨æ–¹æ³•ä¸­ç›´æ¥ä½¿ç”¨ï¼š
+		//å¦ä¸€ç§æ–¹å¼ï¼š
 			Subject subject = SecurityUtils.getSubject();
 			subject.checkPermission("staff-edit");
 		
-	shiroÊµÏÖ¼Ç×¡ÓÃ»§¹¦ÄÜ£º
-	RememberMe£º
-				Shiro Ìá¹©ÁË¼Ç×¡ÎÒ£¨RememberMe£©µÄ¹¦ÄÜ£¬±ÈÈç·ÃÎÊÈçÌÔ±¦µÈÒ»Ğ©ÍøÕ¾Ê±£¬¹Ø±ÕÁËä¯ÀÀÆ÷ÏÂ´ÎÔÙ´ò¿ªÊ±»¹ÊÇÄÜ¼Ç×¡ÄãÊÇË­£¬ÏÂ´Î·ÃÎÊÊ±ÎŞĞèÔÙµÇÂ¼¼´¿É·ÃÎÊ£¬»ù±¾Á÷³ÌÈçÏÂ£º
-				Ê×ÏÈÔÚµÇÂ¼Ò³ÃæÑ¡ÖĞ RememberMe È»ºóµÇÂ¼³É¹¦£»Èç¹ûÊÇä¯ÀÀÆ÷µÇÂ¼£¬Ò»°ã»á°Ñ RememberMe µÄ Cookie Ğ´µ½¿Í»§¶Ë²¢±£´æÏÂÀ´£»
-				¹Ø±Õä¯ÀÀÆ÷ÔÙÖØĞÂ´ò¿ª£»»á·¢ÏÖä¯ÀÀÆ÷»¹ÊÇ¼Ç×¡ÄãµÄ£»
-				·ÃÎÊÒ»°ãµÄÍøÒ³·şÎñÆ÷¶Ë»¹ÊÇÖªµÀÄãÊÇË­£¬ÇÒÄÜÕı³£·ÃÎÊ£»
-				µ«ÊÇ±ÈÈçÎÒÃÇ·ÃÎÊÌÔ±¦Ê±£¬Èç¹ûÒª²é¿´ÎÒµÄ¶©µ¥»ò½øĞĞÖ§¸¶Ê±£¬´ËÊ±»¹ÊÇĞèÒªÔÙ½øĞĞÉí·İÈÏÖ¤µÄ£¬ÒÔÈ·±£µ±Ç°ÓÃ»§»¹ÊÇÄã¡£
-			ĞèÒªÅäÖÃÈçÏÂ£º
-				//¹Ø±Õä¯ÀÀÆ÷Ê±cookieÊ§Ğ§£º
-				sessionIdCookie£ºmaxAge=-1 ±íÊ¾ä¯ÀÀÆ÷¹Ø±ÕÊ±Ê§Ğ§´Ë Cookie£»
+	shiroå®ç°è®°ä½ç”¨æˆ·åŠŸèƒ½ï¼š
+	RememberMeï¼š
+				Shiro æä¾›äº†è®°ä½æˆ‘ï¼ˆRememberMeï¼‰çš„åŠŸèƒ½ï¼Œæ¯”å¦‚è®¿é—®å¦‚æ·˜å®ç­‰ä¸€äº›ç½‘ç«™æ—¶ï¼Œå…³é—­äº†æµè§ˆå™¨ä¸‹æ¬¡å†æ‰“å¼€æ—¶è¿˜æ˜¯èƒ½è®°ä½ä½ æ˜¯è°ï¼Œä¸‹æ¬¡è®¿é—®æ—¶æ— éœ€å†ç™»å½•å³å¯è®¿é—®ï¼ŒåŸºæœ¬æµç¨‹å¦‚ä¸‹ï¼š
+				é¦–å…ˆåœ¨ç™»å½•é¡µé¢é€‰ä¸­ RememberMe ç„¶åç™»å½•æˆåŠŸï¼›å¦‚æœæ˜¯æµè§ˆå™¨ç™»å½•ï¼Œä¸€èˆ¬ä¼šæŠŠ RememberMe çš„ Cookie å†™åˆ°å®¢æˆ·ç«¯å¹¶ä¿å­˜ä¸‹æ¥ï¼›
+				å…³é—­æµè§ˆå™¨å†é‡æ–°æ‰“å¼€ï¼›ä¼šå‘ç°æµè§ˆå™¨è¿˜æ˜¯è®°ä½ä½ çš„ï¼›
+				è®¿é—®ä¸€èˆ¬çš„ç½‘é¡µæœåŠ¡å™¨ç«¯è¿˜æ˜¯çŸ¥é“ä½ æ˜¯è°ï¼Œä¸”èƒ½æ­£å¸¸è®¿é—®ï¼›
+				ä½†æ˜¯æ¯”å¦‚æˆ‘ä»¬è®¿é—®æ·˜å®æ—¶ï¼Œå¦‚æœè¦æŸ¥çœ‹æˆ‘çš„è®¢å•æˆ–è¿›è¡Œæ”¯ä»˜æ—¶ï¼Œæ­¤æ—¶è¿˜æ˜¯éœ€è¦å†è¿›è¡Œèº«ä»½è®¤è¯çš„ï¼Œä»¥ç¡®ä¿å½“å‰ç”¨æˆ·è¿˜æ˜¯ä½ ã€‚
+			éœ€è¦é…ç½®å¦‚ä¸‹ï¼š
+				//å…³é—­æµè§ˆå™¨æ—¶cookieå¤±æ•ˆï¼š
+				sessionIdCookieï¼šmaxAge=-1 è¡¨ç¤ºæµè§ˆå™¨å…³é—­æ—¶å¤±æ•ˆæ­¤ Cookieï¼›
 			<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 			    <constructor-arg value="sid"/>
 			    <property name="httpOnly" value="true"/>
 			    <property name="maxAge" value="-1"/>
 			</bean>
-			//ÅäÖÃ¼Ç×¡¸öÈËÓÃ»§µÇÂ¼±£´æµ½CookieÖĞ·Åµ½±¾µØ£º
+			//é…ç½®è®°ä½ä¸ªäººç”¨æˆ·ç™»å½•ä¿å­˜åˆ°Cookieä¸­æ”¾åˆ°æœ¬åœ°ï¼š
 			<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 			    <constructor-arg value="rememberMe"/>
 			    <property name="httpOnly" value="true"/>
-			    <property name="maxAge" value="2592000"/><!-- 30Ìì -->
+			    <property name="maxAge" value="2592000"/><!-- 30å¤© -->
 			</bean>
-			`<!-- rememberMe¹ÜÀíÆ÷ -->`
+			`<!-- rememberMeç®¡ç†å™¨ -->`
 			<bean id="rememberMeManager" 
 			class="org.apache.shiro.web.mgt.CookieRememberMeManager">
 			    <property name="cipherKey" value="
 			\#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
 			     <property name="cookie" ref="rememberMeCookie"/>
 			</bean>
-			//ĞèÒª°ÑremeberMeCookie×¢Èëµ½°²È«¹ÜÀíÆ÷ÖĞ£º
-				<!-- ×¢Èë°²È«¹ÜÀíÆ÷ -->
+			//éœ€è¦æŠŠremeberMeCookieæ³¨å…¥åˆ°å®‰å…¨ç®¡ç†å™¨ä¸­ï¼š
+				<!-- æ³¨å…¥å®‰å…¨ç®¡ç†å™¨ -->
 				<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 				 <property name="rememberMeManager" ref="rememberMeManager"/>
 				</bean>

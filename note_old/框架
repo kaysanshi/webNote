@@ -1,42 +1,42 @@
-¿ò¼Ü£ºÊÇÒ»ÖÖ½á¹¹»¯µÃÈí¼ş£¬ËûÌá¹©ÁË×Ô¶¯»¯µÃÊµÏÖ£¬×÷Îª¼Ü¹¹½â¾ö·½°¸¿ÉÒÔ±»ÔÚÆäÉÏÊµÏÖÓ¦ÓÃ³ÌĞòµÄ¼Ì³Ğ¡£
-	1.×Ô¶¯»¯ÁË³£¼ûµÄÈÎÎñ£¬2.Ìá¹©¼Ü¹¹µÄ½â¾ö·½°¸¡£
-struts2£º
-	Struts2 ÊÇÄ¿Ç°½ÏÎªÆÕ¼°ºÍ³ÉÊìµÄ»ùÓÚMVCÉè¼ÆÄ£Ê½µÄwebÓ¦ÓÃ³ÌĞò¿ò¼Ü£¬Ëü²»½ö½öÊÇStruts1 µÄÉı¼¶°æ±¾£¬¸üÊÇÒ»¸öÈ«ĞÂµÄStruts¼Ü¹¹¡£
-	×î³õ£¬ÊÇÒÔWebWork¿ò¼ÜºÍStruts¿ò¼ÜÎª»ù´¡£¬Í¨¹ıÌá¹©ÔöÇ¿ºÍ¸Ä½øµÄStruts¿ò¼Ü£¬½ø¶øÊµÏÖ¼ò»¯web¼¼ÊõÈËÔ±¿ª·¢¹¤×÷µÄÄ¿±ê¡£
-	²»¾ÃÖ®ºó£¬Webwork¿ò¼ÜºÍStrutsÉçÇøÁªºÏ´´ÔìÁËÏÖÔÚÁ÷ĞĞµÄStruts2¿ò¼Ü¡£
-	ÊÇÊµÏÖMVCÉè¼ÆÄ£Ê½µÄµÚ¶ş´úwebÓ¦ÓÃ³ÌĞòµÄ¿ò¼Ü£¬ĞÂµÄÌØĞÔ£ºÀ¹½ØÆ÷£¬×¢½â´úÌæXMLÅäÖÃ£¬Ö§³Ö¶ÔÏóµ¼º½ÓïÑÔOGNl
-	¿ÉÖØÓÃ¿É±ä¸üµÄuI×é¼şAPI,
+æ¡†æ¶ï¼šæ˜¯ä¸€ç§ç»“æ„åŒ–å¾—è½¯ä»¶ï¼Œä»–æä¾›äº†è‡ªåŠ¨åŒ–å¾—å®ç°ï¼Œä½œä¸ºæ¶æ„è§£å†³æ–¹æ¡ˆå¯ä»¥è¢«åœ¨å…¶ä¸Šå®ç°åº”ç”¨ç¨‹åºçš„ç»§æ‰¿ã€‚
+	1.è‡ªåŠ¨åŒ–äº†å¸¸è§çš„ä»»åŠ¡ï¼Œ2.æä¾›æ¶æ„çš„è§£å†³æ–¹æ¡ˆã€‚
+struts2ï¼š
+	Struts2 æ˜¯ç›®å‰è¾ƒä¸ºæ™®åŠå’Œæˆç†Ÿçš„åŸºäºMVCè®¾è®¡æ¨¡å¼çš„webåº”ç”¨ç¨‹åºæ¡†æ¶ï¼Œå®ƒä¸ä»…ä»…æ˜¯Struts1 çš„å‡çº§ç‰ˆæœ¬ï¼Œæ›´æ˜¯ä¸€ä¸ªå…¨æ–°çš„Strutsæ¶æ„ã€‚
+	æœ€åˆï¼Œæ˜¯ä»¥WebWorkæ¡†æ¶å’ŒStrutsæ¡†æ¶ä¸ºåŸºç¡€ï¼Œé€šè¿‡æä¾›å¢å¼ºå’Œæ”¹è¿›çš„Strutsæ¡†æ¶ï¼Œè¿›è€Œå®ç°ç®€åŒ–webæŠ€æœ¯äººå‘˜å¼€å‘å·¥ä½œçš„ç›®æ ‡ã€‚
+	ä¸ä¹…ä¹‹åï¼ŒWebworkæ¡†æ¶å’ŒStrutsç¤¾åŒºè”åˆåˆ›é€ äº†ç°åœ¨æµè¡Œçš„Struts2æ¡†æ¶ã€‚
+	æ˜¯å®ç°MVCè®¾è®¡æ¨¡å¼çš„ç¬¬äºŒä»£webåº”ç”¨ç¨‹åºçš„æ¡†æ¶ï¼Œæ–°çš„ç‰¹æ€§ï¼šæ‹¦æˆªå™¨ï¼Œæ³¨è§£ä»£æ›¿XMLé…ç½®ï¼Œæ”¯æŒå¯¹è±¡å¯¼èˆªè¯­è¨€OGNl
+	å¯é‡ç”¨å¯å˜æ›´çš„uIç»„ä»¶API,
 
-	MVCÄ£Ê½£ºÄ£ĞÍ£¬ÊÓÍ¼£¬¿ØÖÆÆ÷£¬·Ö±ğÍ¨¹ı¶¯×÷£¬½á¹û£¬¹ıÂÇ·ÖÅäÆ÷£¨FilterDispatcher£©
-		¿Í»§¶ËÇëÇó¡ª¡ª¡ª¡ª¡ª¡ª>filterDispatcher-->¶¯×÷Ä£ĞÍ---->½á¹ûÊÓÍ¼--->¿Í»§¶Ëä¯ÀÀÆ÷
+	MVCæ¨¡å¼ï¼šæ¨¡å‹ï¼Œè§†å›¾ï¼Œæ§åˆ¶å™¨ï¼Œåˆ†åˆ«é€šè¿‡åŠ¨ä½œï¼Œç»“æœï¼Œè¿‡è™‘åˆ†é…å™¨ï¼ˆFilterDispatcherï¼‰
+		å®¢æˆ·ç«¯è¯·æ±‚â€”â€”â€”â€”â€”â€”>filterDispatcher-->åŠ¨ä½œæ¨¡å‹---->ç»“æœè§†å›¾--->å®¢æˆ·ç«¯æµè§ˆå™¨
 
-		¿ØÖÆÆ÷---filterDispatcher
-			¿ØÖÆÆ÷¼ì²éÃ¿Ò»¸ö´«ÈëµÄÇëÇó£¬¾ö¶¨ÄÇ¸ö¶¯×÷´¦ÀíÕâ¸öÇëÇó£¬¿ÉÒÔÍ¨¹ıXMlºÍ×¢½âÀ´
-			ÅäÖÃÍê³É
-		Ä£ĞÍ----¶¯×÷
-			¶¯×÷×é¼ş£º½«ÒµÎñÂß¼­µ÷ÓÃ·â×°µ½Ò»¸ö¶ÀÁ¢µÄµ¥Ôª£¬¶¯×÷ÊÇÒ»¸öÊı¾İ´«Êä³¡Ëù£¬
-		ÊÓÍ¼----½á¹û
-			½«Ó¦ÓÃ³ÌĞòµÄ×´Ì¬×°»»ÎªÒ»ÖÖÓÃ»§¿ÉÒÔ½»»¥µÄ¿ÉÊÓ»¯µÃ±íÊ¾¡£½á¹û×é¼şÌá¹©ÁËÕû½àµÄ·â×°£¬½«´¦ÀíµÄ¿ØÖÆ×ª½»¸ø¿Í»§
-			Ğ´ÏìÓ¦¶ÔÏó£¬
-	ĞÂµÄÌØĞÔ£º
-		À¹½ØÆ÷£ºÌá¹©Ò»ÖÖÔÚÆäÖĞ¶¨Òå²»Í¬µÄ¹¤×÷Á÷ºÍÇĞÏòÈÎÎñµÄ¼Ü¹¹×é¼ş£¬Ã¿Ò»¸ö¶¯×÷¶¼ÓĞÒ»×éÀ¹½ØÆ÷ÓëÖ®Ïà»¥¹ØÁª£¬
-		¿ÉÒÔ·¢ÉúÔÚ¶¯×÷Ö®Ç°ºÍ¶¯×÷Ö®ºó¡£
-		OGNL:ÊÇÒ»ÖÖ·ÃÎÊ´¢´æµÄÖĞÑë´¢´æ¿âµÄÊı¾İ¹¤¾ß£¬ÔÊĞíÒıÓÃ»ò²Ù×÷ValueStack£¨´¢´æÇøÓò¡°±ãÇ©¡±£©ÖĞµÄÊı¾İµÄ±í´ïÊ½ÓïÑÔ
-		ActionContext°üº¬ËùÓĞÊı¾İ¹¹³ÉÁË¶¯×÷Ö´ĞĞ»·¾³£¬»á»°£¬ÇëÇó£¬Ó³Éä£¬valueStack.×÷ÎªValueStackºÍThreadLocal´¢´æ³¡Ëù£¬
+		æ§åˆ¶å™¨---filterDispatcher
+			æ§åˆ¶å™¨æ£€æŸ¥æ¯ä¸€ä¸ªä¼ å…¥çš„è¯·æ±‚ï¼Œå†³å®šé‚£ä¸ªåŠ¨ä½œå¤„ç†è¿™ä¸ªè¯·æ±‚ï¼Œå¯ä»¥é€šè¿‡XMlå’Œæ³¨è§£æ¥
+			é…ç½®å®Œæˆ
+		æ¨¡å‹----åŠ¨ä½œ
+			åŠ¨ä½œç»„ä»¶ï¼šå°†ä¸šåŠ¡é€»è¾‘è°ƒç”¨å°è£…åˆ°ä¸€ä¸ªç‹¬ç«‹çš„å•å…ƒï¼ŒåŠ¨ä½œæ˜¯ä¸€ä¸ªæ•°æ®ä¼ è¾“åœºæ‰€ï¼Œ
+		è§†å›¾----ç»“æœ
+			å°†åº”ç”¨ç¨‹åºçš„çŠ¶æ€è£…æ¢ä¸ºä¸€ç§ç”¨æˆ·å¯ä»¥äº¤äº’çš„å¯è§†åŒ–å¾—è¡¨ç¤ºã€‚ç»“æœç»„ä»¶æä¾›äº†æ•´æ´çš„å°è£…ï¼Œå°†å¤„ç†çš„æ§åˆ¶è½¬äº¤ç»™å®¢æˆ·
+			å†™å“åº”å¯¹è±¡ï¼Œ
+	æ–°çš„ç‰¹æ€§ï¼š
+		æ‹¦æˆªå™¨ï¼šæä¾›ä¸€ç§åœ¨å…¶ä¸­å®šä¹‰ä¸åŒçš„å·¥ä½œæµå’Œåˆ‡å‘ä»»åŠ¡çš„æ¶æ„ç»„ä»¶ï¼Œæ¯ä¸€ä¸ªåŠ¨ä½œéƒ½æœ‰ä¸€ç»„æ‹¦æˆªå™¨ä¸ä¹‹ç›¸äº’å…³è”ï¼Œ
+		å¯ä»¥å‘ç”Ÿåœ¨åŠ¨ä½œä¹‹å‰å’ŒåŠ¨ä½œä¹‹åã€‚
+		OGNL:æ˜¯ä¸€ç§è®¿é—®å‚¨å­˜çš„ä¸­å¤®å‚¨å­˜åº“çš„æ•°æ®å·¥å…·ï¼Œå…è®¸å¼•ç”¨æˆ–æ“ä½œValueStackï¼ˆå‚¨å­˜åŒºåŸŸâ€œä¾¿ç­¾â€ï¼‰ä¸­çš„æ•°æ®çš„è¡¨è¾¾å¼è¯­è¨€
+		ActionContextåŒ…å«æ‰€æœ‰æ•°æ®æ„æˆäº†åŠ¨ä½œæ‰§è¡Œç¯å¢ƒï¼Œä¼šè¯ï¼Œè¯·æ±‚ï¼Œæ˜ å°„ï¼ŒvalueStack.ä½œä¸ºValueStackå’ŒThreadLocalå‚¨å­˜åœºæ‰€ï¼Œ
 		
-		µ÷ÓÃ¶¯×÷-------À¹½ØÆ÷(OGNL)----->¶¯×÷-------->½á¹û---------ActionContext(oGNL²Ù×÷£¬£¨valueStack,ÇëÇó£¬»á»°¡£¡£¡££©)----->½á¹û
-	struts2¶¯×÷£ºÎªÁËÂú×ã¶Ô¿ò¼ÜµÄÖ°ÔğÈÎºÎÀà¶¼¿ÉÒÔ³ÉÎª¶¯×÷£¬¸ø¶¨ÇëÇó·â×°£¬´ÓÇëÇóµ½ÊÓÍ¼¿ò¼Ü×Ô¶¯Êı¾İ´«Êä×÷ÎªÊı¾İµÄĞ¯´øÕß£¬¶¯×÷±ØĞë°ïÖú
-		  ¿ò¼Ü¾ö¶¨ÄÇ¸ö½á¹ûÓ¦¸Ã³ÊÏÖÇëÇóÏìÓ¦·µ»ØµÄÊÓÍ¼¡£1.¶¯×÷·â×°¹¤×÷µ¥Ôª£¬2£¬¶¯×÷ÎªÊı¾İÌá¹©³¡Ëù¡£Ğë°ÑÃ¿Ò»¸öÊı¾İÊµÏÖÎªjavabeanÊôĞÔ
-		3.¶¯×÷Îª½á¹ûÂ·ÓÉÑ¡Ôñ·µ»Ø¿ØÖÆ×Ö·û´®·µ»Øµ½AÊÓÍ¼ÖĞ
-	ActionÊÇÓÃÀ´Íê³É¶¯×÷ĞèÒª¼Ì³ĞActionSupportÀ´ºÍÊµÏÖÄ£ĞÍÇı¶¯¾ÍÊÇactionÔÚ½«Êı¾İ´ÓÇëÇó´«µİµ½ÊÓÍ¼£¨ÎŞÂÛÊÇJSP»¹ÊÇÆäËûÀàĞÍµÄ½á¹û£©·½ÃæÆğ×ÅÖØÒª×÷ÓÃ¡£
-	µÚ¶ş£¬action±ØĞëĞ­Öú¿ò¼ÜÈ·¶¨ÄÄ¸ö½á¹ûÓ¦¸Ã³ÊÏÖÔÚÏìÓ¦ÇëÇóµÄÊÓÍ¼ÖĞ¡£
-	ÅäÖÃÎÄ¼ş£º
-		web.xmlÅäÖÃÎÄ¼şÊÇÒ»ÖÖJ2EEÅäÖÃÎÄ¼ş£¬¾ö¶¨servletÈİÆ÷µÄHTTPÔªËØĞèÇóÈçºÎ½øĞĞ´¦Àí¡£
-		ËüÑÏ¸ñÀ´Ëµ²»ÊÇÒ»¸öStruts2 ÅäÖÃÎÄ¼ş£¬µ«ËüÊÇStruts2 ÔË×÷ËùĞèÒª½øĞĞÅäÖÃµÄÎÄ¼ş¡£
-		ÕıÈçÇ°ÃæËùÌÖÂÛµÄ£¬Õâ¸öÎÄ¼şÎªÃ¿¸öwebÓ¦ÓÃ³ÌĞòÌá¹©½ÓÈëµã¡£ÔÚ²¿ÊğÃèÊö·û£¨web.xml£©ÖĞ£¬
-		Struts2 Ó¦ÓÃ³ÌĞòµÄ½ÓÈëµã½«»á¶¨ÒåÎªÒ»¸ö¹ıÂËÆ÷¡£Òò´ËÎÒÃÇ½«ÔÚweb.xmlÀï¶¨ÒåÒ»¸öFilterDispatcherÀàµÄ½ÓÈëµã£¬
-		¶øÕâ¸öweb.xmlÎÄ¼şĞèÒªÔÚWebContent/WEB-INFÎÄ¼ş¼ĞÏÂ´´½¨¡£
-			web.xmlÖ÷ÒªÎªÁËÅäÖÃ£º
+		è°ƒç”¨åŠ¨ä½œ-------æ‹¦æˆªå™¨(OGNL)----->åŠ¨ä½œ-------->ç»“æœ---------ActionContext(oGNLæ“ä½œï¼Œï¼ˆvalueStack,è¯·æ±‚ï¼Œä¼šè¯ã€‚ã€‚ã€‚ï¼‰)----->ç»“æœ
+	struts2åŠ¨ä½œï¼šä¸ºäº†æ»¡è¶³å¯¹æ¡†æ¶çš„èŒè´£ä»»ä½•ç±»éƒ½å¯ä»¥æˆä¸ºåŠ¨ä½œï¼Œç»™å®šè¯·æ±‚å°è£…ï¼Œä»è¯·æ±‚åˆ°è§†å›¾æ¡†æ¶è‡ªåŠ¨æ•°æ®ä¼ è¾“ä½œä¸ºæ•°æ®çš„æºå¸¦è€…ï¼ŒåŠ¨ä½œå¿…é¡»å¸®åŠ©
+		  æ¡†æ¶å†³å®šé‚£ä¸ªç»“æœåº”è¯¥å‘ˆç°è¯·æ±‚å“åº”è¿”å›çš„è§†å›¾ã€‚1.åŠ¨ä½œå°è£…å·¥ä½œå•å…ƒï¼Œ2ï¼ŒåŠ¨ä½œä¸ºæ•°æ®æä¾›åœºæ‰€ã€‚é¡»æŠŠæ¯ä¸€ä¸ªæ•°æ®å®ç°ä¸ºjavabeanå±æ€§
+		3.åŠ¨ä½œä¸ºç»“æœè·¯ç”±é€‰æ‹©è¿”å›æ§åˆ¶å­—ç¬¦ä¸²è¿”å›åˆ°Aè§†å›¾ä¸­
+	Actionæ˜¯ç”¨æ¥å®ŒæˆåŠ¨ä½œéœ€è¦ç»§æ‰¿ActionSupportæ¥å’Œå®ç°æ¨¡å‹é©±åŠ¨å°±æ˜¯actionåœ¨å°†æ•°æ®ä»è¯·æ±‚ä¼ é€’åˆ°è§†å›¾ï¼ˆæ— è®ºæ˜¯JSPè¿˜æ˜¯å…¶ä»–ç±»å‹çš„ç»“æœï¼‰æ–¹é¢èµ·ç€é‡è¦ä½œç”¨ã€‚
+	ç¬¬äºŒï¼Œactionå¿…é¡»ååŠ©æ¡†æ¶ç¡®å®šå“ªä¸ªç»“æœåº”è¯¥å‘ˆç°åœ¨å“åº”è¯·æ±‚çš„è§†å›¾ä¸­ã€‚
+	é…ç½®æ–‡ä»¶ï¼š
+		web.xmlé…ç½®æ–‡ä»¶æ˜¯ä¸€ç§J2EEé…ç½®æ–‡ä»¶ï¼Œå†³å®šservletå®¹å™¨çš„HTTPå…ƒç´ éœ€æ±‚å¦‚ä½•è¿›è¡Œå¤„ç†ã€‚
+		å®ƒä¸¥æ ¼æ¥è¯´ä¸æ˜¯ä¸€ä¸ªStruts2 é…ç½®æ–‡ä»¶ï¼Œä½†å®ƒæ˜¯Struts2 è¿ä½œæ‰€éœ€è¦è¿›è¡Œé…ç½®çš„æ–‡ä»¶ã€‚
+		æ­£å¦‚å‰é¢æ‰€è®¨è®ºçš„ï¼Œè¿™ä¸ªæ–‡ä»¶ä¸ºæ¯ä¸ªwebåº”ç”¨ç¨‹åºæä¾›æ¥å…¥ç‚¹ã€‚åœ¨éƒ¨ç½²æè¿°ç¬¦ï¼ˆweb.xmlï¼‰ä¸­ï¼Œ
+		Struts2 åº”ç”¨ç¨‹åºçš„æ¥å…¥ç‚¹å°†ä¼šå®šä¹‰ä¸ºä¸€ä¸ªè¿‡æ»¤å™¨ã€‚å› æ­¤æˆ‘ä»¬å°†åœ¨web.xmlé‡Œå®šä¹‰ä¸€ä¸ªFilterDispatcherç±»çš„æ¥å…¥ç‚¹ï¼Œ
+		è€Œè¿™ä¸ªweb.xmlæ–‡ä»¶éœ€è¦åœ¨WebContent/WEB-INFæ–‡ä»¶å¤¹ä¸‹åˆ›å»ºã€‚
+			web.xmlä¸»è¦ä¸ºäº†é…ç½®ï¼š
 				   <filter>
 				      <filter-name>struts2</filter-name>
 				      <filter-class>
@@ -48,10 +48,10 @@ struts2£º
 				      <filter-name>struts2</filter-name>
 				      <url-pattern>/*</url-pattern>
 				   </filter-mapping>
-		struts.xmlÎÄ¼ş°üº¬ÓĞËæ×ÅActionsµÄ¿ª·¢Äã½«ÒªĞŞ¸ÄµÄÅäÖÃĞÅÏ¢¡£Ëü¿ÉÓÃÓÚ¸²¸ÇÓ¦ÓÃ³ÌĞòµÄÄ¬ÈÏÉèÖÃ£¬
-		ÀıÈç£ºstruts.devMode=false ÒÔ¼°ÆäËû¶¨ÒåÎªÊôĞÔÎÄ¼şµÄÉèÖÃ¡£Õâ¸öÎÄ¼ş¿ÉÔÚWEB-INF/classesÎÄ¼ş¼ĞÏÂ´´½¨¡£
-		ÈÃÎÒÃÇÀ´¿´Ò»ÏÂÔÚÇ°Ò»ÕÂ½ÚÖĞ²ûÊöµÄHello WorldÊ¾ÀıÀï´´½¨µÄstruts.xmlÎÄ¼ş¡£
-	¡¤		struts.xmlÅäÖÃÈçÏÂ£º
+		struts.xmlæ–‡ä»¶åŒ…å«æœ‰éšç€Actionsçš„å¼€å‘ä½ å°†è¦ä¿®æ”¹çš„é…ç½®ä¿¡æ¯ã€‚å®ƒå¯ç”¨äºè¦†ç›–åº”ç”¨ç¨‹åºçš„é»˜è®¤è®¾ç½®ï¼Œ
+		ä¾‹å¦‚ï¼šstruts.devMode=false ä»¥åŠå…¶ä»–å®šä¹‰ä¸ºå±æ€§æ–‡ä»¶çš„è®¾ç½®ã€‚è¿™ä¸ªæ–‡ä»¶å¯åœ¨WEB-INF/classesæ–‡ä»¶å¤¹ä¸‹åˆ›å»ºã€‚
+		è®©æˆ‘ä»¬æ¥çœ‹ä¸€ä¸‹åœ¨å‰ä¸€ç« èŠ‚ä¸­é˜è¿°çš„Hello Worldç¤ºä¾‹é‡Œåˆ›å»ºçš„struts.xmlæ–‡ä»¶ã€‚
+	Â·		struts.xmlé…ç½®å¦‚ä¸‹ï¼š
 				<?xml version="1.0" encoding="UTF-8"?>
 				<!DOCTYPE struts PUBLIC
 				   "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
@@ -71,40 +71,40 @@ struts2£º
 				   <-- more packages can be listed here -->
 
 				</struts>
-		ÆäÖĞÓĞ<package>±êÇ©ÎªÁËÉùÃ÷²»Í¬µÄ°üÓĞÏÂÃæÊôĞÔ£º
-			name£º£¨±ØĞè£©	ÎªpackageµÄÎ¨Ò»±êÊ¶£¬
-			extends£ºÖ¸¶¨package¼Ì³ĞÁíÒ»packageµÄËùÓĞÅäÖÃ¡£Í¨³£Çé¿öÏÂ£¬ÎÒÃÇÊ¹ÓÃstruts-default×÷ÎªpackageµÄ»ù´¡¡£
-			abstract£º¶¨ÒåpackageÎª³éÏóµÄ¡£Èç¹û±ê¼ÇÎªtrue£¬Ôòpackage²»ÄÜ±»×îÖÕÓÃ»§Ê¹ÓÃ¡£
-			namespace£ºActionsµÄÎ¨Ò»ÃüÃû¿Õ¼ä
-			<constant>±êÇ©ÒÔ¼°nameºÍvalueÊôĞÔ½«ÓÃÓÚ¸²¸Çdefault.propertiesÖĞ¶¨ÒåµÄÈÎÒ»ÊôĞÔ£¬¾ÍÏñÎÒÃÇÉèÖÃµÄstruts.devModeÊôĞÔÒ»Ñù¡£
-			ÉèÖÃstruts.devModeÊôĞÔÔÊĞíÎÒÃÇÔÚÈÕÖ¾ÎÄ¼şÖĞ²é¿´¸ü¶àµÄµ÷ÊÔÏûÏ¢¡£
+		å…¶ä¸­æœ‰<package>æ ‡ç­¾ä¸ºäº†å£°æ˜ä¸åŒçš„åŒ…æœ‰ä¸‹é¢å±æ€§ï¼š
+			nameï¼šï¼ˆå¿…éœ€ï¼‰	ä¸ºpackageçš„å”¯ä¸€æ ‡è¯†ï¼Œ
+			extendsï¼šæŒ‡å®špackageç»§æ‰¿å¦ä¸€packageçš„æ‰€æœ‰é…ç½®ã€‚é€šå¸¸æƒ…å†µä¸‹ï¼Œæˆ‘ä»¬ä½¿ç”¨struts-defaultä½œä¸ºpackageçš„åŸºç¡€ã€‚
+			abstractï¼šå®šä¹‰packageä¸ºæŠ½è±¡çš„ã€‚å¦‚æœæ ‡è®°ä¸ºtrueï¼Œåˆ™packageä¸èƒ½è¢«æœ€ç»ˆç”¨æˆ·ä½¿ç”¨ã€‚
+			namespaceï¼šActionsçš„å”¯ä¸€å‘½åç©ºé—´
+			<constant>æ ‡ç­¾ä»¥åŠnameå’Œvalueå±æ€§å°†ç”¨äºè¦†ç›–default.propertiesä¸­å®šä¹‰çš„ä»»ä¸€å±æ€§ï¼Œå°±åƒæˆ‘ä»¬è®¾ç½®çš„struts.devModeå±æ€§ä¸€æ ·ã€‚
+			è®¾ç½®struts.devModeå±æ€§å…è®¸æˆ‘ä»¬åœ¨æ—¥å¿—æ–‡ä»¶ä¸­æŸ¥çœ‹æ›´å¤šçš„è°ƒè¯•æ¶ˆæ¯ã€‚
 
-			ÎÒÃÇ¶¨Òå<action>±êÇ©¶ÔÓ¦ÓÚÎÒÃÇÏëÒª·ÃÎÊµÄÃ¿¸öURL£¬²¢ÇÒÊ¹ÓÃexecute()·½·¨¶¨ÒåÒ»¸ö·ÃÎÊÏàÓ¦µÄURLÊ±½«Òª·ÃÎÊµÄÀà¡£
+			æˆ‘ä»¬å®šä¹‰<action>æ ‡ç­¾å¯¹åº”äºæˆ‘ä»¬æƒ³è¦è®¿é—®çš„æ¯ä¸ªURLï¼Œå¹¶ä¸”ä½¿ç”¨execute()æ–¹æ³•å®šä¹‰ä¸€ä¸ªè®¿é—®ç›¸åº”çš„URLæ—¶å°†è¦è®¿é—®çš„ç±»ã€‚
 
-			Results£¨½á¹û£©È·¶¨ÔÚÖ´ĞĞ²Ù×÷ºó·µ»Øµ½ä¯ÀÀÆ÷µÄÄÚÈİ£¬¶ø´Ó²Ù×÷·µ»ØµÄ×Ö·û´®Ó¦¸ÃÊÇ½á¹ûµÄÃû³Æ¡£ 
-			Results°´ÉÏÊö·½Ê½ÅäÖÃ£¬»ò×÷Îª¡°È«¾Ö¡±½á¹ûÅäÖÃ£¬¿ÉÓÃÓÚ°üÖĞµÄÃ¿¸ö²Ù×÷¡£ ResultsÓĞnameºÍtypeÊôĞÔ¿ÉÑ¡£¬Ä¬ÈÏµÄnameÖµÊÇ¡°success¡±¡£
-		Struts.xmlÎÄ¼ş¿ÉÒÔËæ×ÅÊ±¼äµÄÍÆÒÆ¶øÔö³¤£¬Òò´ËÍ¨¹ı°ü´òÆÆËüÊÇÊ¹ËüÄ£¿é»¯µÄÒ»ÖÖ·½Ê½£¬
-			µ«strutsÌá¹©ÁËÁíÒ»ÖÖÄ£¿é»¯struts.xmlÎÄ¼şµÄ·½·¨£¬
-			Äã¿ÉÒÔ½«ÎÄ¼ş²ğ·ÖÎª¶à¸öxmlÎÄ¼ş£¬²¢ÓÃÒÔÏÂ·½Ê½µ¼ÈëËüÃÇ¡£
+			Resultsï¼ˆç»“æœï¼‰ç¡®å®šåœ¨æ‰§è¡Œæ“ä½œåè¿”å›åˆ°æµè§ˆå™¨çš„å†…å®¹ï¼Œè€Œä»æ“ä½œè¿”å›çš„å­—ç¬¦ä¸²åº”è¯¥æ˜¯ç»“æœçš„åç§°ã€‚ 
+			ResultsæŒ‰ä¸Šè¿°æ–¹å¼é…ç½®ï¼Œæˆ–ä½œä¸ºâ€œå…¨å±€â€ç»“æœé…ç½®ï¼Œå¯ç”¨äºåŒ…ä¸­çš„æ¯ä¸ªæ“ä½œã€‚ Resultsæœ‰nameå’Œtypeå±æ€§å¯é€‰ï¼Œé»˜è®¤çš„nameå€¼æ˜¯â€œsuccessâ€ã€‚
+		Struts.xmlæ–‡ä»¶å¯ä»¥éšç€æ—¶é—´çš„æ¨ç§»è€Œå¢é•¿ï¼Œå› æ­¤é€šè¿‡åŒ…æ‰“ç ´å®ƒæ˜¯ä½¿å®ƒæ¨¡å—åŒ–çš„ä¸€ç§æ–¹å¼ï¼Œ
+			ä½†strutsæä¾›äº†å¦ä¸€ç§æ¨¡å—åŒ–struts.xmlæ–‡ä»¶çš„æ–¹æ³•ï¼Œ
+			ä½ å¯ä»¥å°†æ–‡ä»¶æ‹†åˆ†ä¸ºå¤šä¸ªxmlæ–‡ä»¶ï¼Œå¹¶ç”¨ä»¥ä¸‹æ–¹å¼å¯¼å…¥å®ƒä»¬ã€‚
 				<struts>
 				     <include file="my-struts1.xml"/>
 				     <include file="my-struts2.xml"/>
 				</struts>
-		struts.propertiesÎÄ¼ş
-			Õâ¸öÅäÖÃÎÄ¼şÌá¹©ÁËÒ»ÖÖ»úÖÆÀ´¸Ä±ä¿ò¼ÜµÄÄ¬ÈÏĞĞÎª¡£struts.propertiesÅäÖÃÎÄ¼şÖĞ°üº¬µÄËùÓĞÊôĞÔÒ²¿ÉÒÔÔÚweb.xmlÖĞÅäÖÃÊ¹ÓÃinit-param£¬
-			ÒÔ¼°ÔÚstruts.xmlÅäÖÃÎÄ¼şÖĞÊ¹ÓÃconstant±êÇ©¡£ µ«Èç¹ûÄãÏë±£³ÖÊÂ¼ş¶ÀÁ¢ÒÔ¼°±£Áô¸ü¶àstrutsÏ¸½Ú£¬
-			ÄÇÃ´Äã¿ÉÒÔÔÚWEB-INF/classesÎÄ¼ş¼ĞÏÂ´´½¨Õâ¸öÎÄ¼ş¡£struts.propertiesÎÄ¼şÖĞÅäÖÃµÄÖµ½«¸²¸Ç
+		struts.propertiesæ–‡ä»¶
+			è¿™ä¸ªé…ç½®æ–‡ä»¶æä¾›äº†ä¸€ç§æœºåˆ¶æ¥æ”¹å˜æ¡†æ¶çš„é»˜è®¤è¡Œä¸ºã€‚struts.propertiesé…ç½®æ–‡ä»¶ä¸­åŒ…å«çš„æ‰€æœ‰å±æ€§ä¹Ÿå¯ä»¥åœ¨web.xmlä¸­é…ç½®ä½¿ç”¨init-paramï¼Œ
+			ä»¥åŠåœ¨struts.xmlé…ç½®æ–‡ä»¶ä¸­ä½¿ç”¨constantæ ‡ç­¾ã€‚ ä½†å¦‚æœä½ æƒ³ä¿æŒäº‹ä»¶ç‹¬ç«‹ä»¥åŠä¿ç•™æ›´å¤šstrutsç»†èŠ‚ï¼Œ
+			é‚£ä¹ˆä½ å¯ä»¥åœ¨WEB-INF/classesæ–‡ä»¶å¤¹ä¸‹åˆ›å»ºè¿™ä¸ªæ–‡ä»¶ã€‚struts.propertiesæ–‡ä»¶ä¸­é…ç½®çš„å€¼å°†è¦†ç›–
 
 		default.properties
-		ÖĞÅäÖÃµÄÄ¬ÈÏÖµ£¬ÕâĞ©Öµ°üº¬ÔÚstruts2-core-x.y.z.jar·Ö²¼ÖĞ
-	Action¶¯×÷£º
-	Struts2ÖĞactionsµÄÎ¨Ò»ÒªÇóÊÇ±ØĞëÓĞÒ»¸öÎŞ²ÎÊı·½·¨·µ»ØString»òResult¶ÔÏó£¬²¢ÇÒ±ØĞëÊÇPOJO¡£
-	Èç¹ûÃ»ÓĞÖ¸¶¨no-argument·½·¨£¬ÔòÄ¬ÈÏÊÇÊ¹ÓÃexecute()·½·¨¡£
-	¶¯Ì¬»ñÈ¡·½·¨£ºÓÃÇı¶¯Ä£ĞÍ·â×°·½·¨£º
+		ä¸­é…ç½®çš„é»˜è®¤å€¼ï¼Œè¿™äº›å€¼åŒ…å«åœ¨struts2-core-x.y.z.jaråˆ†å¸ƒä¸­
+	ActionåŠ¨ä½œï¼š
+	Struts2ä¸­actionsçš„å”¯ä¸€è¦æ±‚æ˜¯å¿…é¡»æœ‰ä¸€ä¸ªæ— å‚æ•°æ–¹æ³•è¿”å›Stringæˆ–Resultå¯¹è±¡ï¼Œå¹¶ä¸”å¿…é¡»æ˜¯POJOã€‚
+	å¦‚æœæ²¡æœ‰æŒ‡å®šno-argumentæ–¹æ³•ï¼Œåˆ™é»˜è®¤æ˜¯ä½¿ç”¨execute()æ–¹æ³•ã€‚
+	åŠ¨æ€è·å–æ–¹æ³•ï¼šç”¨é©±åŠ¨æ¨¡å‹å°è£…æ–¹æ³•ï¼š
 		public class UserActionModel extends ActionSupport implements ModelDriven<User>{}
-		¶¯Ì¬·½·¨µ÷ÓÃ£º
+		åŠ¨æ€æ–¹æ³•è°ƒç”¨ï¼š
 			struts>
-				<!-- ÅäÖÃ¶¯Ì¬·½·¨ÊÇ·ñ¿ªÆôµÄ³£Á¿ Ä¬ÈÏÎªfalseµÄ
+				<!-- é…ç½®åŠ¨æ€æ–¹æ³•æ˜¯å¦å¼€å¯çš„å¸¸é‡ é»˜è®¤ä¸ºfalseçš„
 				<constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>-->
 				<package name="dynamic" extends="struts-default" namespace="/dynamic">
 					<action name="DemoAction*" class="com.leo.struts2.dynamic.DemoAction">
@@ -113,81 +113,81 @@ struts2£º
 					
 				</package>
 			</struts>		
-		·ÃÎÊÊ±ÓÃÕâ¸öÀ´·ÃÎÊÄÄÒ»¸ö·½·¨£ºDemoAction!add;
-		ÁíÒ»ÖÖÅäÖÃ·½·¨ÊÇ²ÎÊıÕ¼Î»·ûÀ´·ÃÎÊ£º
-			ActionÅäÖÃ£º
+		è®¿é—®æ—¶ç”¨è¿™ä¸ªæ¥è®¿é—®å“ªä¸€ä¸ªæ–¹æ³•ï¼šDemoAction!add;
+		å¦ä¸€ç§é…ç½®æ–¹æ³•æ˜¯å‚æ•°å ä½ç¬¦æ¥è®¿é—®ï¼š
+			Actioné…ç½®ï¼š
 			<struts>
-				<!-- ÅäÖÃ¶¯Ì¬·½·¨ÊÇ·ñ¿ªÆôµÄ³£Á¿ Ä¬ÈÏÎªfalseµÄ
+				<!-- é…ç½®åŠ¨æ€æ–¹æ³•æ˜¯å¦å¼€å¯çš„å¸¸é‡ é»˜è®¤ä¸ºfalseçš„
 				<constant name="struts.enable.DynamicMethodInvocation" value="false"></constant>-->
 				<package name="dynamic" extends="struts-default" namespace="/dynamic">
-				<!-- ¶¯Ì¬·½·¨µ÷ÓÃ Ê¹ÓÃ{1}È¡³ö·½·¨Í¨¹ı*À´Æ¥Åä·ûºÃ-->
+				<!-- åŠ¨æ€æ–¹æ³•è°ƒç”¨ ä½¿ç”¨{1}å–å‡ºæ–¹æ³•é€šè¿‡*æ¥åŒ¹é…ç¬¦å¥½-->
 					<action name="DemoAction_*" class="com.leo.struts2.dynamic.DemoAction"
 							method="{1}">
-						<!--  resultÊÇÄ¬ÈÏÎªsuccess£»type:dispatcher;×ª·¢
-						class:Ä¬ÈÏÎªcom.opensymphony.xwork2.ActionSupport;
+						<!--  resultæ˜¯é»˜è®¤ä¸ºsuccessï¼›type:dispatcher;è½¬å‘
+						class:é»˜è®¤ä¸ºcom.opensymphony.xwork2.ActionSupport;
 						-->
 						<result name="success">/struts/index.jsp</result>
 					</action>
 					
 				</package>
 			</struts>
-		·ÃÎÊÊ¹ÓÃ·½Ê½£º
+		è®¿é—®ä½¿ç”¨æ–¹å¼ï¼š
 			
 
-À¹½ØÆ÷£º
-	¿ÉÒÔ¶¯Ì¬µÄÔöÇ¿Action¶ÔÏóµÄ¹¦ÄÜÀ¹½ØÆ÷×÷ÓÃÓÚActionºÍresultÖ®¼ä£¬
-	ÔÚµ÷ÓÃactionÖ®Ç°Ìá¹©Ô¤´¦ÀíÂß¼­¡£
+æ‹¦æˆªå™¨ï¼š
+	å¯ä»¥åŠ¨æ€çš„å¢å¼ºActionå¯¹è±¡çš„åŠŸèƒ½æ‹¦æˆªå™¨ä½œç”¨äºActionå’Œresultä¹‹é—´ï¼Œ
+	åœ¨è°ƒç”¨actionä¹‹å‰æä¾›é¢„å¤„ç†é€»è¾‘ã€‚
 
-	ÔÚµ÷ÓÃactionºóÌá¹©ºó´¦ÀíÂß¼­¡£
+	åœ¨è°ƒç”¨actionåæä¾›åå¤„ç†é€»è¾‘ã€‚
 
-	²¶»ñÒì³££¬ÒÔ±ã¿ÉÒÔÖ´ĞĞ±¸ÓÃ´¦Àí
-	Êµ¼ÊÖĞaction½«Í¨¹ıÀ¹½ØÆ÷Ê¹ÓÃinvocation.invoke()µ÷ÓÃÖ´ĞĞ£¬ËùÒÔÄã¿ÉÒÔ¸ù¾İÄãµÄĞèÇó×öÒ»Ğ©Ô¤´¦ÀíºÍÒ»Ğ©ºó´¦Àí¡£
-	¿ò¼Ü±¾ÉíÍ¨¹ıµÚÒ»´Îµ÷ÓÃActionInvocation¶ÔÏóµÄinvoke()À´Æô¶¯½ø³Ì¡£Ã¿´Îµ÷ÓÃinvoke()Ê±£¬
-	ActionInvocation¶¼»á²éÑ¯Æä×´Ì¬£¬²¢Ö´ĞĞÏÂÒ»¸öÀ¹½ØÆ÷¡£µ±ËùÓĞÅäÖÃµÄÀ¹½ØÆ÷¶¼±»µ÷ÓÃÊ±£¬invoke()½«Ê¹µÃaction±¾Éí±»Ö´ĞĞ¡£
+	æ•è·å¼‚å¸¸ï¼Œä»¥ä¾¿å¯ä»¥æ‰§è¡Œå¤‡ç”¨å¤„ç†
+	å®é™…ä¸­actionå°†é€šè¿‡æ‹¦æˆªå™¨ä½¿ç”¨invocation.invoke()è°ƒç”¨æ‰§è¡Œï¼Œæ‰€ä»¥ä½ å¯ä»¥æ ¹æ®ä½ çš„éœ€æ±‚åšä¸€äº›é¢„å¤„ç†å’Œä¸€äº›åå¤„ç†ã€‚
+	æ¡†æ¶æœ¬èº«é€šè¿‡ç¬¬ä¸€æ¬¡è°ƒç”¨ActionInvocationå¯¹è±¡çš„invoke()æ¥å¯åŠ¨è¿›ç¨‹ã€‚æ¯æ¬¡è°ƒç”¨invoke()æ—¶ï¼Œ
+	ActionInvocationéƒ½ä¼šæŸ¥è¯¢å…¶çŠ¶æ€ï¼Œå¹¶æ‰§è¡Œä¸‹ä¸€ä¸ªæ‹¦æˆªå™¨ã€‚å½“æ‰€æœ‰é…ç½®çš„æ‹¦æˆªå™¨éƒ½è¢«è°ƒç”¨æ—¶ï¼Œinvoke()å°†ä½¿å¾—actionæœ¬èº«è¢«æ‰§è¡Œã€‚
 	/**
-	 * ×î³£ÓÃµÄÀ¹½ØÆ÷
+	 * æœ€å¸¸ç”¨çš„æ‹¦æˆªå™¨
 	 * @author leoi555
-	 *¶¨ÖÆÀ¹½ØÆ÷À¹½ØµÄ·½·¨£¬
-	 *¶¨ÖÆÄÄĞ©·½·¨ĞèÒªÀ¹½Ø
-	 *ÄÄĞ©·½·¨²»ĞèÒªÀ¹½Ø
+	 *å®šåˆ¶æ‹¦æˆªå™¨æ‹¦æˆªçš„æ–¹æ³•ï¼Œ
+	 *å®šåˆ¶å“ªäº›æ–¹æ³•éœ€è¦æ‹¦æˆª
+	 *å“ªäº›æ–¹æ³•ä¸éœ€è¦æ‹¦æˆª
 	 */
 	public class MyInterceptor2  extends MethodFilterInterceptor{
 		
 		@Override
 		protected String doIntercept(ActionInvocation invocation) throws Exception {
 			// TODO Auto-generated method stub
-			//Ç°´¦Àí
-				System.out.println("Ç°´¦Àí");
-			//·ÅĞĞ
+			//å‰å¤„ç†
+				System.out.println("å‰å¤„ç†");
+			//æ”¾è¡Œ
 				invocation.invoke();
-			//ºóĞø
-				System.out.println("ºó´¦Àí");
+			//åç»­
+				System.out.println("åå¤„ç†");
 				return "success";
 		}
 
 	}
-	ÏÖÔÚÎÒÃÇĞèÒª×¢²áĞÂµÄÀ¹½ØÆ÷£¬È»ºóµ÷ÓÃËü£¬ÒòÎªÎÒÃÇÔÚÇ°ÃæµÄÀı×ÓÖĞµ÷ÓÃµÄÊÇÄ¬ÈÏÀ¹½ØÆ÷¡£Òª×¢²áÒ»¸öĞÂµÄÀ¹½ØÆ÷
-	°Ñ<interceptors> ... </ interceptors>±êÇ©Ö±½Ó·ÅÖÃÔÚ<package>±êÇ©ÏÂµÄstruts.xmlÎÄ¼şÖĞ¼´¿É¡£
-	¶ÔÓÚÄ¬ÈÏÀ¹½ØÆ÷£¬Äã¿ÉÒÔÌø¹ı´Ë²½Öè£¬¾ÍÏñÎÒÃÇÇ°ÃæµÄÊ¾ÀıÖĞËù×öµÄÄÇÑù¡£µ«ÏÖÔÚÈÃÎÒÃÇÊ¹ÓÃÒÔÏÂ·½·¨×¢²áĞÂµÄ
+	ç°åœ¨æˆ‘ä»¬éœ€è¦æ³¨å†Œæ–°çš„æ‹¦æˆªå™¨ï¼Œç„¶åè°ƒç”¨å®ƒï¼Œå› ä¸ºæˆ‘ä»¬åœ¨å‰é¢çš„ä¾‹å­ä¸­è°ƒç”¨çš„æ˜¯é»˜è®¤æ‹¦æˆªå™¨ã€‚è¦æ³¨å†Œä¸€ä¸ªæ–°çš„æ‹¦æˆªå™¨
+	æŠŠ<interceptors> ... </ interceptors>æ ‡ç­¾ç›´æ¥æ”¾ç½®åœ¨<package>æ ‡ç­¾ä¸‹çš„struts.xmlæ–‡ä»¶ä¸­å³å¯ã€‚
+	å¯¹äºé»˜è®¤æ‹¦æˆªå™¨ï¼Œä½ å¯ä»¥è·³è¿‡æ­¤æ­¥éª¤ï¼Œå°±åƒæˆ‘ä»¬å‰é¢çš„ç¤ºä¾‹ä¸­æ‰€åšçš„é‚£æ ·ã€‚ä½†ç°åœ¨è®©æˆ‘ä»¬ä½¿ç”¨ä»¥ä¸‹æ–¹æ³•æ³¨å†Œæ–°çš„
 		<struts>
 		 <package name="inter" namespace="/dynamic" extends="struts-default" >
 	      <interceptors>
-			<!-- ×¢²áÀ¹½ØÆ÷ -->
+			<!-- æ³¨å†Œæ‹¦æˆªå™¨ -->
 			<interceptor name="myInter2" class="com.leo.struts2.interceptor.MyInterceptor2 " ></interceptor>
-				<!-- 2×¢²áÀ¹½ØÆ÷Õ» -->
+				<!-- 2æ³¨å†Œæ‹¦æˆªå™¨æ ˆ -->
 				<interceptor-stack name="myStack">
-					<!-- ×Ô¶¨ÒåÀ¹½ØÆ÷ÒıÈë·Åµ½Ä¬ÈÏµÄÖ®Ç° -->
+					<!-- è‡ªå®šä¹‰æ‹¦æˆªå™¨å¼•å…¥æ”¾åˆ°é»˜è®¤çš„ä¹‹å‰ -->
 					<interceptor-ref name="myInter2">
-						<!-- Ö¸¶¨ÄÄĞ©·½·¨²»À¹½Ø
+						<!-- æŒ‡å®šå“ªäº›æ–¹æ³•ä¸æ‹¦æˆª
 							 <param name="excludeMethods">add,delete</param> -->
-							 <!-- Ö¸¶¨ÄÄĞ©·½·¨ĞèÒªÀ¹½Ø -->
+							 <!-- æŒ‡å®šå“ªäº›æ–¹æ³•éœ€è¦æ‹¦æˆª -->
 							 <param name="includeMethods">add,delete</param>
 					</interceptor-ref>
-					<!-- ÒıÓÃÄ¬ÈÏµÄÀ¹½ØÆ÷Õ»£¨20¸ö£© -->
+					<!-- å¼•ç”¨é»˜è®¤çš„æ‹¦æˆªå™¨æ ˆï¼ˆ20ä¸ªï¼‰ -->
 				<interceptor-ref name="defaultStack"></interceptor-ref>
 				</interceptor-stack>
 	      </interceptors>
-	      <!-- 3.Ö¸¶¨Ö¸¶¨µÄ°ü -->
+	      <!-- 3.æŒ‡å®šæŒ‡å®šçš„åŒ… -->
 	      <default-interceptor-ref name="myStack"></default-interceptor-ref>
 	      <action name="DemoAction_*" class="com.leo.struts2.dynamic.DemoAction" method="{1}">
 			<result name="result" type="dispatcher">/struts/index.jsp</result>
@@ -195,12 +195,12 @@ struts2£º
 	      
 	      </package>
 	</struts>
-½á¹ûÀàĞÍ£º
-	1.dispatcher½á¹ûÀàĞÍÊÇÄ¬ÈÏµÄÀàĞÍ£¬Èç¹ûÎ´Ö¸¶¨ÆäËû½á¹ûÀàĞÍ£¬ÔòÊ¹ÓÃ´ËÀàĞÍ¡£
-	ËüÓÃÓÚ×ª·¢µ½·şÎñÆ÷ÉÏµÄservlet£¬JSP£¬HTMLµÈÒ³Ãæ¡£ËüÊ¹ÓÃRequestDispatcher.forward()·½·¨¡£
-	2.redirect½á¹ûÀàĞÍredirect½á¹ûÀàĞÍµ÷ÓÃ±ê×¼µÄresponse.sendRedirect()·½·¨£¬Ê¹µÃä¯ÀÀÆ÷Ïò¸ø¶¨µÄÎ»ÖÃ´´½¨Ò»¸öĞÂÇëÇó¡£
-	ÎÒÃÇ¿ÉÒÔÔÚ<result...>ÔªËØµÄÖ÷ÌåÖĞ»ò×÷Îª<param name="location">µÄÔªËØÖĞ¸ø¶¨Î»ÖÃ¡£redirectÒ²Ö§³Öparse²ÎÊı£¬
-	3.freeMaker²»×öËµÃ÷
+ç»“æœç±»å‹ï¼š
+	1.dispatcherç»“æœç±»å‹æ˜¯é»˜è®¤çš„ç±»å‹ï¼Œå¦‚æœæœªæŒ‡å®šå…¶ä»–ç»“æœç±»å‹ï¼Œåˆ™ä½¿ç”¨æ­¤ç±»å‹ã€‚
+	å®ƒç”¨äºè½¬å‘åˆ°æœåŠ¡å™¨ä¸Šçš„servletï¼ŒJSPï¼ŒHTMLç­‰é¡µé¢ã€‚å®ƒä½¿ç”¨RequestDispatcher.forward()æ–¹æ³•ã€‚
+	2.redirectç»“æœç±»å‹redirectç»“æœç±»å‹è°ƒç”¨æ ‡å‡†çš„response.sendRedirect()æ–¹æ³•ï¼Œä½¿å¾—æµè§ˆå™¨å‘ç»™å®šçš„ä½ç½®åˆ›å»ºä¸€ä¸ªæ–°è¯·æ±‚ã€‚
+	æˆ‘ä»¬å¯ä»¥åœ¨<result...>å…ƒç´ çš„ä¸»ä½“ä¸­æˆ–ä½œä¸º<param name="location">çš„å…ƒç´ ä¸­ç»™å®šä½ç½®ã€‚redirectä¹Ÿæ”¯æŒparseå‚æ•°ï¼Œ
+	3.freeMakerä¸åšè¯´æ˜
 	<?xml version="1.0" encoding="UTF-8"?>
 	<!DOCTYPE struts PUBLIC
 	   "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
@@ -208,20 +208,20 @@ struts2£º
 	<struts>
 		<package name="result" extends="struts-default" namespace="dynamic"
 			>
-			<!-- ÇëÇóµÄÆäÊµÊÇÇëÇóµÃaction µÄnameÊôĞÔ -->
+			<!-- è¯·æ±‚çš„å…¶å®æ˜¯è¯·æ±‚å¾—action çš„nameå±æ€§ -->
 			<action name="result" class="com.leo.struts2.ResultAction" method="execute">
-				<!-- ³É¹¦ºó½øĞĞ×ª·¢ -->
+				<!-- æˆåŠŸåè¿›è¡Œè½¬å‘ -->
 				<result name="success" type="dispatcher">/dynamic/index.jsp</result>
-				<!-- ³É¹¦ºó½øĞĞÖØ¶¨Ïò -->
+				<!-- æˆåŠŸåè¿›è¡Œé‡å®šå‘ -->
 				<result name="logindirect" type="redirect">/dynamic/index.jsp</result>
-				<!--×ª·¢µ½Action ÖĞ ĞèÒªÅäÖÃActionname²ÎÊıºÍnamespace²ÎÊıµÄÖµ ×ª·¢Ê±´ø²ÎÊıµÄÊ¹ÓÃ-->
+				<!--è½¬å‘åˆ°Action ä¸­ éœ€è¦é…ç½®Actionnameå‚æ•°å’Œnamespaceå‚æ•°çš„å€¼ è½¬å‘æ—¶å¸¦å‚æ•°çš„ä½¿ç”¨-->
 				<result name="success" type="chain">
 					<param name="actionName">LoginAction</param>
 					<param name="namespace">/</param>
-				<!--ognlÔÚÅäÖÃÎÄ¼şµÄÊ¹ÓÃ Ìí¼ÓµÄ´ø²ÎÊıµÄname strutsÖĞ²»ÊÇÄ¬ÈÏµÄ¾Í»á×÷ÎªÒ»¸ö²ÎÊıÀ´´¦Àí -->
+				<!--ognlåœ¨é…ç½®æ–‡ä»¶çš„ä½¿ç”¨ æ·»åŠ çš„å¸¦å‚æ•°çš„name strutsä¸­ä¸æ˜¯é»˜è®¤çš„å°±ä¼šä½œä¸ºä¸€ä¸ªå‚æ•°æ¥å¤„ç† -->
 					<param name="name">${name}</param>
 				</result>
-				<!--ÖØ¶¨Ïòµ½actionµØÖ·À¸Òª·¢Éú¸Ä±ä-->
+				<!--é‡å®šå‘åˆ°actionåœ°å€æ è¦å‘ç”Ÿæ”¹å˜-->
 				<result name="success" type="redirectAction">
 					<param name="actionName">LoginAction</param>
 					<param name="namespace">/</param>
@@ -232,63 +232,63 @@ struts2£º
 		<package name="Api" extends="struts-default" 
 			>
 			<action name="GetApiAction" class="com.leo.struts2.GetApiAction" method="execute">
-				<!-- ³É¹¦ºó½øĞĞ×ª·¢ -->
+				<!-- æˆåŠŸåè¿›è¡Œè½¬å‘ -->
 				<result name="success" type="dispatcher">/struts/indexApi.jsp</result>
 				
 			</action>
 			
 		</package>
 	</struts>
-	½á¹ûÀàĞÍÓĞÈçÏÂµÄÕâĞ©ÀàĞÍ£º<request name="" type="">
+	ç»“æœç±»å‹æœ‰å¦‚ä¸‹çš„è¿™äº›ç±»å‹ï¼š<request name="" type="">
 		<result name="success" type="dispatcher">/struts/indexApi.jsp</result>
-		typeÓĞÒÔÏÂÀàĞÍ£ºchain:´¦ÀíActionÁ´:
-					<!--×ª·¢µ½Action ÖĞ ĞèÒªÅäÖÃActionname²ÎÊıºÍnamespace²ÎÊıµÄÖµ ×ª·¢Ê±´ø²ÎÊıµÄÊ¹ÓÃ-->
+		typeæœ‰ä»¥ä¸‹ç±»å‹ï¼šchain:å¤„ç†Actioné“¾:
+					<!--è½¬å‘åˆ°Action ä¸­ éœ€è¦é…ç½®Actionnameå‚æ•°å’Œnamespaceå‚æ•°çš„å€¼ è½¬å‘æ—¶å¸¦å‚æ•°çš„ä½¿ç”¨-->
 					<result name="success" type="chain">
 						<param name="actionName">LoginAction</param>
 						<param name="namespace">/</param>
-					<!--ognlÔÚÅäÖÃÎÄ¼şµÄÊ¹ÓÃ Ìí¼ÓµÄ´ø²ÎÊıµÄname strutsÖĞ²»ÊÇÄ¬ÈÏµÄ¾Í»á×÷ÎªÒ»¸ö²ÎÊıÀ´´¦Àí -->
+					<!--ognlåœ¨é…ç½®æ–‡ä»¶çš„ä½¿ç”¨ æ·»åŠ çš„å¸¦å‚æ•°çš„name strutsä¸­ä¸æ˜¯é»˜è®¤çš„å°±ä¼šä½œä¸ºä¸€ä¸ªå‚æ•°æ¥å¤„ç† -->
 						<param name="name">${name}</param>
 					</result>
-				dispatcher£º×ªÏò£º
+				dispatcherï¼šè½¬å‘ï¼š
 					<result name="success" type="dispatcher">/struts/indexApi.jsp</result>
-				redirect£ºÖØ¶¨Ïò
+				redirectï¼šé‡å®šå‘
 					<result name="success" type="redirtect">/struts/indexApi.jsp</result>
-				redirectAction:ÖØ¶¨Ïòµ½ActionÖĞ£º
-					<!--ÖØ¶¨Ïòµ½actionµØÖ·À¸Òª·¢Éú¸Ä±ä-->
+				redirectAction:é‡å®šå‘åˆ°Actionä¸­ï¼š
+					<!--é‡å®šå‘åˆ°actionåœ°å€æ è¦å‘ç”Ÿæ”¹å˜-->
 					<result name="success" type="redirectAction">
 						<param name="actionName">LoginAction</param>
 						<param name="namespace">/</param>
 					</result>
 			
 
-ÖµÕ»/OGNL:
-	OGNL£¨Object-Graph Navigation Language£¬¶ÔÏóÍ¼µ¼º½ÓïÑÔ£©ÊÇÒ»ÖÖÇ¿´óµÄ±í´ïÊ½ÓïÑÔ£¬ÓÃÓÚÒıÓÃºÍ²Ù×÷ÖµÕ»ÉÏµÄÊı¾İ£¬»¹¿ÉÓÃÓÚÊı¾İ´«ÊäºÍÀàĞÍ×ª»»¡£
-		OGNL·Ç³£ÀàËÆÓÚJSP±í´ïÊ½ÓïÑÔ¡£OGNL»ùÓÚÉÏÏÂÎÄÖĞ´æÓĞ¸ù¶ÔÏó»òÄ¬ÈÏ¶ÔÏóµÄÀíÄî£¬Ê¹ÓÃ±ê¼Ç·ûºÅ£¨¼´#ºÅ£©À´ÒıÓÃÄ¬ÈÏ»ò¸ù¶ÔÏóµÄÊôĞÔ¡£
-		ÈçÇ°ÃæËùÊö£¬OGNLÊÇ»ùÓÚÉÏÏÂÎÄµÄ£¬¶øStruts¹¹½¨ÁËÒ»¸öActionContextÓ³ÉäÒÔ¹©OGNLÊ¹ÓÃ¡£ ActionContextÓ³Éä°üº¬ÒÔÏÂÄÚÈİ£º
-		Ó¦ÓÃ³ÌĞò - Ó¦ÓÃ³ÌĞò×÷ÓÃÓò±äÁ¿
-		»á»° - »á»°×÷ÓÃÓò±äÁ¿
-		¸ù/ÖµÕ» - ËùÓĞµÄaction±äÁ¿¶¼´æ´¢ÔÚÕâÀï
-		ÇëÇó - ÇëÇó×÷ÓÃÓò±äÁ¿
-		²ÎÊı - ÇëÇó²ÎÊı
-		ÊôĞÔ - ´æ´¢ÔÚÒ³Ãæ£¬ÇëÇó£¬»á»°ºÍÓ¦ÓÃ³ÌĞò×÷ÓÃÓòÖĞµÄÊôĞÔ	
-	Àı×Ó£º
+å€¼æ ˆ/OGNL:
+	OGNLï¼ˆObject-Graph Navigation Languageï¼Œå¯¹è±¡å›¾å¯¼èˆªè¯­è¨€ï¼‰æ˜¯ä¸€ç§å¼ºå¤§çš„è¡¨è¾¾å¼è¯­è¨€ï¼Œç”¨äºå¼•ç”¨å’Œæ“ä½œå€¼æ ˆä¸Šçš„æ•°æ®ï¼Œè¿˜å¯ç”¨äºæ•°æ®ä¼ è¾“å’Œç±»å‹è½¬æ¢ã€‚
+		OGNLéå¸¸ç±»ä¼¼äºJSPè¡¨è¾¾å¼è¯­è¨€ã€‚OGNLåŸºäºä¸Šä¸‹æ–‡ä¸­å­˜æœ‰æ ¹å¯¹è±¡æˆ–é»˜è®¤å¯¹è±¡çš„ç†å¿µï¼Œä½¿ç”¨æ ‡è®°ç¬¦å·ï¼ˆå³#å·ï¼‰æ¥å¼•ç”¨é»˜è®¤æˆ–æ ¹å¯¹è±¡çš„å±æ€§ã€‚
+		å¦‚å‰é¢æ‰€è¿°ï¼ŒOGNLæ˜¯åŸºäºä¸Šä¸‹æ–‡çš„ï¼Œè€ŒStrutsæ„å»ºäº†ä¸€ä¸ªActionContextæ˜ å°„ä»¥ä¾›OGNLä½¿ç”¨ã€‚ ActionContextæ˜ å°„åŒ…å«ä»¥ä¸‹å†…å®¹ï¼š
+		åº”ç”¨ç¨‹åº - åº”ç”¨ç¨‹åºä½œç”¨åŸŸå˜é‡
+		ä¼šè¯ - ä¼šè¯ä½œç”¨åŸŸå˜é‡
+		æ ¹/å€¼æ ˆ - æ‰€æœ‰çš„actionå˜é‡éƒ½å­˜å‚¨åœ¨è¿™é‡Œ
+		è¯·æ±‚ - è¯·æ±‚ä½œç”¨åŸŸå˜é‡
+		å‚æ•° - è¯·æ±‚å‚æ•°
+		å±æ€§ - å­˜å‚¨åœ¨é¡µé¢ï¼Œè¯·æ±‚ï¼Œä¼šè¯å’Œåº”ç”¨ç¨‹åºä½œç”¨åŸŸä¸­çš„å±æ€§	
+	ä¾‹å­ï¼š
 	/**
-		 * ·ÃÎÊÖµÕ»
+		 * è®¿é—®å€¼æ ˆ
 		 */
 		ValueStack stack=ActionContext.getContext().getValueStack();
 		Map<String , Object> context=new HashMap<>();
 		context.put("key1", new String("yuesnjnjkv"));
 		context .put("key2", new String("122333"));
-		//Ñ¹Õ»
+		//å‹æ ˆ
 		stack.push(context);
-		System.out.println(stack.size()+"´óĞ¡");
-		//»ñÈ¡ActioncontextÀ´´¢´æÊı¾İ
+		System.out.println(stack.size()+"å¤§å°");
+		//è·å–Actioncontextæ¥å‚¨å­˜æ•°æ®
 		ActionContext.getContext().put("list", "12ioi");
-		//Ç°Ì¨»ñÈ¡Êı¾İ£º
+		//å‰å°è·å–æ•°æ®ï¼š
 		//${list};
 		//<s:property value="list">
 	/**
-	 * »ñµÃ¸ùÊôĞÔÖµ
+	 * è·å¾—æ ¹å±æ€§å€¼
 	 * @throws OgnlException
 	 */
 	@Test
@@ -298,12 +298,12 @@ struts2£º
 		map.put("user1", new User("jack",12));
 		map.put("user2", new User("we", 20));
 		OgnlContext oContext=new OgnlContext();
-		//½«root×÷Îªroot²¿·Ö
+		//å°†rootä½œä¸ºrootéƒ¨åˆ†
 		oContext.setRoot(root);
 		oContext.setValues(map);
-		//ÊéĞ´OGNL
+		//ä¹¦å†™OGNL
 		//Ognl.getValue("", oContext, oContext.getRoot());
-		//È¡³öUser ÖĞ¶ÔÏóµÄÊôĞÔ
+		//å–å‡ºUser ä¸­å¯¹è±¡çš„å±æ€§
 		String name=(String)Ognl.getValue("username",oContext,oContext.getRoot());
 		System.out.println(name);
 	
@@ -311,7 +311,7 @@ struts2£º
 		
  	}
 	/**
-	 * »ñÈ¡¸ù¶ÔÓ¦µÃÕ»Öµ
+	 * è·å–æ ¹å¯¹åº”å¾—æ ˆå€¼
 	 * @throws OgnlException
 	 */
 	@Test
@@ -323,8 +323,8 @@ struts2£º
 		OgnlContext oContext=new OgnlContext();
 		oContext.setRoot(user);
 		oContext.setValues(map);
-		//È¡³öcontextÊôĞÔ¾ÍÊÇ°Ñmap¶ÔÏóÌí¼Óµ½ÀïÃæ
-		//»ñÈ¡context¶ÔÏóµÄÊôĞÔÖµ
+		//å–å‡ºcontextå±æ€§å°±æ˜¯æŠŠmapå¯¹è±¡æ·»åŠ åˆ°é‡Œé¢
+		//è·å–contextå¯¹è±¡çš„å±æ€§å€¼
 		String name2=(String)Ognl.getValue("#user1.username",oContext,oContext.getRoot());
 		System.out.println(name2);
 		int name23=(int)Ognl.getValue("#user1.age",oContext,oContext.getRoot());
@@ -332,7 +332,7 @@ struts2£º
 	}
 	
 	/**
-	 * =¸³Öµ
+	 * =èµ‹å€¼
 	 */
 	@Test
 	public void test2() throws OgnlException {
@@ -343,14 +343,14 @@ struts2£º
 		OgnlContext oContext=new OgnlContext();
 		oContext.setRoot(user);
 		oContext.setValues(map);
-		//¸³ÖµÈ»ºóÔÚÈ¡Öµ
-		String name2=(String)Ognl.getValue("#user1.username='ÕÅÈı'",oContext,oContext.getRoot());
+		//èµ‹å€¼ç„¶ååœ¨å–å€¼
+		String name2=(String)Ognl.getValue("#user1.username='å¼ ä¸‰'",oContext,oContext.getRoot());
 		System.out.println(name2);
 		int name23=(int)Ognl.getValue("#user1.age=122",oContext,oContext.getRoot());
 		System.out.println(name23);
 	}
 	/**
-	 * µ÷ÓÃ·½·¨£ºÍ¨¹ı·½·¨ÉèÖÃÊôĞÔ
+	 * è°ƒç”¨æ–¹æ³•ï¼šé€šè¿‡æ–¹æ³•è®¾ç½®å±æ€§
 	 * 
 	 * 
 	 */
@@ -367,28 +367,28 @@ struts2£º
 		System.out.println(name);
 		String name1=(String )Ognl.getValue("setUsername('nic'),getUsername()",  oContext,oContext.getRoot());
 		System.out.println(name1);
-		//µ÷ÓÃ¾²Ì¬ÊôĞÔ
+		//è°ƒç”¨é™æ€å±æ€§
 		Double pi=(Double)Ognl.getValue("@@PI", oContext,oContext.getRoot());
 		System.out.println(pi);
 	}
 	/**
-	 * È¡³ölist map¼¯ºÏ
+	 * å–å‡ºlist mapé›†åˆ
 	 */
 	@Test
 	public void test4() throws Exception{
-		//×¼±¸ONGLContext
-			//×¼±¸Root
+		//å‡†å¤‡ONGLContext
+			//å‡†å¤‡Root
 			User rootUser = new User("tom",18);
-			//×¼±¸Context
+			//å‡†å¤‡Context
 		Map<String,User> context = new HashMap<String,User>();
 		context.put("user1", new User("jack",18));
 		context.put("user2", new User("rose",22));
 		OgnlContext oc = new OgnlContext();
 		oc.setRoot(rootUser);
 		oc.setValues(context);
-		//ÊéĞ´OGNL
+		//ä¹¦å†™OGNL
 		
-		//´´½¨list¶ÔÏó
+		//åˆ›å»ºlistå¯¹è±¡
 		Integer size = (Integer) Ognl.getValue("{'tom','jerry','jack','rose'}.size()", oc, oc.getRoot());
 		String name = (String) Ognl.getValue("{'tom','jerry','jack','rose'}[0]", oc, oc.getRoot());
 		String name2 = (String) Ognl.getValue("{'tom','jerry','jack','rose'}.get(1)", oc, oc.getRoot());
@@ -396,7 +396,7 @@ struts2£º
 		System.out.println(size);
 		System.out.println(name);
 		System.out.println(name2);
-		//´´½¨Map¶ÔÏó
+		//åˆ›å»ºMapå¯¹è±¡
 		Integer size2 = (Integer) Ognl.getValue("#{'name':'tom','age':18}.size()", oc, oc.getRoot());
 		String name3  = (String) Ognl.getValue("#{'name':'tom','age':18}['name']", oc, oc.getRoot());
 		Integer age  = (Integer) Ognl.getValue("#{'name':'tom','age':18}.get('age')", oc, oc.getRoot());
@@ -404,41 +404,41 @@ struts2£º
 		System.out.println(name3);
 		System.out.println(age);
 	}	
-»ñÈ¡Ô­ÉúAPI:
-	ÕâĞ©·½Ê½Ö»ÊÇÊµÏÖActionSupportÀà¼´¿É»ñÈ¡ÒÔÏÂ¶ÔÏó£º
-	·½Ê½Ò»£ºÍ¨¹ıActionContext
-	//actionContextÍÆ¼öÊ¹ÓÃ´úÌæmap
+è·å–åŸç”ŸAPI:
+	è¿™äº›æ–¹å¼åªæ˜¯å®ç°ActionSupportç±»å³å¯è·å–ä»¥ä¸‹å¯¹è±¡ï¼š
+	æ–¹å¼ä¸€ï¼šé€šè¿‡ActionContext
+	//actionContextæ¨èä½¿ç”¨ä»£æ›¿map
 			ActionContext context=ActionContext.getContext();
 			Map<String, Object> sessionScope=ActionContext.getContext().getSession();
-			//²»ÍÆ¼öÊ¹ÓÃrequestÓò°ü×° 
+			//ä¸æ¨èä½¿ç”¨requeståŸŸåŒ…è£… 
 			Map<String, Object> requestScope=(Map<String, Object>) context.get("request");
 				
 			Map<String , Object> responseScope=(Map<String, Object>) context.get("response");
-			//ÓÃÓÚ»ñÈ¡Ò³ÃæÓò
+			//ç”¨äºè·å–é¡µé¢åŸŸ
 			Map<String , Object> applicationScope=context.getApplication();
-			//Õâ¸öÊÇ
+			//è¿™ä¸ªæ˜¯
 			Map<String, Object> servletContext=(Map<String, Object>) context.get("ServletContext");
 			
 			requestScope.put("name","123");
 			applicationScope.put("name", "124");
 			sessionScope.put("name", "1333");
-		µ÷ÓÃÊ±Ö±½ÓÓÃ${requestScope.name};
-	·½Ê½¶ş£ºÍ¨¹ıServlertActionContextÀ´»ñÈ¡ServlertAPI£»
+		è°ƒç”¨æ—¶ç›´æ¥ç”¨${requestScope.name};
+	æ–¹å¼äºŒï¼šé€šè¿‡ServlertActionContextæ¥è·å–ServlertAPIï¼›
 		
 		HttpServletRequest request=ServletActionContext.getRequest();
 		Map<String,String[]> map=request.getParameterMap();
 		for(String key:map.keySet()){
 			String[] value=map.get(key);
 		}
-		//ÏòrequestÓòÖĞÌí¼ÓÖµ£º
+		//å‘requeståŸŸä¸­æ·»åŠ å€¼ï¼š
 			request.setAttribute("name","value");
-		//ÏòsessionÓò´æÖµ£º
+		//å‘sessionåŸŸå­˜å€¼ï¼š
 			request.getSession().setAttribute("sessionname","value");
-		//ÏòApplicationÓòÖĞ´æÈë£º
+		//å‘ApplicationåŸŸä¸­å­˜å…¥ï¼š
 			ServletActionContext.getServletContext().setAtrribute("attrname","attvalue");
 
-	µ÷ÓÃÊ±ÓÃ£º
-±êÇ©£º
+	è°ƒç”¨æ—¶ç”¨ï¼š
+æ ‡ç­¾ï¼š
 		<s:if test="%{false}">
 		    <div>Will Not Be Executed</div>
 		</s:if>
@@ -452,7 +452,7 @@ struts2£º
 		
 	   <s:text name="Please fill in the form below:" />
 	   <s:form action="hello" method="post" enctype="multipart/form-data">
-	  <!-- ±íµ¥Òş²ØÏî -->
+	  <!-- è¡¨å•éšè—é¡¹ -->
 	   <s:hidden name="secret" value="abracadabra"/>
 	   <s:textfield key="email.from" name="from" />
 	   <s:password key="email.password" name="password" />
@@ -462,12 +462,12 @@ struts2£º
 	   <s:label for="attachment" value="Attachment"/>
 	   <s:file name="attachment" accept="text/html,text/plain" />
 	   <s:token />
-	   <!-- µ¥Ñ¡¿ò -->
+	   <!-- å•é€‰æ¡† -->
 	   <s:radio label="Gender" name="gender" list="{'male','female'}" />
-	   <!-- ¸´Ñ¡¿ò -->
+	   <!-- å¤é€‰æ¡† -->
 	   <s:checkboxlist label="Hobbies" name="hobbies"
 	   list="{'sports','tv','shopping'}" />
-		<!-- ÏÂÀ­¿ò±êÇ© -->
+		<!-- ä¸‹æ‹‰æ¡†æ ‡ç­¾ -->
 	    <s:select name="username" label="Username"
 		 list="{'Mike','John','Smith'}" />
 
@@ -489,7 +489,7 @@ struts2£º
 		 list="{'Technical','Other'}" doubleName="occupations2"
 		 doubleList="top == 'Technical' ? 
 		 {'I.T', 'Hardware'} : {'Accounting', 'H.R'}" />
-	       <!--Ajax±êÇ© struts2-dojo-plugin-2.2.3.jar -->
+	       <!--Ajaxæ ‡ç­¾ struts2-dojo-plugin-2.2.3.jar -->
 			       <s:form>
 		      <sx:autocompleter label="Favourite Colour"
 			 list="{'red','green','blue'}" />
@@ -508,37 +508,37 @@ struts2£º
 		      </sx:tabbedpanel>
 		   </s:form>
 	       //
-	       ËµÃ÷£º
-	       s:headÉú³ÉStruts2 Ó¦ÓÃ³ÌĞòËùĞèµÄjavascriptºÍstylesheetÔªËØ¡£
-		½ÓÏÂÀ´£¬s:divºÍs:textÔªËØ¡£s:divÓÃÓÚ³ÊÏÖHTML DivÔªËØ¡£
-		Õâ¶ÔÓÚ²»Ï²»¶½«HTMLºÍStruts±êÇ©»ìºÏÔÚÒ»ÆğµÄÈËºÜÓĞÓÃ£¬ËûÃÇ¿ÉÑ¡ÔñÊ¹ÓÃs:divÀ´äÖÈ¾div¡£
-		ÈçÍ¼ËùÊ¾£¬s:textÓÃÓÚÔÚÆÁÄ»ÉÏ³ÊÏÖÎÄ±¾¡£
-		½ÓÏÂÀ´ÊÇÏàÀàËÆµÄs:form±êÇ©¡£s:form±êÇ©¾ßÓĞÈ·¶¨ÔÚºÎ´¦Ìá½»±íµ¥µÄactionÊôĞÔ¡£
-		ÒòÎªÔÚ±íµ¥ÖĞÓĞÒ»¸öÎÄ¼şÉÏ´«ÔªËØ£¬ÎÒÃÇ±ØĞë½«enctypeÉèÖÃÎªmultipart¡£·ñÔò£¬¾ÍÁô¿Õ¡£
-		ÔÚ±íµ¥±êÇ©µÄÄ©Î²£¬ÓĞs:submit±êÇ©£¬ÕâÓÃÓÚÌá½»±íµ¥¡£Ìá½»±íµ¥Ê±£¬ËùÓĞ±íµ¥Öµ¶¼½«Ìá½»µ½s:form±êÇ©ÖĞÖ¸¶¨µÄaction¡£
-		ÔÚs:form±êÇ©ÖĞ£¬ÎÒÃÇÓĞÒ»¸ö³ÆÎªsecretµÄÒş²ØÊôĞÔ£¬´ËÔªËØ¶Ô×îÖÕÓÃ»§²»¿É¼û£¬²¢ÓÃÓÚ½«×´Ì¬´ÓÒ»¸öÊÓÍ¼´«µİµ½ÁíÒ»¸öÊÓÍ¼¡£
-		s:label£¬s:textfield£¬s:passwordºÍs:textarea±êÇ©¡£ÕâĞ©·Ö±ğÓÃÓÚäÖÈ¾±êÇ©£¬ÊäÈë×Ö¶Î£¬ÃÜÂëºÍÎÄ±¾ÇøÓò¡£
-		¡°key¡±ÊôĞÔÓÃÓÚ´ÓÊôĞÔÎÄ¼şÖĞÌáÈ¡ÕâĞ©¿Ø¼şµÄ±êÇ©¡£ÎÒÃÇÒÑ¾­ÔÚStruts2±¾µØ»¯/¹ú¼Ê»¯£¨i18n£©Ò»ÕÂÖĞÌÖÂÛÁËÕâ¸öÌØĞÔ¡£
-		È»ºóÊÇs:file±êÇ©£¬Ëü³ÊÏÖÊäÈëÎÄ¼şÉÏ´«µÄ×é¼ş£¬´Ë×é¼şÔÊĞíÓÃ»§ÉÏ´«ÎÄ¼ş¡£
-		ÔÚÕâ¸öÀı×ÓÖĞ£¬ÎÒÃÇÊ¹ÓÃÁËs:file±êÇ©µÄ¡°accept¡±²ÎÊıÀ´Ö¸¶¨ÔÊĞíÉÏ´«ÄÄĞ©ÎÄ¼şÀàĞÍ¡£
-		×îºó£¬s:token±êÇ©¡£token±êÇ©Éú³ÉÎ¨Ò»µÄtoken£¬ÓÃÓÚ²éÃ÷±íµ¥ÊÇ·ñÒÑ±»Á½´ÎÌá½»¡£³ÊÏÖ±íµ¥Ê±£¬»á½«Ò»¸öÒş²Ø±äÁ¿·ÅÖÃÎªtoken£¨ÁîÅÆ£©Öµ¡£
-		ÀıÈçÁîÅÆÊÇ¡°ABC¡±£¬Ìá½»´Ë±íµ¥Ê±£¬Struts Fitler½«¸ù¾İ´æ´¢ÔÚ»á»°ÖĞµÄÁîÅÆ½øĞĞ¼ì²é¡£Èç¹ûÆ¥Åä£¬Ôò´Ó»á»°ÖĞÉ¾³ıÁîÅÆ¡£ÏÖÔÚ£¬Èç¹û±íµ¥ÒâÍâ±»ÖØĞÂÌá½»£¨Í¨¹ıË¢ĞÂ»òÍ¨¹ıµã»÷ä¯ÀÀÆ÷ºóÍË°´Å¥£©£¬±íµ¥½«ÖØĞÂÌá½»£¬ÓÃ¡°ABC¡±×÷ÎªÁîÅÆ¡£ÔÚÕâÖÖÇé¿öÏÂ£¬¹ıÂËÆ÷½«¶ÔÕÕ´æ´¢ÔÚ»á»°ÖĞµÄÁîÅÆÔÙ´Î½øĞĞ¼ì²é¡£µ«ÊÇÒòÎªÁîÅÆ¡°ABC¡±ÒÑ¾­´Ó»á»°ÖĞÉ¾³ı£¬Ëü½«²»Æ¥Åä£¬Struts¹ıÂËÆ÷½«¾Ü¾øÇëÇó¡£
+	       è¯´æ˜ï¼š
+	       s:headç”ŸæˆStruts2 åº”ç”¨ç¨‹åºæ‰€éœ€çš„javascriptå’Œstylesheetå…ƒç´ ã€‚
+		æ¥ä¸‹æ¥ï¼Œs:divå’Œs:textå…ƒç´ ã€‚s:divç”¨äºå‘ˆç°HTML Divå…ƒç´ ã€‚
+		è¿™å¯¹äºä¸å–œæ¬¢å°†HTMLå’ŒStrutsæ ‡ç­¾æ··åˆåœ¨ä¸€èµ·çš„äººå¾ˆæœ‰ç”¨ï¼Œä»–ä»¬å¯é€‰æ‹©ä½¿ç”¨s:divæ¥æ¸²æŸ“divã€‚
+		å¦‚å›¾æ‰€ç¤ºï¼Œs:textç”¨äºåœ¨å±å¹•ä¸Šå‘ˆç°æ–‡æœ¬ã€‚
+		æ¥ä¸‹æ¥æ˜¯ç›¸ç±»ä¼¼çš„s:formæ ‡ç­¾ã€‚s:formæ ‡ç­¾å…·æœ‰ç¡®å®šåœ¨ä½•å¤„æäº¤è¡¨å•çš„actionå±æ€§ã€‚
+		å› ä¸ºåœ¨è¡¨å•ä¸­æœ‰ä¸€ä¸ªæ–‡ä»¶ä¸Šä¼ å…ƒç´ ï¼Œæˆ‘ä»¬å¿…é¡»å°†enctypeè®¾ç½®ä¸ºmultipartã€‚å¦åˆ™ï¼Œå°±ç•™ç©ºã€‚
+		åœ¨è¡¨å•æ ‡ç­¾çš„æœ«å°¾ï¼Œæœ‰s:submitæ ‡ç­¾ï¼Œè¿™ç”¨äºæäº¤è¡¨å•ã€‚æäº¤è¡¨å•æ—¶ï¼Œæ‰€æœ‰è¡¨å•å€¼éƒ½å°†æäº¤åˆ°s:formæ ‡ç­¾ä¸­æŒ‡å®šçš„actionã€‚
+		åœ¨s:formæ ‡ç­¾ä¸­ï¼Œæˆ‘ä»¬æœ‰ä¸€ä¸ªç§°ä¸ºsecretçš„éšè—å±æ€§ï¼Œæ­¤å…ƒç´ å¯¹æœ€ç»ˆç”¨æˆ·ä¸å¯è§ï¼Œå¹¶ç”¨äºå°†çŠ¶æ€ä»ä¸€ä¸ªè§†å›¾ä¼ é€’åˆ°å¦ä¸€ä¸ªè§†å›¾ã€‚
+		s:labelï¼Œs:textfieldï¼Œs:passwordå’Œs:textareaæ ‡ç­¾ã€‚è¿™äº›åˆ†åˆ«ç”¨äºæ¸²æŸ“æ ‡ç­¾ï¼Œè¾“å…¥å­—æ®µï¼Œå¯†ç å’Œæ–‡æœ¬åŒºåŸŸã€‚
+		â€œkeyâ€å±æ€§ç”¨äºä»å±æ€§æ–‡ä»¶ä¸­æå–è¿™äº›æ§ä»¶çš„æ ‡ç­¾ã€‚æˆ‘ä»¬å·²ç»åœ¨Struts2æœ¬åœ°åŒ–/å›½é™…åŒ–ï¼ˆi18nï¼‰ä¸€ç« ä¸­è®¨è®ºäº†è¿™ä¸ªç‰¹æ€§ã€‚
+		ç„¶åæ˜¯s:fileæ ‡ç­¾ï¼Œå®ƒå‘ˆç°è¾“å…¥æ–‡ä»¶ä¸Šä¼ çš„ç»„ä»¶ï¼Œæ­¤ç»„ä»¶å…è®¸ç”¨æˆ·ä¸Šä¼ æ–‡ä»¶ã€‚
+		åœ¨è¿™ä¸ªä¾‹å­ä¸­ï¼Œæˆ‘ä»¬ä½¿ç”¨äº†s:fileæ ‡ç­¾çš„â€œacceptâ€å‚æ•°æ¥æŒ‡å®šå…è®¸ä¸Šä¼ å“ªäº›æ–‡ä»¶ç±»å‹ã€‚
+		æœ€åï¼Œs:tokenæ ‡ç­¾ã€‚tokenæ ‡ç­¾ç”Ÿæˆå”¯ä¸€çš„tokenï¼Œç”¨äºæŸ¥æ˜è¡¨å•æ˜¯å¦å·²è¢«ä¸¤æ¬¡æäº¤ã€‚å‘ˆç°è¡¨å•æ—¶ï¼Œä¼šå°†ä¸€ä¸ªéšè—å˜é‡æ”¾ç½®ä¸ºtokenï¼ˆä»¤ç‰Œï¼‰å€¼ã€‚
+		ä¾‹å¦‚ä»¤ç‰Œæ˜¯â€œABCâ€ï¼Œæäº¤æ­¤è¡¨å•æ—¶ï¼ŒStruts Fitlerå°†æ ¹æ®å­˜å‚¨åœ¨ä¼šè¯ä¸­çš„ä»¤ç‰Œè¿›è¡Œæ£€æŸ¥ã€‚å¦‚æœåŒ¹é…ï¼Œåˆ™ä»ä¼šè¯ä¸­åˆ é™¤ä»¤ç‰Œã€‚ç°åœ¨ï¼Œå¦‚æœè¡¨å•æ„å¤–è¢«é‡æ–°æäº¤ï¼ˆé€šè¿‡åˆ·æ–°æˆ–é€šè¿‡ç‚¹å‡»æµè§ˆå™¨åé€€æŒ‰é’®ï¼‰ï¼Œè¡¨å•å°†é‡æ–°æäº¤ï¼Œç”¨â€œABCâ€ä½œä¸ºä»¤ç‰Œã€‚åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œè¿‡æ»¤å™¨å°†å¯¹ç…§å­˜å‚¨åœ¨ä¼šè¯ä¸­çš„ä»¤ç‰Œå†æ¬¡è¿›è¡Œæ£€æŸ¥ã€‚ä½†æ˜¯å› ä¸ºä»¤ç‰Œâ€œABCâ€å·²ç»ä»ä¼šè¯ä¸­åˆ é™¤ï¼Œå®ƒå°†ä¸åŒ¹é…ï¼ŒStrutsè¿‡æ»¤å™¨å°†æ‹’ç»è¯·æ±‚ã€‚
 ///
 <struts>
 <constant name="struts.devMode" value="false" />
-   <!-- name±ØĞëÔªËØ£¬ÎªpackageÎ¨Ò»±êÊ¹£¬extendsÊÇÖÆ¶¨¼Ì³ĞÁíÒ»¸ö°üµÄÅäÖÃ -->
+   <!-- nameå¿…é¡»å…ƒç´ ï¼Œä¸ºpackageå”¯ä¸€æ ‡ä½¿ï¼Œextendsæ˜¯åˆ¶å®šç»§æ‰¿å¦ä¸€ä¸ªåŒ…çš„é…ç½® -->
    <package name="helloworld" extends="struts-default" namespace="hello" >
      <action name="index">
      	<result>/index.jsp</result>
      </action>
-      <!-- ±ê×¼µÄÊ¹ÓÃ£º-->
+      <!-- æ ‡å‡†çš„ä½¿ç”¨ï¼š-->
       <action name="Hello" 
             class="com.leo.struts2.HelloWordAction"
             method="execute">
             <result name="SUCCESS">/struts/Hello.jsp</result>
       </action>
      
-      <!-- ¹ıÂËÆ÷µÄÊ¹ÓÃ 
+      <!-- è¿‡æ»¤å™¨çš„ä½¿ç”¨ 
       <interceptors>
          <interceptor name="intercept"
             class="com.leo.struts2.Intercept" />
@@ -555,18 +555,18 @@ struts2£º
    <!--  
    -->
      <package name="mylogin" extends="struts-default">
-      <!-- ±ê×¼µÄÊ¹ÓÃ£º-->
+      <!-- æ ‡å‡†çš„ä½¿ç”¨ï¼š-->
       <action name="userAction" 
             class="com.leo.struts2.UserAction"
             method="regist">
             <result name="input">/struts/indexlogin.jsp</result>
             <result>/struts/loginsucess.jsp</result>
-            <!-- -³å¶¨Ïò
+            <!-- -å†²å®šå‘
             <result name="success" type="redirect">
             	<param name="location">
             		/struts/other.jsp
              </result>-->
-             <!-- -×ª·¢dispatcher
+             <!-- -è½¬å‘dispatcher
             <result name="success" type="dispatcher">
             	<param name="location">
             		/struts/other.jsp
@@ -581,38 +581,38 @@ struts2£º
       	<result name="success">/struts/ognl.jsp</result>
       	</action>
       </package>
-      <!-- ÎÄ¼şÉÏ´«ÅäÖÃ maxSizeÊÇÉÏ´«µÄ×î´óÖµ -->
+      <!-- æ–‡ä»¶ä¸Šä¼ é…ç½® maxSizeæ˜¯ä¸Šä¼ çš„æœ€å¤§å€¼ -->
     <constant name="struts.multipart.maxSize" value="1000000" />
 
 	   <package name="upload" extends="struts-default">
 	   <action name="upload" class="com.leo.struts2.UploadAction"
 	   method="execute"
 	   >
-	   		<!-- Ìí¼ÓÀ¹½ØÆ÷
+	   		<!-- æ·»åŠ æ‹¦æˆªå™¨
 	   		<interceptor-ref name="basicStack"></interceptor-ref>
        		<interceptor-ref name="fileUpload">
            		<param name="allowedTypes">image/jpeg,image/gif,image/jpg</param>
        		</interceptor-ref> -->
-       		<!--½áÊø-->
+       		<!--ç»“æŸ-->
 	       <result name="SUCCESS">/successupload.jsp</result>
 	       <result name="ERROR">/errorupload.jsp</result>
 	   </action>
 	   </package>
-	   <!-- Êı¾İ¿âµÄÊ¹ÓÃ-->
+	   <!-- æ•°æ®åº“çš„ä½¿ç”¨-->
 	   <package name="loginconnect" extends="struts-default">
 	   	<action name="loginaction" class="com.leo.struts2.LoginAction" method="execute">
 	   		<result name="success">/struts/success.jsp</result>
 	   		<result name="error">/struts/error.jsp</result>
 	   	</action>
 	   </package>
-	   <!-- ÓÊ¼ş·¢ËÍ -->
+	   <!-- é‚®ä»¶å‘é€ -->
 	   <package name="email" extends="struts-default">
 	   	<action name="eamil" class="com.leo.struts2.EmailAction" method="execute">
 	   		<result name="success">/struts/struts/sendEmailSuccess.jsp</result>
 	   		<result name="error">/struts/struts/error.jsp</result>
 	   	</action>
 	   </package>
-	   <!-- ÑéÖ¤-->
+	   <!-- éªŒè¯-->
 	   <package name="empl" extends="struts-default">
 	   	<action name="empinfo" class="com.leo.struts2.EmployeeAction" method="execute">
 	   		<result name="success">/struts/employeesucc.jsp</result>
@@ -620,9 +620,9 @@ struts2£º
 	   		 <result name="input">/struts/employee.jsp</result>
 	   	</action>
 	   </package>
-	   <!--ÀàĞÍ×ª»» -->
+	   <!--ç±»å‹è½¬æ¢ -->
 	   <package name="sys" extends="struts-default">
-	   <!-- Òì³£Ó³Éä -->
+	   <!-- å¼‚å¸¸æ˜ å°„ -->
 	   <global-exception-mappings>
          <exception-mapping exception="java.lang.NullPointerException"
          result="error" />
@@ -635,10 +635,10 @@ struts2£º
          
       </action>
    </package>
-   <!-- ÒıÈëÆäËûstrutsµÄÅäÖÃÎÄ¼ş -->
+   <!-- å¼•å…¥å…¶ä»–strutsçš„é…ç½®æ–‡ä»¶ -->
    <include file="com/leo/struts2/dynamic/struts_dy.xml"></include>
    <include file="com/leo/struts2/struts_r.xml"></include>
    <include file="com/leo/crm/action/struts_cus.xml"></include>
     <include file="com/leo/struts2/interceptor/struts_interceptor.xml"></include>
 </struts>
-Hibernate¿ò¼Ü£º
+Hibernateæ¡†æ¶ï¼š

@@ -1,43 +1,43 @@
 webService:
-			Web service��һ��ƽ̨�����ģ�����ϵģ��԰����ġ����ڿɱ�̵�web��Ӧ�ó��򣬿�ʹ�ÿ��ŵ�XML����׼ͨ�ñ�������µ�һ���Ӽ�����׼�����������������֡�Э����������ЩӦ�ó������ڿ����ֲ�ʽ�Ļ�������Ӧ�ó���
-			Web Service������ ��ʹ�������ڲ�ͬ�����ϵĲ�ͬӦ������������ӵġ�ר�ŵĵ�����������Ӳ���� �Ϳ��໥�������ݻ򼯳ɡ�����Web Service�淶ʵʩ��Ӧ��֮�䣬 ����������ʹ�õ����ԡ� ƽ̨���ڲ�Э����ʲô�� �������໥�������ݡ�
-			Web Service���������� �԰����Ŀ�������ģ�飬 ����ִ�о����ҵ���ܡ�Web ServiceҲ�����ײ��� ��Ϊ���ǻ���һЩ����Ĳ�ҵ��׼�Լ����е�һЩ�����������׼ͨ�ñ�������µ��Ӽ�XML��HTTP��
-			Web Service������Ӧ�ýӿڵĻ��ѡ�Web ServiceΪ������ҵ���������֮֯���ҵ�����̵ļ����ṩ��һ��ͨ�û��ơ�
-			Web Service��һ���µ�WebӦ�ó����֧�������ִ�дӼ򵥵����󵽸������������κι��ܡ�һ�������Ժ�����Web ServiceӦ�ó�����Է��ֲ�����������ķ���
-			��ˣ�Web Service�ǹ���ֲ�ʽ��ģ�黯Ӧ�ó�����������Ӧ�ü��ɵ����¼����ͷ�չ���ơ�
-			���ڹ�ͨ��ͬƽ̨��������Ժ����ģ���еĲ�ͬ������ϵͳ��
-			webservcie ��������post��
-	webServiceʹ�õļ�����
+			Web service是一个平台独立的，低耦合的，自包含的、基于可编程的web的应用程序，可使用开放的XML（标准通用标记语言下的一个子集）标准来描述、发布、发现、协调和配置这些应用程序，用于开发分布式的互操作的应用程序。
+			Web Service技术， 能使得运行在不同机器上的不同应用无须借助附加的、专门的第三方软件或硬件， 就可相互交换数据或集成。依据Web Service规范实施的应用之间， 无论它们所使用的语言、 平台或内部协议是什么， 都可以相互交换数据。
+			Web Service是自描述、 自包含的可用网络模块， 可以执行具体的业务功能。Web Service也很容易部署， 因为它们基于一些常规的产业标准以及已有的一些技术，诸如标准通用标记语言下的子集XML、HTTP。
+			Web Service减少了应用接口的花费。Web Service为整个企业甚至多个组织之间的业务流程的集成提供了一个通用机制。
+			Web Service是一种新的Web应用程序分支，其可以执行从简单的请求到复杂商务处理的任何功能。一旦部署以后，其他Web Service应用程序可以发现并调用它部署的服务。
+			因此，Web Service是构造分布式、模块化应用程序和面向服务应用集成的最新技术和发展趋势。
+			用于沟通不同平台，编程语言和组件模型中的不同的类型系统。
+			webservcie 的请求都是post的
+	webService使用的技术：
 		XMl:
-			����չ�ı�����ԣ���webServiceƽ̨�б�ʾ���ݵĻ�����ʽ�����ڽ��������ڽ�������ƽ̨�޹�XML������ά��Э��(W3C)������
-			W3C�ƶ���XML SchemaXSD��������һ�ױ�׼���������ͣ���������һ����������չ������������
-			XML������ά��Э��(W3C)������W3C�ƶ���XML SchemaXSD��������һ�ױ�׼���������ͣ���������һ����������չ������������
-			XML����ʹweb servicesʮ�ַ���Ĵ������ݣ������������ʾ�ķ���ʮ������
+			可扩展的标记语言，是webService平台中表示数据的基本格式，易于建立和易于解析，与平台无关XML是由万维网协会(W3C)创建，
+			W3C制定的XML SchemaXSD　定义了一套标准的数据类型，并给出了一种语言来扩展这套数据类型
+			XML是由万维网协会(W3C)创建，W3C制定的XML SchemaXSD　定义了一套标准的数据类型，并给出了一种语言来扩展这套数据类型
+			XML可以使web services十分方便的处理数据，它的内容与表示的分离十分理想
 		SOAP:
-			SOAP���򵥶������Э��(Simple Object Access Protocol)���������ڽ���XML����׼ͨ�ñ�������µ�һ���Ӽ���������Ϣ��������Э�顣
-			����������Ҫ���棺XML-envelopeΪ������Ϣ���ݺ���δ������ݶ����˿�ܣ�
-									�������������ΪXML����Ĺ���
-									ִ��Զ�̹��̵���(RPC)��Լ����
-									SOAP�����������κ���������Э���ϡ�
-			SOAPʹ��XML��Ϣ����Զ�̷���������web services����ͨ��HTTPЭ���post��get������Զ�̻������������ң�SOAP���ӽ�׳���������
-			����Ӧ�ó��򿪷���˵��ʹ����֮�����������ͨ���Ǻ���Ҫ�ġ�Ŀǰ��Ӧ�ó���ͨ��ʹ��Զ�̹��̵��ã�RPC�������� DCOM �� CORBA �ȶ���֮�����ͨ�ţ����� HTTP ����Ϊ����Ƶġ�
-			RPC ������������Լ���ȫ���⣻����ǽ�ʹ���������ͨ������ֹ����������
-			ͨ�� HTTP ��Ӧ�ó����ͨ���Ǹ��õķ�������Ϊ HTTP �õ������е����������������������֧�֡�SOAP ���Ǳ������������������ġ�
-			SOAP �ṩ��һ�ֱ�׼�ķ�����ʹ�������ڲ�ͬ�Ĳ���ϵͳ��ʹ�ò�ͬ�ļ����ͱ�����Ե�Ӧ�ó�����Ի������ͨ�š�
-			SOAP �﷨��
-						һ�� SOAP ��Ϣ����һ����ͨ�� XML �ĵ�����������Ԫ�أ�
-						����� Envelope Ԫ�أ��ɰѴ� XML �ĵ���ʶΪһ�� SOAP ��Ϣ
-						��ѡ�� Header Ԫ�أ�����ͷ����Ϣ
-						����� Body Ԫ�أ��������еĵ��ú���Ӧ��Ϣ
-						��ѡ�� Fault Ԫ�أ��ṩ�й��ڴ�������Ϣ�������������Ϣ
-				�����Ͼ���http��
-				HttpЭ�飺����ͷ��������֮������п���
+			SOAP即简单对象访问协议(Simple Object Access Protocol)，它是用于交换XML（标准通用标记语言下的一个子集）编码信息的轻量级协议。
+			它有三个主要方面：XML-envelope为描述信息内容和如何处理内容定义了框架，
+									将程序对象编码成为XML对象的规则，
+									执行远程过程调用(RPC)的约定。
+									SOAP可以运行在任何其他传输协议上。
+			SOAP使用XML消息调用远程方法，这样web services可以通过HTTP协议的post和get方法与远程机器交互，而且，SOAP更加健壮和灵活易用
+			对于应用程序开发来说，使程序之间进行因特网通信是很重要的。目前的应用程序通过使用远程过程调用（RPC）在诸如 DCOM 与 CORBA 等对象之间进行通信，但是 HTTP 不是为此设计的。
+			RPC 会产生兼容性以及安全问题；防火墙和代理服务器通常会阻止此类流量。
+			通过 HTTP 在应用程序间通信是更好的方法，因为 HTTP 得到了所有的因特网浏览器及服务器的支持。SOAP 就是被创造出来完成这个任务的。
+			SOAP 提供了一种标准的方法，使得运行在不同的操作系统并使用不同的技术和编程语言的应用程序可以互相进行通信。
+			SOAP 语法：
+						一条 SOAP 消息就是一个普通的 XML 文档，包含下列元素：
+						必需的 Envelope 元素，可把此 XML 文档标识为一条 SOAP 消息
+						可选的 Header 元素，包含头部信息
+						必需的 Body 元素，包含所有的调用和响应信息
+						可选的 Fault 元素，提供有关在处理此消息所发生错误的信息
+				本质上就是http：
+				Http协议：请求头和请求体之间必须有空行
 						post /XXX.action HTTP/1.1
 						HOST www.kay555.cn
 						contenType taxt/html;charset=utf8
 				
 						id=111&name=xxx&....
-				SOAPЭ�飺
+				SOAP协议：
 						post /XXX.action HTTP/1.1
 						HOST www.kay555.cn
 						contenType taxt/html;charset=utf8
@@ -48,9 +48,9 @@ webService:
 								</body>
 						</envelope>
 		WSDL
-			Web Service��������WSDL�������û������Ķ��ķ�ʽ�ṩ��һ����ʽ�����ĵ�������XML����׼ͨ�ñ�������µ�һ���Ӽ��������ԣ���������Web Service���亯���������ͷ���ֵ��
-			��Ϊ�ǻ���XML�ģ�����WSDL���ǻ������Ķ��ģ������˿��Ķ��ġ�
-						һ�� WSDL �ĵ�����Ҫ�ṹ�����������ģ�
+			Web Service描述语言WSDL　就是用机器能阅读的方式提供的一个正式描述文档而基于XML（标准通用标记语言下的一个子集）的语言，用于描述Web Service及其函数、参数和返回值。
+			因为是基于XML的，所以WSDL既是机器可阅读的，又是人可阅读的。
+						一个 WSDL 文档的主要结构是类似这样的：
 
 						<definitions>
 
@@ -72,58 +72,58 @@ webService:
 
 						</definitions>
 		UDDI
-			UDDI ��Ŀ����Ϊ������������׼��UDDI��һ�׻���Web�ġ��ֲ�ʽ�ġ�ΪWeb Service�ṩ�ġ���Ϣע�����ĵ�ʵ�ֱ�׼�淶��
-			ͬʱҲ����һ��ʹ��ҵ�ܽ������ṩ��Web Serviceע�ᣬ��ʹ�����ҵ�ܹ����ֵķ���Э���ʵ�ֱ�׼��
-		����RPC����Ϣ����
-			Web Service������ʵ����ʵ��Ӧ�ó�����ͨ�š�
-			Ӧ�ó���ͨ�ŵķ�����RPCԶ�̹��̵��á�����Ϣ���ݡ�
-			ʹ��RPC��ʱ�򣬿ͻ��˵ĸ����ǵ��÷������ϵ�Զ�̹��̣�ͨ����ʽΪʵ����һ��Զ�̶��󲢵����䷽�������ԡ�
-			RPCϵͳ��ͼ�ﵽһ��λ���ϵ�͸���ԣ���������¶��Զ�̶���Ľӿڣ����ͻ��˾ͺ����ڱ���ʹ�õ���Щ����Ľӿ�һ���������������˵ײ����Ϣ���ͻ���Ҳ�͸�������Ҫ֪������������̨�����ϡ�	
-			����webservice����ʽ��
+			UDDI 的目的是为电子商务建立标准；UDDI是一套基于Web的、分布式的、为Web Service提供的、信息注册中心的实现标准规范，
+			同时也包含一组使企业能将自身提供的Web Service注册，以使别的企业能够发现的访问协议的实现标准。
+		调用RPC与消息传递
+			Web Service本身其实是在实现应用程序间的通信。
+			应用程序通信的方法：RPC远程过程调用　和消息传递。
+			使用RPC的时候，客户端的概念是调用服务器上的远程过程，通常方式为实例化一个远程对象并调用其方法和属性。
+			RPC系统试图达到一种位置上的透明性：服务器暴露出远程对象的接口，而客户端就好像在本地使用的这些对象的接口一样，这样就隐藏了底层的信息，客户端也就根本不需要知道对象是在哪台机器上。	
+			发布webservice服务方式：
 				@WebService
 				public class HelloService {
 					public String sayHello(String  name) {
-						System.out.println("��ķ��񱻵��ø�");
+						System.out.println("你的服务被调用该");
 						return "hello"+name;
 					}
 					//http://10.33.8.112:8080/hello?wsdl
-					//���ʷ���˵������ʽ
-					///http://10.33.8.112:8080/hello?xsd=1�鿴���еķ��������еĲ���
+					//访问服务说明书形式
+					///http://10.33.8.112:8080/hello?xsd=1查看其中的方法和其中的参数
 					public static void main(String[] args) {
 						String address="http://10.33.8.112:8080/hello";
 						Object helloService = new HelloService();
 						Endpoint.publish(address, helloService);
 					}
 				}
-				�ͻ��˵ĵ��ã�
-						jdk��wsimport��ʹ�ã�����wsdl���ɿͻ��˴��룺
+				客户端的调用：
+						jdk中wsimport的使用：解析wsdl生成客户端代码：
 					D:\test>wsimport  -s  .  http://10.33.8.112:8080/hello?wsdl 
-					������������java���룬Ȼ�󴴽���������ͨ����������ʵ��Զ�̵���
+					解析出来生成java代码，然后创建代理对象，通过代理对象实现远程调用
 						/**
-						 * 	������������java���룬Ȼ�󴴽���������ͨ����������ʵ��Զ�̵���
+						 * 	解析出来生成java代码，然后创建代理对象，通过代理对象实现远程调用
 						 * @author leoi555
 						 *
 						 */
 						public class Appclication {
 							public static void main(String[] args) {
 								HelloServiceService hsService=new HelloServiceService();
-								//������������
+								//创建代理对象
 								HelloService proxy=hsService.getHelloServicePort();
 								String ret=proxy.sayHello("555");
 								System.out.println(ret);
 							}
 						}
 					
-Apach CXF:Apache CXF = Celtix + XFire����ʼ�� Apache CeltiXfire����������Ϊ Apache CXF �ˣ����¼��Ϊ CXF��
-		CXF �̳��� Celtix �� XFire ����Դ��Ŀ�ľ������ṩ�˶� JAX-WS ȫ���֧�֣������ṩ�˶��� Binding ��DataBinding��Transport �Լ����� Format ��֧�֣����ҿ��Ը���ʵ����Ŀ����Ҫ��
-		���ô������ȣ�Code First������ WSDL ���ȣ�WSDL First�������ɵ�ʵ�� Web Services �ķ�����ʹ�á�Apache CXF�Ѿ���һ����ʽ��Apache������Ŀ��
-		cxf����ˣ�
-		����������cxf.xml����д�ӿں�ʵ���ࡣ��web.xml���ã�
-		 <!-- ����CXF�ṩ��servlet -->
+Apach CXF:Apache CXF = Celtix + XFire，开始叫 Apache CeltiXfire，后来更名为 Apache CXF 了，以下简称为 CXF。
+		CXF 继承了 Celtix 和 XFire 两大开源项目的精华，提供了对 JAX-WS 全面的支持，并且提供了多种 Binding 、DataBinding、Transport 以及各种 Format 的支持，并且可以根据实际项目的需要，
+		采用代码优先（Code First）或者 WSDL 优先（WSDL First）来轻松地实现 Web Services 的发布和使用。Apache CXF已经是一个正式的Apache顶级项目。
+		cxf服务端：
+		导包：配置cxf.xml，书写接口和实现类。在web.xml配置：
+		 <!-- 配置CXF提供的servlet -->
 		  <servlet>
 				<servlet-name>cxf</servlet-name>
 				<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-				<!-- ͨ����ʼ������ָ��CXF�����ļ�λ�� -->
+				<!-- 通过初始化参数指定CXF配置文件位置 -->
 				<init-param>
 					<param-name>config-location</param-name>
 					<param-value>classpath:cxf.xml</param-value>
@@ -133,34 +133,34 @@ Apach CXF:Apache CXF = Celtix + XFire����ʼ�� Apache CeltiXfire����������Ϊ Apac
 				<servlet-name>cxf</servlet-name>
 				<url-pattern>/service/*</url-pattern>
 		  </servlet-mapping>
-		 �ڽӿ�������ע��@WebServiceȻ���ṩ������ʵķ�����
-		 ��cxf.xml���ã�
-		 <!--����bean-->
+		 在接口上添加注解@WebService然后提供对外访问的方法：
+		 在cxf.xml配置：
+		 <!--配置bean-->
 			<bean id="helloService" class="com.leo.service.HelloServiceImpl"></bean>
-			<!-- ע�����  
-			<url-pattern>/service/*</url-pattern>��������ʵ�·���й�
+			<!-- 注册服务  
+			<url-pattern>/service/*</url-pattern>与下面访问的路径有关
 			http://ip:port/projectName/service/address
-			address��Ӧ���������address������
+			address对应的是下面的address的配置
 			-->
 			<jaxws:server id="myService" address="/hello">
 				<jaxws:serviceBean>
 					<ref bean="helloService"></ref>
 				</jaxws:serviceBean>
 			</jaxws:server>
-	cxf�ͻ��ˣ�java project ��
-		ͨ��wsimport -s . http://10.33.8.112:8080/hello?wsdl 
-					������������java���룬Ȼ�󴴽���������ͨ����������ʵ��Զ�̵���
-		�����ɵĴ����нӿ�java�ļ����룺
-		����cxf.xml:
+	cxf客户端：java project 版
+		通过wsimport -s . http://10.33.8.112:8080/hello?wsdl 
+					解析出来生成java代码，然后创建代理对象，通过代理对象实现远程调用
+		把生成的代码中接口java文件引入：
+		配置cxf.xml:
 
-		<!-- ע��ͻ��˴�������ͨ��spring��ܴ�����������ʹ�ô�������ʵ��Զ�̵��� -->
+		<!-- 注册客户端代理对象，通过spring框架创建代理对象，使用代理对象实现远程调用 -->
 		<jaxws:client id="myclient"
 			address="http://10.33.8.112:8080/cxf_service/service/hello"
 			serviceClass="com.leo.client.HelloService"
 		> </jaxws:client>
-		���Դ��룺
+		测试代码：
 			/**
-			 * ����
+			 * 测试
 			 * @author leoi555
 			 *
 			 */
@@ -172,12 +172,12 @@ Apach CXF:Apache CXF = Celtix + XFire����ʼ�� Apache CeltiXfire����������Ϊ Apac
 					System.out.println(ret);
 				}
 			}
-	cxf�ͻ���Ҳ����ͨ��web��Ŀ����
-	��crmϵͳ�ж����ṩ�ӿ�Ȼ�����ͻ�������������
-		����ˣ�
-	��ҪCXFjar�������£�
+	cxf客户端也可以通过web项目创建
+	在crm系统中对外提供接口然后另客户端来访问他：
+		服务端：
+	需要CXFjar包有如下：
 
-			ֻ��Ҫ��maven��Ŀ�м�������������
+			只需要在maven项目中加入以下依赖：
 			<!-- https://mvnrepository.com/artifact/org.apache.cxf/cxf-rt-frontend-jaxws -->
 					<dependency>
 					    <groupId>org.apache.cxf</groupId>
@@ -220,22 +220,22 @@ Apach CXF:Apache CXF = Celtix + XFire����ʼ�� Apache CeltiXfire����������Ϊ Apac
 			cxf-rt-ws-policy-3.2.6.jar
 			cxf-rt-wsdl-3.2.6.jar
 			neethi-3.1.1.jar
-			xmlschema-core:2.10.jarȱ��ʱ�ػᱨ���޷��ҵ�xmlSchemaԼ���ļ�
-			wsdl4j-1.6.3.jar:���jar��������Ҫ��ȱ��ʱ��������´���nested exception is java.lang.NoClassDefFoundError: javax/wsdl/extensions/ElementExtensible
-		���Ƿ��ʺ�����struts2����������Ҫ��������
-		<!-- Cxf���� -->
-		  <!-- ����CXF�ṩ��servlet -->
+			xmlschema-core:2.10.jar缺少时回会报错无法找到xmlSchema约束文件
+			wsdl4j-1.6.3.jar:这个jar包是最重要的缺少时会出现以下错误：nested exception is java.lang.NoClassDefFoundError: javax/wsdl/extensions/ElementExtensible
+		但是访问后会出现struts2拦截问题需要配置以下
+		<!-- Cxf配置 -->
+		  <!-- 配置CXF提供的servlet -->
 		  <servlet>
 				<servlet-name>cxf</servlet-name>
 				<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-				<!-- ����ֱ�����õ�spring���������в��ٽ��ж�cxf���õĶ�ȡ -->
-				<!-- ͨ����ʼ������ָ��CXF�����ļ�λ��
+				<!-- 这里直接配置到spring的上下文中不再进行对cxf配置的读取 -->
+				<!-- 通过初始化参数指定CXF配置文件位置
 				<init-param>
 					<param-name>config-location</param-name>
 					<param-value>classpath:cxf.xml</param-value>
 				</init-param> -->
 		  </servlet>
-		  <!-- ����ӳ���ļ� -->
+		  <!-- 配置映射文件 -->
 		  <servlet-mapping>
 				<servlet-name>cxf</servlet-name>
 				<url-pattern>/service/*</url-pattern>
@@ -254,24 +254,190 @@ Apach CXF:Apache CXF = Celtix + XFire����ʼ�� Apache CeltiXfire����������Ϊ Apac
 			<url-pattern>*.jsp</url-pattern>
 		  </filter-mapping>
 
-		  Ȼ���cxf�����÷ŵ�struts��������
-		  �����ע�����
-			<!-- ע�����  
-			<url-pattern>/service/*</url-pattern>��������ʵ�·���й�
+		  然后把cxf的配置放到struts配置上面
+		  服务端注册服务：
+			<!-- 注册服务  
+			<url-pattern>/service/*</url-pattern>与下面访问的路径有关
 			http://ip:port/projectName/service/address
-			address��Ӧ���������address������-->
+			address对应的是下面的address的配置-->
 			
 			<jaxws:server id="customerServer" address="/customer">
 				<jaxws:serviceBean>
 					<ref bean="customerService"></ref>
 				</jaxws:serviceBean>
 			</jaxws:server>
-		 Ȼ��������·�������Եõ� vmimport -s . http://10.33.8.112:8080/ssh_Crm/service/customer?wsdl
+		 然后访问这个路径即可以得到 vmimport -s . http://10.33.8.112:8080/ssh_Crm/service/customer?wsdl
 		 D:\test>wsimport  -s  .  http://10.33.8.112:8080/hello?wsdl 
-		 Ȼ������java�����ڿͻ���������ӿڣ�
-		ע��ͻ��˴�������
-		<!-- ע��crm�ͻ��˵Ĵ������� -->
+		 然后生成java代码在客户端引入其接口：
+		注册客户端代理对象：
+		<!-- 注册crm客户端的代理对象 -->
 			<jaxws:client id="crmClient" serviceClass="com.leo.crm.CustomerService" address="http://localhost:8080/ssh_Crm/service/customer">
 				
 			</jaxws:client>
 
+	webService提供了两大类解决方案JAX-WS(基于SOAP协议的RPC-style,和基于SOAP协议的文档style),JAX-RS(基于ReastFul的Jersey和restTeasy)：
+
+	JAX-WS:
+		Java API for XML Web Services（JAX-WS）是Java程序设计语言一个用来创建Web服务的API。
+		JAX-WS是sun的Java企业平台一部分。和其它Java EE的API一样，JAX-WS使用了Java SE5引入的Java标注机制来简化Web服务客户端和服务端的开发和部署
+		用于SOAP Web服务。 编写JAX-WS应用程序代码的方法有两种：RPC样式和Document样式。
+		JAX-RPC可以被看作是Java RMI在Web服务协议上的实现允许Java应用程序可以通过已知的描述信息调用一个基于Java的Web服务，描述信息与Web服务的WSDL（Web服务描述语言）描述相一致. JAX-RPC 2.0被更名为JAX-WS 2.0
+	
+	JAX-WS(RPC样式)：
+		RPC样式的Web服务使用方法名称和参数来生成XML结构。
+		RPC样式生成的WSDL很难针对模式进行验证。
+		在RPC样式中，SOAP消息被发送为多个元素。
+		RPC样式消息紧密耦合。
+		在RPC样式中，SOAP消息保留操作名称。在RPC样式中，参数作为离散值发送
+		使用示例：JAX-WS API内置于JDK中，因此无需为其加载任何额外的jar文件
+		import javax.jws.WebMethod;
+		import javax.jws.WebService;
+		import javax.jws.soap.SOAPBinding;
+
+		/**
+		* @user:
+		* @date:2021/7/6
+		* @Description:
+		*/
+		@WebService
+		@SOAPBinding(style = SOAPBinding.Style.RPC)
+		public interface HelloWord {
+			@WebMethod
+			String getHelloWorldAsString(String name);
+
+		}
+		@WebService(endpointInterface = "com.blueearth.bewemp.doc.test.HelloWord")
+		public class HelloWordImpl implements HelloWord{
+			@Override
+			public String getHelloWorldAsString(String name) {
+				return "hello word jax-ws"+name;
+			}
+		}
+		public class Publisher {
+			public static void main(String[] args) {
+				Endpoint.publish("http://localhost:1212/ws/hello",new HelloWordImpl());
+			}
+		}
+		// 运行之后可以看到下图
+		/**
+		* @user:
+		* @date:2021/7/6
+		* @Description:
+		*/
+		public class Client {
+			public static void main(String[] args) throws MalformedURLException {
+				URL url = new URL("http://localhost:1212/ws/hello?wsdl");
+
+				// 1st argument service URI, refer to wsdl document above
+				// 2nd argument is service name, refer to wsdl document above
+				QName qname = new QName("http://test.doc.bewemp.blueearth.com/", "HelloWorldImplService");
+				Service service = Service.create(url, qname);
+				HelloWord hello = service.getPort(HelloWord.class);
+				System.out.println(hello.getHelloWorldAsString("jk rpc"));
+			}
+		}
+		/***
+		* output - hello word jax-wsjk rpc
+		*/
+
+
+
+	JAX-WS(文档样式)：
+		可以根据预定义模式验证文档样式Web服务。
+		在文档样式中，SOAP消息作为单个文档发送。
+		文档样式消息松散耦合。
+		在文档样式中，SOAP消息中不需要操作名称。
+		在文档样式中，参数以XML格式发送。
+
+		看代码：只需要将style 改为Doument就可以
+		@WebService
+		@SOAPBinding(style = SOAPBinding.Style.DOCUMENT)
+		public interface HelloWord {
+			@WebMethod
+			String getHelloWorldAsString(String name);
+
+		}
+		进行测试：
+		public class Client {
+			public static void main(String[] args) throws MalformedURLException {
+				URL url = new URL("http://localhost:1212/ws/hello?wsdl");
+
+				// 1st argument service URI, refer to wsdl document above
+				// 2nd argument is service name, refer to wsdl document above
+				QName qname = new QName("http://test.doc.bewemp.blueearth.com/", "HelloWordImplService");
+				Service service = Service.create(url, qname);
+				HelloWord hello = service.getPort(HelloWord.class);
+				System.out.println(hello.getHelloWorldAsString(" web service document"));
+			}
+		}
+		// out-put: hello word jax-ws web service document
+
+
+	JAX-RS:
+		JAX-RS是JAVA EE6 引入的一个新技术。 JAX-RS即Java API for RESTful Web Services，是一个Java 编程语言的应用程序接口，支持按照表述性状态转移（REST）架构风格创建Web服务。
+		JAX-RS使用了Java SE5引入的Java注解来简化Web服务的客户端和服务端的开发和部署。
+		用于SOAP Web服务。 编写JAX-WS应用程序代码的方法有两种：RPC样式和Document样式。
+		JAX-RS提供了一些注解将一个资源类，一个POJO Java类，封装为Web资源。
+		@Path，标注资源类或者方法的相对路径
+		@GET，@PUT，@POST，@DELETE，标注方法是HTTP请求的类型。
+		@Produces，标注返回的MIME媒体类型
+			@Produces("text/plain"): 用于下载文本文件。
+			@Produces("image/png"): 用于下载图片文件。
+			@Produces("application/pdf"): 用于下载PDF文件。
+			@Produces("application/vnd.ms-excel"): 用于下载Excel文件。
+			@Produces("application/msword"): 用于下载Word文件。
+		@Consumes，标注可接受请求的MIME媒体类型
+		@PathParam，@QueryParam，@HeaderParam，@CookieParam，@MatrixParam，@FormParam,分别标注方法的参数来自于HTTP请求的不同位置，例如@PathParam来自于URL的路径，@QueryParam来自于URL的查询参数，@HeaderParam来自于HTTP请求的头信息，@CookieParam来自于HTTP请求的Cookie。
+		基于JAX-RS实现的框架有Jersey，RESTEasy等。这两个框架创建的应用可以很方便地部署到Servlet 容器中
+
+	@Path("/hello")  
+	public class HelloService{  
+		@GET  
+		@Path("/{param}")  
+		public Response getMsg(@PathParam("param") String msg) {  
+			String output = "Jersey say : " + msg;  
+			return Response.status(200).entity(output).build();  
+		}  
+	}
+	@GET  
+    @Path("{year}/{month}/{day}")  
+    public Response getDate(  
+            @PathParam("year") int year,  
+            @PathParam("month") int month,   
+            @PathParam("day") int day) {  
+
+       String date = year + "/" + month + "/" + day;  
+
+       return Response.status(200)  
+        .entity("getDate is called, year/month/day : " + date)  
+        .build();  
+    }  //原文出自【易百教程】，商业转载请联系作者获得授权，非商业请保留原文链接：https://www.yiibai.com/web_service/jax-rs-annotations-example.html
+
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>com.kaysanshi</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	</web-app>
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>JAX-RS Server示例</title>
+	</head>
+	<body>
+		<a href="rest/hello/aa">JAX-RS注解参数示例</a>
+		<a href="rest/hello/2020/07/01">JAX-RS注解多参数日期示例</a>
+	</body>
+	</html>
