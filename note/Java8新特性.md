@@ -405,10 +405,6 @@ public class ConstructorRefTest {
 
 ```
 
-
-
-
-
 ### 默认方法
 
 简单说，就是接口可以有实现方法，而且不需要实现类去实现其方法。只需在方法名前面加个default关键字即可。加入default声明，这个方法就默认被接口实现了。

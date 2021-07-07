@@ -228,26 +228,29 @@ cp xxxxx  目标文件-r：复制文件的目录
 							1.异常写入日志文件
 							2.及时通知开发人员，发邮件，短信
 							3.展示一个错误页面：如；你的网络故障
-			public class GlobalExceptionReslover implements HandlerExceptionResolver {
+			
 
-				Logger logger = LoggerFactory.getLogger(GlobalExceptionReslover.class);
-				
-				@Override
-				public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
-						Exception ex) {
-					//写日志文件
-					logger.error("系统发生异常", ex);
-					//发邮件、发短信
-					//Jmail：可以查找相关的资料
-					//需要在购买短信。调用第三方接口即可。
-					//展示错误页面
-					ModelAndView modelAndView = new ModelAndView();
-					modelAndView.addObject("message", "系统发生异常，请稍后重试");
-					modelAndView.setViewName("error/exception");
-					return modelAndView;
-				}
-				springmvc中配置异常处理器：
-					<bean class="com.xxxxx.xxxxx.GlobalExceptionReslover"/>
+```java
+public class GlobalExceptionReslover implements HandlerExceptionResolver {
+			Logger logger = LoggerFactory.getLogger(GlobalExceptionReslover.class);
+			
+			@Override
+			public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+					Exception ex) {
+				//写日志文件
+				logger.error("系统发生异常", ex);
+				//发邮件、发短信
+				//Jmail：可以查找相关的资料
+				//需要在购买短信。调用第三方接口即可。
+				//展示错误页面
+				ModelAndView modelAndView = new ModelAndView();
+				modelAndView.addObject("message", "系统发生异常，请稍后重试");
+				modelAndView.setViewName("error/exception");
+				return modelAndView;
+			}
+			springmvc中配置异常处理器：
+				<bean class="com.xxxxx.xxxxx.GlobalExceptionReslover"/>
+```
 
 
 
