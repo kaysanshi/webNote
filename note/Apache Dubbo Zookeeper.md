@@ -268,17 +268,17 @@ getChildren
 
 - 客户端调用 `getData` 方法，`watch` 参数是 `true`。服务端接到请求，返回节点数据，并且在对应的哈希表里插入被 Watch 的 Znode 路径，以及 Watcher 列表。
 
-![img](https://www.funtl.com/assets/Lusifer201810170012.png)
+[![R7WqsA.png](https://z3.ax1x.com/2021/07/07/R7WqsA.png)](https://imgtu.com/i/R7WqsA)
 
 - 当被 Watch 的 Znode 已删除，服务端会查找哈希表，找到该 Znode 对应的所有 Watcher，异步通知客户端，并且删除哈希表中对应的 Key-Value。
 
-![img](https://www.funtl.com/assets/Lusifer201810170013.png)
+[![R7fSJS.png](https://z3.ax1x.com/2021/07/07/R7fSJS.png)](https://imgtu.com/i/R7fSJS)
 
 #### Zookeeper 的一致性
 
 Zookeeper 身为分布式系统协调服务，如果自身挂了如何处理呢？为了防止单机挂掉的情况，Zookeeper 维护了一个集群。如下图：
 
-![img](https://www.funtl.com/assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20181017182528.jpg)
+[![R7fFLn.jpg](https://z3.ax1x.com/2021/07/07/R7fFLn.jpg)](https://imgtu.com/i/R7fFLn)
 
 Zookeeper Service 集群是一主多从结构。
 
@@ -310,15 +310,15 @@ Zookeeper Atomic Broadcast，有效解决了 Zookeeper 集群崩溃恢复，以�
 
 选举阶段，此时集群中的节点处于 Looking 状态。它们会各自向其他节点发起投票，投票当中包含自己的服务器 ID 和最新事务 ID（ZXID）。
 
-![img](https://www.funtl.com/assets/Lusifer201810170014.png)
+[![R7flLR.png](https://z3.ax1x.com/2021/07/07/R7flLR.png)](https://imgtu.com/i/R7flLR)
 
 接下来，节点会用自身的 ZXID 和从其他节点接收到的 ZXID 做比较，如果发现别人家的 ZXID 比自己大，也就是数据比自己新，那么就重新发起投票，投票给目前已知最大的 ZXID 所属节点。
 
-![img](https://www.funtl.com/assets/Lusifer201810170015.png)
+[![R7f6Ff.png](https://z3.ax1x.com/2021/07/07/R7f6Ff.png)](https://imgtu.com/i/R7f6Ff)
 
 每次投票后，服务器都会统计投票数量，判断是否有某个节点得到半数以上的投票。如果存在这样的节点，该节点将会成为准 Leader，状态变为 Leading。其他节点的状态变为 Following。
 
-![img](https://www.funtl.com/assets/Lusifer201810170016.png)
+[![R7fsTP.png](https://z3.ax1x.com/2021/07/07/R7fsTP.png)](https://imgtu.com/i/R7fsTP)
 
 **Discovery**
 
@@ -348,7 +348,7 @@ ZAB 的数据写入涉及到 Broadcast 阶段，简单来说，就是 Zookeeper 
 - Follower 接到 Propose 消息，写入日志成功后，返回 ACK 消息给 Leader。
 - Leader 接到半数以上ACK消息，返回成功给客户端，并且广播 Commit 请求给 Follower
 
-![img](https://www.funtl.com/assets/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20181017192657.jpg)
+[![R7f5mn.png](https://z3.ax1x.com/2021/07/07/R7f5mn.png)](https://imgtu.com/i/R7f5mn)
 
 ZAB 协议既不是强一致性，也不是弱一致性，而是处于两者之间的**单调一致性（顺序一致性）**。它依靠事务 ID 和版本号，保证了数据的更新和读取是有序的。
 
