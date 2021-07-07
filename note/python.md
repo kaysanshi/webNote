@@ -1,4 +1,4 @@
-# **python**
+# **python **
 
 [![BUCZdA.png](https://s1.ax1x.com/2020/10/31/BUCZdA.png)](https://imgchr.com/i/BUCZdA)
 
