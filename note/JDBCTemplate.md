@@ -2,7 +2,6 @@
 
 ### JDBCTemplate
 
-
 `org.springframework.jdbc.core.JdbcTemplate`类是JDBC核心包中的中心类。它简化了JDBC的使用，并有助于避免常见的错误。 它执行核心JDBC工作流，留下应用程序代码来提供SQL并提取结果。 该类执行SQL查询或更新，在`ResultSet`类上启动迭代并捕获JDBC异常，并将它们转换为`org.springframework.dao`包中定义的通用更详细的异常层次结构。使用这个类的代码只需要实现回调接口，给它们一个明确定义的协定。 Preparedstatementcreator 回调接口在给定 Connection 的情况下创建一个准备好的语句，提供 SQL 和任何必要的参数。 Resultsetextractor 接口从 ResultSet 中提取值。 请参阅 PreparedStatementSetter 和 RowMapper 了解两个流行的可选回调接口。
 
 | `<T> T` | `execute(CallableStatementCreator csc, CallableStatementCallback<T> action)Execute a JDBC data access operation, implemented as callback action working on a JDBC CallableStatement. 执行 JDBC 数据访问操作，实现为在 JDBC CallableStatement 上工作的回调动作` |
@@ -79,8 +78,6 @@ public class StudentMapper implements RowMapper<Student> {
 - public < T > T queryForObject(String sql, Map<String, ?> paramMap, Class requiredType)
 - public < T > T queryForObject(String sql, SqlParameterSource paramSource, Class requiredType)
 
-
-
 ```java
 String name = template.queryForObject( "select name from student where home_address  limit 1 ", EmptySqlParameterSource.INSTANCE, String.class);
 ```
@@ -90,8 +87,6 @@ String name = template.queryForObject( "select name from student where home_addr
 
 - public < T> T queryForObject(String sql, Map< String, ?> paramMap, RowMapper< T>rowMapper)
 - public < T> T queryForObject(String sql, SqlParameterSource paramSource, RowMapper< T> rowMapper)
-
-
 
 ```java
 Student  stu = template.queryForObject(

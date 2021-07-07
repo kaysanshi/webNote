@@ -5,8 +5,9 @@
 #### 内连接
 
 在HQL中，inner join关键字表示内连接（inner关键字可以省略，单独使用join默认表示内连接）。只要两个持久化类对应的表的关联字段之间有相符的值，内连接就会组合两个表中的连接。内连接在一对多或多对一的关联中比较常见。
-下述代码用于实现任务描述6.D.9，在Customer.hbm.xml文件中对orders集合设置了延迟检索策略，利用HQL的inner join来查询用户名以“z”开头的Customer对象的所有订单编号。
-【描述6.D.9】HQL内连接
+
+下述代码用于实现任务描述。在Customer.hbm.xml文件中对orders集合设置了延迟检索策略，利用HQL的inner join来查询用户名以“z”开头的Customer对象的所有订单编号。
+HQL内连接
 
 ```java
 public static void findCustomerByJoin() {
@@ -91,7 +92,9 @@ public static void findCustomerByLeftJoin() {
 1 zhangsan 20100712
 2 lisi
 上述结果中，分别在控制台打印了Customer的userName和Order的orderNo信息，输出结果中打印了两次“1”和一次“2”，说明前两组Object[]对象数组引用OID为1的同一个Customer对象。而对于OID为2的Customer对象，由于没有对应的Order对象，所以其没有对应的订单信息。
+
 此外，由于在Customer.hbm.xml文件中对orders集合配置了延迟检索策略，因此orders集合并没有被初始化。只有当程序第一次调用OID为1的Customer对象的getOrders().iterator()方法时，才会初始化Customer对象的orders集合。
+
 如果要求Query的list()方法只返回Customer对象，可以在HQL语句中使用select关键字，HQL语句如下所示。
 
 String hql = "select c from Customer c left outer join c.orders o where c.age> ?;
