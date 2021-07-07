@@ -1,6 +1,6 @@
 
 
-## Appium+python自动化测试
+## Appium+python自动化测试 
 
 本文用于android和python自动化测试学习使用其中有的部分是博客收集，感谢博主，同时感谢b站中的up组
 
@@ -1265,7 +1265,7 @@ Interface to global information about an application environment. This is an abs
 
    ```python
    from  appium import webdriver
-
+   
    from selenium.webdriver.support.ui import WebDriverWait
    ```
 

@@ -1,5 +1,3 @@
-疯狂Java&Thinking in java
-
 ## 面向对象
 
 [![Dnckb8.png](https://s3.ax1x.com/2020/11/18/Dnckb8.png)](https://imgchr.com/i/Dnckb8)
