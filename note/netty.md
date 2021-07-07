@@ -139,8 +139,6 @@ public class BIOClient {
 
 ```
 
-
-
 ### NIO
 
 NIO:java non-blocking IO 是指的JDK提供的新的API.其相关类是在java.nio包及子包内，对java.io进行了改写。
