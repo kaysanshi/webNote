@@ -4,13 +4,13 @@
 
 当已经存在许多开放源代码（和专有）J2EEframework时，我们为什么还需要Spring Framework？
 
-​	`因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。``Spring致力于提供一种方法管理你的业务对象。``Spring是全面的和模块化的。`
+因为诸多原因让Spring变得独特：它定位的领域是许多其他流行的framework没有的。Spring致力于提供一种方法管理你的业务对象。Spring是全面的和模块化的。
 
-​	`Spring有分层的体系结构`，这意味着你能选择使用它孤立的任何部分，它的架构仍然是内在稳定的。因此从你的学习中，你可得到最大的价值。例如，你可能选择仅仅使用Spring来简单化JDBC的使用，或用来管理所有的业务对象。它的设计从底部帮助你编写易于测试的代码。   
+`Spring有分层的体系结构`，这意味着你能选择使用它孤立的任何部分，它的架构仍然是内在稳定的。因此从你的学习中，你可得到最大的价值。例如，你可能选择仅仅使用Spring来简单化JDBC的使用，或用来管理所有的业务对象。它的设计从底部帮助你编写易于测试的代码。   
 
-​     Spring是用于测试驱动工程的理想的framework。
+ Spring是用于测试驱动工程的理想的framework。
 
-​	 Spring对你的工程来说，它不需要一个以上的framework。Spring是潜在地一站式解决方案，定位于与典型应用相关的大部分基础结构。它也涉及到其他framework没有考虑到的内容。可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
+Spring对你的工程来说，它不需要一个以上的framework。Spring是潜在地一站式解决方案，定位于与典型应用相关的大部分基础结构。它也涉及到其他framework没有考虑到的内容。可以降低开发企业应用的复杂程度，以IoC(控制反转)和AOP(面向切面编程)两种技术为基础简化了企业开发的复杂性，方便解耦，简化开发 Spring 就是一个大工厂，可以将所有对象创建和依赖关系维护，交给 Spring 管理 AOP 编程的支持 Spring 提供面向切面编程，可以方便的实现对程序进行权限拦截、运行监控等功能 声明式事务的支持 只需要通过配置就可以完成对事务的管理，而无需手动编程 方便程序的测试 Spring 对 Junit4 支持，可以通过注解方便的测试 Spring 程序 方便集成各种优秀框架 Spring 不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如：Struts、Hibernate、 MyBatis、Quartz 等）的直接支持 降低 JavaEE API 的使用难度 Spring 对 JavaEE 开发中非常难用的一些 API（JDBC、JavaMail、远程调用等），都提供了封装， 使这些 API 应用难度大大降
 
 ### 体系结构
 
@@ -239,7 +239,11 @@ Spring在DefaultSingletonBeanRegistry类中提供了一个用于缓存单实例B
 
 ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以加载配置文件定义的bean，将所有的bean集中在一起，当请求时分配bean，**扩展了BeanFactory容器并添加了国际化，生命周期，事件，监听，提供了BeanFactory的所有特性而且允许用户使用更多的声明方式.** ApplicationContext由BeanFactory派生而来，提供了更多面向实际应用的功能。在BeanFactory中，很多功能需要以编程的方式实现，而在ApplicationContext中则可以通过配置的方式实现.
 
-有三个实现的类：	`ClassPathXmlApplicationContext,FileSystemXmlApplicationContext,WebApplicationContext`
+有三个实现的类：
+
+- ClassPathXmlApplicationContext
+- FileSystemXmlApplicationContext
+- WebApplicationContext
 
 ##### ClassPathXmlApplicationContext:
 
@@ -259,7 +263,7 @@ ApplicationContext是Spring中较高级的容器和beanFactory类似，他可以
 
 WebApplicationContext是专门为Web应用准备的，它允许从相对于Web根目录的路径中装载配置文件，完成初始化工作。从WebApplicationContext中可以获得ServletContext的引用，整个Web应用上下文对象将作为属性放置到ServletContext中，以便Web应用环境可以访问Spring应用上下文。Spring专门为此提供一个工具类WebApplicationContextUtils，通过该类的getWebApplicationContext(ServletContext sc) 方 法，即 可 以 从ServletContext中 获 取WebApplicationContext实例
 
-​	有两种方法在servlet中使用
+有两种方法在servlet中使用
 
 - 1.在servlet中的web.xml配置Spring 的 ContextLoaderListener的监听器，
 - 2.修改web.xml在配置文件中添加一个servlet定义使用Spring的ContextLoaderServlert类
@@ -921,11 +925,9 @@ public int registerBeanDefinitions(Document doc, Resource resource) throws BeanD
 
 要使应用程序中的Spring容器成功启动，需要同时具备以下3方面的条件。
 
-`· Spring框架的类包都已经放到应用程序的类路径下。`
-
-`· 应用程序为Spring提供完备的Bean配置信息。`
-
-`· Bean的类都已经放到应用程序的类路径下。`
+- Spring框架的类包都已经放到应用程序的类路径下。
+- 应用程序为Spring提供完备的Bean配置信息。
+- Bean的类都已经放到应用程序的类路径下。
 
 Spring启动时读取应用程序提供的Bean配置信息，并在Spring容器中生成一份相应的Bean配置注册表，然后根据这张注册表实例化Bean，装配好Bean之间的依赖关系，为上层应用提供准备就绪的运行环境
 
@@ -955,17 +957,13 @@ Bean配置信息定义了Bean的实现及依赖关系，Spring容器根据各种
 
 使用Spring注册的对象 
 
-​			name属性：给被管理对象起名字，根据改名字获取对象。名字可以重复，可以使用特殊字符
-
-​			class属性：被管理对象完整的类名
-
-​			id属性：与name属性一样，名字不可重复，不能使用特殊字符
-
-​			尽量使用name属性
+- name属性：给被管理对象起名字，根据改名字获取对象。名字可以重复，可以使用特殊字符
+- class属性：被管理对象完整的类名
+- id属性：与name属性一样，名字不可重复，不能使用特殊字符。尽量使用name属性
 
 #### Bean作用域
 
-##### singleton	
+##### singleton
 
 在spring IoC容器仅存在一个Bean实例，Bean以单例方式存在，默认值
 
@@ -978,13 +976,13 @@ Singleton是单例类型，就是在创建起容器时就同时自动创建了�
 
 ##### prototype	
 
-​		每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()这就是平时使用new创建对象的默认方式；
+每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()这就是平时使用new创建对象的默认方式；
 
-​		表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。
+表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。
 
-​		Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。
+Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。
 
-​		通常DAO不会被配置成prototype,因为一个Dao不会支持任何会话状态，
+通常DAO不会被配置成prototype,因为一个Dao不会支持任何会话状态，
 
 ##### request	
 
@@ -1082,11 +1080,11 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 BeanPostProcessor 接口定义回调方法，你可以实现该方法来提供自己的实例化逻辑，依赖解析逻辑等。你也可以在 Spring 容器通过插入一个或多个 BeanPostProcessor 的实现来完成实例化，配置和初始化一个bean之后实现一些自定义逻辑回调方法。
 
-​		你可以配置多个 BeanPostProcesso r接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。
+你可以配置多个 BeanPostProcesso r接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。
 
-​		BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作。
+BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作。
 
-​		ApplicationContext 会自动检测由 BeanPostProcessor 接口的实现定义的 bean，注册这些 bean 为后置处理器，然后通过在容器中创建 bean，在适当的时候调用它。调用的时候只需要实现BeanPostProcessor接口
+ApplicationContext 会自动检测由 BeanPostProcessor 接口的实现定义的 bean，注册这些 bean 为后置处理器，然后通过在容器中创建 bean，在适当的时候调用它。调用的时候只需要实现BeanPostProcessor接口
 
 #### Bean定义继承
 
@@ -1140,17 +1138,15 @@ xml配置信息：
 
 #### 接口注入
 
-​		基于接口将调用与实现分离，必须实现容器所规定的接口使程序代码和容器的API绑定在一起，不是理想的依赖注入
+基于接口将调用与实现分离，必须实现容器所规定的接口使程序代码和容器的API绑定在一起，不是理想的依赖注入
 
 #### Setter注入
 
 ​	基于Java的setter方法的属性赋值最为广泛应用
 
-​	可以混合这两种方法，基于构造函数和基于 setter 方法的 DI，然而使用有强制性依存关系的构造函数和有可选依赖关系的 setter是一个好的做法。
+可以混合这两种方法，基于构造函数和基于 setter 方法的 DI，然而使用有强制性依存关系的构造函数和有可选依赖关系的 setter是一个好的做法。代码是 DI 原理的清洗机，当对象与它们的依赖关系被提供时，解耦效果更明显。对象不查找它的依赖关系，也不知道依赖关系的位置或类，而这一切都由 Spring 框架控制的。	
 
-​	代码是 DI 原理的清洗机，当对象与它们的依赖关系被提供时，解耦效果更明显。对象不查找它的依赖关系，也不知道依赖关系的位置或类，而这一切都由 Spring 框架控制的。	
-
-​	例如：
+例如：
 
 ​		一个简单的Javabean就是有一个私有的属性对应getter() setter()方法，来实现对属性的封装；
 
@@ -1178,8 +1174,10 @@ class User {
 #### 构造函数注入
 
 > 当容器调用带有一组参数的类构造函数时，基于构造函数的 DI 就完成了，其中每个参数代表一个对其他类的依赖。基于构造方法为属性赋值，容器通过调用类的构造方法将其进行依赖注入
-> 		<constructor-arg>是<bean>元素的子元素，通过 <constructor-arg>的子元素<value>可以传参
-> 		<ref>元素用于引入其他的Javabean对象
+>
+> <constructor-arg>是<bean>元素的子元素，通过 <constructor-arg>的子元素<value>可以传参
+>
+> <ref>元素用于引入其他的Javabean对象
 
 ```java
 public class TextEditor {
@@ -1398,7 +1396,7 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 由IOC容器已经初始化完毕，IoC容器初始化的过程,主要完成的工作是在IoC容器中建立 BeanDefinition 数据映射,并没有看到IoC容器对Bean依赖关系进行注入,假设当前IoC容器已经载入用户定义的Bean信息,依赖注入主要发生在两个阶段正常情况下,由用户第一次向IoC容器索要Bean时触发但我们可以在 BeanDefinition 信息中通过控制 lazy-init 属性来让容器完成对Bean的预实例化,即在初始化的过程中就完成某些Bean的依赖注入的过程.
 
 ```java
-	   AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
+AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext(ApplicationContextConfig.class);
 
         // 从spring ioc 容器获取 person
         Person person = (Person) configApplicationContext.getBean("person");
@@ -1758,14 +1756,10 @@ protected Object getObjectForBeanInstance(
 
 我们来看看getObjectForBeanInstance中的所做的工作。
 
-
-（1）对FactoryBean正确性的验证。
-
-（2）对非FactoryBean不做任何处理。
-
-（3）对bean进行转换。
-
-（4）将从Factory中解析bean的工作委托给getObjectFromFactoryBean
+1. 对FactoryBean正确性的验证。
+2. 对非FactoryBean不做任何处理。
+3. 对bean进行转换。
+4. 将从Factory中解析bean的工作委托给getObjectFromFactoryBean
 
 在getObjectFromFactoryBean这个方法中只做了一件事就是返回的bean是单例的话就必须保证全局唯一，同时也因为单例不必重复创建，可以使用缓存提高性能，最总会调用doGetObjectFromFactoryBean()方法。在doGetObjectFromFactoryBean方法中我们终于看到了我们想要看到的方法，也就是object =factory.getObject()。但是得到我们想要的结果后并没有直接返回，而是接下来又做了些后处理的操作。调用AbstractAutowireCapableBeanFactory#postProcessObjectFromFactoryBean()方法
 
@@ -2320,9 +2314,10 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
 	}
 ```
 
-虽然代码中实例化的细节非常复杂，但是在createBeanIntance方法中我们还是可以清晰地看到实例化的逻辑的。（1）如果在RootBeanDefinition中存在factoryMethodName属性，或者说在配置文件中配置了factory-method，那么Spring会尝试使用instantiateUsingFactoryMethod(beanName, mbd, args)方法根据RootBeanDefinition中的配置生成bean的实例。
+虽然代码中实例化的细节非常复杂，但是在createBeanIntance方法中我们还是可以清晰地看到实例化的逻辑的。
 
-（2）解析构造函数并进行构造函数的实例化。因为一个bean对应的类中可能会有多个构造函数，而每个构造函数的参数不同，Spring在根据参数及类型去判断最终会使用哪个构造函数进行实例化。但是，判断的过程是个比较消耗性能的步骤，所以采用缓存机制，如果已经解析过则不需要重复解析而是直接从RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod缓存的值去取，否则需要再次解析，并将解析的结果添加至RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod中。
+1. 如果在RootBeanDefinition中存在factoryMethodName属性，或者说在配置文件中配置了factory-method，那么Spring会尝试使用instantiateUsingFactoryMethod(beanName, mbd, args)方法根据RootBeanDefinition中的配置生成bean的实例。
+2. 解析构造函数并进行构造函数的实例化。因为一个bean对应的类中可能会有多个构造函数，而每个构造函数的参数不同，Spring在根据参数及类型去判断最终会使用哪个构造函数进行实例化。但是，判断的过程是个比较消耗性能的步骤，所以采用缓存机制，如果已经解析过则不需要重复解析而是直接从RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod缓存的值去取，否则需要再次解析，并将解析的结果添加至RootBeanDefinition中的属性resolvedConstructorOrFactoryMethod中。
 
 **autowireConstructor**
 
@@ -2870,9 +2865,9 @@ protected void registerDisposableBeanIfNecessary(String beanName, Object bean, R
 
 **自动装配：**
 
-​	`<bean>`元素来声明 bean 和通过使用 XML 配置文件中的`<constructor-arg>`和`<property>`元素来注入 。
+`<bean>`元素来声明 bean 和通过使用 XML 配置文件中的`<constructor-arg>`和`<property>`元素来注入 。
 
-​	Spring 容器可以在不使用`<constructor-arg>`和`<property>` 元素的情况下自动装配相互协作的 bean 之间的关系，这有助于减少编写一个大的基于 Spring 的应用程序的 XML 配置的数量。使用自动装配无法从配置文件中读懂JavaBean需要哪些属性。当自动装配始终在同一个项目中使用时，它的效果最好。如果通常不使用自动装配，它可能会使开发人员混淆的使用它来连接只有一个或两个 bean 定义。不过，自动装配可以显著减少需要指定的属性或构造器参数，但你应该在使用它们之前考虑到自动装配的局限性和缺点。你可以使用<bean>元素的 autowire 属性为一个 bean 定义指定自动装配模式;
+Spring 容器可以在不使用`<constructor-arg>`和`<property>` 元素的情况下自动装配相互协作的 bean 之间的关系，这有助于减少编写一个大的基于 Spring 的应用程序的 XML 配置的数量。使用自动装配无法从配置文件中读懂JavaBean需要哪些属性。当自动装配始终在同一个项目中使用时，它的效果最好。如果通常不使用自动装配，它可能会使开发人员混淆的使用它来连接只有一个或两个 bean 定义。不过，自动装配可以显著减少需要指定的属性或构造器参数，但你应该在使用它们之前考虑到自动装配的局限性和缺点。你可以使用<bean>元素的 autowire 属性为一个 bean 定义指定自动装配模式;
 
 **`<bean id="customer" class="com.yiibai.common.Customer" autowire="byName" />`**
 
@@ -2885,10 +2880,11 @@ protected void registerDisposableBeanIfNecessary(String beanName, Object bean, R
 - `autodetect`	Spring首先尝试通过 constructor 使用自动装配来连接，如果它不执行，Spring 尝试通过 byType 来自动装配。
 
 > ​	<bean>元素byname装配：
-> ​					<bean id="textEditor" class="com.tutorialspoint.TextEditor" 
-> ​					autowire="byName">
-> ​				它尝试将它的属性与配置文件中定义为相同名称的 beans 进行匹配和连接。如果找到匹配项，它将注入这些 beans，否则，它将抛出异常
-> ​	<bean>元素bytype装配：
+> ​	<bean id="textEditor"class="com.tutorialspoint.TextEditor"  autowire="byName">
+>
+> 它尝试将它的属性与配置文件中定义为相同名称的 beans 进行匹配和连接。如果找到匹配项，它将注入这些 beans，否则，它将抛出异常
+>
+> <bean>元素bytype装配：
 > ​					<bean id="textEditor" class="com.tutorialspoint.TextEditor" autowire="byType">
 > ​					如果它的 type 恰好与配置文件中 beans 名称中的一个相匹配，它将尝试匹配和连接它的属性。如果找到匹配项，它将注入这些 beans，否则，它将抛出异常
 
@@ -2896,11 +2892,11 @@ protected void registerDisposableBeanIfNecessary(String beanName, Object bean, R
 
 ##### @Autowired注解
 
-​	@Autowired注解是通过匹配数据类型自动装配Bean。默认byType
+@Autowired注解是通过匹配数据类型自动装配Bean。默认byType
 
 ##### @Qualifier注解
 
-​	@Qualifier注解我们用来控制bean应在字段上自动装配,使用 @Quanlifier 告诉Spring哪些bean应当自动装配。
+@Qualifier注解我们用来控制bean应在字段上自动装配,使用 @Quanlifier 告诉Spring哪些bean应当自动装配。
 
 ```java
 public class Customer {
@@ -2912,13 +2908,10 @@ public class Customer {
 }
 ```
 
-
-
 ### 注解代替xml
 
-<!-- 指定扫描哪些注解，扫描包时会扫描指定包下的所有的子包 -->
-
 ```java
+<!-- 指定扫描哪些注解，扫描包时会扫描指定包下的所有的子包 -->
 <context:component-scan base-package="com.leo.demo"></context:component-scan>
 使用时：@Component("user");
     @Component("user")
@@ -2957,20 +2950,19 @@ public class Customer {
 
 ​		横向重复，纵向抽取Aop 基于代理的机制 Spring产生代理对象，
 
-
-
 #### 实现的AOP的原理：
 
 ##### 动态代理：
-​			被代理对象必须实现接口，如果没有接口将不能使用对某一个目标中的方法进行增强。关于动态代理可以看另一篇文章。
+
+被代理对象必须实现接口，如果没有接口将不能使用对某一个目标中的方法进行增强。关于动态代理可以看另一篇文章。
 
 #### cglib代理：
 
-​			可以对任何类生成代理，他可以目标对象进行继承代理。若目标对象被final修饰则该类不可以生成代理`Spring两者混合使用。`
+可以对任何类生成代理，他可以目标对象进行继承代理。若目标对象被final修饰则该类不可以生成代理`Spring两者混合使用。`
 
 #### SpringAop开发：
 
-​		Spring封装了动态代理代码，不需受用书写  可以对任何类进行d代理的增强
+Spring封装了动态代理代码，不需受用书写  可以对任何类进行d代理的增强
 
 ##### Aop术语：
 
@@ -2994,9 +2986,9 @@ public class Customer {
 
 ##### 静态切入点：
 
-​	 静态往往意味着不变，只能应用在相对不变的位置上静态切入点在某个方法名上是织入切面，在织入代码前，进象进行方法的匹配，判断当前的正在调用的方法是不是已经定义了静态切入点.若定义过说明匹配成功，织入切面，如没有定义为静态的切入点这匹配失败，不进行织入切面。
+静态往往意味着不变，只能应用在相对不变的位置上静态切入点在某个方法名上是织入切面，在织入代码前，进象进行方法的匹配，判断当前的正在调用的方法是不是已经定义了静态切入点.若定义过说明匹配成功，织入切面，如没有定义为静态的切入点这匹配失败，不进行织入切面。
 
-​		Pointcut接口是切入点的定义接口，用它来规定可切入的链接点的属性，通过对该接口的来扩展处理其他类型的链接点
+Pointcut接口是切入点的定义接口，用它来规定可切入的链接点的属性，通过对该接口的来扩展处理其他类型的链接点
 ​					
 
 ```java
@@ -3014,26 +3006,26 @@ public interface ClassFilter{
 
 ##### 动态切入点：
 
-​			可以应用在相对变化的位置上，
+可以应用在相对变化的位置上，
 
 ##### Aspect：
 
-​		就是Spring的切面，他是对象操作过程的截面，是对系统中的对象操作过程中的截面的逻辑进行模块化的封装的Aop概念实体
+就是Spring的切面，他是对象操作过程的截面，是对系统中的对象操作过程中的截面的逻辑进行模块化的封装的Aop概念实体
 ​		
 
 ##### Aop事务：
 
-​		Spring 事务应用的方法上的策略的描述，传播行为，隔离级别，只读，超时属性，
+Spring 事务应用的方法上的策略的描述，传播行为，隔离级别，只读，超时属性，
 
 ###### 编程式事务管理：
 
-​		在Spring中主要使用PlatformTransactionManager接口的事务管理器或者是TransactionTemplate,后者符合模板形式
+在Spring中主要使用PlatformTransactionManager接口的事务管理器或者是TransactionTemplate,后者符合模板形式
 
 ######  声明式事务管理：
 
-​			在声明的事务中不涉及组建依赖关系，通过AOP来实现事务管理，无需编写任何代码就可以实现基于容器的事务管理，推荐使用
+在声明的事务中不涉及组建依赖关系，通过AOP来实现事务管理，无需编写任何代码就可以实现基于容器的事务管理，推荐使用
 
-​			常用TransactionProxyFactoryBean完成声明式事务管理，设置代理的目标对象，代理对象生成的方法和事务的生成方式和事务属性，代理对象是在目标对象上生成的包含事务和AOP切面的新的对象，可以付给目标的引用代替目标对象，
+常用TransactionProxyFactoryBean完成声明式事务管理，设置代理的目标对象，代理对象生成的方法和事务的生成方式和事务属性，代理对象是在目标对象上生成的包含事务和AOP切面的新的对象，可以付给目标的引用代替目标对象，
 
 
 ​				
@@ -3219,8 +3211,9 @@ return new Result().success("Aaaa");
 
 ### Spring 整合JDBC
 
-JdbcTemplate操作数据库：
-			在这个类中的内部已经处理完了数据库资源的建立和释放并且可以避免一些常见的错误，可以直接实例化，也可以通过依赖注入的方式在ApplicationContext中参生作为Javabean的引用。运行核心的jdbc的工作流程提供很多重载方法提高程序的灵活性。
+**JdbcTemplate操作数据库：**
+
+在这个类中的内部已经处理完了数据库资源的建立和释放并且可以避免一些常见的错误，可以直接实例化，也可以通过依赖注入的方式在ApplicationContext中参生作为Javabean的引用。运行核心的jdbc的工作流程提供很多重载方法提高程序的灵活性。
 		
 
 ```java
@@ -3432,7 +3425,7 @@ Spring整合其他两大框架原理：
 </hibernate-configuration>
 ```
 
-#### 完全整合Struts2,hibernate	
+#### 完全整合Struts2,hibernate
 
 > 	Spring与struts2整合：
 > 	导包：struts2-spring-plugin.jar是struts中的Action交于Spring容器

@@ -1,8 +1,8 @@
-## SpringMVC：
+## Spring MVC：
 
 Spring web MVC 提供了模型-视图-控制体系结构来灵活的开发，松散耦合的web的应用的组件 。MVC 模式导致了应用程序的不同方面(输入逻辑、业务逻辑和 UI 逻辑)的分离，同时提供了在这些元素之间的松散耦合。模型封装了应用程序数据，并且通常它们由 POJO 组成。视图主要用于呈现模型数据，并且通常它生成客户端的浏览器可以解释的 HTML 输出。控制器主要用于处理用户请求，并且构建合适的模型并将其传递到视图呈现。
 
-### spring mvc架构：
+### Spring MVC架构：
 
 ​	主要就是DispatcherServlet进行对各个组件的调用以及各个组件对DispatcherSevlet的响应
 
@@ -59,7 +59,7 @@ DispatcherServlet是前端控制器设计模式的实现，提供Spring Web MVC�
 
 ​	上面所提到的所有组件，即 HandlerMapping、Controller 和 ViewResolver 是 WebApplicationContext 的一部分，而 WebApplicationContext 是带有一些对 web 应用程序必要的额外特性的 ApplicationContext 的扩展。
 
-#### 创建SpringMVC项目：
+#### 创建Spring MVC项目：
 
 1.导包
 
@@ -122,7 +122,7 @@ public class HelloSpringMVC {
 
 
 
-### Springmvc参数绑定：
+### Spring MVC参数绑定：
 
 参数绑定的概念就是将URL中的的请求参数，进行类型转换（String或其他类型），将转换后的值在赋值给Controller方法形参中，然后Controller就可以直接使用该形参。
 
@@ -269,7 +269,7 @@ public ModelAndView deletes(QueryVo vo){
 
 
 
-###  springmvc整合mybatis:
+###  Spring MVC整合mybatis:
 
 ​        出现这个错误：BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the Application
 
@@ -445,7 +445,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 > @Resource的作用相当于@Autowired，只不过@Autowired按照byType自动注入。
 > 4.运行项目并访问就可以拿到你想要的结果及页面。
 
-### SpringMVC中的REST:	
+### Spring MVC中的REST:
 
 即 Representational State Transfer。（资源）表现层状态转化。是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用.
 
@@ -492,8 +492,20 @@ public Item queryItemById(@PathVariable Integer id) {
 2. 如果加上@ResponseBody注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
 ```
 
-<<<<<<< Updated upstream
-### springMVC类型转换器
+#### Rest风格的API
+
+| /test/items   | GET    | 获取项目列表 |
+| ------------- | ------ | ------------ |
+| /test/items/1 | GET    | 获取项目     |
+| /test/items   | POST   | 创建项目     |
+| /test/items/1 | PUT    | 修改成员     |
+| /test/items   | PUT    | 批量修改     |
+| /test/items/1 | PATCH  | 修改属性     |
+| /test/items/1 | DELETE | 删除项目     |
+
+
+
+### Spring MVC类型转换器
 
 前端传入的值，从表单中传入的值，都是字符串或者是字符串数组的形式传入的，在后端需要进行手动的转换类型，然后才能正确的使用。 框架一般对常见的数据类型的转换进行了封装提供，如字符串转换成数字等。我们使用的SpringMVC就是提供了一些内置的转换器。我们先来看下都有哪些类型转换器。
 
@@ -522,9 +534,13 @@ public Item queryItemById(@PathVariable Integer id) {
 
 https://imgtu.com/i/RrAuSe)
 
+#### 自定义类型转换器
+
 - **ConversionService** 是 Spring 类型转换体系的核心接口。 
 - 可以利用 **ConversionServiceFactoryBean** 在 Spring 的 IOC 容器中定义一个 ConversionService. **Spring** 将自动识别出**IOC** **容器中的** **ConversionService**，并在 **Bean** **属性配置及****Spring MVC** 处理方法入参绑定等场合使用它**进行数据的转换**
-- **可通过 ConversionServiceFactoryBean** **的** **converters** **属性** **注册自定义的类型转换器**		
+- **可通过 ConversionServiceFactoryBean** **的** **converters** **属性** **注册自定义的类型转换器**	
+
+#### Spring支持的类型转换器
 
 Spring 定义了 3 种类型的转换器接口，实现任意一个转换器接口都可以作为自定义转换器注册到
 
@@ -593,7 +609,7 @@ public String testConverter(@RequestParam("user") User user){
 - 支持使用@Valid注解进行javaBean的的验证
 - 支持使用@RequestBoay和@ResponseBody注解
 
-### springMVC数据格式化：
+### Spring MVC数据格式化：
 
 对属性对象的输入/输出进行格式化，从其本质上讲依然 属于 “类型转换” 的范畴。Spring 在格式化模块中定义了一个实现 ConversionService 接口的**FormattingConversionService** 实现类，该实现类扩展 了 GenericConversionService，因此它**既具有类型转换的功能，又具有格式化的功能**
 
@@ -606,19 +622,6 @@ FormattingConversionService 拥有一个 **FormattingConversionServiceFactroyBea
 - 装配了 FormattingConversionServiceFactroyBean 后，就可 以在 Spring MVC 入参绑定及模型数据输出时使用注解驱动了。`<mvc:annotation-driven/>` 默认创建的ConversionService 实例即为 FormattingConversionServiceFactroyBean
 
   
-=======
-| /test/items   | GET    | 获取项目列表 |
-| ------------- | ------ | ------------ |
-| /test/items/1 | GET    | 获取项目     |
-| /test/items   | POST   | 创建项目     |
-| /test/items/1 | PUT    | 修改成员     |
-| /test/items   | PUT    | 批量修改     |
-| /test/items/1 | PATCH  | 修改属性     |
-| /test/items/1 | DELETE | 删除项目     |
-
-
-
-### springMVC数据格式化：
 
 #### 处理日期格式
 
@@ -688,9 +691,7 @@ private Date birthday;
 @NumberFormat(pattern="#,###")
 private Integer salary;
 ```
->>>>>>> Stashed changes
-
-#### springmvc处理json数据:
+#### Spring MVC处理json数据:
 
 > 1.加入jar包：jackson-annotations(core,databind)-2.2.2.jar;
 >
@@ -728,11 +729,11 @@ HttpMessageConverter<T>接口定义的方法： – Boolean canRead(Class<?> cla
 
 ​	
 
-### springmvc文件上传：
+### Spring MVC文件上传：
 
 Spring MVC 为文件上传提供了直接的支持，这种支持是通过即插即用的 MultipartResolver 实现的。Spring 用Jakarta Commons FileUpload 技术实现了一个MultipartResolver 实现类：CommonsMultipartResovler
 
-​	Spring MVC 上下文中默认没有装配 MultipartResovler，因此默认情况下不能处理文件的上传工作，如果想使用 Spring的文件上传功能，需现在上下文中配置 MultipartResolver
+Spring MVC 上下文中默认没有装配 MultipartResovler，因此默认情况下不能处理文件的上传工作，如果想使用 Spring的文件上传功能，需现在上下文中配置 MultipartResolver
 
 `​defaultEncoding: 必须和用户 JSP 的 pageEncoding 属性一致，以便正确解析表单的内容``​为了让 CommonsMultipartResovler 正确工作，必须先将 Jakarta Commons FileUpload 及 Jakarta Commons io的类包添加到类路径下。`	
 
@@ -794,7 +795,7 @@ public Map<String, Object> add(User user, @RequestParam(name = "file") Multipart
 }
 ```
 
-### SpringMVC的自定义拦截器：
+### Spring MVC的自定义拦截器：
 
 ​	Spring MVC也可以使用拦截器对请求进行拦截处理，用户可以自定义拦截器来实现特定的功能，自定义的拦截器必须实现HandlerInterceptor接口
 
@@ -856,9 +857,9 @@ public class HandlerInterceptor1 implements HandlerInterceptor {
 		
 ```
 
-### SpringMVC的异常处理：
+### Spring MVC的异常处理：
 
-​	Spring MVC 通过 HandlerExceptionResolver 处理程序的异常，包括 Handler 映射、数据绑定以及目标方法执行时发生的异常。SpringMVC 提供的 HandlerExceptionResolver 的实现类.
+Spring MVC 通过 HandlerExceptionResolver 处理程序的异常，包括 Handler 映射、数据绑定以及目标方法执行时发生的异常。SpringMVC 提供的 HandlerExceptionResolver 的实现类.
 
 ##### ExcepetionHandlerExceptionResolver
 
@@ -937,15 +938,10 @@ public class BaseExceptionHandler {
 }
 ```
 
+### Spring MVC对比Struts2：
 
-
-### SpringMVC对比Struts2：
-
-​	①. `Spring MVC 的入口是 Servlet, 而 Struts2 是 Filter`
-
-​	②. `Spring MVC 会稍微比 Struts2 快些. Spring MVC 是基于方法设计, 而 Sturts2 是基于类, 每次发一次请求都会实例一个 Action.`
-
-​	③. `Spring MVC 使用更加简洁, 开发效率Spring MVC确实比 struts2 高: 支持 JSR303, 处理 ajax 的请求更方便`
-
-​	④. `Struts2 的 OGNL 表达式使页面的开发效率相比Spring MVC 更高些`. 
+1. Spring MVC 的入口是 Servlet, 而 Struts2 是 Filter
+2. Spring MVC 会稍微比 Struts2 快些. Spring MVC 是基于方法设计, 而 Sturts2 是基于类, 每次发一次请求都会实例一个 Action.
+3. Spring MVC 使用更加简洁, 开发效率Spring MVC确实比 struts2 高: 支持 JSR303, 处理 ajax 的请求更方便
+4. Struts2 的 OGNL 表达式使页面的开发效率相比Spring MVC 更高些. 
 

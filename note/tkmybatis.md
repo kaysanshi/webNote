@@ -378,7 +378,7 @@ public static void main(String[] args) throws Exception {
 
 下面是一个[`generatorConfig.xml`](https://github.com/abel533/Mapper/blob/master/generator/src/test/resources/generatorConfig.xml)的例子：
 
-```
+```xml
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
@@ -419,7 +419,7 @@ public static void main(String[] args) throws Exception {
 
 和一般的配置相比，这里只是多了一个插件的配置：
 
-```
+```xml
 <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
     <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
     <property name="caseSensitive" value="true"/>
@@ -454,7 +454,7 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
 
 在配置插件时，可以配置为：
 
-```
+```xml
 <property name="mappers" value="xxx.base.MyMapper"/>
 ```
 
@@ -469,7 +469,7 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
 
 在上面`<table` 的配置中是针对 MySql 这种自增数据库的，如果使用 ORACLE 序列方式，可以参考下面的配置：
 
-```
+```xml
  <table tableName="country">
    <generatedKey column="id" 
                  sqlStatement="select SEQ_{1}.nextval from dual" 
@@ -479,7 +479,7 @@ org.springframework.beans.factory.BeanCreationException: Error creating bean wit
 
 SQL 中的 `{1}` 代表的是对应表的大写形式，`{0}` 是小写形式，这个配置生成的代码会像下面这样：
 
-```
+```java
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY,

@@ -245,14 +245,15 @@ return item;
 }
 			
 ```
-`@ PathVariable`  是 获取 url 上数据 的。 @RequestParam获取请求参数的（包括post表单提交）
+`@PathVariable`  是 获取 url 上数据 的。 @RequestParam获取请求参数的（包括post表单提交）
 
 `@ResponseBody` 注解，就不会走视图解析器，不会返回页面，目前返回的json数据。如果不加，就走视图解析器，返回页面
+
 `@RequestBody`  允许request的参数在request体中，而不是在直接连接在地址后面。（放在参数前） 需要和postMapping一起使用
 
 `@NumberFormat`    支持对数字类型的属性使用 @NumberFormat 注解
 
-`@DateTimeFormat` 		– JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类型的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式，
+`@DateTimeFormat` – JodaDateTimeFormatAnnotationFormatterFactroy：支持对日期类型的属性使用 @DateTimeFormat 注解 ；可以对pattern 属性：类型为字符串。指定解析/格式化字段数据的模式，
 
 如：”yyyy-MM-dd hh:mm:ss”等其他的
 `@RequestParam(name="file") :`接收前端传入的参数 required=false或者true来要@RequestParam配置的前端参数是否一定要传 
