@@ -171,15 +171,23 @@ SOAP 的服务发现用的是 **UDDI**（Universal Description, Discovery, Integ
 
 ### JAX-WS & JAX-RS
 
-webService提供了两大类解决方案JAX-WS(基于SOAP协议的RPC-style,和基于SOAP协议的文档style),JAX-RS(基于ReastFul的Jersey和restTeasy)
+WebService提供了两大类解决方案JAX-WS(基于SOAP协议的RPC-style,和基于SOAP协议的文档style),JAX-RS(基于ReastFul的Jersey和restTeasy)
 
 #### JAX-WS（JX-RPC）
 
-Java API for XML Web Services（JAX-WS）是Java程序设计语言一个用来创建Web服务的API。
+**Java API for XML Web Services（JAX-WS）**是Java程序设计语言一个用来创建Web服务的API。
 
-AX-WS是sun的Java企业平台一部分。和其它Java EE的API一样，JAX-WS使用了Java SE5引入的Java标注机制来简化Web服务客户端和服务端的开发和部署用于SOAP Web服务。 编写JAX-WS应用程序代码的方法有两种：**RPC样式**和**Document样式**。
+JAX-WS是sun的Java企业平台一部分。和其它Java EE的API一样，JAX-WS使用了Java SE5引入的Java标注机制来简化Web服务客户端和服务端的开发和部署用于SOAP Web服务。 编写JAX-WS应用程序代码的方法有两种：**RPC样式**和**Document样式**。
 
-JAX-RPC可以被看作是Java RMI在Web服务协议上的实现允许Java应用程序可以通过已知的描述信息调用一个基于Java的Web服务，描述信息与Web服务的WSDL（Web服务描述语言）描述相一致. JAX-RPC 2.0被更名为JAX-WS 2.0
+JAX-RPC可以被看作是Java RMI在Web服务协议上的实现允许Java应用程序可以通过已知的描述信息调用一个基于Java的Web服务，描述信息与Web服务的WSDL（Web服务描述语言）描述相一致. **JAX-RPC 2.0被更名为JAX-WS 2.0.**JAX-WS2.0 (JSR 224)是Sun新的web services协议栈，是一个完全基于标准的实现。在binding层，使用的是the Java Architecture for XML Binding (JAXB, JSR 222)，在parsing层，使用的是the Streaming API for XML (StAX, JSR 173)，同时它还完全支持schema规范。
+
+在服务器端，用户只需要通过Java语言定义远程调用所需要实现的接口SEI (service endpoint interface)，并提供相关的实现，通过调用JAX-WS的服务发布接口就可以将其发布为WebService接口。
+
+在客户端，用户可以通过JAX-WS的API创建一个代理（用本地对象来替代远程的服务）来实现对于远程服务器端的调用。
+
+当然 JAX-WS 也提供了一组针对底层消息进行操作的API调用，你可以通过Dispatch 直接使用SOAP消息或XML消息发送请求或者使用Provider处理SOAP或XML消息。
+
+通过web service所提供的互操作环境，我们可以用JAX-WS轻松实现JAVA平台与其他编程环境(.net等)的互操作。
 
 ##### JAX-WS(RPC样式)
 
@@ -193,33 +201,33 @@ JAX-RPC可以被看作是Java RMI在Web服务协议上的实现允许Java应用�
 
 ```java
 import javax.jws.WebMethod;
-		import javax.jws.WebService;
-		import javax.jws.soap.SOAPBinding;
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
 
-		/**
-		* @user:
-		* @date:2021/7/6
-		* @Description:
-		*/
-		@WebService
-		@SOAPBinding(style = SOAPBinding.Style.RPC)
-		public interface HelloWord {
-			@WebMethod
-			String getHelloWorldAsString(String name);
+/**
+* @user:
+* @date:2021/7/6
+* @Description:
+*/            
+@WebService
+@SOAPBinding(style = SOAPBinding.Style.RPC)
+public interface HelloWord {
+    @WebMethod
+    String getHelloWorldAsString(String name);
 
-		}
-		@WebService(endpointInterface = "com.blueearth.bewemp.doc.test.HelloWord")
-		public class HelloWordImpl implements HelloWord{
-			@Override
-			public String getHelloWorldAsString(String name) {
-				return "hello word jax-ws"+name;
-			}
-		}
-		public class Publisher {
-			public static void main(String[] args) {
-				Endpoint.publish("http://localhost:1212/ws/hello",new HelloWordImpl());
-			}
-		}
+}
+@WebService(endpointInterface = "com.blueearth.bewemp.doc.test.HelloWord")
+public class HelloWordImpl implements HelloWord{
+    @Override
+    public String getHelloWorldAsString(String name) {
+        return "hello word jax-ws"+name;
+    }
+}
+public class Publisher {
+    public static void main(String[] args) {
+        Endpoint.publish("http://localhost:1212/ws/hello",new HelloWordImpl());
+    }
+}
 ```
 
  **运行之后可以看到下图**
@@ -382,7 +390,11 @@ JAX-RS提供了一些注解将一个资源类，一个POJO Java类，封装为We
 </html>
 ```
 
+参考：
 
+[Building Web Services with JAX-WS](https://docs.oracle.com/javaee/6/tutorial/doc/bnayl.html)
+
+[Building RESTful Web Services with JAX-RS](https://docs.oracle.com/javaee/6/tutorial/doc/giepu.html)
 
 ### Apach CXF
 
@@ -391,9 +403,10 @@ CXF 继承了 Celtix 和 XFire 两大开源项目的精华，提供了对 JAX-WS
 
 #### cxf服务端：
 
+导包：配置cxf.xml，书写接口和实现类。在web.xml配置：
+
 ```xml
 
-		导包：配置cxf.xml，书写接口和实现类。在web.xml配置：
 		 <!-- 配置CXF提供的servlet -->
 		  <servlet>
 				<servlet-name>cxf</servlet-name>
@@ -408,8 +421,8 @@ CXF 继承了 Celtix 和 XFire 两大开源项目的精华，提供了对 JAX-WS
 				<servlet-name>cxf</servlet-name>
 				<url-pattern>/service/*</url-pattern>
 		  </servlet-mapping>
-		 在接口上添加注解@WebService然后提供对外访问的方法：
-		 在cxf.xml配置：
+在接口上添加注解@WebService然后提供对外访问的方法：
+在cxf.xml配置：
 		 <!--配置bean-->
 			<bean id="helloService" class="com.leo.service.HelloServiceImpl"></bean>
 			<!-- 注册服务  
