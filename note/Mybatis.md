@@ -432,7 +432,7 @@ select * from user where username like '%${value}%'
 
 #### 2.resultMap:
 
-​	sql查询的字段名和你pojo类型字段不一致的情况下用。resultMap可以实现将查询结果映射为复杂类型的pojo，比如在查询结果映射对象中包括pojo和list实现一对一查询和一对多查询
+sql查询的字段名和你pojo类型字段不一致的情况下用。resultMap可以实现将查询结果映射为复杂类型的pojo，比如在查询结果映射对象中包括pojo和list实现一对一查询和一对多查询
 
 ```xml
 <!-- resultMap最终还是要将结果映射到pojo上，type就是指定映射到哪一个pojo -->
@@ -822,3 +822,61 @@ mapper.xml的命名空间（namespace）是否跟mapper接口的包名一致？
 
   `publicConstructor<T> getDeclaredConstructor(Class<?>... parameterTypes)：`获取单个构造方法（能获取私有的，但要用Constructor类的setAccessible方法设置访问权限），参数表示的是：你要获取的构造方法的构造参数个数及数据类型的class字节码文件对象
 所以条件都不能够满足所以出现异常。
+
+### Mybatis相关的面试题：
+
+1. 什么是Mybatis?
+
+2. Mybatis的优点:
+
+3. Mybatis框架的缺点:
+
+4. Mybatis框架适用场合:
+
+5. Mybatis与Hibernate有哪些不同?
+
+6. \#和$的区别是什么?
+
+7. 当实体类中的属性名和表中的字段名不一样·怎么办?
+
+8. 模糊查询like语词该怎么写?
+
+   使用bind标签语句
+
+   
+
+9. 通常一个Xml映射文件,都会写一个Dao接口与之对应,请问,这个Dao接口的工作原理是tDa
+
+10. Mybatis是如何进行分页的?分页插件的原理是什么?
+
+11. Mybatis是如何将sq执行结果封装为目标对象并返回的都有哪些映射形式?
+
+12. 如何执行批里插入?
+
+13. 如何获取自动生成的(主)键值?
+
+14. 在mapper中如何传递多个参数?
+
+15. Mybatis动态sql有什么用?执行原理?有哪些动态sql?
+
+16. Xm1映射文件中,除了常见的select |insert lupdae |delete标签之外，还有
+
+17. 为什么说Mybatis是半自动动ORM映射工具?它与全自动的区别在哪里?
+
+18. —对—、—对多的关联查询全
+
+19. Mybatis实现—对—有几种方式?具体怎么操作的?
+
+20. Mybatis实现—对多有几种方式,怎么操作的?
+
+21. Mybatis是否支持延迟加载如果支持,它的实现原理是什么?
+
+22. Mybatis的一级、二级缓存:
+
+23. 什么是Mybatis的接口绑定?有哪些实现方式?
+
+24. 使用MyBatis的的mapper接口调用时有哪些要求?
+
+25. Mapper编写有哪几种方式?
+
+26. 简述Mybatis的插件运行原理,以及如何编义
